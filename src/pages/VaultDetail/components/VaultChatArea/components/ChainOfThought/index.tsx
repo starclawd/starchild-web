@@ -87,6 +87,9 @@ const MarkdownContainer = styled.div<{ $expanded: boolean }>`
     font-weight: 400;
     line-height: 18px;
     color: ${({ theme }) => theme.black0};
+    ul {
+      padding-left: 20px;
+    }
   }
   ${({ $expanded }) =>
     !$expanded &&

@@ -7,17 +7,12 @@ import { t } from '@lingui/core/macro'
 import { ButtonCommon } from 'components/Button'
 import { useSendChatUserContent } from 'store/createstrategy/hooks/useStream'
 import { useIsLoadingChatStream } from 'store/createstrategy/hooks/useLoadingState'
-import {
-  useConnectWalletModalToggle,
-  useCurrentRouter,
-  usePromptModalToggle,
-  useSetCurrentRouter,
-} from 'store/application/hooks'
+import { useConnectWalletModalToggle, useCurrentRouter, useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import { isMatchCurrentRouter } from 'utils'
 import { useChatValue } from 'store/createstrategy/hooks/useChatContent'
 import { useResetAllState } from 'store/createstrategy/hooks/useResetAllState'
-import ModeSelect from 'pages/Chat/components/ChatInput/components/ModeSelect'
+// import ModeSelect from 'pages/Chat/components/ChatInput/components/ModeSelect'
 import { Trans } from '@lingui/react/macro'
 import { useIsLogin } from 'store/login/hooks'
 
@@ -279,7 +274,8 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
             enterConfirmCallback={requestStream}
           />
           <Operator $isChatPage={isChatPage}>
-            {isChatPage && <ModeSelect />}
+            {/* {isChatPage && <ModeSelect />} */}
+            <div></div>
             <SendButton $disabled={!value?.trim()} onClick={requestStream}>
               <IconBase className='icon-arrow' />
             </SendButton>

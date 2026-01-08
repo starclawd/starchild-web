@@ -4,7 +4,6 @@ import { IconBase } from 'components/Icons'
 import { memo, useCallback } from 'react'
 import styled, { css } from 'styled-components'
 import { ANI_DURATION } from 'constants/index'
-import RhythmCanvas from '../RhythmCanvas'
 import { useShareStrategyModalToggle } from 'store/application/hooks'
 import { useCurrentShareStrategyData } from 'store/vaultsdetail/hooks/useCurrentShareStrategyData'
 import { useStrategyInfo } from 'store/vaultsdetail/hooks'
@@ -140,7 +139,6 @@ export default memo(function TvfSection() {
             <IconBase className='icon-boost' />
             <span>{isFollowed ? <Trans>Followed</Trans> : <Trans>Follow</Trans>}</span>
           </BottomLeftContent>
-          <RhythmCanvas />
         </BottomLeft>
         <ShareButton onClick={shareStrategy}>
           <IconBase className='icon-share' />

@@ -24,8 +24,9 @@ import {
   useIsShowExpandPaperTrading,
 } from 'store/createstrategy/hooks/usePaperTrading'
 import { ANI_DURATION } from 'constants/index'
-import { useDeployModalToggle } from 'store/application/hooks'
+import { useDeployModalToggle, useSetCurrentRouter } from 'store/application/hooks'
 import PixelCanvas from 'pages/Chat/components/PixelCanvas'
+import { ROUTER } from 'pages/router'
 
 const StrategyInfoWrapper = styled.div`
   position: relative;
@@ -87,7 +88,7 @@ const ContentWrapper = styled.div<{ $isShowActionLayer: boolean; $isShowExpandPa
   ${({ $isShowActionLayer }) =>
     $isShowActionLayer &&
     css`
-      padding-bottom: 80px;
+      padding-bottom: 108px;
     `}
   ${({ $isShowExpandPaperTrading }) =>
     $isShowExpandPaperTrading &&
@@ -111,6 +112,7 @@ export default memo(function StrategyInfo() {
   const toggleDeployModal = useDeployModalToggle()
   const handleGenerateCode = useHandleGenerateCode()
   const handleStartPaperTrading = useHandleStartPaperTrading()
+  const setCurrentRouter = useSetCurrentRouter()
   const [currentStrategyTabIndex] = useCurrentStrategyTabIndex()
   const [isShowExpandPaperTrading] = useIsShowExpandPaperTrading()
   const [isGeneratingCode] = useIsGeneratingCode()
@@ -123,6 +125,10 @@ export default memo(function StrategyInfo() {
   const handleDeployClick = useCallback(() => {
     toggleDeployModal(strategyId)
   }, [strategyId, toggleDeployModal])
+
+  const goDetailPage = useCallback(() => {
+    setCurrentRouter(`${ROUTER.VAULT_DETAIL}?strategyId=${strategyId}`)
+  }, [strategyId, setCurrentRouter])
 
   // 当 strategyId 存在但 strategy_config 不存在时，每5秒轮询一次
   useEffect(() => {
@@ -183,11 +189,11 @@ export default memo(function StrategyInfo() {
           )}
           {isShowLaunchOperation && (
             <ActionLayer
-              rightText={<Trans>Launch</Trans>}
+              rightText={<Trans>View</Trans>}
               iconCls='icon-launch'
-              title={<Trans>Launch</Trans>}
-              description={<Trans>Deploy a live strategy and earn performance fees via a mirror vault.</Trans>}
-              clickCallback={handleDeployClick}
+              title={<Trans>View Details</Trans>}
+              description={<Trans>Your strategy is public and will be displayed on the leaderboard.</Trans>}
+              clickCallback={goDetailPage}
             />
           )}
         </ContentWrapper>

@@ -204,18 +204,29 @@ const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
       const aValue = a[field]
       const bValue = b[field]
 
-      if (typeof aValue === 'number' && typeof bValue === 'number') {
-        return aValue - bValue
+      // 处理 null 和 undefined 值，将它们排到最后
+      if (aValue == null && bValue == null) return 0
+      if (aValue == null) return 1
+      if (bValue == null) return -1
+
+      // 尝试转换为数字进行比较
+      const aNum = Number(aValue)
+      const bNum = Number(bValue)
+
+      let result: number
+      if (!isNaN(aNum) && !isNaN(bNum)) {
+        result = aNum - bNum
+      } else if (typeof aValue === 'string' && typeof bValue === 'string') {
+        result = aValue.localeCompare(bValue)
+      } else {
+        result = 0
       }
 
-      if (typeof aValue === 'string' && typeof bValue === 'string') {
-        return aValue.localeCompare(bValue)
-      }
-
-      return 0
+      // 根据排序方向返回结果
+      return sortState.direction === SortDirection.DESC ? -result : result
     })
 
-    return sortState.direction === SortDirection.DESC ? sorted.reverse() : sorted
+    return sorted
   }, [filteredStrategies, sortState])
 
   // 行点击跳转到详情页

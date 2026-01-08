@@ -696,7 +696,7 @@ export default memo(function Summary() {
         {!typewriterState.isTyping && (
           <ButtonWrapper>
             {!isEdit ? (
-              <ButtonEdit $disabled={isStep3Deploying || !strategy_config} onClick={openEdit}>
+              <ButtonEdit id='strategyEditButton' $disabled={isStep3Deploying || !strategy_config} onClick={openEdit}>
                 <IconBase className='icon-edit' />
                 <Trans>Edit</Trans>
               </ButtonEdit>

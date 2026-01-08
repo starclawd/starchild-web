@@ -50,7 +50,7 @@ const VaultDetailNavigation = memo(() => {
     <NavigationContainer>
       <LeftSection $isShowStrategyMarket={isShowStrategyMarket} onClick={toggleStrategyMarket}>
         <IconBase className={!isShowStrategyMarket ? 'icon-fold' : 'icon-stratege-expand'} />
-        <Trans>Strategy market</Trans>
+        <Trans>Strategy hub</Trans>
       </LeftSection>
       <VaultsWalletConnect mode={WALLET_CONNECT_MODE.SHRINK} />
     </NavigationContainer>

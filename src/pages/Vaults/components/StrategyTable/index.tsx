@@ -91,14 +91,14 @@ interface HeaderConfig {
 // 列宽配置 - header 和 body 共用
 export const COLUMN_WIDTHS = [
   '17%', // name
-  '8%', // leader
+  '10%', // leader
   '8%', // 24H ROE
   '8%', // 7D ROE
   '10%', // All time ROE
   '10%', // Max drawdown
   '10%', // Sharpe ratio
   '8%', // Age(days)
-  '8%', // TVF
+  '6%', // TVF
   '5%', // Followers
   '8%', // Snapshot
 ]
@@ -125,30 +125,40 @@ export default function StrategyTable() {
     { key: 'apr7d', title: createSortableHeader(<Trans>7D APR</Trans>, 'apr'), align: 'left', width: COLUMN_WIDTHS[3] },
     {
       key: 'allTimeApr',
-      title: createSortableHeader(<Trans>All time APR</Trans>, 'allTimeApr'),
+      title: createSortableHeader(<Trans>All time APR</Trans>, 'all_time_apr'),
       align: 'left',
       width: COLUMN_WIDTHS[4],
     },
     {
       key: 'maxDrawdown',
-      title: createSortableHeader(<Trans>Max drawdown</Trans>, 'maxDrawdown'),
+      title: createSortableHeader(<Trans>Max drawdown</Trans>, 'max_drawdown'),
       align: 'left',
       width: COLUMN_WIDTHS[5],
     },
     {
       key: 'sharpeRatio',
-      title: createSortableHeader(<Trans>Sharpe ratio</Trans>, 'sharpeRatio'),
+      title: createSortableHeader(<Trans>Sharpe ratio</Trans>, 'sharpe_ratio'),
       align: 'left',
       width: COLUMN_WIDTHS[6],
     },
     {
       key: 'ageDays',
-      title: createSortableHeader(<Trans>Age(days)</Trans>, 'ageDays'),
+      title: createSortableHeader(<Trans>Age(days)</Trans>, 'age_days'),
       align: 'left',
       width: COLUMN_WIDTHS[7],
     },
-    { key: 'tvf', title: <Trans>TVF</Trans>, align: 'left', width: COLUMN_WIDTHS[8] },
-    { key: 'followers', title: <Trans>Followers</Trans>, align: 'left', width: COLUMN_WIDTHS[9] },
+    {
+      key: 'tvf',
+      title: createSortableHeader(<Trans>TVF</Trans>, 'tvf'),
+      align: 'left',
+      width: COLUMN_WIDTHS[8],
+    },
+    {
+      key: 'followers',
+      title: createSortableHeader(<Trans>Followers</Trans>, 'followers'),
+      align: 'left',
+      width: COLUMN_WIDTHS[9],
+    },
     { key: 'snapshot', title: <Trans>Snapshot</Trans>, align: 'right', width: COLUMN_WIDTHS[10] },
   ]
 

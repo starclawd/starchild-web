@@ -12,11 +12,21 @@ const ActionLayerWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  height: 80px;
+  height: 108px;
+  padding: 20px;
+  cursor: pointer;
+`
+
+const InnerContent = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
   gap: 8px;
-  padding: 0 20px;
-  border-top: 1px solid ${({ theme }) => theme.black800};
-  background-color: #151110;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid ${({ theme }) => theme.black800};
   i {
     font-size: 24px;
     color: ${({ theme }) => theme.black0};
@@ -62,6 +72,7 @@ const ArrowButton = styled(ButtonCommon)`
   font-weight: 400;
   line-height: 20px;
   padding: 0 12px;
+  border-radius: 4px;
   color: ${({ theme }) => theme.black1000};
   .icon-arrow {
     transform: rotate(90deg);
@@ -87,18 +98,20 @@ export default memo(function ActionLayer({
 }) {
   return (
     <ActionLayerWrapper className='action-layer-wrapper' onClick={clickCallback}>
-      <IconBase className={iconCls} />
-      <CenterContent>
-        <CenterTop>
-          <span>{title}</span>
-        </CenterTop>
-        <CenterBottom>
-          <span>{description}</span>
-        </CenterBottom>
-      </CenterContent>
-      <ArrowButton>
-        {isLoading ? <Pending /> : rightText ? <span>{rightText}</span> : <IconBase className='icon-arrow' />}
-      </ArrowButton>
+      <InnerContent>
+        <IconBase className={iconCls} />
+        <CenterContent>
+          <CenterTop>
+            <span>{title}</span>
+          </CenterTop>
+          <CenterBottom>
+            <span>{description}</span>
+          </CenterBottom>
+        </CenterContent>
+        <ArrowButton>
+          {isLoading ? <Pending /> : rightText ? <span>{rightText}</span> : <IconBase className='icon-arrow' />}
+        </ArrowButton>
+      </InnerContent>
     </ActionLayerWrapper>
   )
 })

@@ -30,51 +30,29 @@ const SortableHeaderContainer = styled.div`
   }
 `
 
-// 像素风格排序箭头 SVG 组件
+// 排序箭头 SVG 组件
 interface SortArrowsSvgProps {
   upColor: string
   downColor: string
 }
 
 const SortArrowsSvg = memo<SortArrowsSvgProps>(({ upColor, downColor }) => {
-  // 像素大小
-  const px = 1
-
   return (
     <svg
       className='sort-arrow'
-      width={7 * px}
-      height={11 * px}
-      viewBox={`0 0 ${7 * px} ${11 * px}`}
+      width='14'
+      height='14'
+      viewBox='0 0 24 24'
       fill='none'
       xmlns='http://www.w3.org/2000/svg'
-      style={{ shapeRendering: 'crispEdges' }}
     >
-      {/* 上箭头 - 像素风格（空心） */}
-      {/* 第1行: 中间1个像素 */}
-      <rect x={3 * px} y={0} width={px} height={px} fill={upColor} />
-      {/* 第2行: 两侧2个像素 */}
-      <rect x={2 * px} y={1 * px} width={px} height={px} fill={upColor} />
-      <rect x={4 * px} y={1 * px} width={px} height={px} fill={upColor} />
-      {/* 第3行: 两侧2个像素 */}
-      <rect x={1 * px} y={2 * px} width={px} height={px} fill={upColor} />
-      <rect x={5 * px} y={2 * px} width={px} height={px} fill={upColor} />
-      {/* 第4行: 最外侧2个像素 */}
-      <rect x={0} y={3 * px} width={px} height={px} fill={upColor} />
-      <rect x={6 * px} y={3 * px} width={px} height={px} fill={upColor} />
-
-      {/* 下箭头 - 像素风格（空心） */}
-      {/* 第1行: 最外侧2个像素 */}
-      <rect x={0} y={7 * px} width={px} height={px} fill={downColor} />
-      <rect x={6 * px} y={7 * px} width={px} height={px} fill={downColor} />
-      {/* 第2行: 两侧2个像素 */}
-      <rect x={1 * px} y={8 * px} width={px} height={px} fill={downColor} />
-      <rect x={5 * px} y={8 * px} width={px} height={px} fill={downColor} />
-      {/* 第3行: 两侧2个像素 */}
-      <rect x={2 * px} y={9 * px} width={px} height={px} fill={downColor} />
-      <rect x={4 * px} y={9 * px} width={px} height={px} fill={downColor} />
-      {/* 第4行: 中间1个像素 */}
-      <rect x={3 * px} y={10 * px} width={px} height={px} fill={downColor} />
+      {/* 上箭头 */}
+      <path
+        d='M8.95 9.04998L7.5 7.59998L12 3.09998L16.5 7.59998L15.05 9.04998L12 5.99998L8.95 9.04998Z'
+        fill={upColor}
+      />
+      {/* 下箭头 */}
+      <path d='M12 21L7.5 16.5L8.95 15.05L12 18.1L15.05 15.05L16.5 16.5L12 21Z' fill={downColor} />
     </svg>
   )
 })

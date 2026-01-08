@@ -12,10 +12,9 @@ const AiSummaryWrapper = styled.div<{ $isVaultDetailPage?: boolean }>`
   justify-content: space-between;
   flex-grow: 1;
   padding: 20px;
-  width: 65%;
+  width: 100%;
   height: 100%;
   position: relative;
-  border-right: 1px solid ${({ theme }) => theme.black800};
 
   ${({ $isVaultDetailPage }) =>
     $isVaultDetailPage &&

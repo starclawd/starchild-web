@@ -18,9 +18,7 @@ import styled, { css, useTheme } from 'styled-components'
 import PerformanceChart from 'components/PerformanceChart'
 import { useSelector } from 'react-redux'
 import { RootState } from 'store'
-import { t } from '@lingui/core/macro'
 import AiSummary from '../AiSummary'
-import StrategyRadarChart from '../StrategyRadarChart'
 import { useCurrentRouter } from 'store/application/hooks'
 import { isMatchCurrentRouter } from 'utils'
 import { ROUTER } from 'pages/router'
@@ -126,7 +124,6 @@ const PaperTradingPerformance = memo<VaultPnLChartProps>(({ activeTab, vaultId, 
       )}
       <AiAnalysis>
         <AiSummary />
-        <StrategyRadarChart />
       </AiAnalysis>
       <ChatWrapper $isVaultDetailPage={isVaultDetailPage}>
         <TimeRangeSelector chartTimeRange={chartState.timeRange} setChartTimeRange={chartState.setTimeRange} />

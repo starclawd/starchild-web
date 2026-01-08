@@ -357,6 +357,8 @@ export default defineConfig({
 
           // 国际化
           'i18n-vendor': ['@lingui/core', '@lingui/react', '@lingui/macro'],
+
+          // Web3 相关 - 按模块拆分
           'viem-vendor': ['viem'],
           'wagmi-vendor': ['wagmi'],
 
@@ -370,11 +372,17 @@ export default defineConfig({
           // 数据查询
           'query-vendor': ['@tanstack/react-query'],
 
-          // 图表库
-          'chart-vendor': ['chart.js', 'react-chartjs-2', 'lightweight-charts'],
+          // 图表库 - 包含日期适配器
+          'chart-vendor': ['chart.js', 'react-chartjs-2', 'chartjs-adapter-date-fns'],
+          'lightweight-charts-vendor': ['lightweight-charts'],
+          'date-fns-vendor': ['date-fns'],
 
-          // 动画库
-          'animation-vendor': ['lottie-web'],
+          // 3D 渲染库 - Three.js 相关（很大，单独拆分）
+          'three-vendor': ['three'],
+          'postprocessing-vendor': ['postprocessing'],
+
+          // WebGL 库
+          'ogl-vendor': ['ogl'],
 
           // 基础工具库
           'utils-vendor': ['dayjs', 'bignumber.js', 'copy-to-clipboard', 'qs'],
@@ -383,7 +391,7 @@ export default defineConfig({
           'canvas-vendor': ['html2canvas'],
 
           // Markdown 和代码高亮
-          'markdown-vendor': ['react-markdown'],
+          'markdown-vendor': ['react-markdown', 'remark-gfm'],
           'highlight-vendor': ['highlight.js'],
 
           // Toast 和其他 UI 库
@@ -394,6 +402,7 @@ export default defineConfig({
 
           // 压缩和数据处理
           'compress-vendor': ['json-bigint'],
+          'msgpack-vendor': ['@msgpack/msgpack'],
 
           // 头像和其他小工具
           'avatar-vendor': ['boring-avatars'],
@@ -404,12 +413,14 @@ export default defineConfig({
           // WebSocket
           'websocket-vendor': ['react-use-websocket'],
 
-          // 开发调试工具
-          'debug-vendor': ['eruda'],
-
           // 对话框和弹窗
           'dialog-vendor': ['@reach/dialog'],
-          'ogl-vendor': ['ogl'],
+
+          // Popper 定位库
+          'popper-vendor': ['@popperjs/core', 'react-popper'],
+
+          // Base58 编解码
+          'bs58-vendor': ['bs58'],
         },
 
         entryFileNames: 'assets/js/[name]-[hash].js',

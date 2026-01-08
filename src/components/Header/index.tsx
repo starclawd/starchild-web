@@ -46,12 +46,6 @@ const HeaderWrapper = styled.header<{
         visibility: visible;
       }
     `}
-  ${({ $isShowMenu, $isHoverNavTabs }) =>
-    $isShowMenu &&
-    $isHoverNavTabs &&
-    css`
-      border-right: none;
-    `}
 `
 
 const Menu = styled.div`
@@ -380,14 +374,6 @@ export const Header = () => {
           <LoginButton />
         </BottomSection>
       </Menu>
-      {/* chat展示二级菜单 */}
-      {isShowMenu && (
-        <MenuContent
-          currentHoverMenuKey={currentHoverMenuKey}
-          onMouseEnter={handleMenuContentHover}
-          onMouseLeave={handleMenuContentLeave}
-        />
-      )}
     </HeaderWrapper>
   )
 }

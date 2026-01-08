@@ -1,12 +1,16 @@
 import styled from 'styled-components'
-import { ACTION_TYPE, ChatResponseContentDataType } from 'store/createstrategy/createstrategy'
-import { memo, useMemo, useRef } from 'react'
+import { ACTION_TYPE, ChatResponseContentDataType, STRATEGY_TAB_INDEX } from 'store/createstrategy/createstrategy'
+import { memo, useCallback, useMemo, useRef } from 'react'
 import { ROLE_TYPE } from 'store/chat/chat'
 import Markdown from 'components/Markdown'
 import { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import Action from '../Action'
-import { useIsShowActionLayer } from 'store/createstrategy/hooks/useStrategyDetail'
+import { useCurrentStrategyTabIndex, useIsShowActionLayer } from 'store/createstrategy/hooks/useStrategyDetail'
+import { Trans } from '@lingui/react/macro'
+import { IconBase } from 'components/Icons'
+import { ANI_DURATION } from 'constants/index'
+import { useIsLoadingChatStream } from 'store/createstrategy/hooks/useLoadingState'
 
 export const ContentItemWrapper = styled.div<{ role: ROLE_TYPE }>`
   display: flex;
@@ -82,7 +86,7 @@ export const ContentItem = styled.div<{ role: ROLE_TYPE }>`
     `}
 `
 
-export const Content = styled.div`
+export const Content = styled.div<{ $isEditStrategyContent?: boolean }>`
   width: fit-content;
   flex-grow: 1;
   ${({ role }) =>
@@ -98,12 +102,26 @@ export const Content = styled.div`
         width: 100%;
       }
     `}
-  ${({ role }) =>
+  ${({ role, $isEditStrategyContent }) =>
     role === ROLE_TYPE.USER &&
     css`
       p {
         margin: 0;
       }
+      ${$isEditStrategyContent &&
+      css`
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        .content-text {
+          max-height: 440px;
+          font-size: 16px;
+          font-style: normal;
+          font-weight: 400;
+          line-height: 22px;
+          color: ${({ theme }) => theme.black100};
+        }
+      `}
     `}
   ${({ theme, role }) =>
     theme.isMobile &&
@@ -117,6 +135,51 @@ export const Content = styled.div`
         color: ${theme.black100};
       `}
     `}
+`
+
+const EditStrategyHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  color: ${({ theme }) => theme.black0};
+`
+
+const ButtonEdit = styled.div<{ $disabled?: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  color: ${({ theme }) => theme.black100};
+  cursor: pointer;
+  transition: all ${ANI_DURATION}s;
+  .icon-edit {
+    transition: all ${ANI_DURATION}s;
+    font-size: 14px;
+    color: ${({ theme }) => theme.black100};
+  }
+
+  ${({ $disabled }) =>
+    $disabled
+      ? css`
+          cursor: not-allowed;
+          opacity: 0.7;
+        `
+      : css`
+          &:hover {
+            color: ${({ theme }) => theme.black0};
+            .icon-edit {
+              color: ${({ theme }) => theme.black0};
+            }
+          }
+        `}
 `
 
 const NextActions = styled.div`
@@ -144,6 +207,8 @@ export default memo(function ChatItem({
     isShowPaperTradingOperationWithoutTab,
     isShowLaunchOperationWithoutTab,
   } = useIsShowActionLayer()
+  const [isLoadingChatStreamFrontend] = useIsLoadingChatStream()
+  const [, setCurrentStrategyTabIndex] = useCurrentStrategyTabIndex()
   const actionData = useMemo(() => {
     if (!isLastChatResponseContent || !nextActions || nextActions.length === 0) {
       return null
@@ -165,11 +230,36 @@ export default memo(function ChatItem({
     isShowLaunchOperationWithoutTab,
   ])
 
+  const isEditStrategyContent = useMemo(() => {
+    return content.startsWith('Edit Strategy:')
+  }, [content])
+
+  const handleEditStrategyInfo = useCallback(() => {
+    if (isLoadingChatStreamFrontend) {
+      return
+    }
+    setCurrentStrategyTabIndex(STRATEGY_TAB_INDEX.CREATE)
+    document.getElementById('strategyEditButton')?.click()
+  }, [setCurrentStrategyTabIndex, isLoadingChatStreamFrontend])
+
   if (role === ROLE_TYPE.USER) {
     return (
       <ContentItemWrapper role={role}>
         <ContentItem role={role} key={id}>
-          <Content role={role}>{content}</Content>
+          <Content $isEditStrategyContent={isEditStrategyContent} role={role}>
+            {isEditStrategyContent && (
+              <EditStrategyHeader>
+                <span>
+                  <Trans>Strategy info</Trans>
+                </span>
+                <ButtonEdit $disabled={isLoadingChatStreamFrontend} onClick={handleEditStrategyInfo}>
+                  <IconBase className='icon-edit' />
+                  <Trans>Edit</Trans>
+                </ButtonEdit>
+              </EditStrategyHeader>
+            )}
+            <span className={`content-text ${isEditStrategyContent ? 'scroll-style' : ''}`}>{content}</span>
+          </Content>
         </ContentItem>
       </ContentItemWrapper>
     )

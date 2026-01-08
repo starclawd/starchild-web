@@ -258,7 +258,7 @@ export default memo(function DeepThink({
       <DeepThinkComplete
         $isShowDeepThink={isShowDeepThink}
         $borderColor={theme.black600}
-        $borderRadius={16}
+        $borderRadius={12}
         onClick={changeShowDeepThink}
       >
         <span>
@@ -277,7 +277,7 @@ export default memo(function DeepThink({
 
   return (
     <DeepThinkWrapper>
-      <DeepThinkContent $borderColor={theme.black600} $borderRadius={16}>
+      <DeepThinkContent $borderColor={theme.black600} $borderRadius={12}>
         <ThinkingProgress
           intervalDuration={15000}
           loadingText={lastThoughtContent?.tool_name || <Trans>Thinking...</Trans>}

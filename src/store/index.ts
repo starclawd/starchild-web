@@ -53,7 +53,7 @@ import { StateReconciler } from 'redux-persist/es/types'
 const REDUCER_VERSIONS: Record<string, string> = {
   languagecache: '0.0.1',
   themecache: '0.0.1',
-  chatcache: '0.0.1',
+  chatcache: '0.0.2',
   logincache: '0.0.1',
   insightscache: '0.0.4',
   portfoliocache: '0.0.1',

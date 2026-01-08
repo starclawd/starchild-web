@@ -23,23 +23,23 @@ export function useSort(
       let newDirection: SortDirection
 
       if (prevState.field === field) {
-        // 同一字段，切换排序方向：升序 -> 降序 -> 不排序 -> 升序
+        // 同一字段，切换排序方向：倒序 -> 顺序 -> 不排序 -> 倒序
         switch (prevState.direction) {
           case SortDirection.NONE:
-            newDirection = SortDirection.ASC
-            break
-          case SortDirection.ASC:
             newDirection = SortDirection.DESC
             break
           case SortDirection.DESC:
+            newDirection = SortDirection.ASC
+            break
+          case SortDirection.ASC:
             newDirection = SortDirection.NONE
             break
           default:
-            newDirection = SortDirection.ASC
+            newDirection = SortDirection.DESC
         }
       } else {
-        // 不同字段，重置为升序
-        newDirection = SortDirection.ASC
+        // 不同字段，重置为倒序
+        newDirection = SortDirection.DESC
       }
 
       return {
