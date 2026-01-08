@@ -7,7 +7,7 @@ import AgentOperator from '../AgentOperator'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import AgentStatus from 'pages/AgentDetail/components/AgentStatus'
 import { useBacktestData, useGetBacktestData } from 'store/agentdetail/hooks'
-import { useCurrentRouter, useIsMobile, useIsShowMobileMenu } from 'store/application/hooks'
+import { useIsMobile, useIsShowMobileMenu, useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import { useTimezone } from 'store/timezonecache/hooks'
 import { ANI_DURATION } from 'constants/index'
@@ -90,7 +90,7 @@ export default function AgentItem({
   fromPage?: 'myagents' | 'insights'
 }) {
   const [timezone] = useTimezone()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const isMobile = useIsMobile()
   const [, setBacktestData] = useBacktestData()
   const [, setIsShowMobileMenu] = useIsShowMobileMenu()

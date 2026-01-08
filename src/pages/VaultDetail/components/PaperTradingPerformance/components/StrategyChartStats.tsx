@@ -60,7 +60,7 @@ interface StrategyChartStatsProps {
 
 const StrategyChartStats = memo<StrategyChartStatsProps>(({ strategyId, chartTimeRange }) => {
   const { performanceData, isLoading, error } = useStrategyPerformance(strategyId, chartTimeRange)
-  const [currentRouter] = useCurrentRouter()
+  const currentRouter = useCurrentRouter()
   const isVaultDetailPage = isMatchCurrentRouter(currentRouter, ROUTER.VAULT_DETAIL)
 
   // 根据期间获取APR标签名称

@@ -4,10 +4,9 @@ import { Trans } from '@lingui/react/macro'
 import noDataImg from 'assets/chat/no-data.png'
 import discoverAgentsBg from 'assets/myagent/my-agent-discover-agents-bg.png'
 import { vm } from 'pages/helper'
-import { useCurrentRouter, useIsMobile } from 'store/application/hooks'
+import { useSetCurrentRouter, useIsMobile } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import Divider from 'components/Divider'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { useAgentsRecommendList, useFetchAgentsRecommendList } from 'store/myagent/hooks'
 import AgentCardList from 'pages/AgentHub/components/AgentCardList'
 import AgentCardGallery from 'pages/Mobile/MobileMyAgent/components/AgentCardGallery'
@@ -178,7 +177,7 @@ const DiscoverButton = styled.div`
 `
 
 function EmptyOverview() {
-  const [, setRouter] = useCurrentRouter()
+  const setRouter = useSetCurrentRouter()
   const { isLoading } = useFetchAgentsRecommendList()
   const [agentsRecommendList] = useAgentsRecommendList()
   const isMobile = useIsMobile()

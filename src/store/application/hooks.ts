@@ -183,12 +183,23 @@ export function useGetRouteByPathname() {
   }, [])
 }
 
-export function useCurrentRouter(needPush = true): [string, (router: string) => void] {
+/**
+ * 获取当前路由状态（只读）
+ * 适用于只需要读取路由状态的场景，避免不必要的重新渲染
+ */
+export function useCurrentRouter(): string {
+  return useSelector((state: RootState) => state.application.currentRouter)
+}
+
+/**
+ * 获取设置路由的方法
+ * @param needPush 是否需要推送到浏览器历史记录
+ */
+export function useSetCurrentRouter(needPush = true): (router: string) => void {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const getRouteByPathname = useGetRouteByPathname()
   const { openAllPermissions, testChartImg } = useParsedQueryString()
-  const currentRouter = useSelector((state: RootState) => state.application.currentRouter)
   const setRouter = useCallback(
     (router: string) => {
       const route = getRouteByPathname(router)
@@ -206,7 +217,7 @@ export function useCurrentRouter(needPush = true): [string, (router: string) => 
     },
     [needPush, openAllPermissions, testChartImg, navigate, dispatch, getRouteByPathname],
   )
-  return [currentRouter, setRouter]
+  return setRouter
 }
 
 export function useGetCoinId() {

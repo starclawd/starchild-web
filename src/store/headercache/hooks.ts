@@ -10,7 +10,7 @@ import { ROUTER } from 'pages/router'
 export function useIsFixMenu(): [boolean, (newIsFixMenu: boolean) => void] {
   const dispatch = useDispatch()
   const { width } = useWindowSize()
-  const [currentRouter] = useCurrentRouter()
+  const currentRouter = useCurrentRouter()
   const isFixMenu = useSelector((state: RootState) => state.headercache.isFixMenu)
   const dontUseFixMenu =
     !!(width && width < MEDIA_WIDTHS.minWidth1440) ||

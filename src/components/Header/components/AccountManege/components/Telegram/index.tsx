@@ -33,7 +33,7 @@ const TgName = styled.span`
 `
 
 export default function Telegram() {
-  const [currentRouter] = useCurrentRouter()
+  const currentRouter = useCurrentRouter()
   const [{ telegramUserId, telegramUsername }] = useUserInfo()
   const handleTelegramBind = useCallback(() => {
     try {

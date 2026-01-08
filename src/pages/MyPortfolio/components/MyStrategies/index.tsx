@@ -9,7 +9,7 @@ import NoData from 'components/NoData'
 import Table, { ColumnDef } from 'components/Table'
 import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy.d'
 import { StrategiesOverviewDataType } from 'api/strategy'
-import { useModalOpen, useCurrentRouter } from 'store/application/hooks'
+import { useModalOpen, useCurrentRouter, useSetCurrentRouter } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
 import PauseStrategyModal from './components/PauseStrategyModal'
 import DelistStrategyModal from './components/DelistStrategyModal'
@@ -200,7 +200,7 @@ function ActionButtons({ strategy }: { strategy: StrategiesOverviewDataType }) {
   const toggleDeleteStrategyModal = useDeleteStrategyModalToggle()
   const togglePauseStrategyModal = usePauseStrategyModalToggle()
   const toggleDeployModal = useDeployModalToggle()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
 
   const isReleased = useMemo(() => {
     return status === STRATEGY_STATUS.DEPLOYED || status === STRATEGY_STATUS.PAUSED
@@ -333,7 +333,7 @@ export default memo(function MyStrategies() {
   const { myStrategies, isLoadingMyStrategies } = useMyStrategies()
   const { allVaults } = useVaultsData()
   const [strategyTabKey] = useMyStrategyTabKey()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const pauseStrategyModalOpen = useModalOpen(ApplicationModal.PAUSE_STRATEGY_MODAL)
   const deleteStrategyModalOpen = useModalOpen(ApplicationModal.DELETE_STRATEGY_MODAL)
   const delistStrategyModalOpen = useModalOpen(ApplicationModal.DELIST_STRATEGY_MODAL)

@@ -2,7 +2,7 @@ import { useLingui } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { useMemo, useCallback, memo } from 'react'
 import styled, { css } from 'styled-components'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useCurrentRouter, useSetCurrentRouter } from 'store/application/hooks'
 import { ANI_DURATION } from 'constants/index'
 import { isMatchCurrentRouter } from 'utils'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -60,7 +60,8 @@ interface MenuListProps {
 }
 
 export default memo(function MenuList({ items }: MenuListProps) {
-  const [currentRouter, setCurrentRouter] = useCurrentRouter()
+  const currentRouter = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const { from } = useParsedQueryString()
   const { t } = useLingui()
 

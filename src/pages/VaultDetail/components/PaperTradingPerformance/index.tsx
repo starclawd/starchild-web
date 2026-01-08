@@ -58,7 +58,7 @@ interface VaultPnLChartProps extends VaultPositionsOrdersProps {
  * 使用统一的PerformanceChart组件，但保留VaultDetail特有的逻辑
  */
 const PaperTradingPerformance = memo<VaultPnLChartProps>(({ activeTab, vaultId, strategyId }) => {
-  const [currentRouter] = useCurrentRouter()
+  const currentRouter = useCurrentRouter()
   const isVaultDetailPage = isMatchCurrentRouter(currentRouter, ROUTER.VAULT_DETAIL)
   // 设置默认时间范围
   const defaultTimeRange = CHAT_TIME_RANGE.ALL_TIME

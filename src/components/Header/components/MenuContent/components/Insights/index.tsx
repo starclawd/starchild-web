@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
-import { useCurrentRouter, useIsMobile, useIsShowMobileMenu } from 'store/application/hooks'
+import { useIsMobile, useIsShowMobileMenu, useSetCurrentRouter } from 'store/application/hooks'
 import {
   useGetSystemSignalAgents,
   useSystemSignalAgents,
@@ -63,7 +63,7 @@ const InsightList = styled.div`
 
 export default function Insights() {
   const isMobile = useIsMobile()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const [, setIsShowMobileMenu] = useIsShowMobileMenu()
   const { agentId: insightId } = useParsedQueryString()
   const [systemSignalList] = useSystemSignalAgents()

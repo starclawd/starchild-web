@@ -13,7 +13,7 @@ import { ANI_DURATION } from 'constants/index'
 import BacktestView from '../BacktestView'
 import AgentShare, { useCopyText } from 'components/AgentShare'
 import Pending from 'components/Pending'
-import { useCurrentRouter, useGetTokenImg, useIsMobile } from 'store/application/hooks'
+import { useSetCurrentRouter, useGetTokenImg, useIsMobile } from 'store/application/hooks'
 import ImgLoad from 'components/ImgLoad'
 import Popover from 'components/Popover'
 import ShareActionDropdown from 'components/AgentActions/components/ShareActionDropdown'
@@ -194,7 +194,7 @@ const AlertTitle = styled.div`
 function AgentOverviewCard({ data, fromPage = 'myagents' }: AgentOverviewCardProps) {
   const [timezone] = useTimezone()
   const isMobile = useIsMobile()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const [showSharePopover, setShowSharePopover] = useState(false)
   const isBacktestTask = data.task_type === AGENT_TYPE.BACKTEST_TASK
   const symbol = useMemo(() => {

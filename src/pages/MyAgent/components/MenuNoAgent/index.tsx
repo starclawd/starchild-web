@@ -4,7 +4,7 @@ import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
 import { ROUTER } from 'pages/router'
 import { useCallback } from 'react'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useSetCurrentRouter } from 'store/application/hooks'
 import { useIsMenuNoAgentOpen } from 'store/myagentcache/hooks'
 import styled, { css } from 'styled-components'
 
@@ -101,7 +101,7 @@ const ButtonChat = styled(ButtonCommon)`
 `
 
 export default function MenuNoAgent() {
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const [isMenuNoAgentOpen, updateIsMenuNoAgentOpen] = useIsMenuNoAgentOpen()
   const goChatPage = useCallback(() => {
     setCurrentRouter(ROUTER.CHAT)

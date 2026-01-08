@@ -108,7 +108,7 @@ const SummaryText = styled.div`
  * 展示策略的AI分析总结
  */
 const AiSummary = memo(() => {
-  const [currentRouter] = useCurrentRouter()
+  const currentRouter = useCurrentRouter()
   const isVaultDetailPage = isMatchCurrentRouter(currentRouter, ROUTER.VAULT_DETAIL)
   const summary =
     'This strategy operates with high selectivity. Despite low frequency—just 5 trades in the last month—it maintains high accuracy...'

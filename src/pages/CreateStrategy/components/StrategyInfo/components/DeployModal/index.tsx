@@ -2,7 +2,7 @@ import { memo, useCallback, useEffect } from 'react'
 import Modal from 'components/Modal'
 import Pending from 'components/Pending'
 import { useDeployment } from 'store/createstrategy/hooks/useDeployment'
-import { useCurrentRouter, useDeployModalToggle, useModalOpen, useDeployStrategyId } from 'store/application/hooks'
+import { useDeployModalToggle, useModalOpen, useDeployStrategyId, useSetCurrentRouter } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
 import { DEPLOY_MODAL_STATUS, STRATEGY_STATUS } from 'store/createstrategy/createstrategy.d'
 import DeployForm from './components/DeployForm'
@@ -26,7 +26,7 @@ export default memo(function DeployModal() {
   } = useDeployment(strategyId || '')
   const deployModalOpen = useModalOpen(ApplicationModal.DEPLOY_MODAL)
   const toggleDeployModal = useDeployModalToggle()
-  const [currentRouter, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
 
   // 监听 modal 打开状态，控制轮询和设置modal状态
   useEffect(() => {

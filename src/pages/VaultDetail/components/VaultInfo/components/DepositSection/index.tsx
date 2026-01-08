@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
-import { useCurrentRouter, useDepositAndWithdrawModalToggle } from 'store/application/hooks'
+import { useDepositAndWithdrawModalToggle, useSetCurrentRouter } from 'store/application/hooks'
 import { useCurrentDepositAndWithdrawVault } from 'store/vaults/hooks'
 import { useVaultInfo, useCurrentVaultId, useStrategyInfo } from 'store/vaultsdetail/hooks'
 import { useVaultLpInfo } from 'store/myvault/hooks/useVaultLpInfo'
@@ -101,7 +101,7 @@ export default memo(function DepositSection() {
   const { address } = useAppKitAccount()
   const { strategyId } = useParsedQueryString()
   const { chainId, switchNetwork } = useAppKitNetwork()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const toggleDepositAndWithdrawModal = useDepositAndWithdrawModalToggle()
   const [, setCurrentDepositAndWithdrawVault] = useCurrentDepositAndWithdrawVault()
   const [, setDepositAndWithdrawTabIndex] = useDepositAndWithdrawTabIndex()

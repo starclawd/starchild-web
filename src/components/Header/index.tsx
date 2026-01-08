@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { ROUTER } from 'pages/router'
 import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
-import { useCurrentRouter, useIsPopoverOpen } from 'store/application/hooks'
+import { useCurrentRouter, useSetCurrentRouter, useIsPopoverOpen } from 'store/application/hooks'
 import { IconBase } from 'components/Icons'
 import { useUserInfo, useIsLogin } from 'store/login/hooks'
 import { ANI_DURATION } from 'constants/index'
@@ -168,7 +168,8 @@ export const Header = () => {
   const isInNavTabRef = useRef(false)
   const scrollRef = useScrollbarClass<HTMLDivElement>()
   const triggerGetAiBotChatThreads = useGetThreadsList()
-  const [currentRouter, setCurrentRouter] = useCurrentRouter()
+  const currentRouter = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const [currentHoverMenuKey, setCurrentHoverMenuKey] = useState<string>(currentRouter)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
   const [isHoverNavTabs, setIsHoverNavTabs] = useState(false)

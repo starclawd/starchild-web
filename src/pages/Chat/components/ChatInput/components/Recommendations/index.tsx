@@ -6,7 +6,7 @@ import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
 import { ROUTER } from 'pages/router'
 import { useCallback, useEffect, useState } from 'react'
-import { useCurrentRouter, useIsMobile } from 'store/application/hooks'
+import { useIsMobile, useSetCurrentRouter } from 'store/application/hooks'
 import { useChatRecommendationList, useGetChatRecommendations, useSendAiContent } from 'store/chat/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
@@ -180,7 +180,7 @@ const RecommendationItem = styled.div`
 export default function Recommendations() {
   const sendAiContent = useSendAiContent()
   const isMobile = useIsMobile()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const [isInitLoading, setIsInitLoading] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const triggerGetChatRecommendations = useGetChatRecommendations()

@@ -7,7 +7,7 @@ import { t } from '@lingui/core/macro'
 import { ButtonCommon } from 'components/Button'
 import { useSendChatUserContent } from 'store/createstrategy/hooks/useStream'
 import { useIsLoadingChatStream } from 'store/createstrategy/hooks/useLoadingState'
-import { useCurrentRouter, usePromptModalToggle } from 'store/application/hooks'
+import { useCurrentRouter, usePromptModalToggle, useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import { isMatchCurrentRouter } from 'utils'
 import { useChatValue } from 'store/createstrategy/hooks/useChatContent'
@@ -153,7 +153,8 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const [isMultiline, setIsMultiline] = useState(true)
   const [isLoadingChatStream] = useIsLoadingChatStream()
-  const [currentRouter, setCurrentRouter] = useCurrentRouter()
+  const currentRouter = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const resetAllState = useResetAllState()
   const togglePromptModal = usePromptModalToggle()
   const sendChatUserContent = useSendChatUserContent()

@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 import Modal from 'components/Modal'
 import BottomSheet from 'components/BottomSheet'
-import { useCreateAgentModalToggle, useCurrentRouter, useIsMobile, useModalOpen } from 'store/application/hooks'
+import { useCreateAgentModalToggle, useIsMobile, useModalOpen, useSetCurrentRouter } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
 import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import { Trans } from '@lingui/react/macro'
@@ -203,7 +203,7 @@ export function CreateAgentModal() {
   const { agentId } = useParsedQueryString()
   const sendAiContent = useSendAiContent()
   const addNewThread = useAddNewThread()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const [currentEditAgentData, setCurrentEditAgentData] = useCurrentEditAgentData()
   const toggleCreateAgentModal = useCreateAgentModalToggle()
   const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)

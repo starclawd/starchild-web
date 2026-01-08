@@ -3,7 +3,7 @@ import { ANI_DURATION } from 'constants/index'
 import { IconBase, IconChatStrategyBg } from 'components/Icons'
 import { memo, useCallback, useMemo, useState } from 'react'
 import styled, { css } from 'styled-components'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import { useMyStrategies } from 'store/mystrategy/hooks/useMyStrategies'
 import Pagination from '../Pagination'
@@ -164,7 +164,7 @@ const ButtonPlay = styled.div`
 export default memo(function MyStrategy() {
   const theme = useTheme()
   const isLogin = useIsLogin()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const [currentIndex, setCurrentIndex] = useState(0)
   const { myStrategies } = useMyStrategies()
 

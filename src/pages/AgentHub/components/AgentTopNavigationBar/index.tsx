@@ -56,7 +56,7 @@ const Title = styled.div`
 `
 
 export default memo(function AgentTopNavigationBar() {
-  const [currentRouter] = useCurrentRouter()
+  const currentRouter = useCurrentRouter()
   const isMobile = useIsMobile()
   const { t } = useLingui()
 

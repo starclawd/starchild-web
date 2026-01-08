@@ -8,7 +8,7 @@ import logoImg from 'assets/png/logo.png'
 import { vm } from 'pages/helper'
 import { ROUTER } from 'pages/router'
 import { useCallback, useState, useRef, useMemo, useEffect } from 'react'
-import { useCurrentRouter, useIsShowMobileMenu } from 'store/application/hooks'
+import { useCurrentRouter, useIsShowMobileMenu, useSetCurrentRouter } from 'store/application/hooks'
 import { useAddNewThread, useGetThreadsList } from 'store/chat/hooks'
 import { useCurrentActiveNavKey } from 'store/headercache/hooks'
 import styled, { css } from 'styled-components'
@@ -257,7 +257,8 @@ export default function MobileMenu() {
   const [isDragging, setIsDragging] = useState(false)
   const [dragOffset, setDragOffset] = useState(0)
   const addNewThread = useAddNewThread()
-  const [currentRouter, setCurrentRouter] = useCurrentRouter()
+  const currentRouter = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const startX = useRef(0)
   const currentX = useRef(0)
   const triggerGetAiBotChatThreads = useGetThreadsList()

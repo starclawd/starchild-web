@@ -27,6 +27,7 @@ import {
 } from 'pages/router'
 import {
   useCurrentRouter,
+  useSetCurrentRouter,
   useGetCoinId,
   useGetRouteByPathname,
   useIsMobile,
@@ -168,8 +169,9 @@ function App() {
   const triggerGetUserInfo = useGetUserInfo()
   const triggerGetExchangeInfo = useGetExchangeInfo()
   const [isOpenFullScreen] = useIsOpenFullScreen()
-  const [currentRouter, setCurrentRouter] = useCurrentRouter(false)
-  const [, setCurrentRouter2] = useCurrentRouter()
+  const currentRouter = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter(false)
+  const setCurrentRouter2 = useSetCurrentRouter()
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
   const triggerGetSystemSignalAgents = useGetSystemSignalAgents()
   const triggerGetPreference = useGetPreference()

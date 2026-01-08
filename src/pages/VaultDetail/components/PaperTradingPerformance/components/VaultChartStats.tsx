@@ -75,7 +75,7 @@ interface VaultChartStatsProps {
 const VaultChartStats = memo<VaultChartStatsProps>(({ chartTimeRange }) => {
   // 获取 vault 基础信息
   const vaultId = useCurrentVaultId()
-  const [currentRouter] = useCurrentRouter()
+  const currentRouter = useCurrentRouter()
   const { vaultInfo, isLoadingVaultInfo } = useVaultInfo({ vaultId })
 
   // 获取 vault performance 信息

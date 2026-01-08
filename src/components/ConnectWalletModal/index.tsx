@@ -55,7 +55,7 @@ export default memo(function ConnectWalletModal() {
   const isMobile = useIsMobile()
 
   const isLogin = useIsLogin()
-  const [currentRouter] = useCurrentRouter()
+  const currentRouter = useCurrentRouter()
   const [isGetAuthToken] = useIsGetAuthToken()
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
   const connectWalletModalOpen = useModalOpen(ApplicationModal.CONNECT_WALLET_MODAL)

@@ -6,7 +6,7 @@ import { TokenCardProps } from 'store/agenthub/agenthub'
 import { useCurrentTokenInfo } from 'store/agenthub/hooks'
 import { formatNumber, formatPercent } from 'utils/format'
 import { AGENT_CATEGORIES, AGENT_HUB_TYPE, ANI_DURATION } from 'constants/index'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import LazyImage from 'components/LazyImage'
 
@@ -150,7 +150,7 @@ const PriceChange = styled.span<{ $isPositive: boolean }>`
 
 export default memo(function TokenCard({ tokenInfo, enableClick }: TokenCardProps) {
   const [, setCurrentTokenInfo] = useCurrentTokenInfo()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
 
   const onClick = () => {
     // Set current token info and navigate to token-deep-dive page

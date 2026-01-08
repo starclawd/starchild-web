@@ -1,11 +1,10 @@
 import { Trans } from '@lingui/react/macro'
-import { StrategiesOverviewDataType } from 'api/strategy'
 import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
 import { ROUTER } from 'pages/router'
 import LeaderboardItem from 'pages/Vaults/components/Leaderboard/components/LeaderboardItem'
 import { memo, useCallback, useMemo, useState } from 'react'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useSetCurrentRouter } from 'store/application/hooks'
 import { useAllStrategiesOverview } from 'store/vaults/hooks'
 import styled from 'styled-components'
 import Pagination from '../Pagination'
@@ -90,7 +89,7 @@ const LeaderboardItemWrapper = styled.div`
 `
 
 export default memo(function Leaderboard() {
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const { allStrategies } = useAllStrategiesOverview()
   const [currentIndex, setCurrentIndex] = useState(0)
 

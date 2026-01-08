@@ -15,9 +15,8 @@ import { CHAIN_ID_TO_CHAIN } from 'constants/chainInfo'
 import { getExplorerLink } from 'utils'
 import { ANI_DURATION } from 'constants/index'
 import useValidVaultWalletAddress from 'hooks/useValidVaultWalletAddress'
-import Divider from 'components/Divider'
 import { IconBase } from 'components/Icons'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import { useAllStrategiesOverview } from 'store/vaults/hooks'
 
@@ -160,7 +159,7 @@ function formatAmount(amount: number, isDeposit: boolean) {
 export default function Transactions() {
   const theme = useTheme()
   const { address } = useAppKitAccount()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const [isValidWallet] = useValidVaultWalletAddress()
   const [isRefreshing, setIsRefreshing] = useState(false)
   const { allStrategies } = useAllStrategiesOverview()

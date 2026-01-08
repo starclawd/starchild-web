@@ -11,7 +11,7 @@ import { useIsAgentSubscribed, useIsSelfAgent, useSubscribeAgent, useUnsubscribe
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import AgentCardDetailModal from 'pages/AgentHub/components/AgentCardList/components/AgentCardDetailModal'
 import { AGENT_HUB_TYPE, ANI_DURATION } from 'constants/index'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import SubscribeButton from '../SubscribeButton'
 import useSubErrorInfo from 'hooks/useSubErrorInfo'
@@ -167,7 +167,7 @@ export default memo(function AgentCardWithImage({
   showDescriptionButton = false,
   forceGoToDetail = false,
 }: AgentCardProps & { showDescriptionButton?: boolean; forceGoToDetail?: boolean }) {
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const subscribeAgent = useSubscribeAgent()
   const unsubscribeAgent = useUnsubscribeAgent()
   const isSubscribed = useIsAgentSubscribed(agentId)

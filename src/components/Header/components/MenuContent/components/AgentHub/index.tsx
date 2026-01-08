@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components'
 import { AGENT_CATEGORIES, DISCOVER_AGENTS, AGENT_HUB_TYPE } from 'constants/agentHub'
 import { ROUTER } from 'pages/router'
 import { type AgentCategory } from 'store/agenthub/agenthub'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useCurrentRouter, useSetCurrentRouter } from 'store/application/hooks'
 import { ANI_DURATION } from 'constants/index'
 import { isMatchCurrentRouter } from 'utils'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -52,7 +52,8 @@ const Item = styled.div<{ $isActive: boolean }>`
 `
 
 export default function AgentHub() {
-  const [currentRouter, setCurrentRouter] = useCurrentRouter()
+  const currentRouter = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const { from } = useParsedQueryString()
   const { t } = useLingui()
 

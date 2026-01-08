@@ -31,7 +31,7 @@ import { useAddNewThread, useSendAiContent as useSendAiContentToChat } from 'sto
 import { useIsMobile } from 'store/application/hooks'
 import { vm } from 'pages/helper'
 import { ROUTER } from 'pages/router'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useSetCurrentRouter } from 'store/application/hooks'
 import GlowInput from './components/GlowInput'
 import defalutCursor from 'assets/usecases/defalut-cursor.svg'
 import useCasesDemoProcessBar from 'assets/usecases/use-cases-demo-process-bar.png'
@@ -448,7 +448,7 @@ const UseCasesTabContentComponent = memo(() => {
   const closeStream = useCloseStream()
   const resetTempAiContentData = useResetTempAiContentData()
   const [, setIsShowDeepThink] = useIsShowDeepThink()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const isMobile = useIsMobile()
   const { sleep, abort: abortSleep } = useSleep()
   const [aiResponseContentList, setAiResponseContentList] = useAiResponseContentList()

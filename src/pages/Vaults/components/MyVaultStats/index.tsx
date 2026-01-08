@@ -4,7 +4,7 @@ import { Trans } from '@lingui/react/macro'
 import { useFetchMyVaultStatsData } from 'store/vaults/hooks/useVaultData'
 import Pending from 'components/Pending'
 import { ButtonBorder } from 'components/Button'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import { useAppKitAccount } from '@reown/appkit/react'
 
@@ -75,7 +75,7 @@ const MyPortfolioButton = styled(ButtonBorder)`
 const MyVaultStats = memo(() => {
   const { myVaultStats, isLoading: isLoadingMyStats, fetchMyVaultStats } = useFetchMyVaultStatsData()
   const { address } = useAppKitAccount()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
 
   useEffect(() => {
     if (address) {

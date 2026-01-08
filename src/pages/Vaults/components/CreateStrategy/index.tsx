@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { ButtonCommon } from 'components/Button'
 import { IconBase } from 'components/Icons'
 import createStrategyBg from 'assets/vaults/create-strategy-bg.svg'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 
 const CreateStrategyWrapper = styled.div`
@@ -116,7 +116,7 @@ const ButtonCreate = styled(ButtonCommon)`
 `
 
 export default memo(function CreateStrategy() {
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const goCreateStrategyPage = useCallback(() => {
     setCurrentRouter(ROUTER.CHAT)
   }, [setCurrentRouter])

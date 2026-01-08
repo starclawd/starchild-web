@@ -11,7 +11,7 @@ import { QRCODE_STATUS, QrCodeData } from 'store/login/login'
 import { QRCodeSVG } from 'qrcode.react'
 import { IconBase } from 'components/Icons'
 import { TELEGRAM, goOutPageDirect, URL } from 'utils/url'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useCurrentRouter, useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import { useTheme } from 'store/themecache/hooks'
 
@@ -215,7 +215,7 @@ const ScanIconWrapper = styled.div`
 export default function Connect() {
   const isLogin = useIsLogin()
   const theme = useTheme()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const [qrcodeData, setQrcodeData] = useState<QrCodeData>({} as QrCodeData)
   const [isLoading, setIsLoading] = useState(false)
   const [countdown, setCountdown] = useState(QR_CODE_EXPIRE_TIME)

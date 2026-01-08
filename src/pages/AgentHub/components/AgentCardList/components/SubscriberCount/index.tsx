@@ -7,7 +7,7 @@ import { useIsLogin } from 'store/login/hooks'
 import { ANI_DURATION } from 'constants/index'
 import Tooltip from 'components/Tooltip'
 import { Trans } from '@lingui/react/macro'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 
 const SubscriberCountContainer = styled.div<{ $subscribed: boolean; $readOnly: boolean }>`
@@ -65,7 +65,7 @@ export default memo(function SubscriberCount({
   onClick,
 }: SubscriberCountProps) {
   const isLogin = useIsLogin()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
 
   const handleClick = (event: React.MouseEvent) => {
     event.stopPropagation()

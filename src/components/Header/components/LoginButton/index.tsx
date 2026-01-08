@@ -10,11 +10,11 @@ import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import {
   useAccountManegeModalToggle,
-  useCurrentRouter,
   useIsMobile,
   useIsShowMobileMenu,
   usePreferenceModalToggle,
   useConnectWalletModalToggle,
+  useSetCurrentRouter,
 } from 'store/application/hooks'
 import { useWindowSize } from 'hooks/useWindowSize'
 import { MOBILE_DESIGN_WIDTH } from 'constants/index'
@@ -121,7 +121,7 @@ export default function LoginButton() {
   const isMobile = useIsMobile()
   const { width } = useWindowSize()
   const [, setAuthToken] = useAuthToken()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const [, setIsShowMobileMenu] = useIsShowMobileMenu()
   const togglePreferenceModal = usePreferenceModalToggle()
   const toggleAccountManegeModal = useAccountManegeModalToggle()

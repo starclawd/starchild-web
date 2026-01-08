@@ -12,7 +12,7 @@ import styled from 'styled-components'
 import NoDataWrapper from './components/NoDataWrapper'
 import NoConnected from './components/NoConnected'
 import useValidVaultWalletAddress from 'hooks/useValidVaultWalletAddress'
-import { useCurrentRouter, useDepositAndWithdrawModalToggle } from 'store/application/hooks'
+import { useDepositAndWithdrawModalToggle, useSetCurrentRouter } from 'store/application/hooks'
 import { useAllStrategiesOverview, useCurrentDepositAndWithdrawVault } from 'store/vaults/hooks'
 import { useDepositAndWithdrawTabIndex } from 'store/vaultsdetail/hooks/useDepositAndWithdraw'
 import { useTheme } from 'store/themecache/hooks'
@@ -127,7 +127,7 @@ export default function MyVaults() {
     walletAddress,
   })
   const { allStrategies } = useAllStrategiesOverview()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const [, setDepositAndWithdrawTabIndex] = useDepositAndWithdrawTabIndex()
   const [, setCurrentDepositAndWithdrawVault] = useCurrentDepositAndWithdrawVault()
   const toggleDepositAndWithdrawModal = useDepositAndWithdrawModalToggle()

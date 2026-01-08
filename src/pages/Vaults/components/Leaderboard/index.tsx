@@ -4,7 +4,7 @@ import { useAllStrategiesOverview } from 'store/vaults/hooks'
 import LeaderboardItem from './components/LeaderboardItem'
 import { ANI_DURATION } from 'constants/index'
 import { ROUTER } from 'pages/router'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useSetCurrentRouter } from 'store/application/hooks'
 
 const LeaderboardContainer = styled.div`
   display: flex;
@@ -36,7 +36,7 @@ const LeaderboardItemWrapper = styled.div`
 
 const Leaderboard = memo(() => {
   const { allStrategies } = useAllStrategiesOverview()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const filterStrategies = useMemo(() => {
     return [...allStrategies].sort((a, b) => b.all_time_apr - a.all_time_apr).slice(0, 3)
   }, [allStrategies])

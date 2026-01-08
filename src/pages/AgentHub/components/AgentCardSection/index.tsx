@@ -10,7 +10,7 @@ import AgentCardList from '../AgentCardList'
 import { AgentInfo, AgentCategory } from 'store/agenthub/agenthub'
 import { AGENT_CATEGORIES } from 'constants/agentHub'
 import { IconBase } from 'components/Icons'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useSetCurrentRouter } from 'store/application/hooks'
 import { ANI_DURATION } from 'constants/index'
 
 const SectionWrapper = styled.div`
@@ -138,7 +138,7 @@ export default memo(function AgentCardSection({
   runAgentCard,
   skeletonType = 'default',
 }: AgentCardSectionProps) {
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
 
   // 根据category获取对应的routeHash
   const getRouteHashByCategory = useCallback((category: string): string => {

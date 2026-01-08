@@ -6,7 +6,7 @@ import { AGENT_TYPE, AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import { useTimezone } from 'store/timezonecache/hooks'
 import styled, { css, useTheme } from 'styled-components'
 import { IconBase } from 'components/Icons'
-import { useCurrentRouter, useIsMobile } from 'store/application/hooks'
+import { useIsMobile, useSetCurrentRouter } from 'store/application/hooks'
 import Tooltip from 'components/Tooltip'
 import { ANI_DURATION } from 'constants/index'
 import AgentDetailOperator from '../AgentDetailOperator'
@@ -302,7 +302,7 @@ export default function AgentDescription({
     setIsCollapsed(!isCollapsed)
   }, [isCollapsed, setIsCollapsed])
 
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const handleClick = useCallback(() => {
     const targetRouter = fromPage === 'insights' ? ROUTER.SIGNALS : ROUTER.MY_SIGNALS
     setCurrentRouter(targetRouter)

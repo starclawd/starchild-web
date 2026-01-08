@@ -1,7 +1,12 @@
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import AgentItem from 'pages/MyAgent/components/AgentItem'
-import { useCreateAgentModalToggle, useCurrentRouter, useIsMobile, useIsShowMobileMenu } from 'store/application/hooks'
+import {
+  useCreateAgentModalToggle,
+  useIsMobile,
+  useIsShowMobileMenu,
+  useSetCurrentRouter,
+} from 'store/application/hooks'
 import { useSubscribedAgents, useCurrentEditAgentData } from 'store/myagent/hooks'
 import styled, { css } from 'styled-components'
 import { useEffect, useRef, useCallback, useMemo } from 'react'
@@ -102,7 +107,7 @@ const AgentList = styled.div`
 
 export default function MyAgent() {
   const isMobile = useIsMobile()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const toggleCreateAgentModal = useCreateAgentModalToggle()
   const [subscribedAgents] = useSubscribedAgents()
   const [, setIsShowMobileMenu] = useIsShowMobileMenu()

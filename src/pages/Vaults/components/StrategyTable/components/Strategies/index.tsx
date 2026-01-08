@@ -4,7 +4,7 @@ import Pending from 'components/Pending'
 import { useAllStrategiesOverview } from 'store/vaults/hooks'
 import { SortState, SortDirection } from 'components/TableSortableColumn'
 import { toFix } from 'utils/calc'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import { ANI_DURATION } from 'constants/index'
 import tagBg from 'assets/vaults/tag-bg.png'
@@ -193,7 +193,7 @@ interface StrategiesProps {
 
 const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
   const { allStrategies, isLoading: isLoadingAllStrategies } = useAllStrategiesOverview()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   // 根据标签内容返回颜色
   const getTagType = useCallback((tag: number) => {
     // 可以根据特定关键词匹配颜色

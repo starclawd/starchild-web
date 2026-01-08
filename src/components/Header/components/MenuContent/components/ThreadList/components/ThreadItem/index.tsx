@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useMemo } from 'react'
 import { styled, css } from 'styled-components'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useSetCurrentRouter } from 'store/application/hooks'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
 import { useCurrentAiThreadId } from 'store/chatcache/hooks'
@@ -105,7 +105,7 @@ export default function ThreadItem({
   mobileMenuCallback?: () => void
 }) {
   const [isLoadingData] = useIsLoadingData()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const [isRenderingData] = useIsRenderingData()
   const [, setCurrentAiThreadId] = useCurrentAiThreadId()
   const [currentLoadingThreadId] = useCurrentLoadingThreadId()

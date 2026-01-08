@@ -6,10 +6,10 @@ import { ANI_DURATION } from 'constants/index'
 import { memo, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import { useTheme } from 'store/themecache/hooks'
-import { useCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import { formatKMBNumber, formatPercent } from 'utils/format'
 import { toFix } from 'utils/calc'
+import { useSetCurrentRouter } from 'store/application/hooks'
 
 const VaultDetailWrapper = styled.div`
   display: flex;
@@ -90,7 +90,7 @@ const InfoItem = styled.div`
 `
 
 export default memo(function VaultDetail({ vaultInfo }: { vaultInfo: VaultInfo }) {
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const theme = useTheme()
   const infoList = useMemo(() => {
     const tvl = vaultInfo.tvl

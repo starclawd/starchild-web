@@ -4,7 +4,7 @@ import { IconBase } from 'components/Icons'
 import { useMemo, useCallback } from 'react'
 import styled, { css } from 'styled-components'
 import { ROUTER } from 'pages/router'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useCurrentRouter, useSetCurrentRouter } from 'store/application/hooks'
 import { ANI_DURATION } from 'constants/index'
 import { isMatchCurrentRouter } from 'utils'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -117,7 +117,8 @@ const VAULT_ITEMS: VaultItem[] = [
 ]
 
 export default function Vaults() {
-  const [currentRouter, setCurrentRouter] = useCurrentRouter()
+  const currentRouter = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const { from } = useParsedQueryString()
   const { t } = useLingui()
 

@@ -3,16 +3,13 @@ import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import { IconBase } from 'components/Icons'
-import { formatNumber } from 'utils/format'
-import { useAppKitAccount } from '@reown/appkit/react'
 import strategyBg1 from 'assets/vaults/strategy-bg1.png'
 import strategyBg2 from 'assets/vaults/strategy-bg2.png'
 import createAgentBg from 'assets/vaults/create-agent-bg.png'
 import { ANI_DURATION } from 'constants/index'
 import { ROUTER } from 'pages/router'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useSetCurrentRouter } from 'store/application/hooks'
 import { useMyStrategies } from 'store/mystrategy/hooks/useMyStrategies'
-import Pending from 'components/Pending'
 import { useChatTabIndex } from 'store/chat/hooks'
 import { useVaultsData } from 'store/vaults/hooks/useVaultData'
 
@@ -436,7 +433,7 @@ const ConnectedCommissionSection = styled.div`
 const MyStrateyStats = memo(() => {
   const { myStrategies, isLoadingMyStrategies } = useMyStrategies()
   const { allVaults } = useVaultsData()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const [, setChatTabIndex] = useChatTabIndex()
 
   // 计算total vaults TVL、total PnL和depositors

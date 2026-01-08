@@ -18,7 +18,7 @@ import { SkeletonText, SkeletonMultilineText } from 'components/Skeleton'
 import { useIsAgentSubscribed, useIsSelfAgent } from 'store/agenthub/hooks'
 import { useIsMobile } from 'store/application/hooks'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import SubscribeButton from 'pages/AgentHub/components/AgentCardList/components/SubscribeButton'
 import { useLazyGetAgentDetailQuery } from 'api/chat'
@@ -463,7 +463,7 @@ export default memo(function AgentCardDetail({
   const [isCopyLoading, setIsCopyLoading] = useState(false)
   const copyImgAndText = useCopyImgAndText()
   const isSubscribed = useIsAgentSubscribed(agentId)
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const [triggerGetAgentDetail] = useLazyGetAgentDetailQuery()
   const [recentChats, setRecentChats] = useState<{ error?: string; message?: string; triggerTime?: number }[]>([])
   const [isLoadingAgentDetail, setIsLoadingAgentDetail] = useState(false)

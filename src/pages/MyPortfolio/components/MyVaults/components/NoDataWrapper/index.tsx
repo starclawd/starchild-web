@@ -3,7 +3,7 @@ import { ButtonBorder } from 'components/Button'
 import NoData from 'components/NoData'
 import { ROUTER } from 'pages/router'
 import { useCallback } from 'react'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useSetCurrentRouter } from 'store/application/hooks'
 import styled from 'styled-components'
 
 const NoDataWrapperStyled = styled.div`
@@ -38,7 +38,7 @@ const ViewAllValut = styled(ButtonBorder)`
 `
 
 export default function NoDataWrapper() {
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const goAllVaultsPage = useCallback(() => {
     setCurrentRouter(ROUTER.VAULTS)
   }, [setCurrentRouter])

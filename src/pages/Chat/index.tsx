@@ -20,7 +20,7 @@ import AgentDetail from './components/AgentDetail'
 import { AGENT_TYPE } from 'store/agentdetail/agentdetail'
 import { useAgentDetailData } from 'store/agentdetail/hooks'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import Social from './components/Social'
 import PixelCanvas from './components/PixelCanvas'
@@ -179,7 +179,7 @@ export default function Chat() {
   const [{ agentId }] = useCurrentAiContentDeepThinkData()
   const { threadId } = useParsedQueryString()
   const [, setCurrentAiThreadId] = useCurrentAiThreadId()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
 
   const isShowRightContent = useMemo(() => {
     return isShowDeepThink || isShowAgentDetail
