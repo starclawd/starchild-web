@@ -14,13 +14,16 @@ import {
 } from './hooks/useVaultDetailChartOptions'
 import { useInitialEquityLinePlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/InitialEquityLinePlugin'
 import { usePixelLinePlugin } from './utils/PixelLinePlugin'
-import styled, { useTheme } from 'styled-components'
+import styled, { css, useTheme } from 'styled-components'
 import PerformanceChart from 'components/PerformanceChart'
 import { useSelector } from 'react-redux'
 import { RootState } from 'store'
 import { t } from '@lingui/core/macro'
 import AiSummary from '../AiSummary'
 import StrategyRadarChart from '../StrategyRadarChart'
+import { useCurrentRouter } from 'store/application/hooks'
+import { isMatchCurrentRouter } from 'utils'
+import { ROUTER } from 'pages/router'
 
 const PaperTradingPerformanceWrapper = styled.div`
   display: flex;
@@ -33,11 +36,17 @@ const AiAnalysis = styled.div`
   border-bottom: 1px solid ${({ theme }) => theme.black800};
 `
 
-const ChatWrapper = styled.div`
+const ChatWrapper = styled.div<{ $isVaultDetailPage?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 12px;
   padding: 20px;
+  border-bottom: 1px solid ${({ theme }) => theme.black800};
+  ${({ $isVaultDetailPage }) =>
+    $isVaultDetailPage &&
+    css`
+      padding: 20px 40px;
+    `}
 `
 
 interface VaultPnLChartProps extends VaultPositionsOrdersProps {
@@ -49,6 +58,8 @@ interface VaultPnLChartProps extends VaultPositionsOrdersProps {
  * 使用统一的PerformanceChart组件，但保留VaultDetail特有的逻辑
  */
 const PaperTradingPerformance = memo<VaultPnLChartProps>(({ activeTab, vaultId, strategyId }) => {
+  const [currentRouter] = useCurrentRouter()
+  const isVaultDetailPage = isMatchCurrentRouter(currentRouter, ROUTER.VAULT_DETAIL)
   // 设置默认时间范围
   const defaultTimeRange = CHAT_TIME_RANGE.ALL_TIME
   const theme = useTheme()
@@ -117,7 +128,7 @@ const PaperTradingPerformance = memo<VaultPnLChartProps>(({ activeTab, vaultId, 
         <AiSummary />
         <StrategyRadarChart />
       </AiAnalysis>
-      <ChatWrapper>
+      <ChatWrapper $isVaultDetailPage={isVaultDetailPage}>
         <TimeRangeSelector chartTimeRange={chartState.timeRange} setChartTimeRange={chartState.setTimeRange} />
         <PerformanceChart
           chartData={chartData}

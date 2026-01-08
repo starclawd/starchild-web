@@ -1,5 +1,10 @@
 import styled, { css } from 'styled-components'
-import Modal from 'components/Modal'
+import Modal, {
+  CommonModalContent,
+  CommonModalContentWrapper,
+  CommonModalFooter,
+  CommonModalHeader,
+} from 'components/Modal'
 import { useIsMobile, useModalOpen, useAccountManegeModalToggle } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
 import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
@@ -10,20 +15,11 @@ import { ChangeEvent, useCallback, useMemo, useState } from 'react'
 import { IconBase } from 'components/Icons'
 import Input from 'components/Input'
 import { t } from '@lingui/core/macro'
-import { ButtonBorder } from 'components/Button'
+import { ButtonBorder, ButtonCommon } from 'components/Button'
 import Pending from 'components/Pending'
 import { useChangeNickname, useGetUserInfo } from 'store/login/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useTheme } from 'store/themecache/hooks'
-
-const AccountManegeWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 480px;
-  background: ${({ theme }) => theme.black900};
-  border-radius: 8px;
-  position: relative;
-`
 
 const AccountManegeMobileWrapper = styled(ModalSafeAreaWrapper)`
   display: flex;
@@ -33,31 +29,8 @@ const AccountManegeMobileWrapper = styled(ModalSafeAreaWrapper)`
   background: transparent;
 `
 
-const Header = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 16px 0 8px;
-  font-size: 18px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 24px;
-  color: ${({ theme }) => theme.black0};
-`
-
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  padding: 20px;
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      padding: ${vm(12)};
-    `}
+const Content = styled(CommonModalContent)`
+  gap: 0;
 `
 
 const Nickname = styled.div<{ $currentNicknameLength: number }>`
@@ -129,20 +102,6 @@ const NicknameInput = styled.div`
     `}
 `
 
-const ButtonWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-  gap: 8px;
-  padding: 8px 20px 20px;
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(8)};
-      padding: ${vm(8)} ${vm(20)} ${vm(20)};
-    `}
-`
-
 const ButtonCancel = styled(ButtonBorder)`
   width: 50%;
   border: 1px solid ${({ theme }) => theme.black600};
@@ -153,9 +112,8 @@ const ButtonCancel = styled(ButtonBorder)`
     `}
 `
 
-const ButtonConfirm = styled(ButtonBorder)`
+const ButtonConfirm = styled(ButtonCommon)`
   width: 50%;
-  border: 1px solid ${({ theme }) => theme.black600};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -237,9 +195,9 @@ export function EditNicknameModal() {
   const renderContent = () => {
     return (
       <>
-        <Header>
+        <CommonModalHeader>
           <Trans>Change Nickname</Trans>
-        </Header>
+        </CommonModalHeader>
         <Content>
           <Nickname $currentNicknameLength={currentNicknameLength}>
             <span>
@@ -260,14 +218,14 @@ export function EditNicknameModal() {
             />
           </NicknameInput>
         </Content>
-        <ButtonWrapper>
+        <CommonModalFooter>
           <ButtonCancel onClick={toggleAccountManegeModal}>
             <Trans>Cancel</Trans>
           </ButtonCancel>
           <ButtonConfirm $disabled={isLoading || !nickname.trim()} onClick={handleConfirm}>
             {isLoading ? <Pending /> : <Trans>Confirm</Trans>}
           </ButtonConfirm>
-        </ButtonWrapper>
+        </CommonModalFooter>
       </>
     )
   }
@@ -285,7 +243,7 @@ export function EditNicknameModal() {
     </BottomSheet>
   ) : (
     <Modal useDismiss isOpen={editNicknameModalOpen} onDismiss={toggleAccountManegeModal}>
-      <AccountManegeWrapper>{renderContent()}</AccountManegeWrapper>
+      <CommonModalContentWrapper>{renderContent()}</CommonModalContentWrapper>
     </Modal>
   )
 }

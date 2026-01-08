@@ -44,7 +44,7 @@ export const DepositContent = styled.div`
   justify-content: space-between;
   width: 100%;
   padding: 12px;
-  border-radius: 8px;
+  border-radius: 4px;
   border: 1px solid ${({ theme }) => theme.black800};
   transition: all ${ANI_DURATION}s;
   &:hover {
@@ -61,7 +61,7 @@ export const DepositContent = styled.div`
     theme.isMobile
       ? css`
           padding: ${vm(12)};
-          border-radius: ${vm(8)};
+          border-radius: ${vm(4)};
           > span {
             font-size: 0.12rem;
             line-height: 0.18rem;
@@ -142,13 +142,13 @@ export const WithdrawProcessWrapper = styled.div`
   flex-direction: column;
   width: 100%;
   padding: 12px;
-  border-radius: 8px;
+  border-radius: 4px;
   border: 1px solid ${({ theme }) => theme.black800};
   ${({ theme }) =>
     theme.isMobile &&
     css`
       padding: ${vm(12)};
-      border-radius: ${vm(8)};
+      border-radius: ${vm(4)};
     `}
 `
 

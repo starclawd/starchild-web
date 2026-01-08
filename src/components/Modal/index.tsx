@@ -12,6 +12,58 @@ import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
+export const CommonModalContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 480px;
+  max-height: calc(100vh - 40px);
+  background: ${({ theme }) => theme.black900};
+  border-radius: 8px;
+  position: relative;
+`
+
+export const CommonModalHeader = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 16px 0 8px;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+  color: ${({ theme }) => theme.black0};
+`
+
+export const CommonModalContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  padding: 20px;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(12)};
+      padding: ${vm(20)} 0;
+    `}
+`
+
+export const CommonModalFooter = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 8px;
+  padding: 8px 20px 20px;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(8)};
+      padding: ${vm(8)} 0 ${vm(20)};
+    `}
+`
+
 /**
  * 弹窗遮罩层样式组件
  * 支持自定义z-index、背景色、动画等

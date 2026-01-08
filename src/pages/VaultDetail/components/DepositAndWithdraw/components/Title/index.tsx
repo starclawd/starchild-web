@@ -1,12 +1,17 @@
 import { Trans } from '@lingui/react/macro'
+import { CommonModalHeader } from 'components/Modal'
 import MoveTabList, { MoveType } from 'components/MoveTabList'
 import { vm } from 'pages/helper'
 import { useMemo } from 'react'
 import { useDepositAndWithdrawTabIndex } from 'store/vaultsdetail/hooks/useDepositAndWithdraw'
 import styled, { css } from 'styled-components'
 
-const TitleWrapper = styled.div<{ $depositDisabled: boolean }>`
-  padding: 20px 20px 8px;
+const TitleWrapper = styled(CommonModalHeader)<{ $depositDisabled: boolean }>`
+  padding-left: 20px;
+  justify-content: flex-start;
+  .move-tab-item {
+    padding: 0;
+  }
   .move-tab-item,
   .active-indicator {
     height: 42px;
@@ -53,7 +58,7 @@ export default function Title({ depositDisabled }: { depositDisabled: boolean })
   }, [setDepositAndWithdrawTabIndex, depositDisabled])
   return (
     <TitleWrapper $depositDisabled={depositDisabled}>
-      <MoveTabList tabKey={depositAndWithdrawTabIndex} moveType={MoveType.LINE} tabList={tabList} />
+      <MoveTabList gap={20} tabKey={depositAndWithdrawTabIndex} moveType={MoveType.LINE} tabList={tabList} />
     </TitleWrapper>
   )
 }

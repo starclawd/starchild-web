@@ -5,7 +5,7 @@ import { ButtonBorder } from 'components/Button'
 import { ChangeEvent, memo, useCallback, useState, useEffect, useRef, MouseEvent } from 'react'
 import { useIsStep3Deploying } from 'store/createstrategy/hooks/useDeployment'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import TagItem from 'pages/Vaults/components/StrategyTable/components/TagItem'
+import VibeItem from 'pages/Vaults/components/StrategyTable/components/VibeItem'
 import { useTheme } from 'store/themecache/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useEditStrategy, useIsCreateStrategy, useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
@@ -466,9 +466,9 @@ export default memo(function StrategyName({
           )}
         </StrategyTitle>
         <StrategyDescription>
-          <TagItem colorType='brand' text='Just for Test' size='big' />
-          <TagItem colorType='blue' text='Just for Test1' size='big' />
-          <TagItem colorType='purple' text='Just for Test2' size='big' />
+          <VibeItem colorType='brand' text='Just for Test' size='big' />
+          <VibeItem colorType='blue' text='Just for Test1' size='big' />
+          <VibeItem colorType='purple' text='Just for Test2' size='big' />
         </StrategyDescription>
       </NameContent>
     </StrategyNameWrapper>

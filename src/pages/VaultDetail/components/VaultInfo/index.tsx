@@ -1,28 +1,18 @@
-import { memo, useCallback, useMemo } from 'react'
-import styled, { css } from 'styled-components'
+import { memo, useEffect, useMemo } from 'react'
+import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
-import { ButtonBorder, ButtonCommon } from 'components/Button'
-import { useCurrentRouter, useDepositAndWithdrawModalToggle } from 'store/application/hooks'
-import { useCurrentDepositAndWithdrawVault } from 'store/vaults/hooks'
-import { useVaultInfo, useCurrentVaultId, useActiveTab, useStrategyInfo } from 'store/vaultsdetail/hooks'
+import { useCurrentVaultId, useActiveTab, useStrategyInfo } from 'store/vaultsdetail/hooks'
 import { usePaperTradingPublic } from 'store/vaultsdetail/hooks/usePaperTradingPublic'
-import { useVaultLpInfo } from 'store/myvault/hooks/useVaultLpInfo'
-import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
-import { toFix } from 'utils/calc'
-import { formatNumber } from 'utils/format'
-import { ANI_DURATION } from 'constants/index'
-import useCopyContent from 'hooks/useCopyContent'
-import { useDepositAndWithdrawTabIndex } from 'store/vaultsdetail/hooks/useDepositAndWithdraw'
-import Markdown from 'components/Markdown'
-import { ROUTER } from 'pages/router'
-import { CHAIN_ID_TO_CHAIN, CHAIN_INFO } from 'constants/chainInfo'
-import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
+import { useAppKitAccount } from '@reown/appkit/react'
 import StrategyStatus from './components/StrategyStatus'
-import TabList from 'components/TabList'
 import { DETAIL_TYPE } from 'store/vaultsdetail/vaultsdetail'
 import PixelCanvas from 'pages/Chat/components/PixelCanvas'
 import useParsedQueryString from 'hooks/useParsedQueryString'
+import VibeItem from 'pages/Vaults/components/StrategyTable/components/VibeItem'
+import MoveTabList, { MoveType } from 'components/MoveTabList'
+import DepositSection from './components/DepositSection'
+import TvfSection from './components/TvfSection'
 
 const VaultInfoContainer = styled.div`
   position: relative;
@@ -46,174 +36,59 @@ const InnerContent = styled.div`
 const LeftWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  justify-content: space-between;
+  gap: 40px;
 `
 
 const VaultHeader = styled.div`
   display: flex;
-  align-items: center;
-  height: fit-content;
-  gap: 12px;
-`
-
-const VaultTitle = styled.div`
-  font-size: 40px;
-  font-style: normal;
-  font-weight: 300;
-  line-height: 48px;
-  color: ${({ theme }) => theme.black0};
-`
-
-const VaultAttributes = styled.div`
-  display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 20px;
 `
 
-const AttributeItem = styled.div`
+const HeaderTop = styled.div`
+  display: flex;
+  align-items: center;
+  height: 44px;
+  gap: 20px;
+`
+
+const VaultTitle = styled.div`
+  font-size: 36px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 44px;
+  color: ${({ theme }) => theme.black0};
+`
+
+const ProvideInfo = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
-  span:first-child {
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 20px;
-    color: ${({ theme }) => theme.black200};
-  }
-  span:last-child {
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 20px;
-    color: ${({ theme }) => theme.black0};
-  }
-`
-
-const VaultDescription = styled.div`
-  font-size: 14px;
+  font-size: 12px;
   font-style: normal;
   font-weight: 400;
-  line-height: 22px;
-  color: ${({ theme }) => theme.black200};
-`
-
-const RightWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: fit-content;
-  gap: 16px;
-  flex-shrink: 0;
-  width: 300px;
-  padding: 12px 16px;
-  border-radius: 12px;
-  background: ${({ theme }) => theme.black700};
-`
-
-const TopContent = styled.div`
-  display: flex;
-  justify-content: space-between;
-  cursor: pointer;
-  .icon-chat-arrow-long {
-    font-size: 18px;
-    color: ${({ theme }) => theme.black100};
+  line-height: 18px;
+  color: ${({ theme }) => theme.black0};
+  img {
+    width: 18px;
+    height: 18px;
+    border-radius: 3px;
   }
-`
-
-const MyFund = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  span:first-child {
-    font-size: 13px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: 20px;
-    color: ${({ theme }) => theme.black200};
-  }
-  span:last-child {
-    font-size: 18px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: 26px;
-    color: ${({ theme }) => theme.black0};
-  }
-`
-
-const BottomContent = styled.div`
-  display: flex;
-  height: 32px;
-  gap: 12px;
-`
-
-const ButtonWithdraw = styled(ButtonBorder)`
-  width: 50%;
-  height: 100%;
-  font-size: 13px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 20px;
-`
-
-const ButtonDeposit = styled(ButtonCommon)`
-  width: 50%;
-  height: 100%;
-  font-size: 13px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 20px;
-`
-
-const ButtonSingleDeposit = styled(ButtonCommon)`
-  width: 140px;
-  height: 32px;
-  font-size: 13px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 20px;
-  flex-shrink: 0;
-`
-
-const VaultAddress = styled.div`
-  display: flex;
-  align-items: center;
-  .icon-chat-copy {
-    font-size: 14px;
-    transition: all ${ANI_DURATION}s;
-    color: ${({ theme }) => theme.black300};
-  }
-  ${({ theme }) =>
-    theme.isMobile
-      ? css`
-          .icon-chat-copy {
-            font-size: 0.14rem;
-          }
-        `
-      : css`
-          cursor: pointer;
-          &:hover {
-            .icon-chat-copy {
-              color: ${({ theme }) => theme.black0};
-            }
-          }
-        `}
 `
 
 const TabsWrapper = styled.div`
-  margin-top: 20px;
-
-  .vault-info-tab-list {
+  .tab-list-wrapper {
     height: 48px;
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 22px;
-
-    .tab-item {
-      padding: 12px 20px;
-    }
-
-    i {
-      font-size: 24px;
+    .move-tab-item {
+      padding: 0;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 22px;
+      i {
+        font-size: 24px;
+      }
     }
   }
 `
@@ -221,145 +96,28 @@ const TabsWrapper = styled.div`
 export default memo(function VaultInfo() {
   const { address } = useAppKitAccount()
   const { strategyId } = useParsedQueryString()
-  const { chainId, switchNetwork } = useAppKitNetwork()
-  const [, setCurrentRouter] = useCurrentRouter()
-  const toggleDepositAndWithdrawModal = useDepositAndWithdrawModalToggle()
-  const [, setCurrentDepositAndWithdrawVault] = useCurrentDepositAndWithdrawVault()
-  const { copyRawContent } = useCopyContent()
-  const [, setDepositAndWithdrawTabIndex] = useDepositAndWithdrawTabIndex()
   const [activeTab, setActiveTab] = useActiveTab()
   const vaultId = useCurrentVaultId()
-  const { vaultLpInfo } = useVaultLpInfo({ walletAddress: address as string, vaultId: vaultId || '' })
-  const { vaultInfo } = useVaultInfo({ vaultId })
   const { strategyInfo } = useStrategyInfo({ strategyId: strategyId || null })
   const { paperTradingPublicData } = usePaperTradingPublic({ strategyId: strategyId || '' })
-  console.log('strategyInfo', strategyInfo)
-  const [description, strategyName] = useMemo(() => {
-    return [strategyInfo?.description || '--', strategyInfo?.strategy_name || '--']
-  }, [strategyInfo])
-  const depositDisabled = useMemo(() => {
-    return (
-      strategyInfo?.status === STRATEGY_STATUS.ARCHIVED ||
-      strategyInfo?.status === STRATEGY_STATUS.DELISTED ||
-      strategyInfo?.status === STRATEGY_STATUS.PAUSED
-    )
-  }, [strategyInfo?.status])
-  const handleCopyVaultAddress = useCallback(() => {
-    if (vaultInfo) {
-      copyRawContent(vaultInfo.vault_address)
-    }
-  }, [vaultInfo, copyRawContent])
-  const attributesList = useMemo(() => {
+  const [vibe, strategyName, userName, userAvatar] = useMemo(() => {
     return [
-      {
-        label: <Trans>Strategy Provider</Trans>,
-        value: strategyInfo?.user_info?.user_name || '--',
-      },
+      strategyInfo?.vibe || '',
+      strategyInfo?.strategy_name || '--',
+      strategyInfo?.user_info?.user_name || '--',
+      strategyInfo?.user_info?.user_avatar || '--',
     ]
-    // if (vaultId === null) {
-    //   // 当vaultId是null时，使用Strategy数据
-    //   const ageDays = strategyInfo?.age_days ? `${strategyInfo.age_days} days` : '--'
-    //   return [
-    //     {
-    //       label: <Trans>Strategy Provider</Trans>,
-    //       value: strategyInfo?.user_info?.user_name || '--',
-    //     },
-    //     // {
-    //     //   label: <Trans>Age</Trans>,
-    //     //   value: ageDays,
-    //     // },
-    //   ]
-    // } else {
-    //   // Vault数据
-    //   const vaultAddress = vaultInfo?.vault_address || '--'
-    //   const depositors = vaultInfo?.lp_counts ?? '--'
-    //   const strategyProvider = vaultInfo?.sp_name || '--'
-    //   const age = vaultInfo?.vault_age || '--'
-    //   return [
-    //     {
-    //       label: <Trans>Vault address</Trans>,
-    //       value: (
-    //         <VaultAddress onClick={handleCopyVaultAddress}>
-    //           {formatAddress(vaultAddress)} <IconBase className='icon-chat-copy' />
-    //         </VaultAddress>
-    //       ),
-    //     },
-    //     {
-    //       label: <Trans>Depositors</Trans>,
-    //       value: depositors,
-    //     },
-    //     {
-    //       label: <Trans>Strategy Provider</Trans>,
-    //       value: strategyProvider,
-    //     },
-    //     {
-    //       label: <Trans>Age</Trans>,
-    //       value: age,
-    //     },
-    //   ]
-    // }
   }, [strategyInfo])
-
-  const myFund = useMemo(() => {
-    return formatNumber(toFix(vaultLpInfo?.lp_tvl || 0, 2))
-  }, [vaultLpInfo])
-
-  const isZeroAsset = useMemo(() => {
-    return !vaultLpInfo?.lp_tvl
-  }, [vaultLpInfo])
-
-  // 检查当前 chainId 是否在 supportedChains 中
-  const isChainSupported = useMemo(() => {
-    const supportedChains = vaultInfo?.supported_chains
-    if (!chainId || !supportedChains || supportedChains.length === 0) return true
-    return supportedChains.some((chain) => String(chain.chain_id) === String(chainId))
-  }, [chainId, vaultInfo?.supported_chains])
-
-  // 切换到 supportedChains 中的第一个 chainId
-  const handleSwitchNetwork = useCallback(() => {
-    const supportedChains = vaultInfo?.supported_chains
-    if (!supportedChains || supportedChains.length === 0) return
-    const targetChainId = Number(supportedChains[0].chain_id)
-    const chainKey = CHAIN_ID_TO_CHAIN[targetChainId]
-    if (chainKey && CHAIN_INFO[chainKey]) {
-      switchNetwork(CHAIN_INFO[chainKey].appKitNetwork)
-    }
-  }, [vaultInfo?.supported_chains, switchNetwork])
-
-  const showDepositAndWithdrawModal = useCallback(
-    (index: number) => {
-      return () => {
-        if (depositDisabled && index === 0) return
-        if (vaultInfo) {
-          setDepositAndWithdrawTabIndex(index)
-          setCurrentDepositAndWithdrawVault(vaultInfo)
-          toggleDepositAndWithdrawModal()
-        }
-      }
-    },
-    [
-      vaultInfo,
-      depositDisabled,
-      setCurrentDepositAndWithdrawVault,
-      setDepositAndWithdrawTabIndex,
-      toggleDepositAndWithdrawModal,
-    ],
-  )
-
-  const goToMyVault = useCallback(() => {
-    setCurrentRouter(ROUTER.MY_VAULT)
-  }, [setCurrentRouter])
-
   const tabList = useMemo(
     () => [
       {
-        key: 0,
+        key: DETAIL_TYPE.STRATEGY,
         text: <Trans>Strategy</Trans>,
         icon: <IconBase className='icon-my-strategy' />,
         clickCallback: () => setActiveTab(DETAIL_TYPE.STRATEGY),
       },
       {
-        key: 1,
+        key: DETAIL_TYPE.VAULT,
         text: <Trans>Vaults</Trans>,
         icon: <IconBase className='icon-my-vault' />,
         clickCallback: () => setActiveTab(DETAIL_TYPE.VAULT),
@@ -368,7 +126,11 @@ export default memo(function VaultInfo() {
     [setActiveTab],
   )
 
-  const tabIndex = useMemo(() => (activeTab === DETAIL_TYPE.STRATEGY ? 0 : 1), [activeTab])
+  useEffect(() => {
+    if (!vaultId) {
+      setActiveTab(DETAIL_TYPE.STRATEGY)
+    }
+  }, [vaultId, setActiveTab])
 
   return (
     <VaultInfoContainer>
@@ -376,72 +138,25 @@ export default memo(function VaultInfo() {
       <InnerContent>
         <LeftWrapper>
           <VaultHeader>
-            <VaultTitle>{strategyName}</VaultTitle>
-            <StrategyStatus status={paperTradingPublicData?.status} />
+            <HeaderTop>
+              <VaultTitle>{strategyName}</VaultTitle>
+              <ProvideInfo>
+                {userAvatar && <img src={userAvatar} alt='userAvatar' />}
+                {userName && <span>{userName}</span>}
+              </ProvideInfo>
+              <StrategyStatus status={paperTradingPublicData?.status} />
+            </HeaderTop>
+            {vibe && <VibeItem colorType='brand' text={vibe} size='big' />}
           </VaultHeader>
-
-          <VaultDescription>
-            <Markdown>{description}</Markdown>
-          </VaultDescription>
-
-          <VaultAttributes>
-            {attributesList.map((attr, index) => (
-              <AttributeItem key={index}>
-                <span>{attr.label}</span>
-                <span>{attr.value}</span>
-              </AttributeItem>
-            ))}
-          </VaultAttributes>
-
           {/* 只有当vaultId存在时才显示Tabs */}
           {vaultId && (
             <TabsWrapper>
-              <TabList className='vault-info-tab-list' tabKey={tabIndex} tabList={tabList} />
+              <MoveTabList gap={20} tabKey={activeTab} tabList={tabList} moveType={MoveType.LINE} />
             </TabsWrapper>
           )}
         </LeftWrapper>
-        {vaultId === null
-          ? null
-          : isZeroAsset
-            ? address &&
-              (isChainSupported ? (
-                <ButtonSingleDeposit $disabled={depositDisabled} onClick={showDepositAndWithdrawModal(0)}>
-                  <Trans>Deposit</Trans>
-                </ButtonSingleDeposit>
-              ) : (
-                <ButtonSingleDeposit onClick={handleSwitchNetwork}>
-                  <Trans>Switch Network</Trans>
-                </ButtonSingleDeposit>
-              ))
-            : address && (
-                <RightWrapper>
-                  <TopContent onClick={goToMyVault}>
-                    <MyFund>
-                      <span>
-                        <Trans>My Fund</Trans>
-                      </span>
-                      <span>${myFund}</span>
-                    </MyFund>
-                    <IconBase className='icon-chat-arrow-long' />
-                  </TopContent>
-                  <BottomContent>
-                    {isChainSupported ? (
-                      <>
-                        <ButtonWithdraw onClick={showDepositAndWithdrawModal(1)}>
-                          <Trans>Withdraw</Trans>
-                        </ButtonWithdraw>
-                        <ButtonDeposit $disabled={depositDisabled} onClick={showDepositAndWithdrawModal(0)}>
-                          <Trans>Deposit</Trans>
-                        </ButtonDeposit>
-                      </>
-                    ) : (
-                      <ButtonDeposit onClick={handleSwitchNetwork} style={{ width: '100%' }}>
-                        <Trans>Switch Network</Trans>
-                      </ButtonDeposit>
-                    )}
-                  </BottomContent>
-                </RightWrapper>
-              )}
+        {activeTab === DETAIL_TYPE.STRATEGY && <TvfSection />}
+        {activeTab === DETAIL_TYPE.VAULT && vaultId && address && <DepositSection />}
       </InnerContent>
     </VaultInfoContainer>
   )

@@ -9,7 +9,6 @@ import useParsedQueryString from 'hooks/useParsedQueryString'
 const VaultContentContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px;
   flex: 1;
 
   ${({ theme }) =>

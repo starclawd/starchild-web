@@ -1,6 +1,6 @@
 // Vault相关的类型定义
 import { VaultInfo, VaultOverallStats, UserOverallStats, VaultTransactionHistory } from 'api/vaults'
-import { StrategiesOverviewStrategy } from 'api/strategy'
+import { StrategiesOverviewDataType } from 'api/strategy'
 
 // 用于UI显示的格式化数据类型
 export interface VaultLibraryStats {
@@ -23,27 +23,6 @@ export interface NetworkInfo {
   id: string
   name: string
   icon: string
-}
-
-export interface AllStrategiesOverview {
-  strategyId: string
-  vaultId: string
-  period: string
-  pnl: number
-  pnlPercentage: number
-  apr: number
-  allTimeApr: number
-  maxDrawdown: number
-  sharpeRatio: number
-  initialBalance: number
-  endBalance: number
-  dataPoints: number
-  ageDays: number
-  strategyName: string
-  strategyType: string
-  userInfo: any
-  // 原始API数据
-  raw?: StrategiesOverviewStrategy
 }
 
 // Leaderboard Balance WebSocket数据类型
@@ -69,7 +48,7 @@ export interface VaultsState {
   allVaults: VaultInfo[]
 
   // 所有策略概览数据
-  allStrategies: AllStrategiesOverview[]
+  allStrategies: StrategiesOverviewDataType[]
 
   // 当前选中的tab类型
   vaultsTabIndex: number

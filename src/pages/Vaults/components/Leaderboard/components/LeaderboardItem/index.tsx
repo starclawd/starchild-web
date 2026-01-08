@@ -1,6 +1,6 @@
 import { memo, useMemo } from 'react'
 import styled, { css } from 'styled-components'
-import { StrategiesOverviewStrategy } from 'api/strategy'
+import { StrategiesOverviewDataType } from 'api/strategy'
 import RankBg from 'assets/vaults/rank-bg.svg'
 import LeaderboardBg from 'assets/vaults/leaderboard-bg.svg'
 import { Trans } from '@lingui/react/macro'
@@ -111,7 +111,7 @@ export default memo(function LeaderBoardItem({
   strategyData,
   rank,
 }: {
-  strategyData: StrategiesOverviewStrategy
+  strategyData: StrategiesOverviewDataType
   rank: number
 }) {
   const colorMap = useMemo(() => {

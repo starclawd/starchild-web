@@ -2,7 +2,7 @@ import { memo, useMemo, useCallback, useState } from 'react'
 import styled from 'styled-components'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import { Trans } from '@lingui/react/macro'
-import { StrategiesOverviewStrategy } from 'api/strategy'
+import { StrategiesOverviewDataType } from 'api/strategy'
 import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
 import ShinyButton from 'components/ShinyButton'
 import {
@@ -47,7 +47,7 @@ const ButtonCommonWrapper = styled(ButtonCommon)`
   font-weight: 400;
   line-height: 18px;
 `
-export default memo(function BottomRight({ strategy }: { strategy: StrategiesOverviewStrategy }) {
+export default memo(function BottomRight({ strategy }: { strategy: StrategiesOverviewDataType }) {
   const { status, strategy_id } = strategy
   const { address } = useAppKitAccount()
   const [isLoading, setIsLoading] = useState(false)

@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components'
 import { memo, useCallback, useMemo } from 'react'
 import { useChatTabIndex, useIsAiContentEmpty } from 'store/chat/hooks'
 import { vm } from 'pages/helper'
-import { useSocialLoginModalToggle } from 'store/application/hooks'
+import { useConnectWalletModalToggle } from 'store/application/hooks'
 import { Trans } from '@lingui/react/macro'
 import CreateStrategy from './components/CreateStrategy'
 import Research from './components/Research'
@@ -105,14 +105,14 @@ export default memo(function ChatInput() {
   const [{ userName }] = useUserInfo()
   const [chatTabIndex] = useChatTabIndex()
   const isEmpty = useIsAiContentEmpty()
-  const toggleSocialAccountModal = useSocialLoginModalToggle()
+  const toggleConnectWalletModal = useConnectWalletModalToggle()
   const showCreateStrategy = useMemo(() => {
     return chatTabIndex === 0 && isEmpty
   }, [chatTabIndex, isEmpty])
 
   const handleLogin = useCallback(() => {
-    toggleSocialAccountModal()
-  }, [toggleSocialAccountModal])
+    toggleConnectWalletModal()
+  }, [toggleConnectWalletModal])
 
   return (
     <ChatInputWrapper

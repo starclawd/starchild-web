@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { VaultsState, VaultLibraryStats, MyVaultStats, AllStrategiesOverview, LeaderboardBalanceData } from './vaults'
-import { VaultInfo, VaultTransactionHistory } from 'api/vaults'
+import { VaultsState, VaultLibraryStats, MyVaultStats, LeaderboardBalanceData } from './vaults'
+import { VaultInfo } from 'api/vaults'
+import { StrategiesOverviewDataType } from 'api/strategy'
 
 const initialState: VaultsState = {
   // 总览数据
@@ -48,7 +49,7 @@ export const vaultsSlice = createSlice({
     },
 
     // 所有策略概览相关
-    updateAllStrategies: (state, action: PayloadAction<AllStrategiesOverview[]>) => {
+    updateAllStrategies: (state, action: PayloadAction<StrategiesOverviewDataType[]>) => {
       state.allStrategies = action.payload
     },
 

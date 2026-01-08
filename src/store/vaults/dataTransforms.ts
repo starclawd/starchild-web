@@ -1,6 +1,5 @@
 import { VaultOverallStats, UserOverallStats } from 'api/vaults'
-import { StrategiesOverviewStrategy } from 'api/strategy'
-import { VaultLibraryStats, MyVaultStats, AllStrategiesOverview } from './vaults'
+import { VaultLibraryStats, MyVaultStats } from './vaults'
 import { formatKMBNumber } from 'utils/format'
 
 /**
@@ -53,31 +52,4 @@ export function transformMyVaultStats(data: UserOverallStats): MyVaultStats {
     myAllTimePnL: pnlValue === 0 ? '$0.00' : `${pnlValue > 0 ? '+' : '-'}$${formatKMBNumber(Math.abs(pnlValue), 2)}`,
     raw: data,
   }
-}
-
-/**
- * 转换策略概览数据
- */
-export function transformAllStrategiesOverview(apiData: StrategiesOverviewStrategy[]): AllStrategiesOverview[] {
-  return apiData.map((strategy) => ({
-    strategyId: strategy.strategy_id,
-    vaultId: strategy.vault_id,
-    period: strategy.period,
-    pnl: strategy.pnl,
-    pnlPercentage: strategy.pnl_percentage,
-    apr: strategy.apr,
-    allTimeApr: strategy.all_time_apr,
-    maxDrawdown: strategy.max_drawdown,
-    sharpeRatio: strategy.sharpe_ratio,
-    startBalance: strategy.start_balance,
-    initialBalance: strategy.initial_balance,
-    endBalance: strategy.end_balance,
-    dataPoints: strategy.data_points,
-    ageDays: strategy.age_days,
-    strategyName: strategy.strategy_name,
-    strategyType: strategy.strategy_type,
-    userInfo: strategy.user_info,
-    // 保存原始数据
-    raw: strategy,
-  }))
 }

@@ -126,7 +126,7 @@ export default function MyVaults() {
   const { vaultLpInfoList, isLoadingVaultLpInfoList } = useVaultLpInfoList({
     walletAddress,
   })
-  const [allStrategies] = useAllStrategiesOverview()
+  const { allStrategies } = useAllStrategiesOverview()
   const [, setCurrentRouter] = useCurrentRouter()
   const [, setDepositAndWithdrawTabIndex] = useDepositAndWithdrawTabIndex()
   const [, setCurrentDepositAndWithdrawVault] = useCurrentDepositAndWithdrawVault()
@@ -138,7 +138,7 @@ export default function MyVaults() {
 
   const getStrategyDetail = useCallback(
     (vaultId: string) => {
-      return allStrategies.find((strategy) => strategy.vaultId === vaultId)?.raw
+      return allStrategies.find((strategy) => strategy.vault_id === vaultId)
     },
     [allStrategies],
   )

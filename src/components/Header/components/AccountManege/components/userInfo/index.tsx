@@ -166,12 +166,12 @@ export default function UserInfo() {
             </span>
             <IconBase className='icon-copy' onClick={handleCopyUserId} />
           </Uid>
-          <Primay>
+          {/* <Primay>
             <span>
               <Trans>Primary</Trans>:
             </span>
             <span>{primaryLoginType}</span>
-          </Primay>
+          </Primay> */}
         </Bottom>
       </RightContent>
     </UserInfoWrapper>

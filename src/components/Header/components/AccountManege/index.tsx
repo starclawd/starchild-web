@@ -128,18 +128,6 @@ export function AccountManegeModal() {
   const loginMethods = useMemo(() => {
     return [
       {
-        key: 'Google',
-        name: <Trans>Google</Trans>,
-        icon: <img src={googleIcon} alt='Google' />,
-        value: <Google />,
-      },
-      {
-        key: 'Telegram',
-        name: <Trans>Telegram</Trans>,
-        icon: <IconBase className='icon-telegram' />,
-        value: <Telegram />,
-      },
-      {
         key: 'Wallet',
         name: <Trans>Wallet</Trans>,
         icon: <IconBase className='icon-wallet' />,

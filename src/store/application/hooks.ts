@@ -96,10 +96,6 @@ export function useDeleteMyAgentModalToggle(): () => void {
   return useToggleModal(ApplicationModal.DELETE_MY_AGENT_MODAL)
 }
 
-export function useSocialLoginModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.SOCIAL_LOGIN_MODAL)
-}
-
 export function useQrCodeModalToggle(): () => void {
   return useToggleModal(ApplicationModal.QR_CODE_MODAL)
 }

@@ -1,16 +1,16 @@
 import { memo, useMemo, useCallback } from 'react'
 import styled, { css } from 'styled-components'
 import Pending from 'components/Pending'
-import { useAllStrategiesOverview, useFetchAllStrategiesOverviewData } from 'store/vaults/hooks'
-import { AllStrategiesOverview } from 'store/vaults/vaults.d'
+import { useAllStrategiesOverview } from 'store/vaults/hooks'
 import { SortState, SortDirection } from 'components/TableSortableColumn'
 import { toFix } from 'utils/calc'
 import { useCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import { ANI_DURATION } from 'constants/index'
 import tagBg from 'assets/vaults/tag-bg.png'
-import TagItem from '../TagItem'
+import VibeItem from '../VibeItem'
 import { COLUMN_WIDTHS } from '../../index'
+import { StrategiesOverviewDataType } from 'api/strategy'
 
 const StrategiesContainer = styled.div`
   display: flex;
@@ -192,8 +192,7 @@ interface StrategiesProps {
 }
 
 const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
-  const { isLoading: isLoadingAllStrategies } = useFetchAllStrategiesOverviewData()
-  const [allStrategies] = useAllStrategiesOverview()
+  const { allStrategies, isLoading: isLoadingAllStrategies } = useAllStrategiesOverview()
   const [, setCurrentRouter] = useCurrentRouter()
   // 根据标签内容返回颜色
   const getTagType = useCallback((tag: number) => {
@@ -218,8 +217,8 @@ const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
 
     const lowerSearchValue = searchValue.toLowerCase().trim()
     return allStrategies.filter((strategy) => {
-      const userName = strategy.raw?.user_info?.user_name?.toLowerCase() || ''
-      const strategyName = strategy.raw?.strategy_name?.toLowerCase() || ''
+      const userName = strategy.user_info?.user_name?.toLowerCase() || ''
+      const strategyName = strategy.strategy_name?.toLowerCase() || ''
       return userName.includes(lowerSearchValue) || strategyName.includes(lowerSearchValue)
     })
   }, [allStrategies, searchValue])
@@ -231,7 +230,7 @@ const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
     }
 
     const sorted = [...filteredStrategies].sort((a, b) => {
-      const field = sortState.field as keyof AllStrategiesOverview
+      const field = sortState.field as keyof StrategiesOverviewDataType
       const aValue = a[field]
       const bValue = b[field]
 
@@ -251,8 +250,8 @@ const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
 
   // 行点击跳转到详情页
   const handleRowClick = useCallback(
-    (record: AllStrategiesOverview) => {
-      setCurrentRouter(`${ROUTER.VAULT_DETAIL}?strategyId=${record.strategyId}`)
+    (record: StrategiesOverviewDataType) => {
+      setCurrentRouter(`${ROUTER.VAULT_DETAIL}?strategyId=${record.strategy_id}`)
     },
     [setCurrentRouter],
   )
@@ -284,12 +283,12 @@ const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
             ))}
           </colgroup>
           {sortedStrategies.map((record, rowIndex) => {
-            const tags = getMockTags(record.strategyName)
+            const tags = getMockTags(record.strategy_name)
             return (
-              <StrategyTbody key={record.strategyId || rowIndex} onClick={() => handleRowClick(record)}>
+              <StrategyTbody key={record.strategy_id || rowIndex} onClick={() => handleRowClick(record)}>
                 <DataRow>
-                  <TableCell>{record.strategyName}</TableCell>
-                  <TableCell>{record.userInfo?.user_name}</TableCell>
+                  <TableCell>{record.strategy_name}</TableCell>
+                  <TableCell>{record.user_info?.user_name}</TableCell>
                   <TableCell>
                     <PercentageText $isPositive={record.apr > 0} $isNegative={record.apr < 0}>
                       {formatPercent(record.apr)}
@@ -301,28 +300,28 @@ const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
                     </PercentageText>
                   </TableCell>
                   <TableCell>
-                    <PercentageText $isPositive={record.allTimeApr > 0} $isNegative={record.allTimeApr < 0}>
-                      {formatPercent(record.allTimeApr)}
+                    <PercentageText $isPositive={record.all_time_apr > 0} $isNegative={record.all_time_apr < 0}>
+                      {formatPercent(record.all_time_apr)}
                     </PercentageText>
                   </TableCell>
                   <TableCell>
-                    <PercentageText $isNegative={record.maxDrawdown > 0}>
-                      {formatPercent(record.maxDrawdown)}
+                    <PercentageText $isNegative={record.max_drawdown > 0}>
+                      {formatPercent(record.max_drawdown)}
                     </PercentageText>
                   </TableCell>
-                  <TableCell>{toFix(record.sharpeRatio, 1)}</TableCell>
-                  <TableCell>{Math.floor(record.ageDays)}</TableCell>
+                  <TableCell>{toFix(record.sharpe_ratio, 1)}</TableCell>
+                  <TableCell>{Math.floor(record.age_days)}</TableCell>
                   <TableCell>--</TableCell>
                   <TableCell>--</TableCell>
                   <TableCell $align='right'>
-                    <MiniChart dataPoints={record.dataPoints} isPositive={record.allTimeApr >= 0} />
+                    <MiniChart dataPoints={record.data_points} isPositive={record.all_time_apr >= 0} />
                   </TableCell>
                 </DataRow>
                 <TagsRow>
                   <TagsCell colSpan={columnCount}>
                     <TagsContainer style={{ backgroundImage: `url(${tagBg})` }}>
                       {tags.map((tag, tagIndex) => (
-                        <TagItem key={tagIndex} colorType={getTagType(tagIndex)} text={tag} size='small' />
+                        <VibeItem key={tagIndex} colorType={getTagType(tagIndex)} text={tag} size='small' />
                       ))}
                     </TagsContainer>
                   </TagsCell>

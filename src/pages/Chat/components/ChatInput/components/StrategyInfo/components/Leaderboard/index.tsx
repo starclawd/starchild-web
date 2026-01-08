@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/react/macro'
-import { StrategiesOverviewStrategy } from 'api/strategy'
+import { StrategiesOverviewDataType } from 'api/strategy'
 import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
 import { ROUTER } from 'pages/router'
@@ -91,11 +91,11 @@ const LeaderboardItemWrapper = styled.div`
 
 export default memo(function Leaderboard() {
   const [, setCurrentRouter] = useCurrentRouter()
-  const [allStrategies] = useAllStrategiesOverview()
+  const { allStrategies } = useAllStrategiesOverview()
   const [currentIndex, setCurrentIndex] = useState(0)
 
   const sortedStrategies = useMemo(() => {
-    return [...allStrategies].sort((a, b) => b.allTimeApr - a.allTimeApr).slice(0, 3)
+    return [...allStrategies].sort((a, b) => b.all_time_apr - a.all_time_apr).slice(0, 3)
   }, [allStrategies])
 
   const goVibePage = useCallback(() => {
@@ -125,8 +125,8 @@ export default memo(function Leaderboard() {
       <LeaderboardList>
         <ListWrapper $translateX={-currentIndex * 366}>
           {sortedStrategies.map((strategy, index) => (
-            <LeaderboardItemWrapper onClick={goVaultDetailPage(strategy.strategyId)} key={strategy.strategyId}>
-              <LeaderboardItem strategyData={strategy.raw as StrategiesOverviewStrategy} rank={index + 1} />
+            <LeaderboardItemWrapper onClick={goVaultDetailPage(strategy.strategy_id)} key={strategy.strategy_id}>
+              <LeaderboardItem strategyData={strategy} rank={index + 1} />
             </LeaderboardItemWrapper>
           ))}
         </ListWrapper>

@@ -90,16 +90,11 @@ const TitleText = styled.div`
 `
 
 const SubtitleText = styled.div`
-  font-size: 16px;
-  line-height: 22px;
-  font-weight: 400;
-  color: ${({ theme }) => theme.black0};
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      font-size: ${vm(16)};
-    `}
+  font-size: 56px;
+  font-style: italic;
+  font-weight: 700;
+  line-height: 100%;
+  color: ${({ theme }) => theme.brand100};
 `
 
 const RightSection = styled.div`
@@ -124,7 +119,7 @@ const RightSection = styled.div`
  * 展示策略的风险偏好和各维度评分
  */
 const StrategyRadarChart = memo(() => {
-  const riskAppetite = 'Aggressive Scalping'
+  const score = 93
   const radarData = [
     { label: t`Profit`, value: 85 },
     { label: t`Stability`, value: 72 },
@@ -140,8 +135,8 @@ const StrategyRadarChart = memo(() => {
         </IconWrapper>
 
         <TextWrapper>
-          <TitleText>Risk appetite:</TitleText>
-          <SubtitleText>{riskAppetite}</SubtitleText>
+          <TitleText>Score:</TitleText>
+          <SubtitleText>{score}</SubtitleText>
         </TextWrapper>
       </LeftSection>
 

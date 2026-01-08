@@ -163,7 +163,7 @@ export default function Transactions() {
   const [, setCurrentRouter] = useCurrentRouter()
   const [isValidWallet] = useValidVaultWalletAddress()
   const [isRefreshing, setIsRefreshing] = useState(false)
-  const [allStrategies] = useAllStrategiesOverview()
+  const { allStrategies } = useAllStrategiesOverview()
 
   const { transactionHistoryList, isLoading, isLoadingMore, hasNextPage, loadFirstPage, loadNextPage, reset } =
     useTransactionHistory({ walletAddress: address && isValidWallet ? address : '' })
@@ -198,7 +198,7 @@ export default function Transactions() {
     const isDeposit = item.type === 'deposit'
     const statusText = getStatusText(item)
     const tooltipContent = getTooltipContent(item)
-    const strategyDetail = allStrategies.find((strategy) => strategy.vaultId === item.vault_id)?.raw
+    const strategyDetail = allStrategies.find((strategy) => strategy.vault_id === item.vault_id)
     const goVaultDetail = (e: React.MouseEvent<HTMLDivElement>) => {
       e.stopPropagation()
       setCurrentRouter(`${ROUTER.VAULT_DETAIL}?strategyId=${strategyDetail?.strategy_id || ''}`)

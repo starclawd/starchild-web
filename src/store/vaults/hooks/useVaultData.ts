@@ -209,12 +209,12 @@ export function useGetStrategyIconName(): Record<string, string> {
     const vaultsWithStartTime = [...allStrategies]
 
     // 按照 vault_start_time 从早到晚排序
-    vaultsWithStartTime.sort((a, b) => a.ageDays - b.ageDays)
+    vaultsWithStartTime.sort((a, b) => a.age_days - b.age_days)
 
     // 创建映射对象，将 vault_id 映射到 icon-strategy{index}
     const iconMapping: Record<string, string> = {}
     vaultsWithStartTime.forEach((vault, index) => {
-      iconMapping[vault.strategyId] = `icon-strategy${index + 1}`
+      iconMapping[vault.strategy_id] = `icon-strategy${index + 1}`
     })
 
     return iconMapping

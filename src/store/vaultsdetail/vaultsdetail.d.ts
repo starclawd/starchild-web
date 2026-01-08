@@ -1,7 +1,7 @@
 // VaultDetail 相关的类型定义
 import type { VaultInfo, VaultLpInfo, VaultTransactionHistory } from 'api/vaults'
 import type { StrategyDetailDataType, PaperTradingCurrentDataType } from 'store/createstrategy/createstrategy.d'
-import type { StrategyPerformance, StrategySignalDataType } from 'api/strategy'
+import type { StrategiesOverviewDataType, StrategySignalDataType } from 'api/strategy'
 
 export enum DETAIL_TYPE {
   STRATEGY = 'strategy',
@@ -36,7 +36,7 @@ export interface VaultDetailState {
   vaultInfo: VaultInfo | null
 
   // StrategyInfo 数据
-  strategyInfo: StrategyPerformance | null
+  strategyInfo: StrategiesOverviewDataType | null
 
   // 图表相关状态
   chartType: CHART_TYPE

@@ -3,7 +3,7 @@ import { memo, useMemo } from 'react'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 
-const TagItemWrapper = styled.div<{ $size: 'big' | 'small'; $color: string; $backgroundColor: string }>`
+const VibeItemWrapper = styled.div<{ $size: 'big' | 'small'; $color: string; $backgroundColor: string }>`
   position: relative;
   display: flex;
   align-items: center;
@@ -53,7 +53,7 @@ const TagItemWrapper = styled.div<{ $size: 'big' | 'small'; $color: string; $bac
     `}
 `
 
-export default memo(function TagItem({
+export default memo(function VibeItem({
   colorType,
   text,
   size,
@@ -80,7 +80,7 @@ export default memo(function TagItem({
     }
   }, [theme])
   return (
-    <TagItemWrapper
+    <VibeItemWrapper
       $size={size}
       $color={dataMap[colorType].color}
       $backgroundColor={dataMap[colorType].backgroundColor}
@@ -88,6 +88,6 @@ export default memo(function TagItem({
       {size === 'small' && <IconBase className='icon-tag-border small' />}
       <IconBase className='icon-tag-border' />
       <span className='tag-text'>{text}</span>
-    </TagItemWrapper>
+    </VibeItemWrapper>
   )
 })

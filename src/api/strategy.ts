@@ -31,33 +31,6 @@ export interface StrategyPositionsResponse {
   timestamp: number
 }
 
-// Strategy Performance 相关接口
-export interface StrategyPerformance {
-  strategy_id: string
-  vault_id: string
-  period: string
-  pnl: number
-  pnl_percentage: number
-  apr: number
-  max_drawdown: number
-  sharpe_ratio: number
-  initial_balance: number
-  start_balance: number
-  end_balance: number
-  data_points: number
-  all_time_apr: number
-  age_days: number
-  strategy_name: string
-  strategy_type: string
-  description: string
-  status: STRATEGY_STATUS
-  is_public: boolean
-  user_info: {
-    user_name: string
-    user_avatar: string
-  }
-}
-
 // Strategy Open Orders 相关接口
 export interface StrategyOpenOrdersResponse {
   strategy_id: string
@@ -192,7 +165,7 @@ export interface StrategyDecisionType {
 export type StrategySignalDataType = StrategySignalType | StrategyThoughtType | StrategyDecisionType
 
 // All Strategies Overview 相关接口
-export type StrategiesOverviewStrategy = {
+export type StrategiesOverviewDataType = {
   strategy_id: string
   strategy_name: string
   strategy_type: string
@@ -212,6 +185,7 @@ export type StrategiesOverviewStrategy = {
   created_time: number
   status: STRATEGY_STATUS
   mode: string
+  vibe: string | null
   user_info: {
     user_avatar: string
     user_name: string
@@ -223,7 +197,7 @@ export interface StrategiesOverviewResponse {
   limit: number
   offset: number
   sort_by: string
-  strategies: StrategiesOverviewStrategy[]
+  strategies: StrategiesOverviewDataType[]
 }
 
 export interface TotalUserData {
@@ -292,7 +266,7 @@ export const strategyApi = liveTradingApi.injectEndpoints({
 
     // 获取策略性能信息
     getStrategyPerformance: builder.query<
-      StrategyPerformance,
+      StrategiesOverviewDataType,
       {
         strategy_id: string
         period: string

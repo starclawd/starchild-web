@@ -28,7 +28,6 @@ const MoveTabListWrapper = styled(BorderAllSide1PxBox)<{
     theme.isMobile &&
     !$forceWebStyle &&
     css`
-      height: ${vm(36)};
       padding: ${vm(4)};
     `}
   ${({ $moveType, $gap }) =>
@@ -63,7 +62,7 @@ const ActiveIndicator = styled.div.attrs<{
   position: absolute;
   top: 3px;
   left: 4px;
-  height: 40px;
+  height: 100%;
   background: ${({ theme, $background }) => $background || theme.brand200};
   transition:
     transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
@@ -74,14 +73,12 @@ const ActiveIndicator = styled.div.attrs<{
     !$forceWebStyle &&
     css`
       top: ${vm(3)};
-      height: ${vm(28)};
     `}
   ${({ $moveType, theme, $forceWebStyle, $background }) =>
     $moveType === MoveType.LINE &&
     css`
       top: 0;
       left: 0;
-      height: ${theme.isMobile && !$forceWebStyle ? vm(28) : '40px'};
       border-radius: 0 !important;
       background: transparent;
       border-bottom: 1px solid ${$background || theme.brand100};
@@ -102,7 +99,6 @@ const TabItem = styled.div<{
   gap: 4px;
   width: ${({ $tabCount, $gap = 4 }) => `calc((100% - ${$gap * ($tabCount - 1)}px) / ${$tabCount})`};
   flex-shrink: 0;
-  height: 40px;
   font-size: 13px;
   font-style: normal;
   font-weight: 400;
@@ -120,7 +116,6 @@ const TabItem = styled.div<{
   ${({ theme, $forceWebStyle, $tabCount, $borderRadius, $gap = 4 }) =>
     theme.isMobile && !$forceWebStyle
       ? css`
-          height: ${vm(28)};
           font-size: 0.13rem;
           line-height: 0.2rem;
           border-radius: ${vm($borderRadius || 6)};

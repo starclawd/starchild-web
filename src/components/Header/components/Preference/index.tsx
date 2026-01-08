@@ -1,5 +1,10 @@
 import styled, { css } from 'styled-components'
-import Modal from 'components/Modal'
+import Modal, {
+  CommonModalContent,
+  CommonModalContentWrapper,
+  CommonModalFooter,
+  CommonModalHeader,
+} from 'components/Modal'
 import { useIsMobile, useModalOpen, usePreferenceModalToggle } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
 import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
@@ -10,7 +15,6 @@ import { useCallback, useEffect, useState } from 'react'
 import TradingExperience from './components/TradingExperience'
 import AiExperience from './components/AiExperience'
 import WatchList from './components/WatchList'
-import WalletManagement from './components/WalletManagement'
 import PersonalProfile from './components/PersonalProfile'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
@@ -20,16 +24,6 @@ import Pending from 'components/Pending'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useTheme } from 'store/themecache/hooks'
 
-const PerferenceWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 480px;
-  max-height: calc(100vh - 40px);
-  background: ${({ theme }) => theme.black900};
-  border-radius: 8px;
-  position: relative;
-`
-
 const PerferenceMobileWrapper = styled(ModalSafeAreaWrapper)`
   display: flex;
   flex-direction: column;
@@ -37,34 +31,6 @@ const PerferenceMobileWrapper = styled(ModalSafeAreaWrapper)`
   max-height: 100%;
   padding: 0 ${vm(20)};
   background: transparent;
-`
-
-const Header = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 16px 0 8px;
-  font-size: 18px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 24px;
-  color: ${({ theme }) => theme.black0};
-`
-
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  width: 100%;
-  padding: 20px;
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(12)};
-      padding: ${vm(20)} 0;
-    `}
 `
 
 const SelectWrapper = styled.div`
@@ -108,20 +74,6 @@ const WatchListWrapper = styled(SelectItem)`
 
 const PersonalProfileWrapper = styled(SelectItem)`
   width: 100%;
-`
-
-const ButtonWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-  gap: 8px;
-  padding: 8px 20px 20px;
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(8)};
-      padding: ${vm(8)} 0 ${vm(20)};
-    `}
 `
 
 const ButtonCancel = styled(ButtonBorder)`
@@ -236,10 +188,10 @@ export default function Preference() {
   const renderContent = () => {
     return (
       <>
-        <Header>
+        <CommonModalHeader>
           <Trans>Preferences</Trans>
-        </Header>
-        <Content ref={contentRef} className='scroll-style'>
+        </CommonModalHeader>
+        <CommonModalContent ref={contentRef} className='scroll-style'>
           <SelectWrapper>
             <SelectItem style={{ width: '100%' }}>
               <span className='title'>
@@ -280,15 +232,15 @@ export default function Preference() {
               setPersonalProfileText={setPersonalProfileText}
             />
           </PersonalProfileWrapper>
-        </Content>
-        <ButtonWrapper>
+        </CommonModalContent>
+        <CommonModalFooter>
           <ButtonCancel onClick={togglePreferenceModal}>
             <Trans>Cancel</Trans>
           </ButtonCancel>
           <ButtonConfirm onClick={handleUpdatePreference}>
             {isLoading ? <Pending /> : <Trans>Confirm</Trans>}
           </ButtonConfirm>
-        </ButtonWrapper>
+        </CommonModalFooter>
       </>
     )
   }
@@ -306,7 +258,7 @@ export default function Preference() {
     </BottomSheet>
   ) : (
     <Modal useDismiss isOpen={preferenceModalOpen} onDismiss={togglePreferenceModal}>
-      <PerferenceWrapper>{renderContent()}</PerferenceWrapper>
+      <CommonModalContentWrapper>{renderContent()}</CommonModalContentWrapper>
     </Modal>
   )
 }

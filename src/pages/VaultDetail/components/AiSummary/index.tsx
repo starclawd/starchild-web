@@ -3,8 +3,11 @@ import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import { IconBase } from 'components/Icons'
 import AiSummaryBg from 'assets/vaults/ai-summary-bg.png'
+import { useCurrentRouter } from 'store/application/hooks'
+import { isMatchCurrentRouter } from 'utils'
+import { ROUTER } from 'pages/router'
 
-const AiSummaryWrapper = styled.div`
+const AiSummaryWrapper = styled.div<{ $isVaultDetailPage?: boolean }>`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -19,11 +22,10 @@ const AiSummaryWrapper = styled.div`
   background-size: auto;
   border-right: 1px solid ${({ theme }) => theme.black800};
 
-  ${({ theme }) =>
-    theme.isMobile &&
+  ${({ $isVaultDetailPage }) =>
+    $isVaultDetailPage &&
     css`
-      padding: ${vm(20)};
-      height: ${vm(200)};
+      padding: 20px 40px;
     `}
 `
 
@@ -106,10 +108,12 @@ const SummaryText = styled.div`
  * 展示策略的AI分析总结
  */
 const AiSummary = memo(() => {
+  const [currentRouter] = useCurrentRouter()
+  const isVaultDetailPage = isMatchCurrentRouter(currentRouter, ROUTER.VAULT_DETAIL)
   const summary =
     'This strategy operates with high selectivity. Despite low frequency—just 5 trades in the last month—it maintains high accuracy...'
   return (
-    <AiSummaryWrapper>
+    <AiSummaryWrapper $isVaultDetailPage={isVaultDetailPage}>
       <ContentSection>
         <IconWrapper>
           <AiIcon className='icon-ai-summary' />

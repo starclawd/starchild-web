@@ -32,8 +32,6 @@ export const ROUTER = {
   AGENT_HUB_DEEP_DIVE: '/agentmarket/token-deep-dive',
 }
 
-// 桌面端页面组件 - lazy 加载
-export const Home = lazy(() => import('./Home'))
 export const Signals = lazy(() => import('./Insights/SignalsPage'))
 export const LiveChat = lazy(() => import('./Insights/LiveChatPage'))
 export const Chat = lazy(() => import('./Chat'))

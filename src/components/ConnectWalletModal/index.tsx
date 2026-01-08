@@ -1,26 +1,28 @@
 /**
- * Vaults钱包连接模态框组件
+ * 社交登录模态框组件
+ * 提供多种登录方式：Google、MetaMask、Phantom、WalletConnect
  */
-import { memo, useEffect } from 'react'
-import styled, { css } from 'styled-components'
+import { memo, useCallback, useState } from 'react'
+import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import Modal from 'components/Modal'
+import Modal, { CommonModalContent, CommonModalContentWrapper, CommonModalHeader } from 'components/Modal'
 import BottomSheet from 'components/BottomSheet'
 import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import { vm } from 'pages/helper'
-import { useConnectWalletModalToggle, useIsMobile, useModalOpen } from 'store/application/hooks'
-import ConnectWallets from 'pages/Home/components/HomeContent/components/ConnectWallets'
-import { ApplicationModal } from 'store/application/application'
-import { useAppKitAccount } from '@reown/appkit/react'
+import { useCurrentRouter, useIsMobile, useModalOpen, useConnectWalletModalToggle } from 'store/application/hooks'
+import { ApplicationModal } from 'store/application/application.d'
+
+import { ButtonCommon } from 'components/Button'
+import { googleOneTapLogin } from 'utils/googleAuth'
+import { useGoogleLoginErrorHandler } from 'hooks/useGoogleLoginErrorHandler'
+import { useGetAuthTokenGoogle, useIsGetAuthToken, useIsLogin } from 'store/login/hooks'
+import { trackEvent } from 'utils/common'
+import { openTelegramLoginWindow } from 'store/login/utils'
+import ChainConnect from './components/ChainConnect'
 
 // 桌面端模态框内容容器
-const ModalContent = styled.div`
-  display: flex;
-  flex-direction: column;
+const ModalContent = styled(CommonModalContentWrapper)`
   width: 420px;
-  background: ${({ theme }) => theme.black900};
-  border-radius: 8px;
-  position: relative;
 `
 
 // 移动端模态框内容容器
@@ -28,68 +30,88 @@ const MobileModalContent = styled(ModalSafeAreaWrapper)`
   display: flex;
   flex-direction: column;
   width: 100%;
-  background: ${({ theme }) => theme.black900};
 `
 
-// 标题
-const Title = styled.div`
-  position: relative;
+// Google 登录按钮
+const GoogleLoginButton = styled(ButtonCommon)`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  padding: 16px 0 8px;
-  font-size: 18px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 24px;
-  color: ${({ theme }) => theme.black0};
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      padding: ${vm(20)} 0 ${vm(8)};
-      font-size: 0.2rem;
-      line-height: 0.28rem;
-    `}
+  width: 50%;
+  height: 40px;
+  padding: 11px;
+  background: ${({ theme }) => theme.black700};
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  gap: 4px;
+
+  &:hover {
+    opacity: 0.7;
+  }
 `
 
-// 登录按钮容器
-const LoginButtonsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding: 20px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(16)};
-    `}
-`
-
-// 内部组件，处理实际的UI渲染
 export default memo(function ConnectWalletModal() {
-  const { isConnected } = useAppKitAccount()
-  const connectWalletModalOpen = useModalOpen(ApplicationModal.CONNECT_WALLET_MODAL)
-  const toggleConnectWalletModal = useConnectWalletModalToggle()
   const isMobile = useIsMobile()
 
-  useEffect(() => {
-    if (isConnected && connectWalletModalOpen) {
-      toggleConnectWalletModal()
+  const isLogin = useIsLogin()
+  const [currentRouter] = useCurrentRouter()
+  const [isGetAuthToken] = useIsGetAuthToken()
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false)
+  const connectWalletModalOpen = useModalOpen(ApplicationModal.CONNECT_WALLET_MODAL)
+  const toggleConnectWalletModal = useConnectWalletModalToggle()
+  const handleGoogleError = useGoogleLoginErrorHandler()
+  const triggerGetAuthTokenGoogle = useGetAuthTokenGoogle()
+
+  // Google 登录处理
+  const handleGoogleLogin = useCallback(async () => {
+    try {
+      if (isGoogleLoading) return
+      setIsGoogleLoading(true)
+      await googleOneTapLogin(async (credential: string) => {
+        const data = await triggerGetAuthTokenGoogle(credential)
+        if (data.isSuccess && connectWalletModalOpen) {
+          toggleConnectWalletModal()
+        }
+      })
+      setIsGoogleLoading(false)
+    } catch (error) {
+      // 使用统一的错误处理
+      handleGoogleError(error, 'login')
+      setIsGoogleLoading(false)
     }
-  }, [isConnected, toggleConnectWalletModal, connectWalletModalOpen])
+  }, [isGoogleLoading, triggerGetAuthTokenGoogle, handleGoogleError, connectWalletModalOpen, toggleConnectWalletModal])
+
+  const handleTelegramLogin = useCallback(() => {
+    if (isGetAuthToken) return
+    if (!isLogin) {
+      // Google Analytics 埋点：点击登录 Telegram
+      // 使用回调确保事件发送完成后再跳转
+      trackEvent(
+        'login_with_telegram',
+        {
+          event_category: 'authentication',
+          event_label: 'Login_with_telegram',
+        },
+        () => {
+          // 在新窗口中打开登录页面
+          openTelegramLoginWindow(currentRouter, 'telegram-login')
+        },
+      )
+    }
+  }, [isLogin, currentRouter, isGetAuthToken])
 
   const renderContent = () => {
     return (
       <>
-        <Title>
-          <Trans>Connect Wallet</Trans>
-        </Title>
+        <CommonModalHeader>
+          <Trans>Login</Trans>
+        </CommonModalHeader>
 
-        <LoginButtonsContainer>
-          <ConnectWallets type='vaults' />
-        </LoginButtonsContainer>
+        <CommonModalContent className='scroll-style'>
+          {/* 钱包登录 */}
+          <ChainConnect type='login' onSuccess={toggleConnectWalletModal} />
+        </CommonModalContent>
       </>
     )
   }
@@ -100,7 +122,7 @@ export default memo(function ConnectWalletModal() {
       hideClose={false}
       hideDragHandle
       isOpen={connectWalletModalOpen}
-      rootStyle={{ overflowY: 'hidden', maxHeight: `${vm(480)}` }}
+      rootStyle={{ overflowY: 'hidden', maxHeight: `calc(100vh - ${vm(44)})` }}
       onClose={toggleConnectWalletModal}
     >
       <MobileModalContent>{renderContent()}</MobileModalContent>

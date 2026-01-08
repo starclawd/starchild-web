@@ -14,7 +14,7 @@ import {
   useIsMobile,
   useIsShowMobileMenu,
   usePreferenceModalToggle,
-  useSocialLoginModalToggle,
+  useConnectWalletModalToggle,
 } from 'store/application/hooks'
 import { useWindowSize } from 'hooks/useWindowSize'
 import { MOBILE_DESIGN_WIDTH } from 'constants/index'
@@ -127,7 +127,7 @@ export default function LoginButton() {
   const toggleAccountManegeModal = useAccountManegeModalToggle()
   const [{ userName, userAvatar }] = useUserInfo()
   const { disconnect } = useDisconnect()
-  const toggleSocialAccountModal = useSocialLoginModalToggle()
+  const toggleConnectWalletModal = useConnectWalletModalToggle()
   const logout = useCallback(async () => {
     setAuthToken('')
     await disconnect()
@@ -179,8 +179,8 @@ export default function LoginButton() {
   }, [logout, setIsShowMobileMenu, toggleAccountManegeModal, togglePreferenceModal])
 
   const handleLogin = useCallback(() => {
-    toggleSocialAccountModal()
-  }, [toggleSocialAccountModal])
+    toggleConnectWalletModal()
+  }, [toggleConnectWalletModal])
   return (
     <AvatarWrapper>
       {isLogin ? (

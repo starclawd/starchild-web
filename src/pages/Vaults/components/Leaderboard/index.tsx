@@ -2,7 +2,6 @@ import { memo, useCallback, useMemo } from 'react'
 import styled from 'styled-components'
 import { useAllStrategiesOverview } from 'store/vaults/hooks'
 import LeaderboardItem from './components/LeaderboardItem'
-import { StrategiesOverviewStrategy } from 'api/strategy'
 import { ANI_DURATION } from 'constants/index'
 import { ROUTER } from 'pages/router'
 import { useCurrentRouter } from 'store/application/hooks'
@@ -36,10 +35,10 @@ const LeaderboardItemWrapper = styled.div`
 `
 
 const Leaderboard = memo(() => {
-  const [allStrategies] = useAllStrategiesOverview()
+  const { allStrategies } = useAllStrategiesOverview()
   const [, setCurrentRouter] = useCurrentRouter()
   const filterStrategies = useMemo(() => {
-    return [...allStrategies].sort((a, b) => b.allTimeApr - a.allTimeApr).slice(0, 3)
+    return [...allStrategies].sort((a, b) => b.all_time_apr - a.all_time_apr).slice(0, 3)
   }, [allStrategies])
   const goVaultDetailPage = useCallback(
     (strategyId: string) => {
@@ -52,8 +51,8 @@ const Leaderboard = memo(() => {
   return (
     <LeaderboardContainer>
       {filterStrategies.map((strategy, index) => (
-        <LeaderboardItemWrapper key={strategy.strategyId} onClick={goVaultDetailPage(strategy.strategyId)}>
-          <LeaderboardItem strategyData={strategy.raw as StrategiesOverviewStrategy} rank={index + 1} />
+        <LeaderboardItemWrapper key={strategy.strategy_id} onClick={goVaultDetailPage(strategy.strategy_id)}>
+          <LeaderboardItem strategyData={strategy} rank={index + 1} />
         </LeaderboardItemWrapper>
       ))}
     </LeaderboardContainer>

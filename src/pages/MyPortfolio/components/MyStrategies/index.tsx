@@ -8,7 +8,7 @@ import Pending from 'components/Pending'
 import NoData from 'components/NoData'
 import Table, { ColumnDef } from 'components/Table'
 import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy.d'
-import { StrategiesOverviewStrategy } from 'api/strategy'
+import { StrategiesOverviewDataType } from 'api/strategy'
 import { useModalOpen, useCurrentRouter } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
 import PauseStrategyModal from './components/PauseStrategyModal'
@@ -189,7 +189,7 @@ function Status({ status }: { status: STRATEGY_STATUS }) {
   return null
 }
 
-function ActionButtons({ strategy }: { strategy: StrategiesOverviewStrategy }) {
+function ActionButtons({ strategy }: { strategy: StrategiesOverviewDataType }) {
   const { status, strategy_id } = strategy
   const { address } = useAppKitAccount()
   const [isLoading, setIsLoading] = useState(false)
@@ -339,7 +339,7 @@ export default memo(function MyStrategies() {
   const delistStrategyModalOpen = useModalOpen(ApplicationModal.DELIST_STRATEGY_MODAL)
 
   // 过滤策略的工具函数
-  const filterStrategiesByTab = useCallback((strategies: StrategiesOverviewStrategy[], tabKey: STRATEGY_TAB_KEY) => {
+  const filterStrategiesByTab = useCallback((strategies: StrategiesOverviewDataType[], tabKey: STRATEGY_TAB_KEY) => {
     switch (tabKey) {
       case STRATEGY_TAB_KEY.LAUNCHED:
         return strategies.filter(
@@ -374,13 +374,13 @@ export default memo(function MyStrategies() {
   )
 
   const handleRowClick = useCallback(
-    (strategy: StrategiesOverviewStrategy) => {
+    (strategy: StrategiesOverviewDataType) => {
       setCurrentRouter(`${ROUTER.CREATE_STRATEGY}?strategyId=${strategy.strategy_id}`)
     },
     [setCurrentRouter],
   )
 
-  const columns: ColumnDef<StrategiesOverviewStrategy>[] = useMemo(
+  const columns: ColumnDef<StrategiesOverviewDataType>[] = useMemo(
     () => [
       {
         key: 'name',

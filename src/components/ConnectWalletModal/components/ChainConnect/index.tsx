@@ -111,7 +111,7 @@ const SectionTitle = styled.div`
 `
 
 // 钱包分组容器
-const WalletGroupsContainer = styled.div`
+const ChainConnectContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -123,7 +123,7 @@ const WalletGroupsContainer = styled.div`
     `}
 `
 
-interface WalletGroupsProps {
+interface ChainConnectProps {
   className?: string
   type: 'login' | 'bind' | 'vaults'
   oldWalletAddress?: string
@@ -131,16 +131,16 @@ interface WalletGroupsProps {
   onError?: (error: Error) => void
 }
 
-export default memo(function ConnectWallets({
+export default memo(function ChainConnect({
   className,
   type,
   oldWalletAddress,
   onSuccess,
   onError,
-}: WalletGroupsProps) {
+}: ChainConnectProps) {
   const { loginWithWallet } = useWalletLogin()
   const { bindWithWallet } = useWalletBind()
-  const { chainId, caipNetwork } = useAppKitNetwork()
+  const { caipNetwork } = useAppKitNetwork()
   const { disconnect } = useDisconnect()
   const {
     address: evmAddress,
@@ -524,7 +524,7 @@ export default memo(function ConnectWallets({
   ]
 
   return (
-    <WalletGroupsContainer className={className}>
+    <ChainConnectContainer className={className}>
       {walletGroups.map((group) => (
         <SectionWrapper key={group.title}>
           <SectionTitle>{group.title}</SectionTitle>
@@ -550,6 +550,6 @@ export default memo(function ConnectWallets({
           </GroupContent>
         </SectionWrapper>
       ))}
-    </WalletGroupsContainer>
+    </ChainConnectContainer>
   )
 })

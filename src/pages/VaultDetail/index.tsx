@@ -44,6 +44,7 @@ const VaultDetailContentWrapper = styled.div`
   display: flex;
   width: 100%;
   height: calc(100% - 60px);
+  border-right: 1px solid ${({ theme }) => theme.black800};
 `
 
 const RightInfo = styled.div`

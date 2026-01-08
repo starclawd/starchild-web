@@ -9,6 +9,9 @@ import { useCurrentVaultId } from 'store/vaultsdetail/hooks'
 import { CHAT_TIME_RANGE } from 'store/vaultsdetail/vaultsdetail.d'
 import { toFix } from 'utils/calc'
 import { t } from '@lingui/core/macro'
+import { isMatchCurrentRouter } from 'utils'
+import { useCurrentRouter } from 'store/application/hooks'
+import { ROUTER } from 'pages/router'
 
 const ChartStats = styled.div`
   display: grid;
@@ -72,10 +75,13 @@ interface VaultChartStatsProps {
 const VaultChartStats = memo<VaultChartStatsProps>(({ chartTimeRange }) => {
   // 获取 vault 基础信息
   const vaultId = useCurrentVaultId()
+  const [currentRouter] = useCurrentRouter()
   const { vaultInfo, isLoadingVaultInfo } = useVaultInfo({ vaultId })
 
   // 获取 vault performance 信息
   const { performanceData, isLoading: isLoadingPerformance } = useVaultPerformance(chartTimeRange)
+
+  const isVaultDetailPage = isMatchCurrentRouter(currentRouter, ROUTER.VAULT_DETAIL)
 
   // 根据期间获取APR标签名称
   const getPeriodAprLabel = () => {

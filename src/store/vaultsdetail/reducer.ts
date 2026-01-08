@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { VaultDetailState, DETAIL_TYPE, CHART_TYPE, ClaimData } from './vaultsdetail.d'
 import type { VaultInfo, VaultTransactionHistory } from 'api/vaults'
-import type { StrategySignalDataType, StrategyPerformance } from 'api/strategy'
+import type { StrategySignalDataType, StrategiesOverviewDataType } from 'api/strategy'
 import { CHAIN_ID } from 'constants/chainInfo'
 import { PaperTradingCurrentDataType } from 'store/createstrategy/createstrategy'
 
@@ -54,7 +54,7 @@ const vaultsdetailSlice = createSlice({
       state.isLoadingVaultInfo = action.payload
     },
 
-    updateStrategyInfo: (state, action: PayloadAction<StrategyPerformance | null>) => {
+    updateStrategyInfo: (state, action: PayloadAction<StrategiesOverviewDataType | null>) => {
       state.strategyInfo = action.payload
     },
 

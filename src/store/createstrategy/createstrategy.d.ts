@@ -43,6 +43,7 @@ export interface ChatResponseContentDataType {
 export enum STRATEGY_STATUS {
   DRAFT = 'draft', // 已创建，但未生成可部署代码
   DRAFT_READY = 'draft_ready', //代码已生成，可发起部署
+  PAPER_TRADING = 'papert_rading', // papert_rading 已启动
   DEPLOYING = 'deploying', //部署流程进行中（包含等待充值、失败待重试等）
   DEPLOYED = 'deployed', // 部署完成，可运行
   PAUSED = 'paused', // 暂停（可恢复）

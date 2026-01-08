@@ -18,7 +18,7 @@ import {
   useSwitchChainModalToggle,
 } from 'store/application/hooks'
 import BottomSheet from 'components/BottomSheet'
-import Modal from 'components/Modal'
+import Modal, { CommonModalContentWrapper, CommonModalFooter } from 'components/Modal'
 import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import { ApplicationModal } from 'store/application/application'
 import { vm } from 'pages/helper'
@@ -41,14 +41,8 @@ import { useReadOrderlyVaultQuoteOperation } from 'hooks/contract/useGeneratedHo
 import { useUserInfo } from 'store/login/hooks'
 import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
 
-const DepositWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
+const DepositWrapper = styled(CommonModalContentWrapper)`
   width: 420px;
-  min-height: 420px;
-  background: ${({ theme }) => theme.bgL1};
-  border-radius: 20px;
-  position: relative;
 `
 
 const DepositMobileWrapper = styled(ModalSafeAreaWrapper)`
@@ -76,7 +70,7 @@ const InputWrapper = styled.div`
   margin-bottom: 8px;
   .input-wrapper {
     height: 80px;
-    border-radius: 12px;
+    border-radius: 4px;
     background-color: ${({ theme }) => theme.black700};
     input {
       font-size: 26px;
@@ -221,24 +215,7 @@ const MaxButton = styled.div`
     `}
 `
 
-const Shares = styled.span`
-  span {
-    color: ${({ theme }) => theme.black0};
-  }
-`
-
-const ButtonGroup = styled.div`
-  display: flex;
-  gap: 8px;
-  padding: 8px 20px 20px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(8)};
-      padding: ${vm(8)} ${vm(20)} ${vm(20)};
-    `}
-`
+const ButtonGroup = styled(CommonModalFooter)``
 
 const CancelButton = styled(ButtonBorder)`
   height: 40px;
@@ -309,10 +286,9 @@ const DepositAndWithdraw = memo(() => {
   const vaultId = currentDepositAndWithdrawVault?.vault_id as string | undefined
   const minDepositAmount = currentDepositAndWithdrawVault?.min_deposit_amount as number | undefined
   const minWithdrawalAmount = currentDepositAndWithdrawVault?.min_withdrawal_amount as number | undefined
-  const supportedChains = currentDepositAndWithdrawVault?.supported_chains
-  const [allStrategies] = useAllStrategiesOverview()
+  const { allStrategies } = useAllStrategiesOverview()
   const strategyDetail = useMemo(() => {
-    return allStrategies.find((strategy) => strategy.vaultId === vaultId)?.raw
+    return allStrategies.find((strategy) => strategy.vault_id === vaultId)
   }, [allStrategies, vaultId])
   const depositDisabled = useMemo(() => {
     return (
@@ -337,10 +313,10 @@ const DepositAndWithdraw = memo(() => {
   const usdcAddress = chainInfo?.usdcContractAddress as Address | undefined
 
   // USDC 合约信息
-  const { decimals, symbol, isLoading: isLoadingUsdc } = useUsdcContract()
+  const { decimals, symbol } = useUsdcContract()
 
   // USDC 余额
-  const { balance, isLoading: isLoadingBalance } = useUsdcBalanceOf(account as Address)
+  const { balance } = useUsdcBalanceOf(account as Address)
 
   // USDC 授权额度
   const {

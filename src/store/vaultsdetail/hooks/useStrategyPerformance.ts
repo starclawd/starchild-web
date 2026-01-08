@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useGetStrategyPerformanceQuery, StrategyPerformance } from 'api/strategy'
+import { useGetStrategyPerformanceQuery } from 'api/strategy'
 
 export const useStrategyPerformance = (strategyId: string, period: string) => {
   const [error, setError] = useState<string | null>(null)

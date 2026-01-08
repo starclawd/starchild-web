@@ -8,7 +8,6 @@ import { Header } from 'components/Header'
 import {
   ROUTER,
   Mobile,
-  Home,
   Chat,
   MyVault,
   Connect,
@@ -72,13 +71,13 @@ import DeleteMyAgentModal from './MyAgent/components/DeleteMyAgentModal'
 import Preference from 'components/Header/components/Preference'
 import { useGetPreference } from 'store/perference/hooks'
 import { AccountManegeModal } from 'components/Header/components/AccountManege'
-import SocialLoginModal from 'pages/Home/components/HomeContent/components/SocialLoginModal'
+import SocialLoginModal from 'components/ConnectWalletModal'
 import { EditNicknameModal } from 'components/Header/components/AccountManege/components/EditNicknameModal'
 import BindWalletModal from 'components/Header/components/AccountManege/components/BindWalletModal'
 import { useGetSystemSignalAgents } from 'store/insights/hooks/useSystemSignalHooks'
 import DepositAndWithdraw from './VaultDetail/components/DepositAndWithdraw'
 import { useAppKitEventHandler } from 'hooks/useAppKitEventHandler'
-import { useFetchAllStrategiesOverviewData, useLeaderboardWebSocketSubscription } from 'store/vaults/hooks'
+import { useLeaderboardWebSocketSubscription } from 'store/vaults/hooks'
 import ConnectWalletModal from 'components/ConnectWalletModal'
 import SwitchChainModal from 'components/SwitchChainModal'
 import DeployModal from 'pages/CreateStrategy/components/StrategyInfo/components/DeployModal'
@@ -181,7 +180,6 @@ function App() {
   const deleteAgentModalOpen = useModalOpen(ApplicationModal.DELETE_MY_AGENT_MODAL)
   const preferenceModalOpen = useModalOpen(ApplicationModal.PREFERENCE_MODAL)
   const accountManegeModalOpen = useModalOpen(ApplicationModal.ACCOUNT_MANEGE_MODAL)
-  const socialLoginModalOpen = useModalOpen(ApplicationModal.SOCIAL_LOGIN_MODAL)
   const editNicknameModalOpen = useModalOpen(ApplicationModal.EDIT_NICKNAME_MODAL)
   const bindWalletModalOpen = useModalOpen(ApplicationModal.BIND_WALLET_MODAL)
   const depositAndWithdrawModalOpen = useModalOpen(ApplicationModal.DEPOSIT_AND_WITHDRAW_MODAL)
@@ -191,7 +189,6 @@ function App() {
   const promptModalOpen = useModalOpen(ApplicationModal.PROMPT_MODAL)
   // const isSignalsPage = isMatchCurrentRouter(currentRouter, ROUTER.SIGNALS)
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
-  const { fetchAllStrategiesOverview } = useFetchAllStrategiesOverviewData()
 
   // WebSocket 订阅 leaderboard-balances频道
   useLeaderboardWebSocketSubscription()
@@ -262,10 +259,6 @@ function App() {
       triggerGetPreference()
     }
   }, [userInfoId, triggerGetPreference])
-
-  useEffect(() => {
-    fetchAllStrategiesOverview()
-  }, [fetchAllStrategiesOverview])
 
   useEffect(() => {
     if (isOpen) {
@@ -339,7 +332,6 @@ function App() {
         {deleteAgentModalOpen && <DeleteMyAgentModal />}
         {preferenceModalOpen && <Preference />}
         {accountManegeModalOpen && <AccountManegeModal />}
-        {socialLoginModalOpen && <SocialLoginModal />}
         {editNicknameModalOpen && <EditNicknameModal />}
         {bindWalletModalOpen && <BindWalletModal />}
         {depositAndWithdrawModalOpen && <DepositAndWithdraw />}
