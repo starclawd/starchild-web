@@ -88,6 +88,10 @@ export function usePreferenceModalToggle(): () => void {
   return useToggleModal(ApplicationModal.PREFERENCE_MODAL)
 }
 
+export function useShareStrategyModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.SHARE_STRATEGY_MODAL)
+}
+
 export function useCreateAgentModalToggle(): () => void {
   return useToggleModal(ApplicationModal.CREATE_AGENT_MODAL)
 }

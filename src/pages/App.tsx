@@ -37,6 +37,9 @@ import { Suspense, useEffect, useMemo } from 'react'
 // import Mobile from './Mobile' // 改为从 router.ts 导入
 import RouteLoading from 'components/RouteLoading'
 import { useAuthToken } from 'store/logincache/hooks'
+import usePrevious from 'hooks/usePrevious'
+import { useResetAllState as useResetCreateStrategyState } from 'store/createstrategy/hooks/useResetAllState'
+import { useResetAllState as useResetVaultDetailState } from 'store/vaultsdetail/hooks/useResetAllState'
 import { useGetUserInfo, useIsLogin, useLoginStatus, useUserInfo } from 'store/login/hooks'
 import { LOGIN_STATUS } from 'store/login/login.d'
 import { useInitializeLanguage } from 'store/language/hooks'
@@ -84,6 +87,7 @@ import SwitchChainModal from 'components/SwitchChainModal'
 import DeployModal from 'pages/CreateStrategy/components/StrategyInfo/components/DeployModal'
 import { STRATEGY_SIGNAL_SUB_ID, STRATEGY_SIGNAL_UNSUB_ID } from 'store/websocket/websocket'
 import PromptModal from './CreateStrategy/components/Chat/components/PromptModal'
+import ShareModal from 'components/ShareModal'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -170,6 +174,9 @@ function App() {
   const triggerGetExchangeInfo = useGetExchangeInfo()
   const [isOpenFullScreen] = useIsOpenFullScreen()
   const currentRouter = useCurrentRouter()
+  const previousRouter = usePrevious(currentRouter)
+  const resetCreateStrategyState = useResetCreateStrategyState()
+  const resetVaultDetailState = useResetVaultDetailState()
   const setCurrentRouter = useSetCurrentRouter(false)
   const setCurrentRouter2 = useSetCurrentRouter()
   const triggerGetSubscribedAgents = useGetSubscribedAgents()
@@ -189,6 +196,7 @@ function App() {
   const switchChainModalOpen = useModalOpen(ApplicationModal.SWITCH_CHAIN_MODAL)
   const deployModalOpen = useModalOpen(ApplicationModal.DEPLOY_MODAL)
   const promptModalOpen = useModalOpen(ApplicationModal.PROMPT_MODAL)
+  const shareStrategyModalOpen = useModalOpen(ApplicationModal.SHARE_STRATEGY_MODAL)
   // const isSignalsPage = isMatchCurrentRouter(currentRouter, ROUTER.SIGNALS)
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
 
@@ -215,6 +223,20 @@ function App() {
     const route = getRouteByPathname(pathname)
     setCurrentRouter(route)
   }, [pathname, getRouteByPathname, setCurrentRouter])
+
+  // 当从 CREATE_STRATEGY 或 VAULT_DETAIL 切换到其他路由时，重置对应的状态
+  useEffect(() => {
+    if (previousRouter && previousRouter !== currentRouter) {
+      // 从 CREATE_STRATEGY 切换走时，重置 createstrategy 状态
+      if (isMatchCurrentRouter(previousRouter, ROUTER.CREATE_STRATEGY)) {
+        resetCreateStrategyState()
+      }
+      // 从 VAULT_DETAIL 切换走时，重置 vaultsdetail 状态
+      if (isMatchCurrentRouter(previousRouter, ROUTER.VAULT_DETAIL)) {
+        resetVaultDetailState()
+      }
+    }
+  }, [currentRouter, previousRouter, resetCreateStrategyState, resetVaultDetailState])
 
   useEffect(() => {
     if (!isTelegramWebApp()) {
@@ -341,6 +363,7 @@ function App() {
         {switchChainModalOpen && <SwitchChainModal />}
         {deployModalOpen && <DeployModal />}
         {promptModalOpen && <PromptModal />}
+        {shareStrategyModalOpen && <ShareModal />}
         <TgLogin />
       </ThemeProvider>
     </ErrorBoundary>

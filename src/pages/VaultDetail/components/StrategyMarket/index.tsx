@@ -34,6 +34,7 @@ const InnerContent = styled.div`
   width: 320px;
   height: 100%;
   padding: 0 8px;
+  border-right: 1px solid ${({ theme }) => theme.black800};
 `
 
 const Header = styled.div`

@@ -258,7 +258,7 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
             <Trans>Log in to view AI responses</Trans>
           </span>
           <span>
-            <Trans>Login</Trans>
+            <Trans>Log in</Trans>
           </span>
         </LoginToView>
       )}

@@ -12,6 +12,7 @@ const LeaderboardContainer = styled.div`
   width: 100%;
   height: 108px;
   gap: 12px;
+  padding-right: 100px;
 `
 
 const LeaderboardItemWrapper = styled.div`

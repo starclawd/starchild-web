@@ -7,13 +7,13 @@ import InfoLayer from './components/InfoLayer'
 import { ButtonBorder } from 'components/Button'
 import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 import { useIsLoadingChatStream } from 'store/createstrategy/hooks/useLoadingState'
-import Pending from 'components/Pending'
 import { useSendChatUserContent } from 'store/createstrategy/hooks/useStream'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useIsStep3Deploying } from 'store/createstrategy/hooks/useDeployment'
 import MoveTabList, { MoveType } from 'components/MoveTabList'
 import { ANI_DURATION } from 'constants/index'
 import TypewriterCursor from 'components/TypewriterCursor'
+import { useIsLogin } from 'store/login/hooks'
 
 // 光标闪烁动画
 const cursorBlink = keyframes`
@@ -101,7 +101,7 @@ const LayerSection = styled.div`
   }
 `
 
-const BgIcon = styled.div`
+const BgIcon = styled.div<{ $isLogin: boolean; $iconSize?: number }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -111,9 +111,18 @@ const BgIcon = styled.div`
   width: 100%;
   height: 100%;
   i {
-    font-size: 258px;
+    font-size: ${({ $iconSize }) => ($iconSize ? `${$iconSize}px` : '258px')};
     color: ${({ theme }) => theme.black800};
+    transition: font-size 0.2s ease;
   }
+  ${({ $isLogin }) =>
+    !$isLogin &&
+    css`
+      justify-content: flex-end;
+      i {
+        color: ${({ theme }) => theme.black900};
+      }
+    `}
 `
 
 enum SUMMARY_TAB_KEY {
@@ -123,6 +132,52 @@ enum SUMMARY_TAB_KEY {
   RISK = 'risk',
   EXECUTION = 'execution',
 }
+
+// 计算 BgIcon 的 font-size：80% 高度，最大 258px
+const calcIconSize = (height: number) => Math.min(height * 0.8, 258)
+
+// LayerItem 组件
+interface LayerItemProps {
+  layerKey: SUMMARY_TAB_KEY
+  iconCls: string
+  isLogin: boolean
+  iconSize: number
+  onHeightChange: (key: SUMMARY_TAB_KEY, height: number) => void
+  children: React.ReactNode
+}
+
+const LayerItem = memo(({ layerKey, iconCls, isLogin, iconSize, onHeightChange, children }: LayerItemProps) => {
+  const sectionRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const element = sectionRef.current
+    if (!element) return
+
+    const resizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const height = entry.contentRect.height
+        onHeightChange(layerKey, height)
+      }
+    })
+
+    resizeObserver.observe(element)
+    // 初始上报高度
+    onHeightChange(layerKey, element.offsetHeight)
+
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [layerKey, onHeightChange])
+
+  return (
+    <LayerSection ref={sectionRef} id={`layer-${layerKey}`}>
+      {children}
+      <BgIcon $isLogin={isLogin} $iconSize={iconSize}>
+        <IconBase className={iconCls} />
+      </BgIcon>
+    </LayerSection>
+  )
+})
 
 // 打字机效果的类型定义
 interface TypewriterState {
@@ -141,11 +196,11 @@ const TYPING_CHUNK_SIZE = 5 // 每次显示的字符数
 const TYPING_INTERVAL = 17 // 每次显示的间隔时间（毫秒）
 
 export default memo(function Summary() {
+  const isLogin = useIsLogin()
   const { strategyId } = useParsedQueryString()
   const isStep3Deploying = useIsStep3Deploying(strategyId || '')
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
   const [isEdit, setIsEdit] = useState(false)
-  const [isLoadingChatStream] = useIsLoadingChatStream()
   const sendChatUserContent = useSendChatUserContent()
   const [isCreateStrategyFrontend] = useIsCreateStrategy()
   const [dataLayerContent, setDataLayerContent] = useState<string>('')
@@ -173,6 +228,26 @@ export default memo(function Summary() {
   const prevStrategyConfigRef = useRef<string | null>(null)
   // 用于记录是否应该显示等待光标（isCreateStrategyFrontend 为 true 且没有数据）
   const [showWaitingCursor, setShowWaitingCursor] = useState(false)
+  // 存储各个 Layer 的高度
+  const [layerHeights, setLayerHeights] = useState<Record<SUMMARY_TAB_KEY, number>>(
+    {} as Record<SUMMARY_TAB_KEY, number>,
+  )
+
+  // 处理 Layer 高度变化的回调
+  const handleLayerHeightChange = useCallback((key: SUMMARY_TAB_KEY, height: number) => {
+    setLayerHeights((prev) => {
+      if (prev[key] === height) return prev
+      return { ...prev, [key]: height }
+    })
+  }, [])
+
+  // 根据所有 Layer 的最小高度计算 icon size
+  const iconSize = useMemo(() => {
+    const heights = Object.values(layerHeights)
+    if (heights.length === 0) return 258
+    const minHeight = Math.min(...heights)
+    return calcIconSize(minHeight)
+  }, [layerHeights])
 
   const { strategy_config } = strategyDetail || {
     name: '',
@@ -463,6 +538,18 @@ export default memo(function Summary() {
   )
 
   const LAYER_CONFIG = useMemo(() => {
+    if (!isLogin) {
+      return [
+        {
+          key: SUMMARY_TAB_KEY.DATA,
+          iconCls: 'icon-data-layer',
+          titleKey: <Trans>Data Layer</Trans>,
+          content: dataLayerContent,
+          updateContent: setDataLayerContent,
+          isLoading: !dataLayerContent,
+        },
+      ]
+    }
     return [
       {
         key: SUMMARY_TAB_KEY.DATA,
@@ -505,7 +592,7 @@ export default memo(function Summary() {
         isLoading: !executionLayerContent,
       },
     ]
-  }, [dataLayerContent, signalLayerContent, capitalLayerContent, riskLayerContent, executionLayerContent])
+  }, [isLogin, dataLayerContent, signalLayerContent, capitalLayerContent, riskLayerContent, executionLayerContent])
 
   const updateLayerContent = useCallback(() => {
     setDataLayerContent(dataLayerString)
@@ -641,7 +728,14 @@ export default memo(function Summary() {
             const typewriterInfo = getTypewriterInfo(layer.key, index)
 
             return (
-              <LayerSection key={layer.key} id={`layer-${layer.key}`}>
+              <LayerItem
+                key={layer.key}
+                layerKey={layer.key}
+                iconCls={layer.iconCls}
+                isLogin={isLogin}
+                iconSize={iconSize}
+                onHeightChange={handleLayerHeightChange}
+              >
                 <InfoLayer
                   content={typewriterInfo.isTyping ? typewriterInfo.displayedContent : layer.content}
                   updateContent={layer.updateContent}
@@ -652,10 +746,7 @@ export default memo(function Summary() {
                   // 打字机效果相关 props
                   typewriterInfo={typewriterInfo}
                 />
-                <BgIcon>
-                  <IconBase className={layer.iconCls} />
-                </BgIcon>
-              </LayerSection>
+              </LayerItem>
             )
           })}
       </LayerList>

@@ -4,7 +4,9 @@ import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import MoveTabList, { MoveType } from 'components/MoveTabList'
 import { useVaultPositions, useVaultOpenOrdersPaginated, useVaultOrderHistoryPaginated } from 'store/vaultsdetail/hooks'
-import { VaultPositions, VaultOpenOrders, VaultOrderHistory } from './components'
+import VaultPositions from './components/VaultPositions'
+import VaultOpenOrders from './components/VaultOpenOrders'
+import VaultOrderHistory from './components/VaultOrderHistory'
 import { useStrategyPositions } from 'store/vaultsdetail/hooks/useStrategyPositions'
 import { useStrategyOpenOrdersPaginated } from 'store/vaultsdetail/hooks/useStrategyOpenOrders'
 import { useStrategyOrderHistoryPaginated } from 'store/vaultsdetail/hooks/useStrategyOrderHistory'
@@ -126,7 +128,7 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vault
       {
         key: 2,
         icon: <IconBase className='icon-orders' />,
-        text: <Trans>History{totalHistory > 0 && ` (${totalHistory})`}</Trans>,
+        text: <Trans>Historys{totalHistory > 0 && ` (${totalHistory})`}</Trans>,
         clickCallback: () => handleSubTabClick(2),
       },
     ],

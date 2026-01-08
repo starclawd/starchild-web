@@ -173,7 +173,7 @@ const PaginationContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 0;
+  padding: 8px 12px;
   gap: 8px;
 `
 
@@ -232,7 +232,7 @@ const PaginationButton = styled.button<{ $disabled?: boolean }>`
   transition: all 0.2s;
   cursor: ${({ $disabled }) => ($disabled ? 'not-allowed' : 'pointer')};
   background-color: transparent;
-  .icon-chat-expand {
+  .icon-expand {
     font-size: 14px;
     color: ${({ theme, $disabled }) => ($disabled ? theme.black300 : theme.black200)};
   }
@@ -520,7 +520,7 @@ function Table<T extends Record<string, any>>({
           {/* 右侧：页码导航 */}
           <PaginationRight>
             <PaginationButton $disabled={!canPrevious} disabled={!canPrevious} onClick={handlePrevious}>
-              <IconBase className='icon-chat-expand' style={{ transform: 'rotate(180deg)' }} />
+              <IconBase className='icon-expand' style={{ transform: 'rotate(90deg)' }} />
             </PaginationButton>
 
             {generatePageNumbers.map((page, index) => {
@@ -536,7 +536,7 @@ function Table<T extends Record<string, any>>({
             })}
 
             <PaginationButton $disabled={!canNext} disabled={!canNext} onClick={handleNext}>
-              <IconBase className='icon-chat-expand' />
+              <IconBase className='icon-expand' style={{ transform: 'rotate(-90deg)' }} />
             </PaginationButton>
           </PaginationRight>
         </PaginationContainer>

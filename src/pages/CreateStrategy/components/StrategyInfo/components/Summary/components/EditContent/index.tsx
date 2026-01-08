@@ -7,6 +7,9 @@ const EditContentWrapper = styled.div`
 `
 
 const ContentText = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   font-size: 13px;
   font-style: normal;
   font-weight: 400;
@@ -14,15 +17,9 @@ const ContentText = styled.div`
   color: ${({ theme }) => theme.black200};
   white-space: pre-wrap;
   word-break: break-word;
-  > .content-line {
-    &:last-child {
-      padding-bottom: 12px;
-    }
-  }
 `
 
 const ContentLine = styled.div`
-  margin-bottom: 4px;
   &:last-child {
     margin-bottom: 0;
   }

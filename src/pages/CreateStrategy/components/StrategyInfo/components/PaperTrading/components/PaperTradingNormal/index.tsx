@@ -5,11 +5,9 @@ import { IconBase } from 'components/Icons'
 import PaperTradingPerformance from 'pages/VaultDetail/components/PaperTradingPerformance'
 import PaperTradingButtonWrapper from '../PaperTradingButtonWrapper'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import {
-  VaultOpenOrders,
-  VaultOrderHistory,
-  VaultPositions,
-} from 'pages/VaultDetail/components/VaultPositionsOrders/components'
+import VaultOrderHistory from 'pages/VaultDetail/components/VaultPositionsOrders/components/VaultOrderHistory'
+import VaultPositions from 'pages/VaultDetail/components/VaultPositionsOrders/components/VaultPositions'
+import VaultOpenOrders from 'pages/VaultDetail/components/VaultPositionsOrders/components/VaultOpenOrders'
 import VaultChatArea from 'pages/VaultDetail/components/VaultChatArea'
 import { useStrategyPositions } from 'store/vaultsdetail/hooks/useStrategyPositions'
 import { useStrategyOpenOrdersPaginated } from 'store/vaultsdetail/hooks/useStrategyOpenOrders'
@@ -115,7 +113,7 @@ export default memo(function PaperTradingTabs() {
         icon: isShowIcon ? <IconBase className='icon-orders' /> : null,
         text: (
           <>
-            <Trans>Orders</Trans>
+            <Trans>Open orders</Trans>
             {isShowCount && ` (${totalStrategyOrders})`}
           </>
         ),
@@ -127,7 +125,7 @@ export default memo(function PaperTradingTabs() {
         icon: isShowIcon ? <IconBase className='icon-orders' /> : null,
         text: (
           <>
-            <Trans>Order History</Trans>
+            <Trans>Historys</Trans>
             {isShowCount && ` (${totalStrategyHistory})`}
           </>
         ),

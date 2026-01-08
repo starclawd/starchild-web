@@ -5,6 +5,8 @@ import EditContent from '../EditContent'
 import { Dispatch, memo, SetStateAction } from 'react'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
+import UnLogin from '../UnLogin'
+import { useIsLogin } from 'store/login/hooks'
 
 // 打字机效果信息的类型定义
 export interface TypewriterInfo {
@@ -72,8 +74,27 @@ const Content = styled.div`
   border-top: none;
 `
 
+const LoadingPlaceholderWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  max-width: 360px;
+  margin-top: 20px;
+`
+
+const LoadingPlaceholder = styled.div`
+  width: 100%;
+  height: 16px;
+  background-color: ${({ theme }) => theme.black800};
+  border-radius: 1px;
+  &:last-child {
+    width: 70%;
+  }
+`
+
 // 打字机效果内容容器
-const TypewriterContent = styled.div`
+const TypewriterContent = styled.div<{ $maxLines?: number }>`
   font-size: 13px;
   font-style: normal;
   font-weight: 400;
@@ -81,6 +102,14 @@ const TypewriterContent = styled.div`
   color: ${({ theme }) => theme.black200};
   white-space: pre-wrap;
   word-break: break-word;
+  ${({ $maxLines }) =>
+    $maxLines &&
+    `
+    display: -webkit-box;
+    -webkit-line-clamp: ${$maxLines};
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  `}
 `
 
 export default memo(function InfoLayer({
@@ -100,6 +129,7 @@ export default memo(function InfoLayer({
   isLoading: boolean
   typewriterInfo?: TypewriterInfo
 }) {
+  const isLogin = useIsLogin()
   const { strategyId } = useParsedQueryString()
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
   const { strategy_config } = strategyDetail || {
@@ -126,8 +156,9 @@ export default memo(function InfoLayer({
   const renderContent = () => {
     if (isInTypewriterMode && typewriterInfo) {
       // 打字机模式：显示已打字的内容 + 光标
+      // 未登录时最多显示 8 行
       return (
-        <TypewriterContent>
+        <TypewriterContent $maxLines={!isLogin ? 8 : undefined}>
           <span>{typewriterInfo.displayedContent}</span>
           {typewriterInfo.showCursor && typewriterInfo.cursorPosition === 'content' && <TypewriterCursor />}
         </TypewriterContent>
@@ -146,7 +177,17 @@ export default memo(function InfoLayer({
         </Left>
         {!strategy_config && !isInTypewriterMode && <Pending />}
       </Title>
-      <Content>{renderContent()}</Content>
+      <Content>
+        {renderContent()}
+        {!isLogin && (
+          <LoadingPlaceholderWrapper>
+            <LoadingPlaceholder />
+            <LoadingPlaceholder />
+            <LoadingPlaceholder />
+          </LoadingPlaceholderWrapper>
+        )}
+      </Content>
+      {!isLogin && <UnLogin />}
     </InfoLayerWrapper>
   )
 })

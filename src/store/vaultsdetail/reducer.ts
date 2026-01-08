@@ -36,6 +36,7 @@ const initialState: VaultDetailState = {
   claimData: initialClaimData,
   signalList: [],
   isLoadingSignalList: false,
+  currentShareStrategyData: null,
 }
 
 const vaultsdetailSlice = createSlice({
@@ -98,6 +99,9 @@ const vaultsdetailSlice = createSlice({
     setLoadingPaperTradingPublic: (state, action: PayloadAction<boolean>) => {
       state.isLoadingPaperTradingPublic = action.payload
     },
+    updateCurrentShareStrategyData: (state, action: PayloadAction<StrategiesOverviewDataType | null>) => {
+      state.currentShareStrategyData = action.payload
+    },
     resetVaultDetail: (state) => {
       return { ...initialState }
     },
@@ -122,6 +126,7 @@ export const {
   updateSignalList,
   resetSignalList,
   setLoadingSignalList,
+  updateCurrentShareStrategyData,
 } = vaultsdetailSlice.actions
 
 export default vaultsdetailSlice.reducer

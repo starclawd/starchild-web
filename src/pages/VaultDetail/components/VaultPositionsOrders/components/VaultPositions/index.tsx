@@ -1,7 +1,7 @@
 import { memo, useMemo, useCallback } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import Table, { ColumnDef } from 'components/Table'
+import { ColumnDef } from 'components/Table'
 import Pending from 'components/Pending'
 import { useVaultPositions } from 'store/vaultsdetail/hooks'
 import { VaultPosition } from 'api/vaults'
@@ -10,54 +10,9 @@ import { toFix, toPrecision } from 'utils/calc'
 import { useStrategyPositions } from 'store/vaultsdetail/hooks/useStrategyPositions'
 import NoData from 'components/NoData'
 import { useSort, useSortableHeader, SortDirection } from 'components/TableSortableColumn'
-import { VaultPositionsOrdersProps } from '..'
+import { VaultPositionsOrdersProps } from '../..'
 import { DETAIL_TYPE } from 'store/vaultsdetail/vaultsdetail'
-
-// 表格样式组件
-const StyledTable = styled(Table)`
-  thead {
-    background-color: transparent;
-  }
-
-  .header-container {
-    height: 40px;
-
-    th {
-      font-size: 13px;
-      font-weight: 400;
-      line-height: 20px;
-      color: ${({ theme }) => theme.black200};
-      border-bottom: 1px solid ${({ theme }) => theme.black800};
-      &:first-child {
-        padding-left: 12px;
-      }
-      &:last-child {
-        padding-right: 12px;
-      }
-    }
-  }
-
-  .table-row {
-    border-bottom: 1px solid ${({ theme }) => theme.black800};
-
-    td {
-      &:first-child {
-        padding-left: 12px;
-      }
-      &:last-child {
-        padding-right: 12px;
-      }
-    }
-  }
-` as typeof Table
-
-// Loading状态居中容器
-const LoadingWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 200px;
-`
+import { StyledTable, LoadingWrapper } from '../../styles'
 
 // Symbol 显示组件
 const SymbolCell = styled.div`

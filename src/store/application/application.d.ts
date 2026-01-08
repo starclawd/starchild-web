@@ -20,6 +20,7 @@ export enum ApplicationModal {
   DELIST_STRATEGY_MODAL,
   PAUSE_STRATEGY_MODAL,
   DELETE_STRATEGY_MODAL,
+  SHARE_STRATEGY_MODAL,
 }
 
 export interface ImgListType {

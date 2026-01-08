@@ -1,10 +1,14 @@
 import { Trans } from '@lingui/react/macro'
 import { ButtonCommon } from 'components/Button'
 import { IconBase } from 'components/Icons'
-import { memo } from 'react'
+import { memo, useCallback } from 'react'
 import styled, { css } from 'styled-components'
 import { ANI_DURATION } from 'constants/index'
 import RhythmCanvas from '../RhythmCanvas'
+import { useShareStrategyModalToggle } from 'store/application/hooks'
+import { useCurrentShareStrategyData } from 'store/vaultsdetail/hooks/useCurrentShareStrategyData'
+import { useStrategyInfo } from 'store/vaultsdetail/hooks'
+import useParsedQueryString from 'hooks/useParsedQueryString'
 
 const TvfSectionWrapper = styled.div`
   display: flex;
@@ -116,6 +120,14 @@ const ShareButton = styled(ButtonCommon)`
 
 export default memo(function TvfSection() {
   const isFollowed = false
+  const { strategyId } = useParsedQueryString()
+  const { strategyInfo } = useStrategyInfo({ strategyId: strategyId || null })
+  const toggleShareStrategyModal = useShareStrategyModalToggle()
+  const [, setCurrentShareStrategyData] = useCurrentShareStrategyData()
+  const shareStrategy = useCallback(() => {
+    setCurrentShareStrategyData(strategyInfo)
+    // toggleShareStrategyModal()
+  }, [setCurrentShareStrategyData, strategyInfo])
   return (
     <TvfSectionWrapper>
       <TopContent>
@@ -130,7 +142,7 @@ export default memo(function TvfSection() {
           </BottomLeftContent>
           <RhythmCanvas />
         </BottomLeft>
-        <ShareButton>
+        <ShareButton onClick={shareStrategy}>
           <IconBase className='icon-share' />
         </ShareButton>
       </BottomContent>

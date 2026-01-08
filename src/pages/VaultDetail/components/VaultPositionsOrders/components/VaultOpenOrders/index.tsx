@@ -2,7 +2,7 @@ import { memo, useMemo } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import dayjs from 'dayjs'
-import Table, { ColumnDef } from 'components/Table'
+import { ColumnDef } from 'components/Table'
 import Pending from 'components/Pending'
 import { useVaultOpenOrdersPaginated } from 'store/vaultsdetail/hooks'
 import { VaultOpenOrder } from 'api/vaults'
@@ -10,54 +10,9 @@ import { formatNumber } from 'utils/format'
 import { toFix, mul } from 'utils/calc'
 import { useStrategyOpenOrdersPaginated } from 'store/vaultsdetail/hooks/useStrategyOpenOrders'
 import NoData from 'components/NoData'
-import { VaultPositionsOrdersProps } from '..'
+import { VaultPositionsOrdersProps } from '../..'
 import { DETAIL_TYPE } from 'store/vaultsdetail/vaultsdetail'
-
-// 表格样式组件
-const StyledTable = styled(Table)`
-  thead {
-    background-color: transparent;
-  }
-
-  .header-container {
-    height: 40px;
-
-    th {
-      font-size: 13px;
-      font-weight: 400;
-      line-height: 20px;
-      color: ${({ theme }) => theme.black200};
-      border-bottom: 1px solid ${({ theme }) => theme.black800};
-      &:first-child {
-        padding-left: 12px;
-      }
-      &:last-child {
-        padding-right: 12px;
-      }
-    }
-  }
-
-  .table-row {
-    border-bottom: 1px solid ${({ theme }) => theme.black800};
-
-    td {
-      &:first-child {
-        padding-left: 12px;
-      }
-      &:last-child {
-        padding-right: 12px;
-      }
-    }
-  }
-` as typeof Table
-
-// Loading状态居中容器
-const LoadingWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 200px;
-`
+import { StyledTable, LoadingWrapper } from '../../styles'
 
 // Symbol 显示组件
 const SymbolCell = styled.div`
@@ -72,12 +27,19 @@ const SymbolContainer = styled.div`
   gap: 8px;
 `
 
+const SymbolLogo = styled.img`
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 4px;
+`
+
 // 侧边栏指示器
 const SideIndicator = styled.div<{ $side: 'BUY' | 'SELL' }>`
   width: 4px;
-  height: 20px;
+  height: 24px;
   background: ${({ theme, $side }) => ($side === 'BUY' ? theme.green100 : theme.red100)};
-  border-radius: 2px;
 `
 
 const SymbolText = styled.div<{ $isLong?: boolean }>`
@@ -87,18 +49,25 @@ const SymbolText = styled.div<{ $isLong?: boolean }>`
 
 // Symbol组件
 interface SymbolDisplayProps {
-  symbol: string
+  displaySymbol: string
+  token: string
+  logoUrl: string
   orderSide?: 'BUY' | 'SELL'
 }
 
-const SymbolDisplay = memo<SymbolDisplayProps>(({ symbol, orderSide }) => {
+const SymbolDisplay = memo<SymbolDisplayProps>(({ displaySymbol, token, logoUrl, orderSide }) => {
   const isLong = orderSide === 'BUY'
-  // 从symbol中解析出显示文本，如 "PERP_WOO_USDC" → "WOO-USDC"
-  const displaySymbol = symbol.replace('PERP_', '').replace('_', '-')
 
   return (
     <SymbolContainer>
-      <SideIndicator $side={orderSide || 'BUY'} />
+      <SymbolLogo
+        src={logoUrl}
+        alt={token}
+        onError={(e) => {
+          e.currentTarget.style.display = 'none'
+        }}
+      />
+      {orderSide && <SideIndicator $side={orderSide} />}
       <SymbolText $isLong={isLong}>{displaySymbol}</SymbolText>
     </SymbolContainer>
   )
@@ -109,11 +78,6 @@ const CommonValue = styled.div`
   font-weight: 400;
   color: ${({ theme }) => theme.black100};
 `
-
-// 格式化时间戳为日期时间字符串
-const formatTimestamp = (timestamp: number): string => {
-  return dayjs(timestamp).format('YYYY-MM-DD HH:mm:ss')
-}
 
 const VaultOpenOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, strategyId }) => {
   const vaultOpenOrdersPaginated = useVaultOpenOrdersPaginated(vaultId || '')
@@ -136,7 +100,15 @@ const VaultOpenOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, s
         width: '180px',
         render: (order) => (
           <SymbolCell>
-            <SymbolDisplay symbol={order.symbol} orderSide={order.side} />
+            <SymbolDisplay
+              displaySymbol={(order as any).displaySymbol || order.symbol.replace('PERP_', '').replace('_', '-')}
+              token={(order as any).token || order.symbol.replace('PERP_', '').split('_')[0]}
+              logoUrl={
+                (order as any).logoUrl ||
+                `https://oss.orderly.network/static/symbol_logo/${order.symbol.replace('PERP_', '').split('_')[0].toUpperCase()}.png`
+              }
+              orderSide={order.side}
+            />
           </SymbolCell>
         ),
       },

@@ -55,6 +55,7 @@ export interface VaultDetailState {
   depositAndWithdrawTabIndex: number
   signalList: StrategySignalDataType[]
   isLoadingSignalList: boolean
+  currentShareStrategyData: StrategiesOverviewDataType | null
 }
 
 export interface VaultDetailChartData {
