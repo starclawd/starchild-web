@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { ButtonBorder } from 'components/Button'
-import { ChangeEvent, memo, useCallback, useState, useEffect, useRef, MouseEvent } from 'react'
+import { ChangeEvent, memo, useCallback, useState, useEffect, useRef, KeyboardEvent, useMemo } from 'react'
 import { useIsStep3Deploying } from 'store/createstrategy/hooks/useDeployment'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import VibeItem from 'pages/Vaults/components/StrategyTable/components/VibeItem'
@@ -58,36 +58,30 @@ const StrategyNameText = styled.span<{ $editable?: boolean }>`
 const StrategyNameInputWrapper = styled.div`
   display: inline-flex;
   align-items: center;
-  position: relative;
+  max-width: 70%;
 `
 
 const StrategyNameInput = styled.input`
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-`
-
-const TextDisplay = styled.div`
-  display: inline-flex;
-  align-items: center;
   font-size: 64px;
   font-style: normal;
   font-weight: 400;
   line-height: 72px;
   color: ${({ theme }) => theme.brand100};
-  cursor: text;
-  user-select: none;
-`
-
-const CharSpan = styled.span<{ $selected?: boolean }>`
-  white-space: pre;
-  background-color: ${({ $selected, theme }) => ($selected ? theme.brand100 : 'transparent')};
-  color: ${({ $selected, theme }) => ($selected ? theme.black0 : 'inherit')};
-`
-
-const CursorWrapper = styled.span`
-  display: inline-flex;
-  align-items: center;
+  background: transparent;
+  border: none;
+  outline: none;
+  min-width: 50px;
+  max-width: 100%;
+  caret-color: ${({ theme }) => theme.brand100};
+  /* @ts-ignore */
+  field-sizing: content;
+  &::placeholder {
+    color: ${({ theme }) => theme.black300};
+  }
+  &::selection {
+    background-color: ${({ theme }) => theme.brand100};
+    color: ${({ theme }) => theme.black0};
+  }
 `
 
 const StrategyDescription = styled.div`
@@ -120,42 +114,23 @@ export default memo(function StrategyName({
   const [isEdit, setIsEdit] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const { strategyId } = useParsedQueryString()
-  const { refetch: refetchStrategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
+  const { refetch: refetchStrategyDetail, strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
   const isStep3Deploying = useIsStep3Deploying(strategyId || '')
   const triggerEditStrategy = useEditStrategy()
   const inputRef = useRef<HTMLInputElement>(null)
-  const [cursorPosition, setCursorPosition] = useState(0)
-  const [selectionStart, setSelectionStart] = useState(0)
-  const [selectionEnd, setSelectionEnd] = useState(0)
   const [isCreateStrategyFrontend] = useIsCreateStrategy()
   const [displayedLength, setDisplayedLength] = useState(nameProp.length)
   const [isTyping, setIsTyping] = useState(false)
   const prevNamePropRef = useRef(nameProp)
-  const [isDragging, setIsDragging] = useState(false)
-  const dragStartPositionRef = useRef(0)
+
+  const vibe = useMemo(() => {
+    return strategyDetail?.vibe
+  }, [strategyDetail])
 
   const changeName = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       if (isLoading) return
-      const value = e.target.value
-      const newPosition = e.target.selectionStart || value.length
-      setName(value)
-      setCursorPosition(newPosition)
-      setSelectionStart(newPosition)
-      setSelectionEnd(newPosition)
-    },
-    [isLoading],
-  )
-
-  const handleSelect = useCallback(
-    (e: React.SyntheticEvent<HTMLInputElement>) => {
-      if (isLoading) return
-      const target = e.target as HTMLInputElement
-      const start = target.selectionStart || 0
-      const end = target.selectionEnd || 0
-      setCursorPosition(end)
-      setSelectionStart(start)
-      setSelectionEnd(end)
+      setName(e.target.value)
     },
     [isLoading],
   )
@@ -165,9 +140,6 @@ export default memo(function StrategyName({
       return
     }
     setIsEdit(true)
-    setCursorPosition(name.length)
-    setSelectionStart(name.length)
-    setSelectionEnd(name.length)
   }, [isStep3Deploying, name, isTyping, isCreateStrategyFrontend])
 
   const cancelEdit = useCallback(() => {
@@ -202,8 +174,8 @@ export default memo(function StrategyName({
   }, [name, isLoading, descriptionProp, strategyId, theme.jade10, toast, refetchStrategyDetail, triggerEditStrategy])
 
   const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      if (!isEdit || isLoading) return
+    (e: KeyboardEvent<HTMLInputElement>) => {
+      if (isLoading) return
       if (e.key === 'Escape') {
         cancelEdit()
       } else if (e.key === 'Enter') {
@@ -212,170 +184,16 @@ export default memo(function StrategyName({
         } else {
           handleConfirm()
         }
-      } else if (e.key === 'ArrowLeft') {
-        e.preventDefault()
-        if (selectionStart !== selectionEnd) {
-          // 有选择区域时，光标移到选择开始位置
-          setCursorPosition(selectionStart)
-          setSelectionStart(selectionStart)
-          setSelectionEnd(selectionStart)
-        } else if (cursorPosition > 0) {
-          // 光标左移一位
-          const newPosition = cursorPosition - 1
-          setCursorPosition(newPosition)
-          setSelectionStart(newPosition)
-          setSelectionEnd(newPosition)
-        }
-        if (inputRef.current) {
-          const newPos = selectionStart !== selectionEnd ? selectionStart : Math.max(0, cursorPosition - 1)
-          inputRef.current.setSelectionRange(newPos, newPos)
-        }
-      } else if (e.key === 'ArrowRight') {
-        e.preventDefault()
-        if (selectionStart !== selectionEnd) {
-          // 有选择区域时，光标移到选择结束位置
-          setCursorPosition(selectionEnd)
-          setSelectionStart(selectionEnd)
-          setSelectionEnd(selectionEnd)
-        } else if (cursorPosition < name.length) {
-          // 光标右移一位
-          const newPosition = cursorPosition + 1
-          setCursorPosition(newPosition)
-          setSelectionStart(newPosition)
-          setSelectionEnd(newPosition)
-        }
-        if (inputRef.current) {
-          const newPos = selectionStart !== selectionEnd ? selectionEnd : Math.min(name.length, cursorPosition + 1)
-          inputRef.current.setSelectionRange(newPos, newPos)
-        }
-      } else if (e.key === 'Backspace') {
-        e.preventDefault()
-        if (selectionStart !== selectionEnd) {
-          // 删除选择的内容
-          const newValue = name.slice(0, selectionStart) + name.slice(selectionEnd)
-          setName(newValue)
-          setCursorPosition(selectionStart)
-          setSelectionStart(selectionStart)
-          setSelectionEnd(selectionStart)
-          if (inputRef.current) {
-            inputRef.current.value = newValue
-            inputRef.current.setSelectionRange(selectionStart, selectionStart)
-          }
-        } else if (cursorPosition > 0) {
-          // 删除光标前的字符
-          const newValue = name.slice(0, cursorPosition - 1) + name.slice(cursorPosition)
-          const newPosition = cursorPosition - 1
-          setName(newValue)
-          setCursorPosition(newPosition)
-          setSelectionStart(newPosition)
-          setSelectionEnd(newPosition)
-          if (inputRef.current) {
-            inputRef.current.value = newValue
-            inputRef.current.setSelectionRange(newPosition, newPosition)
-          }
-        }
-      } else if (e.key === 'Delete') {
-        e.preventDefault()
-        if (selectionStart !== selectionEnd) {
-          // 删除选择的内容
-          const newValue = name.slice(0, selectionStart) + name.slice(selectionEnd)
-          setName(newValue)
-          setCursorPosition(selectionStart)
-          setSelectionStart(selectionStart)
-          setSelectionEnd(selectionStart)
-          if (inputRef.current) {
-            inputRef.current.value = newValue
-            inputRef.current.setSelectionRange(selectionStart, selectionStart)
-          }
-        } else if (cursorPosition < name.length) {
-          // 删除光标后的字符
-          const newValue = name.slice(0, cursorPosition) + name.slice(cursorPosition + 1)
-          setName(newValue)
-          if (inputRef.current) {
-            inputRef.current.value = newValue
-            inputRef.current.setSelectionRange(cursorPosition, cursorPosition)
-          }
-        }
       }
     },
-    [isEdit, cancelEdit, name, nameProp, handleConfirm, isLoading, cursorPosition, selectionStart, selectionEnd],
+    [isLoading, cancelEdit, name, nameProp, handleConfirm],
   )
 
-  useEffect(() => {
-    document.addEventListener('keydown', handleKeyDown)
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [handleKeyDown])
-
-  // 监听全局 mouseup 事件，防止拖动到元素外部后松开鼠标
-  useEffect(() => {
-    const handleGlobalMouseUp = () => {
-      setIsDragging(false)
-    }
-    document.addEventListener('mouseup', handleGlobalMouseUp)
-    return () => {
-      document.removeEventListener('mouseup', handleGlobalMouseUp)
-    }
-  }, [])
-
-  // 计算鼠标位置对应的字符索引
-  const getCharIndexFromMouseEvent = useCallback(
-    (e: MouseEvent<HTMLDivElement>) => {
-      const target = e.target as HTMLElement
-      const index = target.getAttribute('data-index')
-      if (index !== null) {
-        const charIndex = parseInt(index, 10)
-        const rect = target.getBoundingClientRect()
-        const clickX = e.clientX - rect.left
-        const charWidth = rect.width
-        return clickX > charWidth / 2 ? charIndex + 1 : charIndex
-      }
-      return name.length
-    },
-    [name.length],
-  )
-
-  const handleMouseDown = useCallback(
-    (e: MouseEvent<HTMLDivElement>) => {
-      if (isLoading) return
-      const position = getCharIndexFromMouseEvent(e)
-      setIsDragging(true)
-      dragStartPositionRef.current = position
-      setCursorPosition(position)
-      setSelectionStart(position)
-      setSelectionEnd(position)
-      if (inputRef.current) {
-        inputRef.current.focus()
-        inputRef.current.setSelectionRange(position, position)
-      }
-    },
-    [isLoading, getCharIndexFromMouseEvent],
-  )
-
-  const handleMouseMove = useCallback(
-    (e: MouseEvent<HTMLDivElement>) => {
-      if (!isDragging || isLoading) return
-      const position = getCharIndexFromMouseEvent(e)
-      const start = Math.min(dragStartPositionRef.current, position)
-      const end = Math.max(dragStartPositionRef.current, position)
-      setCursorPosition(position)
-      setSelectionStart(start)
-      setSelectionEnd(end)
-      if (inputRef.current) {
-        inputRef.current.setSelectionRange(start, end)
-      }
-    },
-    [isDragging, isLoading, getCharIndexFromMouseEvent],
-  )
-
-  const handleMouseUp = useCallback(() => {
-    setIsDragging(false)
-  }, [])
-
+  // 编辑模式时自动聚焦并选中所有文本
   useEffect(() => {
     if (isEdit && inputRef.current) {
       inputRef.current.focus()
+      inputRef.current.select()
     }
   }, [isEdit])
 
@@ -408,34 +226,21 @@ export default memo(function StrategyName({
       setIsTyping(false)
     }
   }, [isTyping, displayedLength, nameProp.length, isCreateStrategyFrontend])
+
   return (
     <StrategyNameWrapper>
       <NameContent>
         <StrategyTitle>
           {isEdit ? (
             <StrategyNameInputWrapper>
-              <StrategyNameInput ref={inputRef} value={name} onChange={changeName} onSelect={handleSelect} />
-              <TextDisplay onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp}>
-                {name.split('').map((char, index) => {
-                  const isSelected = selectionStart !== selectionEnd && index >= selectionStart && index < selectionEnd
-                  const showCursor = selectionStart === selectionEnd && index === cursorPosition
-                  return showCursor ? (
-                    <CursorWrapper key={index}>
-                      <TypewriterCursor width={8} height={72} />
-                      <CharSpan data-index={index} $selected={isSelected}>
-                        {char}
-                      </CharSpan>
-                    </CursorWrapper>
-                  ) : (
-                    <CharSpan key={index} data-index={index} $selected={isSelected}>
-                      {char}
-                    </CharSpan>
-                  )
-                })}
-                {selectionStart === selectionEnd && cursorPosition === name.length && (
-                  <TypewriterCursor width={8} height={72} />
-                )}
-              </TextDisplay>
+              <StrategyNameInput
+                ref={inputRef}
+                value={name}
+                onChange={changeName}
+                onKeyDown={handleKeyDown}
+                disabled={isLoading}
+                placeholder='Strategy Name'
+              />
             </StrategyNameInputWrapper>
           ) : (
             <StrategyNameText
@@ -465,11 +270,11 @@ export default memo(function StrategyName({
             </ButtonWrapper>
           )}
         </StrategyTitle>
-        <StrategyDescription>
-          <VibeItem colorType='brand' text='Just for Test' size='big' />
-          <VibeItem colorType='blue' text='Just for Test1' size='big' />
-          <VibeItem colorType='purple' text='Just for Test2' size='big' />
-        </StrategyDescription>
+        {vibe && (
+          <StrategyDescription>
+            <VibeItem colorType='brand' text={vibe} size='big' />
+          </StrategyDescription>
+        )}
       </NameContent>
     </StrategyNameWrapper>
   )

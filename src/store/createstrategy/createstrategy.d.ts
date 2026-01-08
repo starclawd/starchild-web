@@ -120,6 +120,7 @@ export interface StrategyDetailDataType {
   deploy_time: number
   created_at: number
   updated_at: number
+  vibe: string | null
   signal: {
     id: string
     name: string

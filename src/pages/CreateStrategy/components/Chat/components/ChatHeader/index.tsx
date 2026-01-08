@@ -13,6 +13,7 @@ import { isInvalidValue } from 'utils/calc'
 import { useToggleStrategyId } from 'hooks/useAddUrlParam'
 import { useResetAllState } from 'store/createstrategy/hooks/useResetAllState'
 import { useLeftWidth } from 'store/createstrategycache/hooks'
+import { useIsLoadingChatStream } from 'store/createstrategy/hooks/useLoadingState'
 
 const ChatHeaderWrapper = styled.div<{ $isShowSelect: boolean }>`
   display: flex;
@@ -120,6 +121,7 @@ export default function ChatHeader() {
   const [leftWidth] = useLeftWidth()
   const { strategyId } = useParsedQueryString()
   const { myStrategies } = useMyStrategies()
+  const [isLoadingChatStream] = useIsLoadingChatStream()
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
   const [isShowSelect, setIsShowSelect] = useState(false)
   const handleToggleStrategyId = useCallback(
@@ -158,6 +160,7 @@ export default function ChatHeader() {
         usePortal
         useOutShow
         hideExpand
+        disabled={isLoadingChatStream}
         outSetShow={setIsShowSelect}
         outShow={isShowSelect}
         offsetLeft={-20}

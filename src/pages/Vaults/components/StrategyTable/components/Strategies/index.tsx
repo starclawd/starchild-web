@@ -171,21 +171,6 @@ const MiniChart = memo<{ dataPoints: number; isPositive: boolean }>(({ dataPoint
 })
 
 MiniChart.displayName = 'MiniChart'
-
-// 模拟标签数据 - 实际应该从 API 获取
-const getMockTags = (strategyName: string): string[] => {
-  // 根据策略名生成模拟标签
-  const hash = strategyName.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
-  const allTags = ['Just for test', 'Just for test1', 'Just for test2']
-  const count = (hash % 3) + 1
-  const startIdx = hash % allTags.length
-  const tags: string[] = []
-  for (let i = 0; i < count; i++) {
-    tags.push(allTags[(startIdx + i) % allTags.length])
-  }
-  return tags
-}
-
 interface StrategiesProps {
   searchValue: string
   sortState: SortState
@@ -194,21 +179,6 @@ interface StrategiesProps {
 const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
   const { allStrategies, isLoading: isLoadingAllStrategies } = useAllStrategiesOverview()
   const setCurrentRouter = useSetCurrentRouter()
-  // 根据标签内容返回颜色
-  const getTagType = useCallback((tag: number) => {
-    // 可以根据特定关键词匹配颜色
-    switch (tag) {
-      case 0:
-        return 'brand'
-      case 1:
-        return 'blue'
-      case 2:
-        return 'purple'
-      default:
-        return 'brand'
-    }
-  }, [])
-
   // 通过 searchValue 筛选数据
   const filteredStrategies = useMemo(() => {
     if (!searchValue.trim()) {
@@ -283,7 +253,7 @@ const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
             ))}
           </colgroup>
           {sortedStrategies.map((record, rowIndex) => {
-            const tags = getMockTags(record.strategy_name)
+            const vibe = record.vibe
             return (
               <StrategyTbody key={record.strategy_id || rowIndex} onClick={() => handleRowClick(record)}>
                 <DataRow>
@@ -320,9 +290,7 @@ const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
                 <TagsRow>
                   <TagsCell colSpan={columnCount}>
                     <TagsContainer style={{ backgroundImage: `url(${tagBg})` }}>
-                      {tags.map((tag, tagIndex) => (
-                        <VibeItem key={tagIndex} colorType={getTagType(tagIndex)} text={tag} size='small' />
-                      ))}
+                      {vibe && <VibeItem colorType='brand' text={vibe} size='small' />}
                     </TagsContainer>
                   </TagsCell>
                 </TagsRow>
