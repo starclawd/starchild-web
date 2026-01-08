@@ -29,20 +29,14 @@ const LeftSection = styled.div<{ $isShowStrategyMarket: boolean }>`
   line-height: 20px;
   color: ${({ theme }) => theme.black0};
   transition: all ${ANI_DURATION}s;
-  .icon-arrow-bar-right {
+  .icon-fold,
+  .icon-stratege-expand {
     font-size: 18px;
     color: ${({ theme }) => theme.black0};
   }
   &:hover {
     opacity: 0.7;
   }
-  ${({ $isShowStrategyMarket }) =>
-    $isShowStrategyMarket &&
-    css`
-      .icon-arrow-bar-right {
-        transform: rotate(180deg);
-      }
-    `}
 `
 
 const VaultDetailNavigation = memo(() => {
@@ -55,7 +49,7 @@ const VaultDetailNavigation = memo(() => {
   return (
     <NavigationContainer>
       <LeftSection $isShowStrategyMarket={isShowStrategyMarket} onClick={toggleStrategyMarket}>
-        <IconBase className='icon-arrow-bar-right' />
+        <IconBase className={!isShowStrategyMarket ? 'icon-fold' : 'icon-stratege-expand'} />
         <Trans>Strategy market</Trans>
       </LeftSection>
       <VaultsWalletConnect mode={WALLET_CONNECT_MODE.SHRINK} />

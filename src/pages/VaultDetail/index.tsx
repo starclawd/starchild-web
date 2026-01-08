@@ -69,15 +69,6 @@ const VaultDetail = memo(() => {
     }
   }, [currentVaultId, activeTab, setActiveTab])
 
-  // 等待 PaperTrading 加载完成
-  if (isLoadingPaperTradingPublic && strategyId) {
-    return (
-      <VaultDetailContainer>
-        <Pending isNotButtonLoading={true} />
-      </VaultDetailContainer>
-    )
-  }
-
   return (
     <VaultDetailContainer>
       <VaultDetailMainContent>
@@ -85,10 +76,14 @@ const VaultDetail = memo(() => {
         <VaultDetailNavigation />
         <VaultDetailContentWrapper>
           <StrategyMarket />
-          <RightInfo className='transparent-scroll-style'>
-            <VaultInfo />
-            <VaultContent />
-          </RightInfo>
+          {isLoadingPaperTradingPublic ? (
+            <Pending isNotButtonLoading={true} />
+          ) : (
+            <RightInfo className='transparent-scroll-style'>
+              <VaultInfo />
+              <VaultContent />
+            </RightInfo>
+          )}
         </VaultDetailContentWrapper>
       </VaultDetailMainContent>
 

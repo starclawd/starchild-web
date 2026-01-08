@@ -99,16 +99,7 @@ const vaultsdetailSlice = createSlice({
       state.isLoadingPaperTradingPublic = action.payload
     },
     resetVaultDetail: (state) => {
-      state.activeTab = DETAIL_TYPE.STRATEGY
-      state.vaultInfo = null
-      state.strategyInfo = null
-      state.chartType = CHART_TYPE.EQUITY
-      state.isLoadingChart = false
-      state.isLoadingVaultInfo = false
-      state.isLoadingStrategyInfo = false
-      state.paperTradingPublicData = null
-      state.isLoadingPaperTradingPublic = false
-      state.claimData = initialClaimData
+      return { ...initialState }
     },
   },
 })

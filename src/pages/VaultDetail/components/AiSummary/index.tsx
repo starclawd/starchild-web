@@ -2,7 +2,6 @@ import { memo } from 'react'
 import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import { IconBase } from 'components/Icons'
-import AiSummaryBg from 'assets/vaults/ai-summary-bg.png'
 import { useCurrentRouter } from 'store/application/hooks'
 import { isMatchCurrentRouter } from 'utils'
 import { ROUTER } from 'pages/router'
@@ -16,10 +15,6 @@ const AiSummaryWrapper = styled.div<{ $isVaultDetailPage?: boolean }>`
   width: 65%;
   height: 100%;
   position: relative;
-  background-image: url(${AiSummaryBg});
-  background-repeat: no-repeat;
-  background-position: top right;
-  background-size: auto;
   border-right: 1px solid ${({ theme }) => theme.black800};
 
   ${({ $isVaultDetailPage }) =>

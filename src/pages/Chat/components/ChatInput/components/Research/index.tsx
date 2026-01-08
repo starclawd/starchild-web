@@ -28,7 +28,7 @@ const ChatInputContentWrapper = styled.div<{ $value: string }>`
   align-items: flex-start;
   gap: 20px;
   padding: 12px;
-  border-radius: 16px;
+  border-radius: 12px;
   border: 1px solid ${({ theme }) => theme.black600};
   background: ${({ theme }) => theme.black800};
   backdrop-filter: blur(12px);
@@ -61,7 +61,7 @@ const InputWrapper = styled.div<{ $isMultiline: boolean; $isEmpty: boolean }>`
   align-items: ${({ $isMultiline }) => ($isMultiline ? 'stretch' : 'center')};
   min-height: 40px;
   width: 100%;
-  padding: ${({ $isEmpty }) => ($isEmpty ? '8px 8px 0' : '0 8px')};
+  padding: ${({ $isEmpty }) => ($isEmpty ? '8px' : '0 8px')};
   gap: 8px;
   flex-grow: 1;
   flex-shrink: 1;

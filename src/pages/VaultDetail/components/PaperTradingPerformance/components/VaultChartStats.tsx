@@ -1,6 +1,5 @@
-import { memo } from 'react'
+import { memo, useMemo } from 'react'
 import styled, { css } from 'styled-components'
-import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import { formatNumber, formatKMBNumber, formatPercent } from 'utils/format'
 import { useVaultPerformance } from 'store/vaultsdetail/hooks/useVaultPerformance'
@@ -9,15 +8,14 @@ import { useCurrentVaultId } from 'store/vaultsdetail/hooks'
 import { CHAT_TIME_RANGE } from 'store/vaultsdetail/vaultsdetail.d'
 import { toFix } from 'utils/calc'
 import { t } from '@lingui/core/macro'
-import { isMatchCurrentRouter } from 'utils'
-import { useCurrentRouter } from 'store/application/hooks'
-import { ROUTER } from 'pages/router'
 
 const ChartStats = styled.div`
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 16px;
+  display: flex;
+  align-items: center;
   width: 100%;
+  height: 74px;
+  border-top: 1px solid ${({ theme }) => theme.black800};
+  border-bottom: 1px solid ${({ theme }) => theme.black800};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -31,6 +29,7 @@ const StatItem = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
+  padding: 0 40px;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -68,6 +67,14 @@ const StatValue = styled.span<{ value?: number | null; $showSignColor?: boolean 
   `}
 `
 
+interface StatItemConfig {
+  key: string
+  label: string
+  value: number | null | undefined
+  showSignColor: boolean
+  format: (val: number | null | undefined) => string
+}
+
 interface VaultChartStatsProps {
   chartTimeRange: CHAT_TIME_RANGE
 }
@@ -75,16 +82,13 @@ interface VaultChartStatsProps {
 const VaultChartStats = memo<VaultChartStatsProps>(({ chartTimeRange }) => {
   // 获取 vault 基础信息
   const vaultId = useCurrentVaultId()
-  const currentRouter = useCurrentRouter()
   const { vaultInfo, isLoadingVaultInfo } = useVaultInfo({ vaultId })
 
   // 获取 vault performance 信息
   const { performanceData, isLoading: isLoadingPerformance } = useVaultPerformance(chartTimeRange)
 
-  const isVaultDetailPage = isMatchCurrentRouter(currentRouter, ROUTER.VAULT_DETAIL)
-
-  // 根据期间获取APR标签名称
-  const getPeriodAprLabel = () => {
+  // 根据期间获取APY标签名称
+  const periodApyLabel = useMemo(() => {
     switch (chartTimeRange) {
       case '24h':
         return t`24H APY`
@@ -95,90 +99,67 @@ const VaultChartStats = memo<VaultChartStatsProps>(({ chartTimeRange }) => {
       default:
         return t`Period APY`
     }
-  }
+  }, [chartTimeRange])
 
-  if (isLoadingVaultInfo || isLoadingPerformance || !vaultInfo) {
-    return (
-      <ChartStats>
-        <StatItem>
-          <StatLabel>
-            <Trans>TVL</Trans>
-          </StatLabel>
-          <StatValue>--</StatValue>
-        </StatItem>
-        <StatItem>
-          <StatLabel>
-            <Trans>Index</Trans>
-          </StatLabel>
-          <StatValue>--</StatValue>
-        </StatItem>
-        <StatItem>
-          <StatLabel>
-            <Trans>PnL</Trans>
-          </StatLabel>
-          <StatValue>--</StatValue>
-        </StatItem>
-        <StatItem>
-          <StatLabel>{getPeriodAprLabel()}</StatLabel>
-          <StatValue>--</StatValue>
-        </StatItem>
-        <StatItem>
-          <StatLabel>
-            <Trans>APR</Trans>
-          </StatLabel>
-          <StatValue>--</StatValue>
-        </StatItem>
-      </ChartStats>
-    )
-  }
+  // 统计项配置
+  const statsConfig: StatItemConfig[] = useMemo(() => {
+    const tvl = vaultInfo?.tvl
+    const index = vaultInfo ? vaultInfo.tvl / vaultInfo.total_main_shares : null
+    const pnl = performanceData?.incremental_net_pnl ?? null
+    const periodApy = vaultInfo?.['30d_apy'] ?? null
+    const lifetimeApy = vaultInfo?.lifetime_apy ?? null
 
-  // 计算显示数据
-  const tvl = vaultInfo.tvl
-  const index = vaultInfo.tvl / vaultInfo.total_main_shares
-  const pnl = performanceData?.incremental_net_pnl || 0
-  const apr30d = vaultInfo['30d_apy']
-  const lifetimeApr = vaultInfo.lifetime_apy
+    return [
+      {
+        key: 'tvl',
+        label: t`TVL`,
+        value: tvl,
+        showSignColor: false,
+        format: (val) => (val == null ? '--' : formatKMBNumber(val, 2, { showDollar: true })),
+      },
+      {
+        key: 'index',
+        label: t`Index`,
+        value: index,
+        showSignColor: false,
+        format: (val) => (val == null ? '--' : formatNumber(toFix(val, 8))),
+      },
+      {
+        key: 'pnl',
+        label: t`PnL`,
+        value: pnl,
+        showSignColor: true,
+        format: (val) => (val == null ? '--' : formatKMBNumber(val, 2, { showDollar: true })),
+      },
+      {
+        key: 'periodApy',
+        label: periodApyLabel,
+        value: periodApy,
+        showSignColor: true,
+        format: (val) => (val == null ? '--' : formatPercent({ value: val, precision: 2 })),
+      },
+      {
+        key: 'lifetimeApy',
+        label: t`All-time APY`,
+        value: lifetimeApy,
+        showSignColor: true,
+        format: (val) => (val == null ? '--' : formatPercent({ value: val, precision: 2 })),
+      },
+    ]
+  }, [vaultInfo, performanceData, periodApyLabel])
+
+  const isLoading = isLoadingVaultInfo || isLoadingPerformance || !vaultInfo
 
   return (
     <ChartStats>
-      <StatItem>
-        <StatLabel>
-          <Trans>TVL</Trans>
-        </StatLabel>
-        <StatValue value={tvl}>
-          {tvl === null || tvl === undefined ? '--' : formatKMBNumber(tvl, 2, { showDollar: true })}
-        </StatValue>
-      </StatItem>
-      <StatItem>
-        <StatLabel>
-          <Trans>Index</Trans>
-        </StatLabel>
-        <StatValue value={index}>{formatNumber(toFix(index, 8))}</StatValue>
-      </StatItem>
-      <StatItem>
-        <StatLabel>
-          <Trans>PnL</Trans>
-        </StatLabel>
-        <StatValue value={pnl} $showSignColor={true}>
-          {pnl === null || pnl === undefined ? '--' : formatKMBNumber(pnl, 2, { showDollar: true })}
-        </StatValue>
-      </StatItem>
-      <StatItem>
-        <StatLabel>{getPeriodAprLabel()}</StatLabel>
-        <StatValue value={apr30d} $showSignColor={true}>
-          {apr30d === null || apr30d === undefined ? '--' : formatPercent({ value: apr30d, precision: 2 })}
-        </StatValue>
-      </StatItem>
-      <StatItem>
-        <StatLabel>
-          <Trans>All-time APY</Trans>
-        </StatLabel>
-        <StatValue value={lifetimeApr} $showSignColor={true}>
-          {lifetimeApr === null || lifetimeApr === undefined
-            ? '--'
-            : formatPercent({ value: lifetimeApr, precision: 2 })}
-        </StatValue>
-      </StatItem>
+      {statsConfig.map((stat) => (
+        <StatItem key={stat.key}>
+          <StatLabel>{stat.label}</StatLabel>
+          <StatValue value={isLoading ? null : stat.value} $showSignColor={stat.showSignColor}>
+            {isLoading ? '--' : stat.format(stat.value)}
+          </StatValue>
+        </StatItem>
+      ))}
     </ChartStats>
   )
 })

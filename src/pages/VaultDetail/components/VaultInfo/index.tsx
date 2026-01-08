@@ -104,8 +104,8 @@ export default memo(function VaultInfo() {
     return [
       strategyInfo?.vibe || '',
       strategyInfo?.strategy_name || '--',
-      strategyInfo?.user_info?.user_name || '--',
-      strategyInfo?.user_info?.user_avatar || '--',
+      strategyInfo?.user_info?.user_name || '',
+      strategyInfo?.user_info?.user_avatar || '',
     ]
   }, [strategyInfo])
   const tabList = useMemo(

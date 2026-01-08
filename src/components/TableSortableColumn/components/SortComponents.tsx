@@ -1,6 +1,7 @@
 import { memo } from 'react'
 import styled, { useTheme } from 'styled-components'
 import { SortDirection } from '../types'
+import { ANI_DURATION } from 'constants/index'
 
 // 排序箭头容器
 const SortArrowsContainer = styled.div`
@@ -8,7 +9,7 @@ const SortArrowsContainer = styled.div`
   align-items: center;
   margin-left: 6px;
   cursor: pointer;
-  transition: opacity 0.2s ease;
+  transition: opacity ${ANI_DURATION}s;
 
   &:hover {
     opacity: 0.7;

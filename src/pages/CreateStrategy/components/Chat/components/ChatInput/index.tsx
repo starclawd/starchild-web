@@ -31,7 +31,7 @@ const ChatInputContentWrapper = styled.div<{ $value: string; $isChatPage: boolea
   width: 100%;
   gap: 20px;
   padding: 12px;
-  border-radius: 16px;
+  border-radius: 12px;
   border: 1px solid ${({ theme }) => theme.black600};
   background: ${({ theme }) => theme.black800};
   backdrop-filter: blur(12px);
@@ -71,7 +71,7 @@ const InputWrapper = styled.div<{ $isChatPage: boolean; $isMultiline: boolean }>
   align-items: ${({ $isMultiline }) => ($isMultiline ? 'stretch' : 'center')};
   min-height: 40px;
   width: 100%;
-  padding: ${({ $isChatPage }) => ($isChatPage ? '8px 8px 0' : '0')};
+  padding: ${({ $isChatPage }) => ($isChatPage ? '8px' : '0')};
   gap: 8px;
   flex-grow: 1;
   flex-shrink: 1;

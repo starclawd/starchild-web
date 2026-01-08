@@ -5,7 +5,6 @@ import {
   setActiveTab as setActiveTabAction,
   setChartType as setChartTypeAction,
   setIsLoadingChart as setIsLoadingChartAction,
-  resetVaultDetail,
 } from '../reducer'
 import { DETAIL_TYPE, CHART_TYPE, CHAT_TIME_RANGE } from '../vaultsdetail.d'
 import { ParamFun } from 'types/global'
@@ -52,14 +51,6 @@ export function useIsLoadingChart(): [boolean, ParamFun<boolean>] {
     [dispatch],
   )
   return [isLoadingChart, setIsLoadingChart]
-}
-
-// 重置VaultDetail状态
-export const useResetVaultDetail = () => {
-  const dispatch = useDispatch()
-  return useCallback(() => {
-    dispatch(resetVaultDetail())
-  }, [dispatch])
 }
 
 // 获取完整的VaultDetail状态
