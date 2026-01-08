@@ -12,19 +12,23 @@ import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
 import { useIsLoadingChatStream } from 'store/createstrategy/hooks/useLoadingState'
 
-export const ContentItemWrapper = styled.div<{ role: ROLE_TYPE }>`
+export const ContentItemWrapper = styled.div<{ role: ROLE_TYPE; $isEditStrategyContent?: boolean }>`
   display: flex;
   flex-direction: column;
   position: relative;
   width: 100%;
   padding-bottom: 20px;
   gap: 4px;
-  ${({ role }) =>
+  ${({ role, $isEditStrategyContent }) =>
     role === ROLE_TYPE.USER &&
     css`
       align-self: flex-end;
       width: fit-content;
       max-width: 82.5%;
+      ${$isEditStrategyContent &&
+      css`
+        max-width: 100%;
+      `}
     `}
 
   ${({ theme, role }) =>
@@ -244,7 +248,7 @@ export default memo(function ChatItem({
 
   if (role === ROLE_TYPE.USER) {
     return (
-      <ContentItemWrapper role={role}>
+      <ContentItemWrapper $isEditStrategyContent={isEditStrategyContent} role={role}>
         <ContentItem role={role} key={id}>
           <Content $isEditStrategyContent={isEditStrategyContent} role={role}>
             {isEditStrategyContent && (
