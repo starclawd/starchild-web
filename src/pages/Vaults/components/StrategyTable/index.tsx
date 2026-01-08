@@ -118,14 +118,14 @@ export default function StrategyTable() {
     { key: 'leader', title: <Trans>Leader</Trans>, align: 'left', width: COLUMN_WIDTHS[1] },
     {
       key: 'apr24h',
-      title: createSortableHeader(<Trans>24H ROE</Trans>, 'apr'),
+      title: createSortableHeader(<Trans>24H APR</Trans>, 'apr'),
       align: 'left',
       width: COLUMN_WIDTHS[2],
     },
-    { key: 'apr7d', title: createSortableHeader(<Trans>7D ROE</Trans>, 'apr'), align: 'left', width: COLUMN_WIDTHS[3] },
+    { key: 'apr7d', title: createSortableHeader(<Trans>7D APR</Trans>, 'apr'), align: 'left', width: COLUMN_WIDTHS[3] },
     {
       key: 'allTimeApr',
-      title: createSortableHeader(<Trans>All time ROE</Trans>, 'allTimeApr'),
+      title: createSortableHeader(<Trans>All time APR</Trans>, 'allTimeApr'),
       align: 'left',
       width: COLUMN_WIDTHS[4],
     },

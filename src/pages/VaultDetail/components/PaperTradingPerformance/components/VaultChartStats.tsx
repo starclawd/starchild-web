@@ -91,13 +91,13 @@ const VaultChartStats = memo<VaultChartStatsProps>(({ chartTimeRange }) => {
   const periodApyLabel = useMemo(() => {
     switch (chartTimeRange) {
       case '24h':
-        return t`24H APY`
+        return t`24H APR`
       case '7d':
-        return t`7D APY`
+        return t`7D APR`
       case '30d':
-        return t`30D APY`
+        return t`30D APR`
       default:
-        return t`Period APY`
+        return t`Period APR`
     }
   }, [chartTimeRange])
 
@@ -140,7 +140,7 @@ const VaultChartStats = memo<VaultChartStatsProps>(({ chartTimeRange }) => {
       },
       {
         key: 'lifetimeApy',
-        label: t`All-time APY`,
+        label: t`All-time APR`,
         value: lifetimeApy,
         showSignColor: true,
         format: (val) => (val == null ? '--' : formatPercent({ value: val, precision: 2 })),

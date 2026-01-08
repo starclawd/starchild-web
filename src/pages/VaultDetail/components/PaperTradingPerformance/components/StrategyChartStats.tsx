@@ -67,13 +67,13 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ strategyId, chartTim
   const getPeriodAprLabel = () => {
     switch (chartTimeRange) {
       case CHAT_TIME_RANGE.DAILY:
-        return t`24H APY`
+        return t`24H APR`
       case CHAT_TIME_RANGE.WEEKLY:
-        return t`7D APY`
+        return t`7D APR`
       case CHAT_TIME_RANGE.MONTHLY:
-        return t`30D APY`
+        return t`30D APR`
       default:
-        return t`Period APY`
+        return t`Period APR`
     }
   }
 
@@ -120,7 +120,7 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ strategyId, chartTim
     },
     {
       key: 'allTimeApy',
-      label: <Trans>All-time APY</Trans>,
+      label: <Trans>All-time APR</Trans>,
       getValue: () => performanceData?.all_time_apr,
       formatValue: (v) => formatPercent({ value: v, precision: 2 }),
       showPnlColor: true,

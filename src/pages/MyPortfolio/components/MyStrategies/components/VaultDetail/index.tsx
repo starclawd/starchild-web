@@ -125,8 +125,8 @@ export default memo(function VaultDetail({ vaultInfo }: { vaultInfo: VaultInfo }
           ),
       },
       {
-        key: 'All-time APY',
-        text: <Trans>All-time APY</Trans>,
+        key: 'All-time APR',
+        text: <Trans>All-time APR</Trans>,
         value:
           lifetimeApr === null || lifetimeApr === undefined ? (
             '--'
