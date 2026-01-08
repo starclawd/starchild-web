@@ -80,7 +80,8 @@ const ContentWrapper = styled.div<{ $isShowActionLayer: boolean; $isShowExpandPa
   position: relative;
   display: flex;
   flex-direction: column;
-  width: 70%;
+  flex-grow: 1;
+  min-width: 0;
   height: 100%;
   border-left: 1px solid ${({ theme }) => theme.black800};
   ${({ $isShowActionLayer }) =>

@@ -15,11 +15,24 @@ const mediaMinWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css
   {},
 ) as any
 
+const mediaMaxWidthTemplates: { [width in keyof typeof MEDIA_WIDTHS]: typeof css } = Object.keys(MEDIA_WIDTHS).reduce(
+  (accumulator, size) => {
+    ;(accumulator as any)[size] = (a: any, b: any, c: any) => css`
+      @media (max-width: ${(MEDIA_WIDTHS as any)[size]}px) {
+        ${css(a, b, c)}
+      }
+    `
+    return accumulator
+  },
+  {},
+) as any
+
 function colors(darkMode: boolean): Theme {
   return {
     isMobile: false,
     darkMode,
     mediaMinWidth: mediaMinWidthTemplates,
+    mediaMaxWidth: mediaMaxWidthTemplates,
     black: darkMode ? '#000000' : '#000000',
     white: darkMode ? '#FFFFFF' : '#FFFFFF',
     // system/bg/bg-100(bg-L0)

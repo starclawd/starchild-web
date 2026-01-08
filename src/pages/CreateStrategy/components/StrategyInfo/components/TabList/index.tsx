@@ -19,7 +19,7 @@ const TabListWrapper = styled.div<{ $isShowExpandPaperTrading: boolean }>`
   flex-direction: column;
   flex-shrink: 0;
   width: 30%;
-  min-width: 320px;
+  min-width: 300px;
   max-width: 480px;
   transition: width ${ANI_DURATION}s;
   ${({ $isShowExpandPaperTrading }) =>
@@ -80,8 +80,9 @@ export default memo(function TabList() {
         isComplete: !!strategy_config,
         disabled: false,
         tooltipContent: '',
-        description: <Trans>Once generated, you can Simulation with virtual funds or deploy with real funds.</Trans>,
+        description: <Trans>Define your strategy logic.</Trans>,
         intervalDuration: 5000,
+        showTooltip: false,
         isLoading: isCreateStrategyFrontend,
         clickCallback: handleTabClick(STRATEGY_TAB_INDEX.CREATE),
       },
@@ -93,12 +94,8 @@ export default memo(function TabList() {
         isComplete: codeGenerated,
         disabled: !codeGenerated && !isGeneratingCode && !isGeneratingCodeFrontend,
         tooltipContent: <Trans>Finish defining your strategy in Step 1 first.</Trans>,
-        description: (
-          <Trans>
-            Let the Agent write the script and transform your text strategy into executable logic. Once generated, you
-            can Simulation with virtual funds or deploy with real funds.
-          </Trans>
-        ),
+        description: <Trans>Turns your text description into code.</Trans>,
+        showTooltip: !codeGenerated && !isGeneratingCode && !isGeneratingCodeFrontend,
         intervalDuration: 30000,
         isLoading: isGeneratingCodeFrontend || isGeneratingCode,
         clickCallback: handleTabClick(STRATEGY_TAB_INDEX.CODE),
@@ -111,7 +108,8 @@ export default memo(function TabList() {
         isComplete: !!paperTradingPublicData,
         disabled: !paperTradingPublicData && !isStartingPaperTradingFrontend,
         tooltipContent: <Trans>Please generate valid code (Step 2) before starting Paper Trading.</Trans>,
-        description: <Trans>Simulation in real-time with virtual funds.</Trans>,
+        description: <Trans>Start the simulator to see how it performs.</Trans>,
+        showTooltip: !paperTradingPublicData && !isStartingPaperTradingFrontend,
         intervalDuration: 5000,
         isLoading: isStartingPaperTradingFrontend,
         clickCallback: handleTabClick(STRATEGY_TAB_INDEX.PAPER_TRADING),
@@ -123,7 +121,8 @@ export default memo(function TabList() {
         icon: <IconBase className='icon-launch' />,
         isComplete: status === STRATEGY_STATUS.DEPLOYED,
         disabled: !paperTradingPublicData,
-        tooltipContent: <Trans>Run Paper Trading first to prove your strategy works.</Trans>,
+        tooltipContent: <Trans>Comming soon</Trans>,
+        showTooltip: true,
         description: '',
         intervalDuration: 0,
         isLoading: false,

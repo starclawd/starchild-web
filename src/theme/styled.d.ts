@@ -1,13 +1,15 @@
 import 'styled-components'
 
 export const MEDIA_WIDTHS = {
-  minWidth1024: 1024,
-  minWidth1280: 1280,
-  minWidth1360: 1360,
-  minWidth1440: 1440,
-  minWidth1560: 1560,
-  minWidth1680: 1680,
-  minWidth1920: 1920,
+  width1024: 1024,
+  width1280: 1280,
+  width1360: 1360,
+  width1440: 1440,
+  width1500: 1500,
+  width1560: 1560,
+  width1600: 1600,
+  width1680: 1680,
+  width1920: 1920,
 }
 
 export type Color = string
@@ -17,13 +19,26 @@ export interface Theme {
   darkMode: boolean
   isMobile: boolean
   mediaMinWidth: {
-    minWidth1024: ThemedCssFunction<DefaultTheme>
-    minWidth1280: ThemedCssFunction<DefaultTheme>
-    minWidth1360: ThemedCssFunction<DefaultTheme>
-    minWidth1440: ThemedCssFunction<DefaultTheme>
-    minWidth1560: ThemedCssFunction<DefaultTheme>
-    minWidth1680: ThemedCssFunction<DefaultTheme>
-    minWidth1920: ThemedCssFunction<DefaultTheme>
+    width1024: ThemedCssFunction<DefaultTheme>
+    width1280: ThemedCssFunction<DefaultTheme>
+    width1360: ThemedCssFunction<DefaultTheme>
+    width1440: ThemedCssFunction<DefaultTheme>
+    width1500: ThemedCssFunction<DefaultTheme>
+    width1560: ThemedCssFunction<DefaultTheme>
+    width1600: ThemedCssFunction<DefaultTheme>
+    width1680: ThemedCssFunction<DefaultTheme>
+    width1920: ThemedCssFunction<DefaultTheme>
+  }
+  mediaMaxWidth: {
+    width1024: ThemedCssFunction<DefaultTheme>
+    width1280: ThemedCssFunction<DefaultTheme>
+    width1360: ThemedCssFunction<DefaultTheme>
+    width1440: ThemedCssFunction<DefaultTheme>
+    width1500: ThemedCssFunction<DefaultTheme>
+    width1560: ThemedCssFunction<DefaultTheme>
+    width1600: ThemedCssFunction<DefaultTheme>
+    width1680: ThemedCssFunction<DefaultTheme>
+    width1920: ThemedCssFunction<DefaultTheme>
   }
   white: Color
   black: Color

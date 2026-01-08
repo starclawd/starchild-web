@@ -12,6 +12,7 @@ const StrategyRadarChartWrapper = styled.div`
   padding: 20px;
   width: 35%;
   height: 100%;
+  gap: 8px;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -28,7 +29,6 @@ const LeftSection = styled.div`
   flex-direction: column;
   justify-content: space-between;
   flex: 1;
-  min-width: 150px;
   height: 100%;
 
   ${({ theme }) =>

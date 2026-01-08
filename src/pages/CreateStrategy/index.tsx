@@ -14,6 +14,13 @@ const CreateStrategyWrapper = styled.div`
   height: 100%;
 `
 
+const InnerContent = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-width: 1220px;
+`
+
 const LeftContent = styled.div<{ $width: number; $isHovering: boolean; $isDragging: boolean }>`
   width: ${({ $width }) => $width}px;
   height: 100%;
@@ -130,29 +137,31 @@ export default memo(function CreateStrategy() {
   )
 
   return (
-    <CreateStrategyWrapper>
-      <LeftContent ref={leftContentRef} $width={leftWidth} $isHovering={isHovering} $isDragging={isDragging}>
-        <Chat />
-        <HoverZone
-          onMouseEnter={handleHoverZoneEnter}
-          onMouseLeave={handleHoverZoneLeave}
-          onMouseMove={handleHoverZoneMouseMove}
-        />
-        <ResizeHandle
-          $isVisible={isHovering}
-          $isDragging={isDragging}
-          $topY={mouseY}
-          onMouseDown={handleMouseDown}
-          onMouseEnter={handleHoverZoneEnter}
-          onMouseLeave={handleHoverZoneLeave}
-          onMouseMove={handleHoverZoneMouseMove}
-        >
-          <IconBase className='icon-drag-expand' />
-        </ResizeHandle>
-      </LeftContent>
-      <RightContent $leftWidth={leftWidth}>
-        <StrategyInfo />
-      </RightContent>
+    <CreateStrategyWrapper className='scroll-style'>
+      <InnerContent>
+        <LeftContent ref={leftContentRef} $width={leftWidth} $isHovering={isHovering} $isDragging={isDragging}>
+          <Chat />
+          <HoverZone
+            onMouseEnter={handleHoverZoneEnter}
+            onMouseLeave={handleHoverZoneLeave}
+            onMouseMove={handleHoverZoneMouseMove}
+          />
+          <ResizeHandle
+            $isVisible={isHovering}
+            $isDragging={isDragging}
+            $topY={mouseY}
+            onMouseDown={handleMouseDown}
+            onMouseEnter={handleHoverZoneEnter}
+            onMouseLeave={handleHoverZoneLeave}
+            onMouseMove={handleHoverZoneMouseMove}
+          >
+            <IconBase className='icon-drag-expand' />
+          </ResizeHandle>
+        </LeftContent>
+        <RightContent $leftWidth={leftWidth}>
+          <StrategyInfo />
+        </RightContent>
+      </InnerContent>
     </CreateStrategyWrapper>
   )
 })

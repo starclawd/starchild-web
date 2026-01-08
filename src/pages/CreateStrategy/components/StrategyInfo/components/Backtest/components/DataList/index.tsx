@@ -86,18 +86,18 @@ const ItemWrapper = styled.div<{ $isShowWorkflow?: boolean }>`
     line-height: 20px;
     color: ${({ theme }) => theme.black0};
   }
-  ${({ theme }) => theme.mediaMinWidth.minWidth1024`
+  ${({ theme }) => theme.mediaMinWidth.width1024`
     width: calc((100% - 8px) / 3);
   `}
-  ${({ theme }) => theme.mediaMinWidth.minWidth1280`
+  ${({ theme }) => theme.mediaMinWidth.width1280`
     width: calc((100% - 12px) / 4);
   `}
   ${({ $isShowWorkflow, theme }) =>
     $isShowWorkflow
-      ? theme.mediaMinWidth.minWidth1920`
+      ? theme.mediaMinWidth.width1920`
     width: calc((100% - 20px) / 6);
   `
-      : theme.mediaMinWidth.minWidth1680`
+      : theme.mediaMinWidth.width1680`
     width: calc((100% - 20px) / 6);
   `}
  

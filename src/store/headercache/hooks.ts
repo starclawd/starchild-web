@@ -13,7 +13,7 @@ export function useIsFixMenu(): [boolean, (newIsFixMenu: boolean) => void] {
   const currentRouter = useCurrentRouter()
   const isFixMenu = useSelector((state: RootState) => state.headercache.isFixMenu)
   const dontUseFixMenu =
-    !!(width && width < MEDIA_WIDTHS.minWidth1440) ||
+    !!(width && width < MEDIA_WIDTHS.width1440) ||
     currentRouter.includes(ROUTER.USE_CASES) ||
     currentRouter.includes('documents') ||
     currentRouter.includes(ROUTER.VAULTS) ||

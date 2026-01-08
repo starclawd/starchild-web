@@ -23,7 +23,7 @@ import { useCandidateStatus } from 'store/home/hooks'
 
 export function useIsMobile(): boolean {
   const { width } = useWindowSize()
-  const isMobile = !!(width && width < MEDIA_WIDTHS.minWidth1024)
+  const isMobile = !!(width && width < MEDIA_WIDTHS.width1024)
   return isMobile
 }
 

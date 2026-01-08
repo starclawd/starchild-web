@@ -316,8 +316,8 @@ export default function AgentDescription({
           <span>
             {showBackButton && <IconButton icon='icon-chat-back' onClick={handleClick} color={theme.black100} />}
             <IconBase className='icon-task-detail' />
-            {(!isFixMenu && width && width > MEDIA_WIDTHS.minWidth1360) ||
-            (isFixMenu && width && width > MEDIA_WIDTHS.minWidth1560) ||
+            {(!isFixMenu && width && width > MEDIA_WIDTHS.width1360) ||
+            (isFixMenu && width && width > MEDIA_WIDTHS.width1560) ||
             !isBacktestTask ? (
               <Trans>Agent description</Trans>
             ) : (

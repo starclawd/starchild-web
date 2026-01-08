@@ -17,7 +17,6 @@ const CreateStrategyWrapper = styled.div`
   padding: 16px;
   width: 400px;
   height: fit-content;
-  margin-top: 20px;
   border-radius: 12px;
   border: 1px solid ${({ theme }) => theme.black800};
   background: ${({ theme }) => theme.black700};

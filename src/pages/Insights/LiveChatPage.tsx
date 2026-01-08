@@ -55,7 +55,7 @@ const LiveChatDetailWrapper = styled.div<{ $isExpandedLiveChat: boolean }>`
       transform: translateX(-100%);
     `}
   `}
-  ${({ theme, $isExpandedLiveChat }) => theme.mediaMinWidth.minWidth1280`
+  ${({ theme, $isExpandedLiveChat }) => theme.mediaMinWidth.width1280`
     position: unset;
     transform: unset;
     transition: width ${ANI_DURATION}s;

@@ -17,6 +17,9 @@ import { useStrategyOrderHistoryPaginated } from 'store/vaultsdetail/hooks/useSt
 import MoveTabList, { MoveType } from 'components/MoveTabList'
 import { DETAIL_TYPE } from 'store/vaultsdetail/vaultsdetail'
 import { PAPER_TRADING_TAB_KEY } from 'store/createstrategy/createstrategy'
+import { useWindowSize } from 'hooks/useWindowSize'
+import { useIsShowExpandPaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
+import { MEDIA_WIDTHS } from 'theme/styled'
 
 const PaperTradingTabsWrapper = styled.div`
   display: flex;
@@ -60,6 +63,15 @@ const TabPanel = styled.div<{ $isActive: boolean }>`
 export default memo(function PaperTradingTabs() {
   const { strategyId } = useParsedQueryString()
   const [activeTab, setActiveTab] = useState(PAPER_TRADING_TAB_KEY.PERFORMANCE)
+  const [isShowExpandPaperTrading] = useIsShowExpandPaperTrading()
+  const { width } = useWindowSize()
+  const isShowCount = useMemo(() => {
+    return !(!isShowExpandPaperTrading && Number(width) < MEDIA_WIDTHS.width1440)
+  }, [isShowExpandPaperTrading, width])
+
+  const isShowIcon = useMemo(() => {
+    return !(!isShowExpandPaperTrading && Number(width) < MEDIA_WIDTHS.width1360)
+  }, [isShowExpandPaperTrading, width])
 
   // 获取数据统计信息用于显示Tab标题
   const { totalCount: totalStrategyPositions } = useStrategyPositions(strategyId || '')
@@ -74,41 +86,64 @@ export default memo(function PaperTradingTabs() {
     return [
       {
         key: PAPER_TRADING_TAB_KEY.PERFORMANCE,
-        icon: <IconBase className='icon-performance' />,
+        icon: isShowIcon ? <IconBase className='icon-performance' /> : null,
         text: <Trans>Performance</Trans>,
         clickCallback: () => handleTabClick(PAPER_TRADING_TAB_KEY.PERFORMANCE),
         content: <PaperTradingPerformance activeTab={DETAIL_TYPE.STRATEGY} vaultId='' strategyId={strategyId || ''} />,
       },
       {
         key: PAPER_TRADING_TAB_KEY.SIGNALS,
-        icon: <IconBase className='icon-signals' />,
+        icon: isShowIcon ? <IconBase className='icon-signals' /> : null,
         text: <Trans>Signals</Trans>,
         clickCallback: () => handleTabClick(PAPER_TRADING_TAB_KEY.SIGNALS),
         content: <VaultChatArea />,
       },
       {
         key: PAPER_TRADING_TAB_KEY.POSITIONS,
-        icon: <IconBase className='icon-positions' />,
-        text: <Trans>Positions{totalStrategyPositions > 0 && ` (${totalStrategyPositions})`}</Trans>,
+        icon: isShowIcon ? <IconBase className='icon-positions' /> : null,
+        text: (
+          <>
+            <Trans>Positions</Trans>
+            {isShowCount && ` (${totalStrategyPositions})`}
+          </>
+        ),
         clickCallback: () => handleTabClick(PAPER_TRADING_TAB_KEY.POSITIONS),
         content: <VaultPositions activeTab={DETAIL_TYPE.STRATEGY} vaultId='' strategyId={strategyId || ''} />,
       },
       {
         key: PAPER_TRADING_TAB_KEY.ORDERS,
-        icon: <IconBase className='icon-orders' />,
-        text: <Trans>Orders{totalStrategyOrders > 0 && ` (${totalStrategyOrders})`}</Trans>,
+        icon: isShowIcon ? <IconBase className='icon-orders' /> : null,
+        text: (
+          <>
+            <Trans>Orders</Trans>
+            {isShowCount && ` (${totalStrategyOrders})`}
+          </>
+        ),
         clickCallback: () => handleTabClick(PAPER_TRADING_TAB_KEY.ORDERS),
         content: <VaultOpenOrders activeTab={DETAIL_TYPE.STRATEGY} vaultId='' strategyId={strategyId || ''} />,
       },
       {
         key: PAPER_TRADING_TAB_KEY.ORDER_HISTORY,
-        icon: <IconBase className='icon-orders' />,
-        text: <Trans>Order History{totalStrategyHistory > 0 && ` (${totalStrategyHistory})`}</Trans>,
+        icon: isShowIcon ? <IconBase className='icon-orders' /> : null,
+        text: (
+          <>
+            <Trans>Order History</Trans>
+            {isShowCount && ` (${totalStrategyHistory})`}
+          </>
+        ),
         clickCallback: () => handleTabClick(PAPER_TRADING_TAB_KEY.ORDER_HISTORY),
         content: <VaultOrderHistory activeTab={DETAIL_TYPE.STRATEGY} vaultId='' strategyId={strategyId || ''} />,
       },
     ]
-  }, [handleTabClick, strategyId, totalStrategyPositions, totalStrategyOrders, totalStrategyHistory])
+  }, [
+    handleTabClick,
+    isShowCount,
+    isShowIcon,
+    strategyId,
+    totalStrategyPositions,
+    totalStrategyOrders,
+    totalStrategyHistory,
+  ])
 
   return (
     <PaperTradingTabsWrapper>

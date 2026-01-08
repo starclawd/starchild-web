@@ -11,12 +11,20 @@ const VaultsContainer = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
-  overflow: auto;
+`
+
+const InnerContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-width: 1220px;
 `
 
 const VaultsHeader = styled.div`
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 44px;
   flex-shrink: 0;
   width: 100%;
   height: 420px;
@@ -27,11 +35,10 @@ const VaultsHeader = styled.div`
   background-repeat: no-repeat;
 `
 
-const VaultsHeaderLeft = styled.div`
+const VaultsHeaderTop = styled.div`
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   flex-grow: 1;
-  gap: 44px;
 `
 
 const VaultsTitleWrapper = styled.div`
@@ -58,6 +65,7 @@ const VaultsTitleLine2 = styled.div`
   font-style: normal;
   font-weight: 500;
   line-height: 88px;
+  white-space: nowrap;
   font-family: 'PowerGrotesk';
   color: ${({ theme }) => theme.white};
 `
@@ -71,25 +79,27 @@ const VaultsContent = styled.div`
 const Vaults = memo(() => {
   return (
     <VaultsContainer className='scroll-style'>
-      <VaultsHeader style={{ backgroundImage: `url(${vaultsBg})` }}>
-        <VaultsHeaderLeft>
-          <VaultsTitleWrapper>
-            <VaultsTitleLine1>
-              <Trans>Vibe Trading</Trans>
-            </VaultsTitleLine1>
-            <VaultsTitleLine2>
-              <Trans>Do less, earn more.</Trans>
-            </VaultsTitleLine2>
-          </VaultsTitleWrapper>
+      <InnerContent>
+        <VaultsHeader style={{ backgroundImage: `url(${vaultsBg})` }}>
+          <VaultsHeaderTop>
+            <VaultsTitleWrapper>
+              <VaultsTitleLine1>
+                <Trans>Vibe Trading</Trans>
+              </VaultsTitleLine1>
+              <VaultsTitleLine2>
+                <Trans>Do less, earn more.</Trans>
+              </VaultsTitleLine2>
+            </VaultsTitleWrapper>
 
+            <CreateStrategy />
+          </VaultsHeaderTop>
           <Leaderboard />
-        </VaultsHeaderLeft>
-        <CreateStrategy />
-      </VaultsHeader>
+        </VaultsHeader>
 
-      <VaultsContent>
-        <StrategyTable />
-      </VaultsContent>
+        <VaultsContent>
+          <StrategyTable />
+        </VaultsContent>
+      </InnerContent>
     </VaultsContainer>
   )
 })

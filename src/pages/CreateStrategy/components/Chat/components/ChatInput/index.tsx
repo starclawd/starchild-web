@@ -7,12 +7,19 @@ import { t } from '@lingui/core/macro'
 import { ButtonCommon } from 'components/Button'
 import { useSendChatUserContent } from 'store/createstrategy/hooks/useStream'
 import { useIsLoadingChatStream } from 'store/createstrategy/hooks/useLoadingState'
-import { useCurrentRouter, usePromptModalToggle, useSetCurrentRouter } from 'store/application/hooks'
+import {
+  useConnectWalletModalToggle,
+  useCurrentRouter,
+  usePromptModalToggle,
+  useSetCurrentRouter,
+} from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import { isMatchCurrentRouter } from 'utils'
 import { useChatValue } from 'store/createstrategy/hooks/useChatContent'
 import { useResetAllState } from 'store/createstrategy/hooks/useResetAllState'
 import ModeSelect from 'pages/Chat/components/ChatInput/components/ModeSelect'
+import { Trans } from '@lingui/react/macro'
+import { useIsLogin } from 'store/login/hooks'
 
 const ChatInputWrapper = styled.div`
   position: relative;
@@ -35,6 +42,7 @@ const ChatInputContentWrapper = styled.div<{ $value: string; $isChatPage: boolea
   border: 1px solid ${({ theme }) => theme.black600};
   background: ${({ theme }) => theme.black800};
   backdrop-filter: blur(12px);
+  z-index: 2;
   ${({ $isChatPage }) =>
     !$isChatPage &&
     css`
@@ -54,13 +62,43 @@ const ChatInputContentWrapper = styled.div<{ $value: string; $isChatPage: boolea
     `}
 `
 
+const LoginToView = styled.div`
+  position: absolute;
+  top: -12px;
+  left: 20px;
+  display: flex;
+  gap: 8px;
+  width: calc(100% - 40px);
+  height: 64px;
+  padding: 8px 20px 0;
+  z-index: 1;
+  border-radius: 12px;
+  backdrop-filter: blur(12px);
+  background-color: ${({ theme }) => theme.black600};
+  cursor: pointer;
+  span:first-child {
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    color: ${({ theme }) => theme.black100};
+  }
+  span:last-child {
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    color: ${({ theme }) => theme.brand100};
+  }
+`
+
 const ClickWrapper = styled.div`
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 1;
+  z-index: 3;
 `
 
 const InputWrapper = styled.div<{ $isChatPage: boolean; $isMultiline: boolean }>`
@@ -149,6 +187,7 @@ const SendButton = styled(ButtonCommon)`
 `
 
 export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: boolean }) {
+  const isLogin = useIsLogin()
   const [value, setValue] = useChatValue()
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const [isMultiline, setIsMultiline] = useState(true)
@@ -156,7 +195,7 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
   const currentRouter = useCurrentRouter()
   const setCurrentRouter = useSetCurrentRouter()
   const resetAllState = useResetAllState()
-  const togglePromptModal = usePromptModalToggle()
+  const toggleConnectWalletModal = useConnectWalletModalToggle()
   const sendChatUserContent = useSendChatUserContent()
   const handleWrapperClick = useCallback(() => {
     inputRef.current?.focus()
@@ -198,6 +237,10 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
     }, 0)
   }, [value, isLoadingChatStream, currentRouter, resetAllState, sendChatUserContent, setCurrentRouter])
 
+  const handleLogin = useCallback(() => {
+    toggleConnectWalletModal()
+  }, [toggleConnectWalletModal])
+
   // useEffect(() => {
   //   checkMultiline()
   // }, [checkMultiline])
@@ -209,6 +252,16 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
       onTouchMove={(e) => e.stopPropagation()}
       onTouchEnd={(e) => e.stopPropagation()}
     >
+      {!isLogin && !isChatPage && (
+        <LoginToView onClick={handleLogin}>
+          <span>
+            <Trans>Log in to view AI responses</Trans>
+          </span>
+          <span>
+            <Trans>Login</Trans>
+          </span>
+        </LoginToView>
+      )}
       <ChatInputContentWrapper $isChatPage={isChatPage} $value={value}>
         <ClickWrapper onClick={handleWrapperClick}></ClickWrapper>
         <InputWrapper $isChatPage={isChatPage} $isMultiline={isMultiline}>

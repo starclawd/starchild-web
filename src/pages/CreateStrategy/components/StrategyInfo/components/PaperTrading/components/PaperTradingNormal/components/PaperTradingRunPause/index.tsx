@@ -17,12 +17,11 @@ import { usePaperTradingPublic } from 'store/vaultsdetail/hooks/usePaperTradingP
 
 const RunPauseButton = styled(ButtonBorder)`
   width: fit-content;
-  min-width: 80px;
   height: 100%;
   border: none;
 `
 
-export default memo(function PaperTradingRunPause() {
+export default memo(function PaperTradingRunPause({ isShowText }: { isShowText: boolean }) {
   const { strategyId } = useParsedQueryString()
   const { paperTradingPublicData } = usePaperTradingPublic({ strategyId: strategyId || '' })
   const handleStartPaperTrading = useHandleStartPaperTrading()
@@ -49,12 +48,12 @@ export default memo(function PaperTradingRunPause() {
       ) : isRunning ? (
         <>
           <IconBase className='icon-pause' />
-          <Trans>Pause</Trans>
+          {isShowText && <Trans>Pause</Trans>}
         </>
       ) : (
         <>
           <IconBase className='icon-play' />
-          <Trans>Run</Trans>
+          {isShowText && <Trans>Run</Trans>}
         </>
       )}
     </RunPauseButton>

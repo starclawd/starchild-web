@@ -40,7 +40,7 @@ const ChatWrapper = styled.div<{
   justify-content: space-between;
   width: 100%;
   height: 100%;
-  ${({ theme, $showHistory }) => theme.mediaMinWidth.minWidth1024`
+  ${({ theme, $showHistory }) => theme.mediaMinWidth.width1024`
     #chatScrollContent,
     #chatInputOutWrapper,
     #recommendationsWrapper,
@@ -60,7 +60,7 @@ const ChatWrapper = styled.div<{
       `
     }
   `}
-  ${({ theme }) => theme.mediaMinWidth.minWidth1280`
+  ${({ theme }) => theme.mediaMinWidth.width1280`
     #chatScrollContent,
     #chatInputOutWrapper,
     #recommendationsWrapper,
@@ -71,7 +71,7 @@ const ChatWrapper = styled.div<{
       flex-shrink: 1;
     }
   `}
-  ${({ theme }) => theme.mediaMinWidth.minWidth1920`
+  ${({ theme }) => theme.mediaMinWidth.width1920`
     #chatScrollContent,
     #chatInputOutWrapper,
     #recommendationsWrapper,
@@ -127,7 +127,7 @@ const Empty = styled.div`
   visibility: hidden;
   width: 0;
   height: 100%;
-  ${({ theme }) => theme.mediaMinWidth.minWidth1280`
+  ${({ theme }) => theme.mediaMinWidth.width1280`
     display: none;
   `}
 `
@@ -150,7 +150,7 @@ const DeepThinkContent = styled.div<{ $isShowRightContent: boolean; $shouldExpan
       transform: translateX(-100%);
     `}
   `}
-  ${({ theme, $isShowRightContent, $shouldExpandRightSection }) => theme.mediaMinWidth.minWidth1280`
+  ${({ theme, $isShowRightContent, $shouldExpandRightSection }) => theme.mediaMinWidth.width1280`
     position: unset;
     transform: unset;
     transition: width ${ANI_DURATION}s;

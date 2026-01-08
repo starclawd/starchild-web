@@ -17,6 +17,13 @@ const VaultDetailContainer = styled.div`
   height: 100%;
 `
 
+const InnerContent = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-width: 1220px;
+`
+
 const VaultDetailMainContent = styled.div`
   display: flex;
   flex-direction: column;
@@ -70,27 +77,29 @@ const VaultDetail = memo(() => {
   }, [currentVaultId, activeTab, setActiveTab])
 
   return (
-    <VaultDetailContainer>
-      <VaultDetailMainContent>
-        {/* 导航栏：返回按钮 + WalletConnect */}
-        <VaultDetailNavigation />
-        <VaultDetailContentWrapper>
-          <StrategyMarket />
-          {isLoadingPaperTradingPublic ? (
-            <Pending isNotButtonLoading={true} />
-          ) : (
-            <RightInfo className='transparent-scroll-style'>
-              <VaultInfo />
-              <VaultContent />
-            </RightInfo>
-          )}
-        </VaultDetailContentWrapper>
-      </VaultDetailMainContent>
+    <VaultDetailContainer className='scroll-style'>
+      <InnerContent>
+        <VaultDetailMainContent>
+          {/* 导航栏：返回按钮 + WalletConnect */}
+          <VaultDetailNavigation />
+          <VaultDetailContentWrapper>
+            <StrategyMarket />
+            {isLoadingPaperTradingPublic ? (
+              <Pending isNotButtonLoading={true} />
+            ) : (
+              <RightInfo className='transparent-scroll-style'>
+                <VaultInfo />
+                <VaultContent />
+              </RightInfo>
+            )}
+          </VaultDetailContentWrapper>
+        </VaultDetailMainContent>
 
-      {/* 聊天区域 */}
-      <VaultDetailChatSidebar>
-        <VaultChatArea />
-      </VaultDetailChatSidebar>
+        {/* 聊天区域 */}
+        <VaultDetailChatSidebar>
+          <VaultChatArea />
+        </VaultDetailChatSidebar>
+      </InnerContent>
     </VaultDetailContainer>
   )
 })
