@@ -14,6 +14,7 @@ import { useStrategyCode } from './useCode'
 import { usePaperTradingPublic } from 'store/vaultsdetail/hooks/usePaperTradingPublic'
 import { GENERATION_STATUS, STRATEGY_STATUS, STRATEGY_TAB_INDEX } from '../createstrategy'
 
+// for create page
 export function useStrategyDetail({ strategyId }: { strategyId: string }) {
   const dispatch = useDispatch()
   const [{ userInfoId }] = useUserInfo()

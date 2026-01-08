@@ -8,6 +8,7 @@ import { useAppKitAccount } from '@reown/appkit/react'
 import { ButtonCommon } from 'components/Button'
 import { useConnectWalletModalToggle } from 'store/application/hooks'
 import { useAppKitWallet } from '@reown/appkit-wallet-button/react'
+import { ANI_DURATION } from 'constants/index'
 
 export enum ColorMode {
   BRAND = 'brand',
@@ -20,10 +21,11 @@ interface OperationSelectorProps {
   onDisconnect?: () => void
   className?: string
   colorMode?: ColorMode
+  expandMode?: boolean
 }
 
 // 主容器
-const OperationContainer = styled.div`
+const OperationContainer = styled.div<{ $expandMode: boolean }>`
   position: relative;
   display: inline-flex;
 
@@ -31,28 +33,23 @@ const OperationContainer = styled.div`
     height: 20px;
   }
 
-  .select-border-wrapper {
-    border: none;
-    padding: 0;
-    background-color: transparent;
-  }
-
-  .icon-chat-expand {
-    margin-left: 4px;
-    font-size: 18px;
-    color: ${({ theme }) => theme.black200};
-  }
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      .select-border-wrapper {
-        padding: ${vm(4)};
-        .icon-chat-expand {
-          font-size: ${vm(16)};
-        }
+  .select-value-wrapper {
+    gap: 2px;
+    &.show {
+      .icon-more {
+        color: ${({ theme, $expandMode }) => ($expandMode ? theme.black1000 : theme.black0)};
       }
-    `}
+    }
+  }
+
+  .icon-more {
+    font-size: 18px;
+    color: ${({ theme, $expandMode }) => ($expandMode ? theme.black1000 : theme.black200)};
+    transition: all ${ANI_DURATION}s;
+    &:hover {
+      color: ${({ theme, $expandMode }) => ($expandMode ? theme.black1000 : theme.black0)};
+    }
+  }
 `
 
 // 图标容器
@@ -124,13 +121,13 @@ interface ConnectButtonProps {
 }
 
 const ConnectButton = styled(ButtonCommon)<ConnectButtonProps & { $isCreateStrategy: boolean }>`
-  background: ${({ theme, $colorMode }) => ($colorMode === ColorMode.BRAND ? theme.black1000 : theme.brand100)};
+  background: transparent;
   color: ${({ theme, $colorMode }) => ($colorMode === ColorMode.BRAND ? theme.brand100 : theme.black0)};
-  padding: 8px 12px;
+  padding: 0;
   font-size: 12px;
   line-height: 18px;
   font-weight: 500;
-  border-radius: 30px;
+  border-radius: 4px;
   width: fit-content;
   height: 28px;
   ${({ $isCreateStrategy }) =>
@@ -155,6 +152,7 @@ const OperationSelector = memo(
     className,
     colorMode = ColorMode.BRAND,
     isCreateStrategy = false,
+    expandMode = false,
   }: OperationSelectorProps) => {
     const { isConnected } = useAppKitAccount()
     const toggleConnectWalletModal = useConnectWalletModalToggle()
@@ -202,7 +200,7 @@ const OperationSelector = memo(
     )
 
     return (
-      <OperationContainer className={className}>
+      <OperationContainer $expandMode={expandMode} className={className}>
         {isConnected ? (
           <Select
             usePortal

@@ -11,6 +11,7 @@ import { vm } from 'pages/helper'
 import { CHAIN_ID } from 'constants/chainInfo'
 import NetworkSelector, { ColorMode } from '../NetworkSelector'
 import OperationSelector, { ColorMode as OperationColorMode } from '../OperationSelector'
+import { useTheme } from 'store/themecache/hooks'
 
 interface NormalWalletConnectProps {
   address: string
@@ -34,6 +35,7 @@ const WalletContainer = styled.div`
   background: ${({ theme }) => theme.brand100};
   padding: 16px;
   width: 100%;
+  border-radius: 8px;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -61,7 +63,7 @@ const WalletContent = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
+  gap: 12px;
 `
 
 const WalletInfo = styled.div`
@@ -117,10 +119,12 @@ const BalanceLabel = styled.span`
 // 未连接时的样式组件
 const UnconnectedContainer = styled.div`
   background: ${({ theme }) => theme.brand100};
-  padding: 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 16px;
+  gap: 12px;
+  border-radius: 8px;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -200,14 +204,14 @@ const UnconnectedWalletSubtitle = styled.p`
 
 const ConnectButton = styled(ButtonCommon)`
   background: ${({ theme }) => theme.black};
-  color: ${({ theme }) => theme.brand100};
-  padding: 8px 12px;
+  color: ${({ theme }) => theme.black1000};
   font-size: 12px;
   line-height: 18px;
   font-weight: 500;
-  border-radius: 30px;
   width: fit-content;
   height: 28px;
+  background-color: transparent;
+  padding: 0;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -251,6 +255,7 @@ const NormalWalletConnect = memo(
     isPending,
     onConnect,
   }: NormalWalletConnectProps) => {
+    const theme = useTheme()
     // 未连接钱包时的UI
     if (!isConnected) {
       return (
@@ -303,8 +308,14 @@ const NormalWalletConnect = memo(
             </InfoContent>
           </WalletInfo>
 
-          <NetworkSelector colorMode={ColorMode.DARK} />
-          <OperationSelector onDisconnect={onDisconnect} onCopy={onCopy} colorMode={OperationColorMode.BRAND} />
+          <NetworkSelector colorMode={ColorMode.BRAND} />
+          <Divider vertical color={theme.black700} />
+          <OperationSelector
+            expandMode={true}
+            onDisconnect={onDisconnect}
+            onCopy={onCopy}
+            colorMode={OperationColorMode.BRAND}
+          />
         </WalletContent>
       </WalletContainer>
     )

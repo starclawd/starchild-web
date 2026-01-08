@@ -12,6 +12,7 @@ import { useMyStrategyTabKey, useMyPortfolioActiveTab } from 'store/mystrategyca
 import { useMyStrategies } from 'store/mystrategy/hooks/useMyStrategies'
 import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
 import { MY_PORTFOLIO_TAB_KEY, STRATEGY_TAB_KEY } from 'store/mystrategycache/mystrategycache'
+import { WALLET_CONNECT_MODE } from 'store/vaults/vaults'
 
 const MyPortfolioWrapper = styled.div`
   display: flex;
@@ -187,7 +188,7 @@ export default memo(function MyPortfolio() {
       </LeftContent>
       <RightContent>
         <RightTop>
-          <VaultsWalletConnect />
+          <VaultsWalletConnect mode={WALLET_CONNECT_MODE.EXPAND} />
         </RightTop>
         <Transactions />
       </RightContent>

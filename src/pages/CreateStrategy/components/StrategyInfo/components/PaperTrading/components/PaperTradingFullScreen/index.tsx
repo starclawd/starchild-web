@@ -99,7 +99,7 @@ export default memo(function PaperTradingFullScreen() {
         </LeftContent>
 
         <RightContent>
-          <VaultChatArea strategyId={strategyId || ''} />
+          <VaultChatArea />
         </RightContent>
       </FullScreenContent>
     </FullScreenWrapper>

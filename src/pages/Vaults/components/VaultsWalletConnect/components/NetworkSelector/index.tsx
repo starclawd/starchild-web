@@ -17,7 +17,6 @@ export enum ColorMode {
 
 interface NetworkSelectorContainerProps {
   $colorMode: ColorMode
-  $compactMode: boolean
 }
 
 const NetworkSelectorContainer = styled.div<NetworkSelectorContainerProps>`
@@ -26,33 +25,27 @@ const NetworkSelectorContainer = styled.div<NetworkSelectorContainerProps>`
   gap: 4px;
 
   .select-wrapper {
-    height: ${({ $compactMode }) => ($compactMode ? '20px' : '28px')};
-  }
-
-  .select-border-wrapper {
-    background: ${({ theme, $compactMode }) => ($compactMode ? 'transparent' : theme.brand300)};
-    border: none;
-    border-radius: 0;
-    padding: ${({ $compactMode }) => ($compactMode ? '0' : '8px')};
-    height: 28px;
-
-    .icon-expand {
-      margin-left: 4px;
-      color: ${({ theme, $colorMode }) => ($colorMode === ColorMode.BRAND ? theme.black1000 : theme.black200)};
+    &:hover {
+      .icon-expand {
+        color: ${({ theme, $colorMode }) => ($colorMode === ColorMode.BRAND ? theme.black1000 : theme.black0)};
+      }
     }
   }
 
-  ${({ theme, $compactMode }) =>
-    theme.isMobile &&
-    css`
-      min-width: ${vm(140)};
+  .select-value-wrapper {
+    gap: 2px;
+    border: none;
+    border-radius: 4px;
 
-      .select-border-wrapper {
-        border-radius: ${vm(8)};
-        padding: ${$compactMode ? '0' : `${vm(8)} ${vm(12)}`};
-        height: ${vm(40)};
+    .icon-expand {
+      color: ${({ theme, $colorMode }) => ($colorMode === ColorMode.BRAND ? theme.black1000 : theme.black200)};
+    }
+    &.show {
+      .icon-expand {
+        color: ${({ theme, $colorMode }) => ($colorMode === ColorMode.BRAND ? theme.black1000 : theme.black0)};
       }
-    `}
+    }
+  }
 `
 
 const SelectValue = styled.div`
@@ -119,7 +112,7 @@ const AvailableClaimAmount = styled.span`
 const WrongNetworkButton = styled(ButtonCommon)`
   height: 28px;
   padding: 5px 12px;
-  border-radius: 60px;
+  border-radius: 4px;
   font-size: 13px;
   font-weight: 500;
   line-height: 20px;
@@ -142,16 +135,10 @@ export interface NetworkSelectorProps {
   disabled?: boolean
   colorMode?: ColorMode
   showAvailableClaimAmount?: boolean
-  compactMode?: boolean
 }
 
 const NetworkSelector = memo(
-  ({
-    disabled = false,
-    colorMode = ColorMode.BRAND,
-    showAvailableClaimAmount = false,
-    compactMode = false,
-  }: NetworkSelectorProps) => {
+  ({ disabled = false, colorMode = ColorMode.BRAND, showAvailableClaimAmount = false }: NetworkSelectorProps) => {
     const { chainId, switchNetwork } = useAppKitNetwork()
     const { isConnected } = useAppKitAccount()
     const [claimData] = useClaimInfo()
@@ -212,7 +199,7 @@ const NetworkSelector = memo(
 
     return (
       <>
-        <NetworkSelectorContainer $colorMode={colorMode} $compactMode={compactMode}>
+        <NetworkSelectorContainer $colorMode={colorMode}>
           {!isChainSupported ? (
             <WrongNetworkButton onClick={toggleSwitchChainModal}>
               <Trans>Wrong network</Trans>

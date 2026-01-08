@@ -24,14 +24,16 @@ export interface VaultPositionsOrdersProps {
 const TableContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
+  padding: 20px;
 
-  .positions-orders-tab-list {
+  .move-tab-item {
     height: 40px;
-
-    .tab-item {
-      border: 1px solid ${({ theme }) => theme.black800};
-    }
+    padding: 0;
+    font-size: 13px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
   }
 
   ${({ theme }) =>
@@ -45,33 +47,6 @@ const TableContainer = styled.div`
 const TableContent = styled.div`
   width: 100%;
   overflow-x: auto;
-`
-
-const PlaceholderTable = styled.div`
-  width: 100%;
-  min-height: 300px;
-  background: ${({ theme }) => theme.black800};
-  border: 2px dashed ${({ theme }) => theme.black800};
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  color: ${({ theme }) => theme.black200};
-  font-size: 16px;
-  font-weight: 500;
-  text-align: center;
-  padding: 20px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      min-height: ${vm(250)};
-      font-size: ${vm(16)};
-      gap: ${vm(12)};
-      padding: ${vm(20)};
-    `}
 `
 
 const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, strategyId }) => {
@@ -160,7 +135,7 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vault
 
   return (
     <TableContainer>
-      <TabList className='positions-orders-tab-list' tabList={subTabList} tabKey={activeSubTab} />
+      <MoveTabList gap={20} moveType={MoveType.LINE} tabList={subTabList} tabKey={activeSubTab} />
       <TableContent>
         {activeSubTab === 0 ? (
           <VaultPositions activeTab={activeTab} vaultId={vaultId || ''} strategyId={strategyId || ''} />

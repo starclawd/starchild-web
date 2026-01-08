@@ -1,55 +1,26 @@
-import { memo, useMemo, useState, useEffect } from 'react'
-import styled, { css } from 'styled-components'
+import { memo, useMemo } from 'react'
 import { Trans } from '@lingui/react/macro'
-import { useAppKit, useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
+import { useAppKitAccount } from '@reown/appkit/react'
 import { useAppKitWallet } from '@reown/appkit-wallet-button/react'
 import { useDisconnect } from '@reown/appkit/react'
 import { Address } from 'viem'
 import { useUsdcBalanceOf } from 'hooks/contract/useUsdcContract'
-import { ButtonCommon } from 'components/Button'
 import { formatUnits } from 'viem'
 import { useFetchMyVaultStatsData } from 'store/vaults/hooks/useVaultData'
-import NormalWalletConnect from './components/NormalWalletConnect'
-import CompactWalletConnect from './components/CompactWalletConnect'
-import { vm } from 'pages/helper'
+import ExpandWalletConnect from './components/ExpandWalletConnect'
+import ShrinkWalletConnect from './components/ShrinkWalletConnect'
 import { useUserInfo } from 'store/login/hooks'
-import { CHAIN_ID } from 'constants/chainInfo'
-import Avatar from 'components/Avatar'
-import NetworkSelector from './components/NetworkSelector'
 import { useConnectWalletModalToggle } from 'store/application/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useTheme } from 'store/themecache/hooks'
-
-// 组件模式类型定义
-type WalletConnectMode = 'normal' | 'compact'
+import { WALLET_CONNECT_MODE } from 'store/vaults/vaults'
 
 // 组件属性接口
 interface VaultsWalletConnectProps {
-  mode?: WalletConnectMode
-  isCreateStrategy?: boolean
+  mode?: WALLET_CONNECT_MODE
 }
 
-// 连接钱包按钮样式
-const WalletConnectContainer = styled.div`
-  background: ${({ theme }) => theme.black700};
-  border-radius: 12px;
-  padding: 12px 16px;
-
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      padding: ${vm(12)} ${vm(16)};
-    `}
-`
-
-const ConnectButton = styled(ButtonCommon)`
-  padding: 12px 24px;
-  font-size: 14px;
-  font-weight: 600;
-  width: 100%;
-`
-
-const VaultsWalletConnect = memo(({ mode = 'normal', isCreateStrategy = false }: VaultsWalletConnectProps) => {
+const VaultsWalletConnect = memo(({ mode = WALLET_CONNECT_MODE.SHRINK }: VaultsWalletConnectProps) => {
   const { address, isConnected } = useAppKitAccount()
   const toggleConnectWalletModal = useConnectWalletModalToggle()
   const { isPending } = useAppKitWallet({
@@ -168,10 +139,9 @@ const VaultsWalletConnect = memo(({ mode = 'normal', isCreateStrategy = false }:
   }
 
   // 根据模式渲染不同的组件
-  if (mode === 'compact') {
+  if (mode === WALLET_CONNECT_MODE.SHRINK) {
     return (
-      <CompactWalletConnect
-        isCreateStrategy={isCreateStrategy}
+      <ShrinkWalletConnect
         address={address || ''}
         userAvatar={userAvatar}
         formattedAddress={formattedAddress}
@@ -183,7 +153,7 @@ const VaultsWalletConnect = memo(({ mode = 'normal', isCreateStrategy = false }:
 
   // Normal 模式（包含连接和未连接状态）
   return (
-    <NormalWalletConnect
+    <ExpandWalletConnect
       address={address || ''}
       formattedAddress={formattedAddress}
       formattedBalance={formattedBalance}

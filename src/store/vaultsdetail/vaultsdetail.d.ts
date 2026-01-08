@@ -32,9 +32,6 @@ export interface VaultDetailState {
   // Tab状态管理
   activeTab: DETAIL_TYPE
 
-  // 当前查看的strategy信息
-  currentStrategyId: string | null
-
   // VaultInfo 数据
   vaultInfo: VaultInfo | null
 

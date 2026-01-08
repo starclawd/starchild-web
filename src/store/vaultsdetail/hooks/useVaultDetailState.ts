@@ -5,7 +5,6 @@ import {
   setActiveTab as setActiveTabAction,
   setChartType as setChartTypeAction,
   setIsLoadingChart as setIsLoadingChartAction,
-  setCurrentStrategyId as setCurrentStrategyIdAction,
   resetVaultDetail,
 } from '../reducer'
 import { DETAIL_TYPE, CHART_TYPE, CHAT_TIME_RANGE } from '../vaultsdetail.d'
@@ -27,19 +26,6 @@ export function useActiveTab(): [DETAIL_TYPE, ParamFun<DETAIL_TYPE>] {
 // 当前vault ID - 从strategyInfo获取vault_id
 export function useCurrentVaultId(): string | null {
   return useSelector((state: RootState) => state.vaultsdetail.strategyInfo?.vault_id || null)
-}
-
-// 当前strategy ID状态管理
-export function useCurrentStrategyId(): [string | null, ParamFun<string | null>] {
-  const dispatch = useDispatch()
-  const currentStrategyId = useSelector((state: RootState) => state.vaultsdetail.currentStrategyId)
-  const setCurrentStrategyId = useCallback(
-    (strategyId: string | null) => {
-      dispatch(setCurrentStrategyIdAction(strategyId))
-    },
-    [dispatch],
-  )
-  return [currentStrategyId, setCurrentStrategyId]
 }
 
 // 图表类型状态管理

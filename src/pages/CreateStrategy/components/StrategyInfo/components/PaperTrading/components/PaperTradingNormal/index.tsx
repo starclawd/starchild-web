@@ -84,7 +84,7 @@ export default memo(function PaperTradingTabs() {
         icon: <IconBase className='icon-signals' />,
         text: <Trans>Signals</Trans>,
         clickCallback: () => handleTabClick(PAPER_TRADING_TAB_KEY.SIGNALS),
-        content: <VaultChatArea strategyId={strategyId || ''} />,
+        content: <VaultChatArea />,
       },
       {
         key: PAPER_TRADING_TAB_KEY.POSITIONS,

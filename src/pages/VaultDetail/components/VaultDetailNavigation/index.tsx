@@ -1,57 +1,64 @@
 import { memo, useCallback } from 'react'
-import styled, { css, useTheme } from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import { IconButton } from 'components/Button'
-import { useCurrentRouter } from 'store/application/hooks'
-import { ROUTER } from 'pages/router'
 import VaultsWalletConnect from 'pages/Vaults/components/VaultsWalletConnect'
-import { vm } from 'pages/helper'
+import { WALLET_CONNECT_MODE } from 'store/vaults/vaults'
+import { IconBase } from 'components/Icons'
+import { ANI_DURATION } from 'constants/index'
+import { useIsShowStrategyMarket } from 'store/vaultsdetailcache/hooks'
 
 const NavigationContainer = styled.div`
   display: flex;
-  height: 49px;
-  padding: 0 8px;
-`
-
-const InnerContent = styled.div`
-  display: flex;
-  align-items: center;
+  align-content: center;
   justify-content: space-between;
-  width: 100%;
+  flex-shrink: 0;
+  height: 60px;
+  padding: 0 20px;
+  cursor: pointer;
+  border-right: 1px solid ${({ theme }) => theme.black800};
   border-bottom: 1px solid ${({ theme }) => theme.black800};
 `
 
-const LeftSection = styled.div`
+const LeftSection = styled.div<{ $isShowStrategyMarket: boolean }>`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
   color: ${({ theme }) => theme.black0};
+  transition: all ${ANI_DURATION}s;
   .icon-arrow-bar-right {
-    font-size: 24px;
+    font-size: 18px;
+    color: ${({ theme }) => theme.black0};
   }
+  &:hover {
+    opacity: 0.7;
+  }
+  ${({ $isShowStrategyMarket }) =>
+    $isShowStrategyMarket &&
+    css`
+      .icon-arrow-bar-right {
+        transform: rotate(180deg);
+      }
+    `}
 `
 
 const VaultDetailNavigation = memo(() => {
-  const [, setCurrentRouter] = useCurrentRouter()
-  const theme = useTheme()
+  const [isShowStrategyMarket, setIsShowStrategyMarket] = useIsShowStrategyMarket()
 
-  const handleBack = useCallback(() => {
-    setCurrentRouter(ROUTER.VAULTS)
-  }, [setCurrentRouter])
+  const toggleStrategyMarket = useCallback(() => {
+    setIsShowStrategyMarket(!isShowStrategyMarket)
+  }, [isShowStrategyMarket, setIsShowStrategyMarket])
 
   return (
     <NavigationContainer>
-      <InnerContent>
-        <LeftSection>
-          <IconButton icon='icon-arrow-bar-right' onClick={handleBack} color={theme.black0} />
-          <Trans>Strategy market</Trans>
-        </LeftSection>
-        <VaultsWalletConnect isCreateStrategy mode='compact' />
-      </InnerContent>
+      <LeftSection $isShowStrategyMarket={isShowStrategyMarket} onClick={toggleStrategyMarket}>
+        <IconBase className='icon-arrow-bar-right' />
+        <Trans>Strategy market</Trans>
+      </LeftSection>
+      <VaultsWalletConnect mode={WALLET_CONNECT_MODE.SHRINK} />
     </NavigationContainer>
   )
 })

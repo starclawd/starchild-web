@@ -10,6 +10,7 @@ import ResponseProgress from './components/ResponseProgress'
 import PaperTradingStatus from './components/PaperTradingStatus'
 import { PAPER_TRADING_STATUS } from 'store/createstrategy/createstrategy'
 import { SIGNAL_TYPE } from 'api/strategy'
+import useParsedQueryString from 'hooks/useParsedQueryString'
 const ChatAreaContainer = styled.div<{ $isPaperTrading?: boolean }>`
   display: flex;
   flex-direction: column;
@@ -31,7 +32,7 @@ const TopContent = styled.div`
   gap: 4px;
   flex-shrink: 0;
   width: 100%;
-  height: 58px;
+  height: 60px;
   padding: 0 20px;
   border-bottom: 1px solid ${({ theme }) => theme.black800};
 `
@@ -48,14 +49,15 @@ const SignalList = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: calc(100% - 58px);
+  height: calc(100% - 60px);
   gap: 8px;
   padding: 20px;
 `
 
-const VaultChatArea = memo(({ strategyId, isShowRestart }: { strategyId: string; isShowRestart?: boolean }) => {
+const VaultChatArea = memo(() => {
+  const { strategyId } = useParsedQueryString()
   const [isShowMonitoringProgress, setIsShowMonitoringProgress] = useState(false)
-  const { signalList } = useSignalList({ strategyId })
+  const { signalList } = useSignalList({ strategyId: strategyId || '' })
   const { paperTradingPublicData } = usePaperTradingPublic({ strategyId: strategyId || '' })
   const paperTradingStatus = useMemo(() => {
     return paperTradingPublicData?.status

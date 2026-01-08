@@ -5,13 +5,7 @@ import { IconBase } from 'components/Icons'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import { useCurrentRouter, useDepositAndWithdrawModalToggle } from 'store/application/hooks'
 import { useCurrentDepositAndWithdrawVault } from 'store/vaults/hooks'
-import {
-  useVaultInfo,
-  useCurrentVaultId,
-  useCurrentStrategyId,
-  useActiveTab,
-  useStrategyInfo,
-} from 'store/vaultsdetail/hooks'
+import { useVaultInfo, useCurrentVaultId, useActiveTab, useStrategyInfo } from 'store/vaultsdetail/hooks'
 import { usePaperTradingPublic } from 'store/vaultsdetail/hooks/usePaperTradingPublic'
 import { useVaultLpInfo } from 'store/myvault/hooks/useVaultLpInfo'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
@@ -27,15 +21,26 @@ import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
 import StrategyStatus from './components/StrategyStatus'
 import TabList from 'components/TabList'
 import { DETAIL_TYPE } from 'store/vaultsdetail/vaultsdetail'
+import PixelCanvas from 'pages/Chat/components/PixelCanvas'
+import useParsedQueryString from 'hooks/useParsedQueryString'
 
 const VaultInfoContainer = styled.div`
+  position: relative;
   display: flex;
   justify-content: space-between;
   flex-direction: column;
+  flex-shrink: 0;
+  height: 244px;
+`
+
+const InnerContent = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  height: 100%;
   gap: 40px;
-  ${({ theme }) => theme.mediaMinWidth.minWidth1280`
-    flex-direction: row;
-  `}
+  padding: 40px 40px 20px;
+  z-index: 2;
 `
 
 const LeftWrapper = styled.div`
@@ -215,6 +220,7 @@ const TabsWrapper = styled.div`
 
 export default memo(function VaultInfo() {
   const { address } = useAppKitAccount()
+  const { strategyId } = useParsedQueryString()
   const { chainId, switchNetwork } = useAppKitNetwork()
   const [, setCurrentRouter] = useCurrentRouter()
   const toggleDepositAndWithdrawModal = useDepositAndWithdrawModalToggle()
@@ -224,10 +230,10 @@ export default memo(function VaultInfo() {
   const [activeTab, setActiveTab] = useActiveTab()
   const vaultId = useCurrentVaultId()
   const { vaultLpInfo } = useVaultLpInfo({ walletAddress: address as string, vaultId: vaultId || '' })
-  const [vaultInfo] = useVaultInfo()
-  const [strategyInfo] = useStrategyInfo()
-  const [strategyId] = useCurrentStrategyId()
+  const { vaultInfo } = useVaultInfo({ vaultId })
+  const { strategyInfo } = useStrategyInfo({ strategyId: strategyId || null })
   const { paperTradingPublicData } = usePaperTradingPublic({ strategyId: strategyId || '' })
+  console.log('strategyInfo', strategyInfo)
   const [description, strategyName] = useMemo(() => {
     return [strategyInfo?.description || '--', strategyInfo?.strategy_name || '--']
   }, [strategyInfo])
@@ -366,74 +372,77 @@ export default memo(function VaultInfo() {
 
   return (
     <VaultInfoContainer>
-      <LeftWrapper>
-        <VaultHeader>
-          <VaultTitle>{strategyName}</VaultTitle>
-          <StrategyStatus status={paperTradingPublicData?.status} />
-        </VaultHeader>
+      <PixelCanvas />
+      <InnerContent>
+        <LeftWrapper>
+          <VaultHeader>
+            <VaultTitle>{strategyName}</VaultTitle>
+            <StrategyStatus status={paperTradingPublicData?.status} />
+          </VaultHeader>
 
-        <VaultDescription>
-          <Markdown>{description}</Markdown>
-        </VaultDescription>
+          <VaultDescription>
+            <Markdown>{description}</Markdown>
+          </VaultDescription>
 
-        <VaultAttributes>
-          {attributesList.map((attr, index) => (
-            <AttributeItem key={index}>
-              <span>{attr.label}</span>
-              <span>{attr.value}</span>
-            </AttributeItem>
-          ))}
-        </VaultAttributes>
+          <VaultAttributes>
+            {attributesList.map((attr, index) => (
+              <AttributeItem key={index}>
+                <span>{attr.label}</span>
+                <span>{attr.value}</span>
+              </AttributeItem>
+            ))}
+          </VaultAttributes>
 
-        {/* 只有当vaultId存在时才显示Tabs */}
-        {vaultId && (
-          <TabsWrapper>
-            <TabList className='vault-info-tab-list' tabKey={tabIndex} tabList={tabList} />
-          </TabsWrapper>
-        )}
-      </LeftWrapper>
-      {vaultId === null
-        ? null
-        : isZeroAsset
-          ? address &&
-            (isChainSupported ? (
-              <ButtonSingleDeposit $disabled={depositDisabled} onClick={showDepositAndWithdrawModal(0)}>
-                <Trans>Deposit</Trans>
-              </ButtonSingleDeposit>
-            ) : (
-              <ButtonSingleDeposit onClick={handleSwitchNetwork}>
-                <Trans>Switch Network</Trans>
-              </ButtonSingleDeposit>
-            ))
-          : address && (
-              <RightWrapper>
-                <TopContent onClick={goToMyVault}>
-                  <MyFund>
-                    <span>
-                      <Trans>My Fund</Trans>
-                    </span>
-                    <span>${myFund}</span>
-                  </MyFund>
-                  <IconBase className='icon-chat-arrow-long' />
-                </TopContent>
-                <BottomContent>
-                  {isChainSupported ? (
-                    <>
-                      <ButtonWithdraw onClick={showDepositAndWithdrawModal(1)}>
-                        <Trans>Withdraw</Trans>
-                      </ButtonWithdraw>
-                      <ButtonDeposit $disabled={depositDisabled} onClick={showDepositAndWithdrawModal(0)}>
-                        <Trans>Deposit</Trans>
+          {/* 只有当vaultId存在时才显示Tabs */}
+          {vaultId && (
+            <TabsWrapper>
+              <TabList className='vault-info-tab-list' tabKey={tabIndex} tabList={tabList} />
+            </TabsWrapper>
+          )}
+        </LeftWrapper>
+        {vaultId === null
+          ? null
+          : isZeroAsset
+            ? address &&
+              (isChainSupported ? (
+                <ButtonSingleDeposit $disabled={depositDisabled} onClick={showDepositAndWithdrawModal(0)}>
+                  <Trans>Deposit</Trans>
+                </ButtonSingleDeposit>
+              ) : (
+                <ButtonSingleDeposit onClick={handleSwitchNetwork}>
+                  <Trans>Switch Network</Trans>
+                </ButtonSingleDeposit>
+              ))
+            : address && (
+                <RightWrapper>
+                  <TopContent onClick={goToMyVault}>
+                    <MyFund>
+                      <span>
+                        <Trans>My Fund</Trans>
+                      </span>
+                      <span>${myFund}</span>
+                    </MyFund>
+                    <IconBase className='icon-chat-arrow-long' />
+                  </TopContent>
+                  <BottomContent>
+                    {isChainSupported ? (
+                      <>
+                        <ButtonWithdraw onClick={showDepositAndWithdrawModal(1)}>
+                          <Trans>Withdraw</Trans>
+                        </ButtonWithdraw>
+                        <ButtonDeposit $disabled={depositDisabled} onClick={showDepositAndWithdrawModal(0)}>
+                          <Trans>Deposit</Trans>
+                        </ButtonDeposit>
+                      </>
+                    ) : (
+                      <ButtonDeposit onClick={handleSwitchNetwork} style={{ width: '100%' }}>
+                        <Trans>Switch Network</Trans>
                       </ButtonDeposit>
-                    </>
-                  ) : (
-                    <ButtonDeposit onClick={handleSwitchNetwork} style={{ width: '100%' }}>
-                      <Trans>Switch Network</Trans>
-                    </ButtonDeposit>
-                  )}
-                </BottomContent>
-              </RightWrapper>
-            )}
+                    )}
+                  </BottomContent>
+                </RightWrapper>
+              )}
+      </InnerContent>
     </VaultInfoContainer>
   )
 })

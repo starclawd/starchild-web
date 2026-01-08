@@ -22,7 +22,6 @@ const initialClaimData: ClaimData = {
 
 const initialState: VaultDetailState = {
   activeTab: DETAIL_TYPE.STRATEGY,
-  currentStrategyId: null,
   vaultInfo: null,
   strategyInfo: null,
   chartType: CHART_TYPE.TVL,
@@ -45,10 +44,6 @@ const vaultsdetailSlice = createSlice({
   reducers: {
     setActiveTab: (state, action: PayloadAction<DETAIL_TYPE>) => {
       state.activeTab = action.payload
-    },
-
-    setCurrentStrategyId: (state, action: PayloadAction<string | null>) => {
-      state.currentStrategyId = action.payload
     },
 
     updateVaultInfo: (state, action: PayloadAction<VaultInfo | null>) => {
@@ -105,7 +100,6 @@ const vaultsdetailSlice = createSlice({
     },
     resetVaultDetail: (state) => {
       state.activeTab = DETAIL_TYPE.STRATEGY
-      state.currentStrategyId = null
       state.vaultInfo = null
       state.strategyInfo = null
       state.chartType = CHART_TYPE.EQUITY
@@ -121,7 +115,6 @@ const vaultsdetailSlice = createSlice({
 
 export const {
   setActiveTab,
-  setCurrentStrategyId,
   updateVaultInfo,
   setLoadingVaultInfo,
   updateStrategyInfo,

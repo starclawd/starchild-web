@@ -12,7 +12,7 @@ const ChartStats = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  height: 58px;
+  height: 60px;
   border-bottom: 1px solid ${({ theme }) => theme.black800};
 `
 

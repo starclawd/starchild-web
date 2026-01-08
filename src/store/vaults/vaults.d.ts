@@ -85,3 +85,8 @@ export interface VaultsState {
   isLoadingVaults: boolean
   isLoadingAllStrategies: boolean
 }
+
+export enum WALLET_CONNECT_MODE {
+  SHRINK = 'shrink',
+  EXPAND = 'expand',
+}

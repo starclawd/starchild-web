@@ -4,7 +4,8 @@ import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import { formatNumber, formatKMBNumber, formatPercent } from 'utils/format'
 import { useVaultPerformance } from 'store/vaultsdetail/hooks/useVaultPerformance'
-import { useFetchVaultInfo, useVaultInfo } from 'store/vaultsdetail/hooks/useVaultInfo'
+import { useVaultInfo } from 'store/vaultsdetail/hooks/useVaultInfo'
+import { useCurrentVaultId } from 'store/vaultsdetail/hooks'
 import { CHAT_TIME_RANGE } from 'store/vaultsdetail/vaultsdetail.d'
 import { toFix } from 'utils/calc'
 import { t } from '@lingui/core/macro'
@@ -70,8 +71,8 @@ interface VaultChartStatsProps {
 
 const VaultChartStats = memo<VaultChartStatsProps>(({ chartTimeRange }) => {
   // 获取 vault 基础信息
-  const { isLoading: isLoadingVaultInfo } = useFetchVaultInfo()
-  const [vaultInfo] = useVaultInfo()
+  const vaultId = useCurrentVaultId()
+  const { vaultInfo, isLoadingVaultInfo } = useVaultInfo({ vaultId })
 
   // 获取 vault performance 信息
   const { performanceData, isLoading: isLoadingPerformance } = useVaultPerformance(chartTimeRange)

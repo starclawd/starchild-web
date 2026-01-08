@@ -1,20 +1,15 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { useCallback, useEffect } from 'react'
+import { useEffect } from 'react'
 import { RootState } from 'store'
 import { updateStrategyInfo, setLoadingStrategyInfo } from '../reducer'
 import { useGetStrategyPerformanceQuery } from 'api/strategy'
 
-export function useStrategyInfo() {
+export function useStrategyInfo({ strategyId }: { strategyId: string | null }) {
+  const dispatch = useDispatch()
   const strategyInfo = useSelector((state: RootState) => state.vaultsdetail.strategyInfo)
   const isLoadingStrategyInfo = useSelector((state: RootState) => state.vaultsdetail.isLoadingStrategyInfo)
 
-  return [strategyInfo, isLoadingStrategyInfo] as const
-}
-
-export function useFetchStrategyInfo(strategyId: string | null) {
-  const dispatch = useDispatch()
-
-  const { data, isLoading, error } = useGetStrategyPerformanceQuery(
+  const { data, isLoading, error, refetch } = useGetStrategyPerformanceQuery(
     {
       strategy_id: strategyId || '',
       period: 'all',
@@ -37,5 +32,10 @@ export function useFetchStrategyInfo(strategyId: string | null) {
     dispatch(setLoadingStrategyInfo(isLoading))
   }, [isLoading, dispatch])
 
-  return { error }
+  return {
+    strategyInfo,
+    isLoadingStrategyInfo,
+    error,
+    refetch,
+  }
 }
