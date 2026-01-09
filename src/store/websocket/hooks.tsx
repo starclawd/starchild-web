@@ -9,7 +9,7 @@ import { useUpdateLiveChatSubData } from 'store/insights/hooks/useLiveChatHooks'
 import { useUpdateLeaderboardBalances } from 'store/vaults/hooks'
 import { LeaderboardBalanceData } from 'store/vaults/vaults'
 import { useSetSignalList } from 'store/vaultsdetail/hooks/useSignal'
-import { StrategySignalDataType } from 'api/strategy'
+import { CombinedSignalType } from 'api/strategy'
 
 // K线订阅参数类型
 export interface KlineSubscriptionParams {
@@ -49,7 +49,7 @@ export function useWebSocketConnection(wsUrl: string, options?: { handleMessage?
     } else if (message && stream?.includes('all-agents-notification')) {
       eventEmitter.emit(EventEmitterKey.SIGNAL_NEW_TRIGGER, message.data)
     } else if (message && stream?.includes('strategy-signal-notification')) {
-      setSignalList([message.data] as StrategySignalDataType[])
+      setSignalList([message.data] as CombinedSignalType[])
     } else if (message && stream?.includes('strategy-balance-update')) {
       // 处理leaderboard余额更新消息
       updateLeaderboardBalances([message.data] as LeaderboardBalanceData[])

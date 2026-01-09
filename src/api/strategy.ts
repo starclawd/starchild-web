@@ -110,59 +110,110 @@ export interface BalanceHistoryLeaderboardResponse {
 }
 
 export enum SIGNAL_TYPE {
-  SIGNAL = 'signal',
-  THOUGHT = 'thought',
-  DECISION = 'decision',
+  COMBINED_SIGNAL = 'combined_signal',
+  LOG = 'log',
 }
 
 export interface StrategySignalType {
-  strategy_id: string
-  signal_event_id: string
-  signal_id: string
-  decision_id: string
-  type: typeof SIGNAL_TYPE.SIGNAL
-  content: {
-    macd: number
-    name: string
-    price: number
-    symbol: string
-    direction: string
-    histogram: number
-    indicator: string
-    timestamp: number
-    description: string
-    signal_line: number
-  }
+  direction: string
+  price: number
+  symbol: string
   timestamp: number
+  trading_price: number
+  confidence: number
+  crossover_type: string
+  proximity: number
+  signal_type: string
+  trading_symbol: string
+  triggered_level: string
+  description: string
+  name: string
+  trigger_condition: string
+  leverage: string
+  position_sizing: string
+  signal_price: number
+  signal_symbol: string
+  action: string
+  indicators: {
+    ema9_above_ema21: boolean
+    ema21: number
+    ema9: number
+  }
 }
 
 export interface StrategyThoughtType {
-  strategy_id: string
-  signal_event_id: string
-  signal_id: string
-  decision_id: string
-  type: typeof SIGNAL_TYPE.THOUGHT
-  content: {
-    reasoning: string
-  }
-  timestamp: number
+  reasoning: string
+  summary: string
 }
 
 export interface StrategyDecisionType {
-  type: typeof SIGNAL_TYPE.DECISION
+  action: string
+  confidence: number
+  description: string
+  orders: Array<{
+    id: string
+    order_data: {
+      api_response: {
+        data: {
+          orderId: number
+          success: boolean
+          walletAddress: string
+          accountId: string
+          clientOrderId: string | null
+          data: {
+            order_type: string
+            client_order_id: string | null
+            order_amount: number | null
+            order_id: number
+            order_price: number | null
+            order_quantity: number
+          }
+          marketDataSource: string
+        }
+        success: boolean
+      }
+      order_price: number
+      paper_trading: boolean
+      reduce_only: boolean
+      side: string
+      fill_price: number
+      fill_quantity: number
+      order_quantity: number
+      order_type: string
+      symbol: string
+    }
+    side: string
+    status: string
+    symbol: string
+  }>
+  symbol: string
+}
+
+export type CombinedSignalType = {
+  signal_event_id: string
+  strategy_id: string
+  thought: StrategyThoughtType
+  decision: StrategyDecisionType
+  signal: StrategySignalType
+  mode: string
+  timestamp: number
+  type: typeof SIGNAL_TYPE.COMBINED_SIGNAL
+  decision_id: string
+  deployment_id: string
+}
+
+export interface LogType {
+  type: typeof SIGNAL_TYPE.LOG
   decision_id: string
   strategy_id: string
-  signal_event_id: string
-  signal_id: string
+  mode: string
   timestamp: number
   content: {
-    symbol: string
-    action: string
-    description: string
+    log: string
   }
 }
 
-export type StrategySignalDataType = StrategySignalType | StrategyThoughtType | StrategyDecisionType
+export type StrategySignalDataType = CombinedSignalType | LogType
 
 // All Strategies Overview 相关接口
 export type StrategiesOverviewDataType = {

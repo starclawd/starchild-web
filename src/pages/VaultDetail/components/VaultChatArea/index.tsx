@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import { memo, useMemo, useState, useEffect, useRef } from 'react'
 import styled, { css } from 'styled-components'
 import ChainOfThought from './components/ChainOfThought'
@@ -9,8 +10,10 @@ import MonitoringProgress from './components/MonitoringProgress'
 import ResponseProgress from './components/ResponseProgress'
 import PaperTradingStatus from './components/PaperTradingStatus'
 import { PAPER_TRADING_STATUS } from 'store/createstrategy/createstrategy'
-import { SIGNAL_TYPE } from 'api/strategy'
 import useParsedQueryString from 'hooks/useParsedQueryString'
+import { useTimezone } from 'store/timezonecache/hooks'
+import { SIGNAL_TYPE } from 'api/strategy'
+import LogItem from './components/LogItem'
 const ChatAreaContainer = styled.div<{ $isPaperTrading?: boolean }>`
   display: flex;
   flex-direction: column;
@@ -54,7 +57,36 @@ const SignalList = styled.div`
   padding: 20px;
 `
 
+const CombinedSignalItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid ${({ theme }) => theme.black800};
+  &:last-child {
+    border-bottom: none;
+  }
+`
+
+const Time = styled.div`
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 16px;
+  color: ${({ theme }) => theme.black300};
+`
+
+const Content = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+`
+
 const VaultChatArea = memo(() => {
+  const [timezone] = useTimezone()
   const { strategyId } = useParsedQueryString()
   const [isShowMonitoringProgress, setIsShowMonitoringProgress] = useState(false)
   const { signalList } = useSignalList({ strategyId: strategyId || '' })
@@ -133,17 +165,21 @@ const VaultChatArea = memo(() => {
         </TopContent>
         {displaySignalList.length > 0 && (
           <SignalList className='scroll-style'>
-            {displaySignalList.map((signal, index) => {
-              const { type, signal_id, decision_id, signal_event_id } = signal
-              if (type === SIGNAL_TYPE.SIGNAL) {
-                return <SignalAlertItem key={signal_event_id || signal_id} signal={signal} />
+            {displaySignalList.map((data, index) => {
+              if (data.type === SIGNAL_TYPE.LOG) {
+                return <LogItem key={data.decision_id} log={data} />
               }
-              if (type === SIGNAL_TYPE.THOUGHT) {
-                return <ChainOfThought key={`${type}-${signal_event_id || decision_id}`} thought={signal} />
-              }
-              if (type === SIGNAL_TYPE.DECISION) {
-                return <MarketItem key={`${type}-${signal_event_id || decision_id}`} decision={signal} />
-              }
+              const { decision, timestamp, thought, signal, signal_event_id, decision_id, deployment_id } = data
+              return (
+                <CombinedSignalItem key={signal_event_id || decision_id || deployment_id}>
+                  <Time>{dayjs.tz(timestamp, timezone).format('YYYY-MM-DD HH:mm:ss')}</Time>
+                  <Content>
+                    <SignalAlertItem signal={signal} />
+                    <MarketItem decision={decision} />
+                    <ChainOfThought thought={thought} />
+                  </Content>
+                </CombinedSignalItem>
+              )
             })}
           </SignalList>
         )}

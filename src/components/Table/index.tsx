@@ -38,8 +38,8 @@ const TableHeader = styled.thead`
 `
 
 // 表头行样式
-const TableHeaderRow = styled.tr<{ headerHeight?: number }>`
-  height: ${(props) => props.headerHeight ?? 18}px;
+const TableHeaderRow = styled.tr<{ $headerHeight?: number }>`
+  height: ${(props) => props.$headerHeight ?? 18}px;
 `
 
 // 表头单元格样式
@@ -441,7 +441,7 @@ function Table<T extends Record<string, any>>({
         <StyledTable>
           {renderColGroup()}
           <TableHeader className='table-header'>
-            <TableHeaderRow headerHeight={headerHeight} className='header-container'>
+            <TableHeaderRow $headerHeight={headerHeight} className='header-container'>
               {processedColumns.map((column, colIndex) => (
                 <TableHeaderCell
                   key={column.key}
