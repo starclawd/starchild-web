@@ -68,6 +68,7 @@ export interface CreateStrategyState {
   isShowSignals: boolean
   shouldRefreshData: boolean
   isShowExpandPaperTrading: boolean
+  isShowExpandCode: boolean
   currentStrategyTabIndex: STRATEGY_TAB_INDEX
 }
 
@@ -94,6 +95,7 @@ const initialState: CreateStrategyState = {
   strategyBacktestData: null,
   isLoadingStrategyBacktest: false,
   isShowExpandPaperTrading: false,
+  isShowExpandCode: false,
   // 部署相关状态初始值
   deployingStatus: DEPLOYING_STATUS.NONE,
   deployModalStatus: DEPLOY_MODAL_STATUS.UNSTARTED,
@@ -225,6 +227,9 @@ export const createStrategySlice = createSlice({
     },
     setIsShowExpandPaperTrading: (state, action: PayloadAction<boolean>) => {
       state.isShowExpandPaperTrading = action.payload
+    },
+    setIsShowExpandCode: (state, action: PayloadAction<boolean>) => {
+      state.isShowExpandCode = action.payload
     },
     setIsCreateStrategy: (state, action: PayloadAction<boolean>) => {
       state.isCreateStrategy = action.payload
@@ -364,6 +369,7 @@ export const {
   setIsShowSignals,
   setShouldRefreshData,
   setIsShowExpandPaperTrading,
+  setIsShowExpandCode,
   setIsCreateStrategy,
   setCurrentStrategyTabIndex,
   resetStreamingSteps,

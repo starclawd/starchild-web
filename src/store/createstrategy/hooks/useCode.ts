@@ -8,6 +8,7 @@ import {
   setIsGeneratingCode,
   setCodeLoadingPercent,
   setIsTypewritingCode,
+  setIsShowExpandCode,
 } from '../reducer'
 import { useGetStrategyCodeQuery } from 'api/createStrategy'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -134,4 +135,16 @@ export function useIsTypewritingCode(): [boolean, ParamFun<boolean>] {
     [dispatch],
   )
   return [isTypewritingCode, updateIsTypewritingCode]
+}
+
+export function useIsShowExpandCode(): [boolean, ParamFun<boolean>] {
+  const dispatch = useDispatch()
+  const isShowExpandCode = useSelector((state: RootState) => state.createstrategy.isShowExpandCode)
+  const updateIsShowExpandCode = useCallback(
+    (value: boolean) => {
+      dispatch(setIsShowExpandCode(value))
+    },
+    [dispatch],
+  )
+  return [isShowExpandCode, updateIsShowExpandCode]
 }

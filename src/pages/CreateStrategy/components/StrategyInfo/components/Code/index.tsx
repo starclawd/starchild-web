@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { GENERATION_STATUS } from 'store/createstrategy/createstrategy'
@@ -7,6 +7,7 @@ import {
   useIsGeneratingCode,
   useIsTypewritingCode,
   useStrategyCode,
+  useIsShowExpandCode,
 } from 'store/createstrategy/hooks/useCode'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import MemoizedHighlight from 'components/MemoizedHighlight'
@@ -16,11 +17,20 @@ import { extractExecutableCode } from 'utils/extractExecutableCode'
 import { ButtonBorder } from 'components/Button'
 import codeBg from 'assets/createstrategy/code-bg.png'
 import TypewriterCursor from 'components/TypewriterCursor'
+import StrategyCodeVisualizer from 'components/StrategyCodeVisualizer'
+import { ANI_DURATION } from 'constants/index'
+import MoveTabList, { MoveType } from 'components/MoveTabList'
 
 // 打字机效果的速度（每个字符的间隔时间，单位毫秒）
 const TYPEWRITER_SPEED = 17
 // 每次添加的字符数
 const TYPEWRITER_CHARS_PER_TICK = 10
+
+// 视图模式
+export enum ViewMode {
+  CODE = 'code',
+  FLOW = 'flow',
+}
 
 const CodeWrapper = styled.div`
   display: flex;
@@ -52,6 +62,12 @@ const Left = styled.div`
   font-weight: 400;
   line-height: 20px;
   color: ${({ theme }) => theme.green200};
+  .tab-list-wrapper {
+    margin-right: 20px;
+  }
+  .move-tab-item {
+    padding: 0;
+  }
   .icon-circle-success {
     font-size: 18px;
     color: ${({ theme }) => theme.green200};
@@ -62,6 +78,16 @@ const OperatorWrapper = styled.div`
   display: flex;
   align-items: center;
   height: 100%;
+  .tab-list-wrapper {
+    height: 100%;
+    border: none;
+    .active-indicator {
+      height: 32px;
+    }
+    .move-tab-item {
+      height: 32px;
+    }
+  }
 `
 
 const RegenerateButton = styled(ButtonBorder)`
@@ -76,8 +102,14 @@ const CopyButton = styled(ButtonBorder)`
   border: none;
 `
 
-const CodeContentWrapper = styled.div`
-  display: flex;
+const ZoomButton = styled(ButtonBorder)`
+  width: 38px;
+  height: 100%;
+  border: none;
+`
+
+const CodeContentWrapper = styled.div<{ $visible: boolean }>`
+  display: ${({ $visible }) => ($visible ? 'flex' : 'none')};
   flex-direction: column;
   flex-grow: 1;
   gap: 12px;
@@ -103,11 +135,51 @@ const LoadingWrapper = styled.div`
   padding: 16px;
 `
 
+// 可视化提示动画
+const pulseAnimation = keyframes`
+  0%, 100% { box-shadow: 0 0 0 0 rgba(248, 70, 0, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(248, 70, 0, 0); }
+`
+
+const FlowHintButton = styled.button<{ $show: boolean }>`
+  display: ${({ $show }) => ($show ? 'flex' : 'none')};
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  margin-right: 8px;
+  border: none;
+  border-radius: 6px;
+  background-color: ${({ theme }) => theme.brand100};
+  color: ${({ theme }) => theme.black0};
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  animation: ${pulseAnimation} 2s ease-in-out infinite;
+  transition: all ${ANI_DURATION}s;
+
+  .icon {
+    font-size: 14px;
+  }
+
+  &:hover {
+    background-color: ${({ theme }) => theme.brand200};
+  }
+`
+
+// Flow 容器
+const FlowContentWrapper = styled.div<{ $visible: boolean }>`
+  flex-grow: 1;
+  width: 100%;
+  overflow: hidden;
+  display: ${({ $visible }) => ($visible ? 'block' : 'none')};
+`
+
 export default memo(function Code() {
   const { strategyId } = useParsedQueryString()
   const { strategyCode, refetch: refetchStrategyCode } = useStrategyCode({ strategyId: strategyId || '' })
   const [isGeneratingCodeFrontend] = useIsGeneratingCode()
   const handleGenerateCode = useHandleGenerateCode()
+  const [isShowExpandCode, setIsShowExpandCode] = useIsShowExpandCode()
   const { external_code, generation_status } = strategyCode || { external_code: '', generation_status: null }
   const { copyWithCustomProcessor } = useCopyContent({
     mode: 'custom',
@@ -129,6 +201,28 @@ export default memo(function Code() {
   // 自动滚动相关状态
   const codeContentRef = useRef<HTMLDivElement>(null)
   const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
+
+  // 视图模式切换（代码 / 流程图）
+  const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.CODE)
+  // 是否显示可视化提示（打字机效果结束后显示）
+  const [showFlowHint, setShowFlowHint] = useState(false)
+
+  const tabList = useMemo(() => {
+    return [
+      {
+        key: 'code',
+        text: 'Code',
+        icon: <IconBase className='icon icon-code' />,
+        clickCallback: () => setViewMode(ViewMode.CODE),
+      },
+      {
+        key: 'flow',
+        text: 'Flow',
+        icon: <IconBase className='icon icon-strategy' />,
+        clickCallback: () => setViewMode(ViewMode.FLOW),
+      },
+    ]
+  }, [])
 
   const isGeneratingCodeStatus = useMemo(() => {
     return generation_status === GENERATION_STATUS.GENERATING
@@ -221,6 +315,11 @@ export default memo(function Code() {
         setTypewriterCode(targetCode)
         setIsTypewriting(false)
         clearInterval(intervalId)
+
+        // 显示流程图提示
+        setShowFlowHint(true)
+        // 8秒后自动隐藏
+        setTimeout(() => setShowFlowHint(false), 8000)
       } else {
         setTypewriterCode(targetCode.slice(0, currentIndex))
       }
@@ -256,11 +355,43 @@ export default memo(function Code() {
     }
   }, [isTypewriting])
 
+  // 视图模式自动切换逻辑
+  // 1. 初始化时：如果有 external_code，直接切换到 Flow
+  // 2. 非初始化时：打字机效果期间保持 Code，结束后切换到 Flow
+  useEffect(() => {
+    // 初始化时（还没有经历过生成过程），如果有 external_code，直接显示 Flow
+    if (!hasBeenGeneratingRef.current && external_code && generation_status === GENERATION_STATUS.COMPLETED) {
+      setViewMode(ViewMode.FLOW)
+      return
+    }
+
+    // 非初始化时（经历过生成过程）
+    if (hasBeenGeneratingRef.current) {
+      // 正在生成或打字机效果中 → 切换到 Code
+      if (isGeneratingCodeStatus || isGeneratingCodeFrontend || isTypewriting) {
+        setViewMode(ViewMode.CODE)
+      }
+      // 打字机效果结束后（有代码且已完成）→ 切换到 Flow
+      else if (external_code && generation_status === GENERATION_STATUS.COMPLETED) {
+        setViewMode(ViewMode.FLOW)
+      }
+    }
+  }, [external_code, generation_status, isGeneratingCodeStatus, isGeneratingCodeFrontend, isTypewriting])
+
   const handleCopyCode = useCallback(() => {
     if (external_code) {
       copyWithCustomProcessor(external_code)
     }
   }, [external_code, copyWithCustomProcessor])
+
+  const handleZoom = useCallback(() => {
+    setIsShowExpandCode(!isShowExpandCode)
+  }, [isShowExpandCode, setIsShowExpandCode])
+
+  // 是否显示视图切换（代码生成完成且不在打字机效果中）
+  const showViewToggle = useMemo(() => {
+    return !isGeneratingCodeStatus && !isGeneratingCodeFrontend && !isTypewriting && external_code
+  }, [isGeneratingCodeStatus, isGeneratingCodeFrontend, isTypewriting, external_code])
   // 当 generation_status 不是 COMPLETED 时，每5秒轮询一次
   useEffect(() => {
     if (isGeneratingCodeStatus) {
@@ -278,6 +409,8 @@ export default memo(function Code() {
     <CodeWrapper>
       <Header>
         <Left>
+          {/* 视图切换 */}
+          {showViewToggle && <MoveTabList tabKey={viewMode} moveType={MoveType.LINE} gap={20} tabList={tabList} />}
           {!isGeneratingCodeStatus && !isGeneratingCodeFrontend && (
             <>
               <IconBase className='icon-circle-success' />
@@ -294,9 +427,19 @@ export default memo(function Code() {
             <IconBase className='icon-copy' />
             <Trans>Copy</Trans>
           </CopyButton>
+          <ZoomButton onClick={handleZoom}>
+            <IconBase className={isShowExpandCode ? 'icon-zoom-out' : 'icon-zoom-in'} />
+          </ZoomButton>
         </OperatorWrapper>
       </Header>
-      <CodeContentWrapper ref={codeContentRef} style={{ backgroundImage: `url(${codeBg})` }} className='scroll-style'>
+
+      {/* 代码视图 - 使用 CSS 控制显示，避免重新挂载 */}
+      <CodeContentWrapper
+        ref={codeContentRef}
+        $visible={viewMode === ViewMode.CODE}
+        style={{ backgroundImage: `url(${codeBg})` }}
+        className='scroll-style'
+      >
         {isGeneratingCodeStatus ? (
           <TypewriterCursor />
         ) : (
@@ -305,6 +448,13 @@ export default memo(function Code() {
           </MemoizedHighlight>
         )}
       </CodeContentWrapper>
+
+      {/* 流程图视图 - 使用 CSS 控制显示，避免重新挂载 */}
+      {external_code && (
+        <FlowContentWrapper $visible={viewMode === ViewMode.FLOW}>
+          <StrategyCodeVisualizer code={external_code} visible={viewMode === ViewMode.FLOW} />
+        </FlowContentWrapper>
+      )}
     </CodeWrapper>
   )
 })

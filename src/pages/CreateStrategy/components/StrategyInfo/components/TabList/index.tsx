@@ -4,7 +4,7 @@ import { useCurrentStrategyTabIndex } from 'store/createstrategy/hooks/useStrate
 import { Trans } from '@lingui/react/macro'
 import { useDeployModalToggle } from 'store/application/hooks'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import { useIsGeneratingCode, useStrategyCode } from 'store/createstrategy/hooks/useCode'
+import { useIsGeneratingCode, useIsShowExpandCode, useStrategyCode } from 'store/createstrategy/hooks/useCode'
 import { GENERATION_STATUS, STRATEGY_STATUS, STRATEGY_TAB_INDEX } from 'store/createstrategy/createstrategy'
 import { useIsCreateStrategy, useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 import { IconBase } from 'components/Icons'
@@ -40,6 +40,9 @@ const InnerContent = styled.div`
 
 export default memo(function TabList() {
   const [isShowExpandPaperTrading] = useIsShowExpandPaperTrading()
+  const [isShowExpandCode] = useIsShowExpandCode()
+  // 合并展开状态：PaperTrading 或 Code 任一展开时都隐藏 TabList
+  const isShowExpand = isShowExpandPaperTrading || isShowExpandCode
   const { strategyId } = useParsedQueryString()
   // 用于锁定自动切换 tab 的 ref，一旦任意操作状态变为 true 就锁定
   const isAutoSwitchLockedRef = useRef(false)
@@ -187,7 +190,7 @@ export default memo(function TabList() {
   }, [strategyId, strategyDetail, codeGenerated, paperTradingPublicData, strategy_config, setCurrentStrategyTabIndex])
 
   return (
-    <TabListWrapper $isShowExpandPaperTrading={isShowExpandPaperTrading}>
+    <TabListWrapper $isShowExpandPaperTrading={isShowExpand}>
       <InnerContent>
         {tabList.map((tab) => (
           <TabItem key={tab.key} tab={tab} />

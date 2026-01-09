@@ -17,7 +17,7 @@ import { STRATEGY_TAB_INDEX } from 'store/createstrategy/createstrategy'
 import StrategyName from './components/StrategyName'
 import ActionLayer from './components/ActionLayer'
 import { Trans } from '@lingui/react/macro'
-import { useHandleGenerateCode, useIsGeneratingCode } from 'store/createstrategy/hooks/useCode'
+import { useHandleGenerateCode, useIsGeneratingCode, useIsShowExpandCode } from 'store/createstrategy/hooks/useCode'
 import {
   useHandleStartPaperTrading,
   useIsStartingPaperTrading,
@@ -115,7 +115,10 @@ export default memo(function StrategyInfo() {
   const setCurrentRouter = useSetCurrentRouter()
   const [currentStrategyTabIndex] = useCurrentStrategyTabIndex()
   const [isShowExpandPaperTrading] = useIsShowExpandPaperTrading()
+  const [isShowExpandCode] = useIsShowExpandCode()
   const [isGeneratingCode] = useIsGeneratingCode()
+  // 合并展开状态：PaperTrading 或 Code 任一展开时都隐藏顶部内容
+  const isShowExpand = isShowExpandPaperTrading || isShowExpandCode
   const [isStartingPaperTrading] = useIsStartingPaperTrading()
   const { strategyDetail, refetch } = useStrategyDetail({ strategyId: strategyId || '' })
   const { strategy_config, name, description } = strategyDetail || { strategy_config: null, name: '', description: '' }
@@ -149,15 +152,15 @@ export default memo(function StrategyInfo() {
 
   return (
     <StrategyInfoWrapper>
-      <TopContent $isShowExpandPaperTrading={isShowExpandPaperTrading}>
+      <TopContent $isShowExpandPaperTrading={isShowExpand}>
         <InnerContent>
           <StrategyName nameProp={name} descriptionProp={description} />
         </InnerContent>
         <PixelCanvas />
       </TopContent>
-      <BottomContent $isShowExpandPaperTrading={isShowExpandPaperTrading}>
+      <BottomContent $isShowExpandPaperTrading={isShowExpand}>
         <TabList />
-        <ContentWrapper $isShowActionLayer={isShowActionLayer} $isShowExpandPaperTrading={isShowExpandPaperTrading}>
+        <ContentWrapper $isShowActionLayer={isShowActionLayer} $isShowExpandPaperTrading={isShowExpand}>
           <TabContent $isActive={currentStrategyTabIndex === STRATEGY_TAB_INDEX.CREATE}>
             <Summary />
           </TabContent>
