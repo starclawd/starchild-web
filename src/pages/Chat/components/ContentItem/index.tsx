@@ -180,7 +180,7 @@ export default memo(function ContentItemCom({ data }: { data: TempAiContentDataT
           )}
         </ContentItem>
         {/* <UserOperatorWrapper className="user-operator-wrapper">
-        <IconBase onClick={copyContent} className="icon-chat-copy"/>
+        <IconBase onClick={copyContent} className="icon-copy"/>
         <IconBase onClick={editContent} className="icon-ai-edit"/>
       </UserOperatorWrapper> */}
       </ContentItemWrapper>

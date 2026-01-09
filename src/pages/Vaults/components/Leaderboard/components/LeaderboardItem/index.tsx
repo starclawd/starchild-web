@@ -47,12 +47,10 @@ const StrategyContent = styled.div`
   width: calc(100% - 42px);
   height: 100%;
   padding-bottom: 12px;
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
 `
 
 const StrategyName = styled.div`
-  font-size: 13px;
+  font-size: 14px;
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
@@ -120,11 +118,6 @@ export default memo(function LeaderBoardItem({
   const aprList = useMemo(() => {
     return [
       {
-        key: '24H APR',
-        text: <Trans>24H APR:</Trans>,
-        value: strategyData.apr,
-      },
-      {
         key: 'All-time APR',
         text: <Trans>All-time APR:</Trans>,
         value: strategyData.all_time_apr,
@@ -137,7 +130,7 @@ export default memo(function LeaderBoardItem({
         <img src={RankBg} alt='rank' />
         <span style={{ color: colorMap[rank - 1] || 'rgba(255, 255, 255, 0.80)' }}>{rank}</span>
       </RankWrapper>
-      <StrategyContent className='strategy-content' style={{ backgroundImage: `url(${LeaderboardBg})` }}>
+      <StrategyContent className='strategy-content'>
         <StrategyName className='strategy-name'>{strategyData.strategy_name}</StrategyName>
         <StrategyApr>
           {aprList.map((item) => (

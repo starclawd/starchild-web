@@ -295,7 +295,7 @@ export function useCopyText() {
             title: <Trans>Copied</Trans>,
             description: shareUrl,
             status: TOAST_STATUS.SUCCESS,
-            typeIcon: 'icon-chat-copy',
+            typeIcon: 'icon-copy',
             iconTheme: theme.jade10,
             autoClose: 2000,
           })
@@ -313,7 +313,7 @@ export function useCopyText() {
             title: <Trans>Copied</Trans>,
             description: shareUrl,
             status: TOAST_STATUS.SUCCESS,
-            typeIcon: 'icon-chat-copy',
+            typeIcon: 'icon-copy',
             iconTheme: theme.jade10,
             autoClose: 2000,
           })
@@ -355,7 +355,7 @@ export function useCopyImgAndText() {
             title: <Trans>Copied</Trans>,
             description: shareUrl,
             status: TOAST_STATUS.SUCCESS,
-            typeIcon: 'icon-chat-copy',
+            typeIcon: 'icon-copy',
             iconTheme: theme.jade10,
             autoClose: 2000,
           })
@@ -388,7 +388,7 @@ export function useCopyImgAndText() {
             title: <Trans>Copied</Trans>,
             description: shareUrl,
             status: TOAST_STATUS.SUCCESS,
-            typeIcon: 'icon-chat-copy',
+            typeIcon: 'icon-copy',
             iconTheme: theme.jade10,
             autoClose: 2000,
           })

@@ -115,7 +115,7 @@ const CopyWrapper = styled.div`
   font-weight: 400;
   line-height: 20px;
   color: ${({ theme }) => theme.black200};
-  .icon-chat-copy {
+  .icon-copy {
     font-size: 18px;
     color: ${({ theme }) => theme.black200};
   }
@@ -125,7 +125,7 @@ const CopyWrapper = styled.div`
           gap: ${vm(4)};
           font-size: 0.14rem;
           line-height: 0.2rem;
-          .icon-chat-copy {
+          .icon-copy {
             font-size: 0.18rem;
           }
         `
@@ -172,7 +172,7 @@ export default function ChatHistoryContent({ list }: { list: any[] }) {
                 </Content>
               </ContentWrapper>
               <CopyWrapper onClick={() => handleCopy(index)}>
-                <IconBase className='icon-chat-copy' />
+                <IconBase className='icon-copy' />
                 <Trans>Copy</Trans>
               </CopyWrapper>
               <AgentTriggerItemFeedback triggerHistory={item} />

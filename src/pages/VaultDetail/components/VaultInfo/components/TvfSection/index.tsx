@@ -125,8 +125,8 @@ export default memo(function TvfSection() {
   const [, setCurrentShareStrategyData] = useCurrentShareStrategyData()
   const shareStrategy = useCallback(() => {
     setCurrentShareStrategyData(strategyInfo)
-    // toggleShareStrategyModal()
-  }, [setCurrentShareStrategyData, strategyInfo])
+    toggleShareStrategyModal()
+  }, [setCurrentShareStrategyData, strategyInfo, toggleShareStrategyModal])
   return (
     <TvfSectionWrapper>
       <TopContent>

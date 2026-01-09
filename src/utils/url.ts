@@ -30,18 +30,22 @@ export const starchildDomainOrigin = {
   // 本地测试
   development: {
     restfulDomain: '/starchildTestnet',
+    frontendPageDomain: 'https://testnet.iamstarchild.com',
   },
   // 本地主网
   localPro: {
     restfulDomain: '/starchildMainnet',
+    frontendPageDomain: 'https://iamstarchild.com',
   },
   // 测试环境
   test: {
     restfulDomain: 'https://api-testnet.iamstarchild.com/v1',
+    frontendPageDomain: 'https://testnet.iamstarchild.com',
   },
   // 主网
   pro: {
     restfulDomain: 'https://api-mainnet.iamstarchild.com/v1',
+    frontendPageDomain: 'https://iamstarchild.com',
   },
 }
 

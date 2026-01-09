@@ -130,7 +130,9 @@ export default memo(function StrategyName({
   const changeName = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       if (isLoading) return
-      setName(e.target.value)
+      const value = e.target.value
+      if (value.length > 20) return
+      setName(value)
     },
     [isLoading],
   )
@@ -240,6 +242,7 @@ export default memo(function StrategyName({
                 onKeyDown={handleKeyDown}
                 disabled={isLoading}
                 placeholder='Strategy Name'
+                maxLength={20}
               />
             </StrategyNameInputWrapper>
           ) : (

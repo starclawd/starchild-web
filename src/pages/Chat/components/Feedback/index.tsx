@@ -307,7 +307,7 @@ const Feedback = memo(function Feedback({
             <Trans>Get K-Chart</Trans>
           </IconWrapper> */}
           <IconWrapper onClick={copyContent}>
-            <IconBase className='icon-chat-copy' />
+            <IconBase className='icon-copy' />
           </IconWrapper>
           {!isBadFeedback && (
             <IconWrapper $isGoodFeedback={isGoodFeedback}>

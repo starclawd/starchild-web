@@ -82,7 +82,7 @@ const ImgItem = styled.div`
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-  .icon-chat-copy {
+  .icon-copy {
     font-size: 16px;
     color: ${({ theme }) => theme.black0};
   }
@@ -114,7 +114,7 @@ export default memo(function ImgModal({
               return (
                 <ImgItem key={index} onClick={() => copyRawContent(item)}>
                   <span>{item}</span>
-                  <IconBase className='icon-chat-copy' />
+                  <IconBase className='icon-copy' />
                 </ImgItem>
               )
             })}

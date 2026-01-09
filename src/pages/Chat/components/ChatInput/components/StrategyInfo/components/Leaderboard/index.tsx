@@ -88,9 +88,6 @@ const LeaderboardItemWrapper = styled.div`
   height: 100%;
   cursor: pointer;
   transition: all ${ANI_DURATION}s;
-  .strategy-name {
-    color: ${({ theme }) => theme.black200};
-  }
 `
 
 export default memo(function Leaderboard() {

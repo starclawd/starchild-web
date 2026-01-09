@@ -103,11 +103,11 @@ const StrategyItem = styled.div`
 `
 
 const StrategyName = styled.div`
-  font-size: 13px;
+  font-size: 14px;
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.black200};
+  color: ${({ theme }) => theme.black0};
 `
 
 const AprItem = styled.div<{ $emptyVaule: boolean }>`

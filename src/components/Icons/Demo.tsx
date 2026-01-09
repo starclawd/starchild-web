@@ -241,7 +241,7 @@ function IconsDemo() {
             title: '复制成功',
             description: `已复制 ${className} 到剪贴板`,
             status: TOAST_STATUS.SUCCESS,
-            typeIcon: 'icon-chat-copy',
+            typeIcon: 'icon-copy',
             iconTheme: theme.jade10,
             autoClose: 2000,
           })

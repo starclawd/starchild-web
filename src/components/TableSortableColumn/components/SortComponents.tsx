@@ -22,11 +22,9 @@ const SortableHeaderContainer = styled.div`
   align-items: center;
   cursor: pointer;
   user-select: none;
-
+  transition: opacity ${ANI_DURATION}s;
   &:hover {
-    .sort-arrow {
-      opacity: 0.7;
-    }
+    opacity: 0.7;
   }
 `
 

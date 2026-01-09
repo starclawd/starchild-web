@@ -29,7 +29,7 @@ export default function useCopyContent(options: UseCopyContentOptions = {}) {
         title: <Trans>Copied</Trans>,
         description,
         status: TOAST_STATUS.SUCCESS,
-        typeIcon: 'icon-chat-copy',
+        typeIcon: 'icon-copy',
         iconTheme: theme.jade10,
       })
 
@@ -49,7 +49,7 @@ export default function useCopyContent(options: UseCopyContentOptions = {}) {
         title: <Trans>Copied</Trans>,
         description,
         status: TOAST_STATUS.SUCCESS,
-        typeIcon: 'icon-chat-copy',
+        typeIcon: 'icon-copy',
         iconTheme: theme.jade10,
       })
 
@@ -76,7 +76,7 @@ export default function useCopyContent(options: UseCopyContentOptions = {}) {
         title: <Trans>Copied</Trans>,
         description,
         status: TOAST_STATUS.SUCCESS,
-        typeIcon: 'icon-chat-copy',
+        typeIcon: 'icon-copy',
         iconTheme: theme.black0,
       })
 

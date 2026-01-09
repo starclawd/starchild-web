@@ -83,7 +83,7 @@ export function useShareActions({ data, onShare, onShareLink, onClose }: UseShar
     return [
       {
         type: ActionType.SHARE_LINK,
-        icon: 'icon-chat-copy',
+        icon: 'icon-copy',
         label: 'Copy link',
         onClick: handleShareLink,
         visible: true,
