@@ -300,9 +300,7 @@ const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
                 </DataRow>
                 <TagsRow>
                   <TagsCell colSpan={columnCount}>
-                    <TagsContainer style={{ backgroundImage: `url(${tagBg})` }}>
-                      {vibe && <VibeItem colorType='brand' text={vibe} size='small' />}
-                    </TagsContainer>
+                    <TagsContainer>{vibe && <VibeItem colorType='brand' text={vibe} size='small' />}</TagsContainer>
                   </TagsCell>
                 </TagsRow>
               </StrategyTbody>

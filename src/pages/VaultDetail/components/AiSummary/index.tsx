@@ -104,8 +104,7 @@ const SummaryText = styled.div`
 const AiSummary = memo(() => {
   const currentRouter = useCurrentRouter()
   const isVaultDetailPage = isMatchCurrentRouter(currentRouter, ROUTER.VAULT_DETAIL)
-  const summary =
-    'This strategy operates with high selectivity. Despite low frequency—just 5 trades in the last month—it maintains high accuracy...'
+  const summary = 'Just for test Just for test Just for test Just for test Just for test Just for test'
   return (
     <AiSummaryWrapper $isVaultDetailPage={isVaultDetailPage}>
       <ContentSection>

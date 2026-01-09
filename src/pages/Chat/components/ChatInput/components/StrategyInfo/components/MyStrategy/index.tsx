@@ -20,9 +20,11 @@ const MyStrategyWrapper = styled.div<{ $isShowDefaultStyle: boolean }>`
   height: 100%;
   padding: 16px;
   border-radius: 8px;
+  transition: all ${ANI_DURATION}s;
   border: 1px solid ${({ theme }) => theme.black800};
   background-color: ${({ theme }) => theme.black1000};
   cursor: ${({ $isShowDefaultStyle }) => ($isShowDefaultStyle ? 'default' : 'pointer')};
+  overflow: hidden;
   .icon-chat-strategy-bg {
     position: absolute;
     left: 0;
@@ -31,6 +33,7 @@ const MyStrategyWrapper = styled.div<{ $isShowDefaultStyle: boolean }>`
     height: 100%;
   }
   &:hover {
+    border-color: ${({ theme }) => theme.black600};
     .title-arrow .icon-arrow {
       color: ${({ theme }) => theme.black0};
     }

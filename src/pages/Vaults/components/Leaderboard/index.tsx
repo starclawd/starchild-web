@@ -27,8 +27,9 @@ const LeaderboardItemWrapper = styled.div`
   transition: all ${ANI_DURATION}s;
   border: 1px solid ${({ theme }) => theme.black800};
   background: ${({ theme }) => theme.black1000};
+  overflow: hidden;
   &:hover {
-    opacity: 0.7;
+    border-color: ${({ theme }) => theme.black600};
   }
   .strategy-content {
     padding-bottom: 6px;

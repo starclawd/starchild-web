@@ -30,7 +30,7 @@ const PaperTradingPerformanceWrapper = styled.div`
 
 const AiAnalysis = styled.div`
   display: flex;
-  height: 200px;
+  height: 160px;
   border-bottom: 1px solid ${({ theme }) => theme.black800};
 `
 

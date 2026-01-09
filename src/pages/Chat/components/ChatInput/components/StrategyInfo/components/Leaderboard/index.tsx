@@ -18,8 +18,13 @@ const LeaderboardWrapper = styled.div`
   height: 100%;
   padding: 16px;
   border-radius: 8px;
+  transition: all ${ANI_DURATION}s;
   border: 1px solid ${({ theme }) => theme.black800};
   background-color: ${({ theme }) => theme.black1000};
+  overflow: hidden;
+  &:hover {
+    border-color: ${({ theme }) => theme.black600};
+  }
 `
 
 const Title = styled.div`
@@ -72,7 +77,7 @@ const ListWrapper = styled.div<{ $translateX: number }>`
   width: auto;
   height: 100%;
   transform: translateX(${({ $translateX }) => $translateX}px);
-  transition: transform ${ANI_DURATION}s ease-in-out;
+  transition: transform ${ANI_DURATION}s;
   .leaderboard-item {
     width: 366px;
   }
@@ -83,8 +88,8 @@ const LeaderboardItemWrapper = styled.div`
   height: 100%;
   cursor: pointer;
   transition: all ${ANI_DURATION}s;
-  &:hover {
-    opacity: 0.7;
+  .strategy-name {
+    color: ${({ theme }) => theme.black200};
   }
 `
 

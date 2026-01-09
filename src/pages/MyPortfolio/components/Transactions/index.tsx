@@ -138,6 +138,7 @@ const BottomContent = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 18px;
+  border-radius: 4px;
   color: ${({ theme }) => theme.black100};
   background-color: ${({ theme }) => theme.black800};
   .icon-arrow {

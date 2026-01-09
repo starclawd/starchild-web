@@ -137,6 +137,7 @@ const TabItem = styled.div<{
 `
 
 export default function MoveTabList({
+  className,
   tabKey,
   gap = 4,
   tabList,
@@ -146,6 +147,7 @@ export default function MoveTabList({
   forceWebStyle = false,
   activeIndicatorBackground,
 }: {
+  className?: string
   gap?: number
   tabKey: number | string
   moveType?: MoveType
@@ -278,7 +280,7 @@ export default function MoveTabList({
     <MoveTabListWrapper
       ref={wrapperRef}
       $moveType={moveType}
-      className='tab-list-wrapper'
+      className={`tab-list-wrapper ${className ? className : ''}`}
       $gap={gap}
       $borderRadius={moveType === MoveType.LINE ? 0 : borderRadius || (isMobile ? 8 : 12)}
       $borderColor={moveType === MoveType.LINE ? 'transparent' : theme.black600}

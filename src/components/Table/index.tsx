@@ -102,12 +102,12 @@ const TableRow = styled.tr<{ $rowHeight?: number }>`
   td {
     transition: all ${ANI_DURATION}s;
     &:first-child {
-      border-top-left-radius: 8px;
-      border-bottom-left-radius: 8px;
+      border-top-left-radius: 5px;
+      border-bottom-left-radius: 5px;
     }
     &:last-child {
-      border-top-right-radius: 8px;
-      border-bottom-right-radius: 8px;
+      border-top-right-radius: 5px;
+      border-bottom-right-radius: 5px;
     }
   }
   ${({ theme }) =>

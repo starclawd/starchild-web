@@ -63,7 +63,6 @@ const ButtonWithdraw = styled(ButtonBorder)`
   font-style: normal;
   font-weight: 400;
   line-height: 18px;
-  border-radius: 0;
   color: ${({ theme }) => theme.black200};
 `
 
@@ -75,7 +74,6 @@ const ButtonDeposit = styled(ButtonCommon)`
   font-style: normal;
   font-weight: 400;
   line-height: 18px;
-  border-radius: 0;
   color: ${({ theme }) => theme.black1000};
 `
 
@@ -105,14 +103,11 @@ const StyledTable = styled(Table)`
   .table-body tr td {
     padding-left: 12px;
     padding-right: 12px;
-    border-radius: 0;
     &:first-child {
       padding-left: 12px;
-      border-radius: 0;
     }
     &:last-child {
       padding-right: 12px;
-      border-radius: 0;
     }
   }
 ` as typeof Table

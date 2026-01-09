@@ -39,11 +39,9 @@ export const StyledTable = styled(Table)`
     td {
       &:first-child {
         padding-left: 12px;
-        border-radius: 4px 0 0 4px;
       }
       &:last-child {
         padding-right: 12px;
-        border-radius: 0 4px 4px 0;
       }
     }
   }

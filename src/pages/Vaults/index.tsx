@@ -73,7 +73,7 @@ const Vaults = memo(() => {
           <VaultsHeaderTop>
             <VaultsTitleWrapper>
               <VaultsTitleLine1>
-                <Trans>Do less, earn more.</Trans>
+                <Trans>Vibe more, earn more.</Trans>
               </VaultsTitleLine1>
             </VaultsTitleWrapper>
 

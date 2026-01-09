@@ -13,6 +13,7 @@ import { useMyStrategies } from 'store/mystrategy/hooks/useMyStrategies'
 import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
 import { MY_PORTFOLIO_TAB_KEY, STRATEGY_TAB_KEY } from 'store/mystrategycache/mystrategycache'
 import { WALLET_CONNECT_MODE } from 'store/vaults/vaults'
+import MoveTabList, { MoveType } from 'components/MoveTabList'
 
 const MyPortfolioWrapper = styled.div`
   display: flex;
@@ -34,24 +35,6 @@ const LeftTopContent = styled.div`
   width: 100%;
   padding: 80px 40px 20px;
   border-bottom: 1px solid ${({ theme }) => theme.black800};
-  .tab-list-all {
-    height: 48px;
-    gap: 12px;
-    .tab-item {
-      padding: 0 20px;
-      gap: 6px;
-      font-size: 16px;
-      font-style: normal;
-      font-weight: 400;
-      line-height: 22px;
-      i {
-        font-size: 24px;
-      }
-      &.active {
-        color: ${({ theme }) => theme.white};
-      }
-    }
-  }
   .tab-list-strategy {
     height: 24px;
     gap: 4px;
@@ -68,6 +51,19 @@ const TabListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
+  .tab-list-all {
+    height: 48px;
+    .move-tab-item {
+      padding: 0;
+      font-size: 16px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 22px;
+      i {
+        font-size: 24px;
+      }
+    }
+  }
 `
 
 const Title = styled.div`
@@ -175,7 +171,13 @@ export default memo(function MyPortfolio() {
           </Title>
           <Performance />
           <TabListWrapper>
-            <TabList className='tab-list-all' tabKey={activeTab} tabList={tabList} />
+            <MoveTabList
+              className='tab-list-all'
+              gap={20}
+              moveType={MoveType.LINE}
+              tabKey={activeTab}
+              tabList={tabList}
+            />
             {activeTab === MY_PORTFOLIO_TAB_KEY.STRATEGY && (
               <TabList className='tab-list-strategy' tabKey={strategyTabKey} tabList={strategyTabList} />
             )}

@@ -56,7 +56,7 @@ const StrategyName = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.black200};
+  color: ${({ theme }) => theme.black0};
 `
 
 const StrategyApr = styled.div`
@@ -138,7 +138,7 @@ export default memo(function LeaderBoardItem({
         <span style={{ color: colorMap[rank - 1] || 'rgba(255, 255, 255, 0.80)' }}>{rank}</span>
       </RankWrapper>
       <StrategyContent className='strategy-content' style={{ backgroundImage: `url(${LeaderboardBg})` }}>
-        <StrategyName>{strategyData.strategy_name}</StrategyName>
+        <StrategyName className='strategy-name'>{strategyData.strategy_name}</StrategyName>
         <StrategyApr>
           {aprList.map((item) => (
             <AprItem $isPositive={Number(item.value) > 0} $invalidVaule={isInvalidValue(item.value)} key={item.key}>
