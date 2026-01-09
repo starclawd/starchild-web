@@ -344,7 +344,7 @@ export default memo(function ShareModal() {
           description: <Trans>Image saved successfully</Trans>,
           status: TOAST_STATUS.SUCCESS,
           typeIcon: 'icon-download',
-          iconTheme: theme.jade10,
+          iconTheme: theme.black0,
           autoClose: 2000,
         })
       }
@@ -353,7 +353,7 @@ export default memo(function ShareModal() {
     } finally {
       setIsDownloading(false)
     }
-  }, [isDownloading, generateImage, currentShareStrategyData?.strategy_id, toast, theme.jade10])
+  }, [isDownloading, generateImage, currentShareStrategyData?.strategy_id, toast, theme.black0])
 
   // 复制链接和图片
   const handleCopyLink = useCallback(async () => {
@@ -377,7 +377,7 @@ export default memo(function ShareModal() {
                 description: shareUrl,
                 status: TOAST_STATUS.SUCCESS,
                 typeIcon: 'icon-copy',
-                iconTheme: theme.jade10,
+                iconTheme: theme.black0,
                 autoClose: 2000,
               })
             } catch (error) {
@@ -388,7 +388,7 @@ export default memo(function ShareModal() {
                 description: shareUrl,
                 status: TOAST_STATUS.SUCCESS,
                 typeIcon: 'icon-copy',
-                iconTheme: theme.jade10,
+                iconTheme: theme.black0,
                 autoClose: 2000,
               })
             }
@@ -402,7 +402,7 @@ export default memo(function ShareModal() {
       console.error('Copy failed', error)
       setIsCopying(false)
     }
-  }, [isCopying, generateImage, shareUrl, toast, theme.jade10])
+  }, [isCopying, generateImage, shareUrl, toast, theme.black0])
 
   // 分享到 Telegram
   const handleShareToTelegram = useCallback(() => {

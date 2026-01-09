@@ -62,7 +62,7 @@ export default function Language() {
             description: <Trans>Language switched successfully</Trans>,
             status: TOAST_STATUS.SUCCESS,
             typeIcon: 'icon-chat-complete',
-            iconTheme: theme.jade10,
+            iconTheme: theme.black0,
             autoClose: 3000,
           })
         } else {
@@ -70,8 +70,8 @@ export default function Language() {
             title: <Trans>Error</Trans>,
             description: <Trans>Failed to switch language</Trans>,
             status: TOAST_STATUS.ERROR,
-            typeIcon: 'icon-chat-close',
-            iconTheme: theme.ruby50,
+            typeIcon: 'icon-close',
+            iconTheme: theme.black0,
             autoClose: 3000,
           })
         }

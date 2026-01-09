@@ -99,7 +99,7 @@ export default memo(function DeployFailed({ onClose, onResubmit }: DeployFailedP
   return (
     <FailedWrapper>
       <FailedIcon>
-        <IconBase className='icon-chat-close' />
+        <IconBase className='icon-close' />
       </FailedIcon>
 
       <FailedTitle>

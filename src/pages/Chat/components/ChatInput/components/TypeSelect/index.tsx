@@ -190,7 +190,7 @@ export function TypeSelectContent({ onClose }: { onClose?: () => void }) {
               title: <Trans>Setting successfully</Trans>,
               status: TOAST_STATUS.SUCCESS,
               typeIcon: 'icon-style-type',
-              iconTheme: theme.jade10,
+              iconTheme: theme.black0,
               description: value === AI_STYLE_TYPE.EXPLANATORY ? <Trans>Explanatory</Trans> : <Trans>Concise</Trans>,
             })
             setAiStyleType(value)

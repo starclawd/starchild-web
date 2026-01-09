@@ -163,10 +163,10 @@ const useFeedbackFailedToast = () => {
         description: customError || t`Unable to process your Like/Dislike request. Please try again in a moment.`,
         status: TOAST_STATUS.ERROR,
         typeIcon: 'icon-warn',
-        iconTheme: theme.ruby50,
+        iconTheme: theme.black0,
       })
     },
-    [theme.ruby50, toast],
+    [theme.black0, toast],
   )
 
   return showFeedbackFailedToast

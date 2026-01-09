@@ -73,7 +73,7 @@ const InputWrapper = styled(BorderAllSide1PxBox)<{ $isFocus: boolean }>`
     font-size: 18px;
     color: ${({ theme }) => theme.black300};
   }
-  .icon-chat-close {
+  .icon-close {
     position: absolute;
     right: 12px;
     top: calc(50% - 8px);
@@ -99,7 +99,7 @@ const InputWrapper = styled(BorderAllSide1PxBox)<{ $isFocus: boolean }>`
             top: calc(50% - ${vm(8)});
             font-size: 0.18rem;
           }
-          .icon-chat-close {
+          .icon-close {
             font-size: 0.18rem;
             right: ${vm(12)};
             top: calc(50% - ${vm(9)});
@@ -109,7 +109,7 @@ const InputWrapper = styled(BorderAllSide1PxBox)<{ $isFocus: boolean }>`
           }
         `
       : css`
-          .icon-chat-close {
+          .icon-close {
             &:hover {
               color: ${({ theme }) => theme.black100};
             }
@@ -263,7 +263,7 @@ export default memo(function Input({
       $isFocus={isFocus}
     >
       {isSearch && <IconBase className='icon-search' />}
-      {isSearch && inputValue && <IconBase className='icon-chat-close' onClick={onResetValue} />}
+      {isSearch && inputValue && <IconBase className='icon-close' onClick={onResetValue} />}
       <BaseInput
         type={type}
         tabIndex={1}

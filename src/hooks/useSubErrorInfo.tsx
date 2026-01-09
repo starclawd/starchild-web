@@ -23,7 +23,7 @@ export default function useSubErrorInfo() {
         description: '',
         status: TOAST_STATUS.ERROR,
         typeIcon: 'icon-delete',
-        iconTheme: theme.ruby50,
+        iconTheme: theme.black0,
       })
       return true
     }

@@ -143,7 +143,7 @@ export function useDeployment(strategyId: string) {
             description: '',
             status: TOAST_STATUS.SUCCESS,
             typeIcon: 'icon-chat-send',
-            iconTheme: theme.green100,
+            iconTheme: theme.black0,
           })
         } else {
           setDeployingStatus(DEPLOYING_STATUS.DEPLOYING_FAILED)

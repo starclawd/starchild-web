@@ -211,7 +211,7 @@ export default function ShortcutsEdit({
               description: text,
               status: TOAST_STATUS.SUCCESS,
               typeIcon: 'icon-delete',
-              iconTheme: theme.ruby50,
+              iconTheme: theme.black0,
             })
           }
         }

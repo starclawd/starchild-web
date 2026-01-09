@@ -57,7 +57,7 @@ export default function Google() {
             description: data.error.data.message,
             status: TOAST_STATUS.ERROR,
             typeIcon: 'icon-customize-avatar',
-            iconTheme: theme.ruby50,
+            iconTheme: theme.black0,
           })
         } else {
           await triggerGetUserInfo()

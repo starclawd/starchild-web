@@ -89,7 +89,7 @@ const VaultsWalletConnect = memo(({ mode = WALLET_CONNECT_MODE.SHRINK }: VaultsW
         description: <Trans>No address available</Trans>,
         status: TOAST_STATUS.ERROR,
         typeIcon: 'icon-copy',
-        iconTheme: theme.red100,
+        iconTheme: theme.black0,
         autoClose: 2000,
       })
       return
@@ -102,7 +102,7 @@ const VaultsWalletConnect = memo(({ mode = WALLET_CONNECT_MODE.SHRINK }: VaultsW
         description: address,
         status: TOAST_STATUS.SUCCESS,
         typeIcon: 'icon-copy',
-        iconTheme: theme.jade10,
+        iconTheme: theme.black0,
         autoClose: 2000,
       })
     } catch (error) {
@@ -121,7 +121,7 @@ const VaultsWalletConnect = memo(({ mode = WALLET_CONNECT_MODE.SHRINK }: VaultsW
           description: address,
           status: TOAST_STATUS.SUCCESS,
           typeIcon: 'icon-copy',
-          iconTheme: theme.jade10,
+          iconTheme: theme.black0,
           autoClose: 2000,
         })
       } catch (fallbackError) {
@@ -131,7 +131,7 @@ const VaultsWalletConnect = memo(({ mode = WALLET_CONNECT_MODE.SHRINK }: VaultsW
           description: <Trans>Unable to copy address</Trans>,
           status: TOAST_STATUS.ERROR,
           typeIcon: 'icon-copy',
-          iconTheme: theme.red100,
+          iconTheme: theme.black0,
           autoClose: 2000,
         })
       }

@@ -141,15 +141,15 @@ export default function AvailableClaim() {
         description: '',
         status: TOAST_STATUS.SUCCESS,
         typeIcon: 'icon-chat-complete',
-        iconTheme: theme.green100,
+        iconTheme: theme.black0,
       })
     } catch (error: any) {
       toast({
         title: <Trans>Claim Failed</Trans>,
         description: formatContractError(error),
         status: TOAST_STATUS.ERROR,
-        typeIcon: 'icon-chat-close',
-        iconTheme: theme.red100,
+        typeIcon: 'icon-close',
+        iconTheme: theme.black0,
       })
     } finally {
       setIsClaiming(false)

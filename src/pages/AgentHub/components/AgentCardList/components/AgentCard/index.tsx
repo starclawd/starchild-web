@@ -125,7 +125,7 @@ export default memo(function AgentCard({
         ),
         status: TOAST_STATUS.SUCCESS,
         typeIcon: 'icon-delete',
-        iconTheme: theme.jade10,
+        iconTheme: theme.black0,
       })
     } else {
       toast({
@@ -133,7 +133,7 @@ export default memo(function AgentCard({
         description: '',
         status: TOAST_STATUS.ERROR,
         typeIcon: 'icon-delete',
-        iconTheme: theme.ruby50,
+        iconTheme: theme.black0,
       })
     }
   }

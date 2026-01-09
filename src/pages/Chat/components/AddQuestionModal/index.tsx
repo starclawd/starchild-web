@@ -182,7 +182,7 @@ export default memo(function AddQuestionModal({
         description: <span>{value}</span>,
         status: TOAST_STATUS.SUCCESS,
         typeIcon: 'icon-chat-upload',
-        iconTheme: theme.black100,
+        iconTheme: theme.black0,
       })
       toggleAddQuestionModal()
     }

@@ -98,6 +98,15 @@ function extractConfig(code: string): StrategyConfig {
     return match ? parseFloat(match) : null
   }
 
+  // 提取数组格式的 timeframes，如 "timeframes": ["4h", "5m"]
+  const extractArray = (field: string): string[] => {
+    const match = configMatch.match(new RegExp(`"${field}"\\s*:\\s*\\[([^\\]]*?)\\]`, 'i'))?.[1]
+    if (!match) return []
+    // 提取数组中的字符串元素
+    const items = match.match(/"([^"]*)"/g) || []
+    return items.map(item => item.replace(/"/g, ''))
+  }
+
   // 从代码中提取 TP/SL 数值（如 pnl_pct >= 4.0）
   let takeProfit = extractStr('take_profit')
   let stopLoss = extractStr('stop_loss')
@@ -128,10 +137,20 @@ function extractConfig(code: string): StrategyConfig {
     }
   }
 
+  // 提取 timeframe - 支持单个字符串或数组格式
+  let timeframe = extractStr('timeframe')
+  if (!timeframe) {
+    // 尝试提取数组格式的 timeframes
+    const timeframesArray = extractArray('timeframes')
+    if (timeframesArray.length > 0) {
+      timeframe = timeframesArray.join(', ')
+    }
+  }
+
   return {
     name: extractStr('name'),
     trading_symbol: extractStr('trading_symbol') || extractStr('signal_symbol'),
-    timeframe: extractStr('timeframe'),
+    timeframe,
     leverage: extractNum('leverage') || extractStr('leverage') || '10',
     take_profit: takeProfit,
     stop_loss: stopLoss,

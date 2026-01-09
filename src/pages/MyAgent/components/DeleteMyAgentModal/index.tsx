@@ -148,7 +148,7 @@ export default function DeleteMyAgentModal() {
           description: <Trans>The agent has been successfully deleted.</Trans>,
           status: TOAST_STATUS.SUCCESS,
           typeIcon: 'icon-delete',
-          iconTheme: theme.ruby50,
+          iconTheme: theme.black0,
         })
         toggleDeleteAgentModal()
       } else {
@@ -157,7 +157,7 @@ export default function DeleteMyAgentModal() {
           description: '',
           status: TOAST_STATUS.ERROR,
           typeIcon: 'icon-delete',
-          iconTheme: theme.ruby50,
+          iconTheme: theme.black0,
         })
       }
     } catch (error) {
@@ -167,7 +167,7 @@ export default function DeleteMyAgentModal() {
         description: '',
         status: TOAST_STATUS.ERROR,
         typeIcon: 'icon-delete',
-        iconTheme: theme.ruby50,
+        iconTheme: theme.black0,
       })
     } finally {
       setIsDeleting(false)

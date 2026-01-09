@@ -17,7 +17,7 @@ const MenuNoAgentWrapper = styled.div`
   border-radius: 12px;
   background-color: ${({ theme }) => theme.black800};
   margin-top: 12px;
-  .icon-chat-close {
+  .icon-close {
     position: absolute;
     top: 12px;
     right: 12px;
@@ -32,7 +32,7 @@ const MenuNoAgentWrapper = styled.div`
       gap: ${vm(8)};
       padding: ${vm(12)};
       border-radius: ${vm(12)};
-      .icon-chat-close {
+      .icon-close {
         font-size: 0.18rem;
         top: ${vm(12)};
         right: ${vm(12)};
@@ -116,7 +116,7 @@ export default function MenuNoAgent() {
   if (!isMenuNoAgentOpen) return null
   return (
     <MenuNoAgentWrapper>
-      <IconBase onClick={closeMenuNoAgent} className='icon-chat-close' />
+      <IconBase onClick={closeMenuNoAgent} className='icon-close' />
       <Title>
         <Trans>Did you know?</Trans>
       </Title>

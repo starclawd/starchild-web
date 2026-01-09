@@ -153,8 +153,8 @@ export default function Preference() {
             title: errorTitle,
             description: errorDescription,
             status: TOAST_STATUS.ERROR,
-            typeIcon: 'icon-chat-close',
-            iconTheme: theme.ruby50,
+            typeIcon: 'icon-close',
+            iconTheme: theme.black0,
           })
         }
       }

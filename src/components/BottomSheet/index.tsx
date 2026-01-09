@@ -158,7 +158,7 @@ const CloseWrapper = styled.div`
   top: 20px;
   right: 20px;
   z-index: 11;
-  .icon-chat-close {
+  .icon-close {
     font-size: 28px;
     color: ${({ theme }) => theme.black300};
 
@@ -176,7 +176,7 @@ const CloseWrapper = styled.div`
           font-size: ${vm(16)};
           line-height: ${vm(24)};
           font-weight: 500;
-          .icon-chat-close {
+          .icon-close {
             font-size: ${vm(28)};
           }
         `
@@ -360,7 +360,7 @@ const BottomSheet = ({
       >
         {!hideClose && (
           <CloseWrapper onClick={onClose}>
-            {isCloseText ? <Trans>Close</Trans> : <IconBase className='icon-chat-close' />}
+            {isCloseText ? <Trans>Close</Trans> : <IconBase className='icon-close' />}
           </CloseWrapper>
         )}
         {!hideDragHandle && (

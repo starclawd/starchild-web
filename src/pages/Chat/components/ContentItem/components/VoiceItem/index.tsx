@@ -45,7 +45,7 @@ const DeleteWrapper = styled.div`
     theme.isMobile &&
     css`
       height: ${vm(24)};
-      .icon-chat-close {
+      .icon-close {
         font-size: 0.18rem;
         color: ${theme.black300};
       }
@@ -575,7 +575,7 @@ export default function VoiceItem({
         <TimeDisplay>{formatTime(duration - currentTime)}</TimeDisplay>
         {isAiInput && (
           <DeleteWrapper onClick={deleteVoice}>
-            <IconBase className='icon-chat-close' />
+            <IconBase className='icon-close' />
           </DeleteWrapper>
         )}
       </LeftWrapper>

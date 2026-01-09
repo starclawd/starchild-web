@@ -245,7 +245,7 @@ export function CreateAgentModal() {
             title: t`Edit failed`,
             description: t`Failed to update Agent, please try again later`,
             status: TOAST_STATUS.ERROR,
-            typeIcon: 'icon-chat-close',
+            typeIcon: 'icon-close',
             iconTheme: '#EF4444',
           })
         }
@@ -255,7 +255,7 @@ export function CreateAgentModal() {
           title: t`Edit failed`,
           description: t`Failed to update Agent, please try again later`,
           status: TOAST_STATUS.ERROR,
-          typeIcon: 'icon-chat-close',
+          typeIcon: 'icon-close',
           iconTheme: '#EF4444',
         })
       }

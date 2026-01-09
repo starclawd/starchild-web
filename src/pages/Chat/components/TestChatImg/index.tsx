@@ -392,7 +392,7 @@ export default function TestChatImg({ data }: { data: TempAiContentDataType }) {
           description: <Trans>No img generated</Trans>,
           status: TOAST_STATUS.SUCCESS,
           typeIcon: 'icon-chat-complete',
-          iconTheme: theme.jade10,
+          iconTheme: theme.black0,
         })
       }
       setIsLoading(false)
@@ -403,19 +403,10 @@ export default function TestChatImg({ data }: { data: TempAiContentDataType }) {
         description: <Trans>Failed to generate chart images</Trans>,
         status: TOAST_STATUS.ERROR,
         typeIcon: 'icon-warning',
-        iconTheme: theme.ruby50,
+        iconTheme: theme.black0,
       })
     }
-  }, [
-    data.content,
-    isLoading,
-    theme.jade10,
-    theme.ruby50,
-    toast,
-    getChartImg,
-    triggerChatCompletions,
-    addTextToImageWithOptions,
-  ])
+  }, [data.content, isLoading, theme.black0, toast, getChartImg, triggerChatCompletions, addTextToImageWithOptions])
   // const getImg = useCallback(async () => {
   //   const imageWithText = await addTextToImageWithOptions(
   //     "技术面结论: BNB 在5-28日凌晨最高拉升至693美元，已向近一周被频繁测试的680-686美元颈线上方拉出长阳，短线完成对该阻力的日内突破。但日线收盘回落至683美元附近，尚未形成放量实体收在颈线上方，突破仍待确认。动能评估: 价量稳步上升，均线保持在20日与50日均线之上且多头排列，RSI中枢处于55-60区间，仍有上行空间。关键价位: 阻力位693→700→715，支撑位668→652。操作提示: 若日线稳收690-700之上并伴随放量，则目标指向715-730；否则跌破668则防守652。",

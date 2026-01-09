@@ -160,7 +160,7 @@ export default function Operator({ threadId }: { threadId: string }) {
           ),
           status: TOAST_STATUS.SUCCESS,
           typeIcon: 'icon-delete',
-          iconTheme: theme.ruby50,
+          iconTheme: theme.black0,
         })
         setIsShowTaskOperator(false)
         setIsPopoverOpen(false)

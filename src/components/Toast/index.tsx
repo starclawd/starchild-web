@@ -18,7 +18,7 @@ export enum TOAST_TYPE {
 }
 
 export const StyledToastContent = styled(ToastContainer)`
-  top: 88px;
+  top: 20px;
   right: 20px;
   .starchild-toast {
     width: auto;
@@ -47,9 +47,10 @@ const ToastContentWrapper = styled.div`
   min-height: 58px;
   border-radius: 12px;
   padding: 12px;
-  background-color: ${({ theme }) => theme.black700};
-  border: 1px solid ${({ theme }) => theme.black800};
-  box-shadow: 0px 4px 4px 0px ${({ theme }) => theme.systemShadow};
+  border-radius: 8px;
+  background: ${({ theme }) => theme.black600};
+  /* Toast */
+  box-shadow: 0 4px 4px 0 var(--system-shadow, rgba(0, 0, 0, 0.3));
   ${({ theme }) =>
     theme.isMobile &&
     css`

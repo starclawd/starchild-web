@@ -566,7 +566,7 @@ export default memo(function Shortcuts() {
             description: text,
             status: TOAST_STATUS.SUCCESS,
             typeIcon: 'icon-chat-star-empty',
-            iconTheme: theme.black100,
+            iconTheme: theme.black0,
           })
         }
       }

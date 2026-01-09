@@ -410,15 +410,15 @@ const ToastDemo = () => {
       description: '您的操作已成功完成',
       status: TOAST_STATUS.SUCCESS,
       typeIcon: 'icon-chat-complete',
-      iconTheme: theme.jade10,
+      iconTheme: theme.black0,
       variant: 'success' as const,
     },
     {
       title: '操作失败',
       description: '操作执行失败，请稍后重试',
       status: TOAST_STATUS.ERROR,
-      typeIcon: 'icon-chat-close',
-      iconTheme: theme.ruby50,
+      typeIcon: 'icon-close',
+      iconTheme: theme.black0,
       variant: 'error' as const,
     },
     {
@@ -426,7 +426,7 @@ const ToastDemo = () => {
       description: '请注意检查您的输入信息',
       status: TOAST_STATUS.ERROR,
       typeIcon: 'icon-chat-warning',
-      iconTheme: theme.brand100,
+      iconTheme: theme.black0,
       variant: 'warning' as const,
     },
     {
@@ -434,7 +434,7 @@ const ToastDemo = () => {
       description: '这是一条普通的信息提示',
       status: TOAST_STATUS.SUCCESS,
       typeIcon: 'icon-chat-notification',
-      iconTheme: theme.brand100,
+      iconTheme: theme.black0,
       variant: 'info' as const,
     },
     {
@@ -442,7 +442,7 @@ const ToastDemo = () => {
       description: '正在处理您的请求，请稍候...',
       status: TOAST_STATUS.LOADING,
       typeIcon: 'icon-chat-loading',
-      iconTheme: theme.brand100,
+      iconTheme: theme.black0,
       variant: 'loading' as const,
     },
   ]
@@ -470,7 +470,7 @@ const ToastDemo = () => {
       description: customDescription,
       status: TOAST_STATUS.SUCCESS,
       typeIcon: customIcon,
-      iconTheme: theme.brand100,
+      iconTheme: theme.black0,
       autoClose: customDuration,
     })
     setToastCount((count) => count + 1)
@@ -484,7 +484,7 @@ const ToastDemo = () => {
         '这是一个很长的描述内容，用来演示当描述文本过长时Toast组件如何处理文本溢出和换行，以及整体的布局效果是否良好。在实际使用中，建议控制文本长度以确保最佳的用户体验。',
       status: TOAST_STATUS.SUCCESS,
       typeIcon: 'icon-chat-notification',
-      iconTheme: theme.brand100,
+      iconTheme: theme.black0,
       autoClose: 5000,
     })
     setToastCount((count) => count + 1)
@@ -558,7 +558,7 @@ const ToastDemo = () => {
                 description: '这个Toast将显示10秒钟',
                 status: TOAST_STATUS.SUCCESS,
                 typeIcon: 'icon-chat-notification',
-                iconTheme: theme.brand100,
+                iconTheme: theme.black0,
                 autoClose: 10000,
               })
               setToastCount((count) => count + 1)
@@ -576,7 +576,7 @@ const ToastDemo = () => {
                   : '这个Toast针对桌面端进行了优化，在右上角显示',
                 status: TOAST_STATUS.SUCCESS,
                 typeIcon: 'icon-chat-notification',
-                iconTheme: theme.brand100,
+                iconTheme: theme.black0,
                 autoClose: 4000,
               })
               setToastCount((count) => count + 1)
@@ -616,7 +616,7 @@ const ToastDemo = () => {
             <select value={customIcon} onChange={(e) => setCustomIcon(e.target.value)}>
               <option value='icon-chat-notification'>icon-chat-notification</option>
               <option value='icon-chat-complete'>icon-chat-complete</option>
-              <option value='icon-chat-close'>icon-chat-close</option>
+              <option value='icon-close'>icon-close</option>
               <option value='icon-chat-warning'>icon-chat-warning</option>
               <option value='icon-chat-loading'>icon-chat-loading</option>
             </select>
@@ -708,7 +708,7 @@ const Component = () => {
       title: '操作失败',
       description: '操作执行失败，请稍后重试',
       status: TOAST_STATUS.ERROR,
-      typeIcon: 'icon-chat-close',
+      typeIcon: 'icon-close',
       iconTheme: '#ff4d4f',
       autoClose: 3000
     })

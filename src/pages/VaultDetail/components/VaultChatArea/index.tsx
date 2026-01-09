@@ -154,15 +154,7 @@ const VaultChatArea = memo(() => {
   return (
     <ChatAreaContainer className='chat-area-container'>
       <ChatContent>
-        <TopContent>
-          {isShowPaperTradingStatus ? (
-            <PaperTradingStatus />
-          ) : isShowMonitoringProgress ? (
-            <MonitoringProgress />
-          ) : (
-            <ResponseProgress />
-          )}
-        </TopContent>
+        <TopContent>{isShowMonitoringProgress ? <MonitoringProgress /> : <ResponseProgress />}</TopContent>
         {displaySignalList.length > 0 && (
           <SignalList className='scroll-style'>
             {displaySignalList.map((data, index) => {

@@ -165,7 +165,7 @@ export default memo(function StrategyName({
           description: <Trans>Strategy has been successfully updated</Trans>,
           status: TOAST_STATUS.SUCCESS,
           typeIcon: 'icon-edit',
-          iconTheme: theme.jade10,
+          iconTheme: theme.black0,
         })
       }
     } catch (error) {
@@ -173,7 +173,7 @@ export default memo(function StrategyName({
     } finally {
       setIsLoading(false)
     }
-  }, [name, isLoading, descriptionProp, strategyId, theme.jade10, toast, refetchStrategyDetail, triggerEditStrategy])
+  }, [name, isLoading, descriptionProp, strategyId, theme.black0, toast, refetchStrategyDetail, triggerEditStrategy])
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {

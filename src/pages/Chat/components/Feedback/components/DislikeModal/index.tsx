@@ -369,7 +369,7 @@ export default memo(function DislikeModal({
             ),
             status: TOAST_STATUS.SUCCESS,
             typeIcon: 'icon-feedback',
-            iconTheme: theme.black100,
+            iconTheme: theme.black0,
           })
           setCurrentDislikeReason('')
           setIsDislikeLoading(false)
@@ -385,7 +385,7 @@ export default memo(function DislikeModal({
       isDislikeLoading,
       currentAiThreadId,
       isShowDislikeModal,
-      theme.black100,
+      theme.black0,
       toast,
       setIsShowDislikeModal,
       triggerChatFeedback,

@@ -190,14 +190,14 @@ export default memo(function ChainConnect({
           description: '',
           status: TOAST_STATUS.ERROR,
           typeIcon: 'icon-customize-avatar',
-          iconTheme: theme.ruby50,
+          iconTheme: theme.black0,
           autoClose: 2000,
         })
         disconnect()
         onError?.(error as Error)
       }
     },
-    [evmSignMessage, evmGetSignatureText, loginWithWallet, onSuccess, onError, toast, theme.ruby50, disconnect],
+    [evmSignMessage, evmGetSignatureText, loginWithWallet, onSuccess, onError, toast, theme.black0, disconnect],
   )
 
   // EVM 钱包绑定处理
@@ -223,7 +223,7 @@ export default memo(function ChainConnect({
           description: address,
           status: TOAST_STATUS.SUCCESS,
           typeIcon: 'icon-customize-avatar',
-          iconTheme: theme.jade10,
+          iconTheme: theme.black0,
           autoClose: 2000,
         })
         onSuccess?.(result)
@@ -235,7 +235,7 @@ export default memo(function ChainConnect({
           description: errorMessage,
           status: TOAST_STATUS.ERROR,
           typeIcon: 'icon-customize-avatar',
-          iconTheme: theme.ruby50,
+          iconTheme: theme.black0,
           autoClose: 2000,
         })
         disconnect()
@@ -250,8 +250,7 @@ export default memo(function ChainConnect({
       onSuccess,
       onError,
       toast,
-      theme.jade10,
-      theme.ruby50,
+      theme.black0,
       disconnect,
     ],
   )
@@ -280,14 +279,14 @@ export default memo(function ChainConnect({
           description: '',
           status: TOAST_STATUS.ERROR,
           typeIcon: 'icon-customize-avatar',
-          iconTheme: theme.ruby50,
+          iconTheme: theme.black0,
           autoClose: 2000,
         })
         disconnect()
         onError?.(error as Error)
       }
     },
-    [solanaSignMessage, solanaGetSignatureText, loginWithWallet, onSuccess, onError, toast, theme.ruby50, disconnect],
+    [solanaSignMessage, solanaGetSignatureText, loginWithWallet, onSuccess, onError, toast, theme.black0, disconnect],
   )
 
   // Solana 钱包绑定处理
@@ -313,7 +312,7 @@ export default memo(function ChainConnect({
           description: address,
           status: TOAST_STATUS.SUCCESS,
           typeIcon: 'icon-customize-avatar',
-          iconTheme: theme.jade10,
+          iconTheme: theme.black0,
           autoClose: 2000,
         })
         onSuccess?.(result)
@@ -325,7 +324,7 @@ export default memo(function ChainConnect({
           description: errorMessage,
           status: TOAST_STATUS.ERROR,
           typeIcon: 'icon-customize-avatar',
-          iconTheme: theme.ruby50,
+          iconTheme: theme.black0,
           autoClose: 2000,
         })
         disconnect()
@@ -340,8 +339,7 @@ export default memo(function ChainConnect({
       onSuccess,
       onError,
       toast,
-      theme.jade10,
-      theme.ruby50,
+      theme.black0,
       disconnect,
     ],
   )
@@ -379,14 +377,14 @@ export default memo(function ChainConnect({
             ),
             status: TOAST_STATUS.ERROR,
             typeIcon: 'icon-customize-avatar',
-            iconTheme: theme.ruby50,
+            iconTheme: theme.black0,
             autoClose: 2000,
           })
           await disconnect()
         }
       }
     },
-    [isLogin, userInfo, toast, theme.ruby50, disconnect],
+    [isLogin, userInfo, toast, theme.black0, disconnect],
   )
 
   // 判断当前网络是否为Solana链

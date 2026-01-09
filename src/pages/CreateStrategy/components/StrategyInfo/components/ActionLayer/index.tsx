@@ -2,7 +2,7 @@ import { ButtonCommon } from 'components/Button'
 import { IconBase } from 'components/Icons'
 import Pending from 'components/Pending'
 import { memo, MouseEventHandler } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 const ActionLayerWrapper = styled.div`
   position: absolute;
@@ -62,7 +62,7 @@ const CenterBottom = styled.div`
   color: ${({ theme }) => theme.black200};
 `
 
-const ArrowButton = styled(ButtonCommon)`
+const ArrowButton = styled(ButtonCommon)<{ $showRightText: boolean }>`
   min-width: 40px;
   width: fit-content;
   height: 40px;
@@ -79,6 +79,11 @@ const ArrowButton = styled(ButtonCommon)`
     font-size: 24px;
     color: ${({ theme }) => theme.black1000};
   }
+  ${({ $showRightText }) =>
+    !$showRightText &&
+    css`
+      width: 40px;
+    `}
 `
 
 export default memo(function ActionLayer({
@@ -108,7 +113,7 @@ export default memo(function ActionLayer({
             <span>{description}</span>
           </CenterBottom>
         </CenterContent>
-        <ArrowButton>
+        <ArrowButton $showRightText={!!rightText}>
           {isLoading ? <Pending /> : rightText ? <span>{rightText}</span> : <IconBase className='icon-arrow' />}
         </ArrowButton>
       </InnerContent>

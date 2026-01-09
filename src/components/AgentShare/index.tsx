@@ -296,7 +296,7 @@ export function useCopyText() {
             description: shareUrl,
             status: TOAST_STATUS.SUCCESS,
             typeIcon: 'icon-copy',
-            iconTheme: theme.jade10,
+            iconTheme: theme.black0,
             autoClose: 2000,
           })
           setIsCopyLoading(false)
@@ -314,7 +314,7 @@ export function useCopyText() {
             description: shareUrl,
             status: TOAST_STATUS.SUCCESS,
             typeIcon: 'icon-copy',
-            iconTheme: theme.jade10,
+            iconTheme: theme.black0,
             autoClose: 2000,
           })
         } catch (err) {
@@ -324,7 +324,7 @@ export function useCopyText() {
         setIsCopyLoading(false)
       }
     },
-    [toast, theme.jade10],
+    [toast, theme.black0],
   )
 }
 
@@ -356,7 +356,7 @@ export function useCopyImgAndText() {
             description: shareUrl,
             status: TOAST_STATUS.SUCCESS,
             typeIcon: 'icon-copy',
-            iconTheme: theme.jade10,
+            iconTheme: theme.black0,
             autoClose: 2000,
           })
           setIsCopyLoading(false)
@@ -365,7 +365,7 @@ export function useCopyImgAndText() {
         setIsCopyLoading(false)
       }
     },
-    [toast, theme.jade10],
+    [toast, theme.black0],
   )
   if (isTelegramWebApp()) {
     return useCallback(
@@ -389,7 +389,7 @@ export function useCopyImgAndText() {
             description: shareUrl,
             status: TOAST_STATUS.SUCCESS,
             typeIcon: 'icon-copy',
-            iconTheme: theme.jade10,
+            iconTheme: theme.black0,
             autoClose: 2000,
           })
         } catch (err) {
@@ -398,7 +398,7 @@ export function useCopyImgAndText() {
         document.body.removeChild(textarea)
         setIsCopyLoading(false)
       },
-      [theme.jade10, toast],
+      [theme.black0, toast],
     )
   }
   return useCallback(

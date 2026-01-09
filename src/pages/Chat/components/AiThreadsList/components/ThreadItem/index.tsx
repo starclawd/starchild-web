@@ -224,7 +224,7 @@ export default function ThreadItem({
             ),
             status: TOAST_STATUS.SUCCESS,
             typeIcon: 'icon-delete',
-            iconTheme: theme.ruby50,
+            iconTheme: theme.black0,
           })
         }
         setCurrentDeleteThreadId('')

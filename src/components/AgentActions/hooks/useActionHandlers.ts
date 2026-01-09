@@ -68,8 +68,8 @@ export function useActionHandlers({
       title: 'Error',
       description: 'Agent not found',
       status: TOAST_STATUS.ERROR,
-      typeIcon: 'icon-chat-close',
-      iconTheme: theme.ruby50,
+      typeIcon: 'icon-close',
+      iconTheme: theme.black0,
     })
   }, [toast, theme])
 

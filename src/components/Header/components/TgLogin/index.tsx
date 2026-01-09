@@ -88,7 +88,7 @@ export const TgLogin = () => {
             description: data.error.data.message,
             status: TOAST_STATUS.ERROR,
             typeIcon: 'icon-customize-avatar',
-            iconTheme: theme.ruby50,
+            iconTheme: theme.black0,
           })
         } else {
           const data = await triggerGetUserInfo()

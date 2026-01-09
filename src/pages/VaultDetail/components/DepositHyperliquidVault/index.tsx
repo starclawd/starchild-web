@@ -411,8 +411,8 @@ export default memo(function DepositHyperliquidVault({ vaultAddress, onClose }: 
         title: <Trans>No API Wallet</Trans>,
         description: <Trans>Please approve agent first</Trans>,
         status: TOAST_STATUS.ERROR,
-        typeIcon: 'icon-chat-close',
-        iconTheme: theme.red100,
+        typeIcon: 'icon-close',
+        iconTheme: theme.black0,
       })
       return
     }
@@ -446,7 +446,7 @@ export default memo(function DepositHyperliquidVault({ vaultAddress, onClose }: 
           description: '',
           status: TOAST_STATUS.SUCCESS,
           typeIcon: 'icon-chat-complete',
-          iconTheme: theme.green100,
+          iconTheme: theme.black0,
         })
         setAmount('')
         // 刷新余额
@@ -460,8 +460,8 @@ export default memo(function DepositHyperliquidVault({ vaultAddress, onClose }: 
         title: <Trans>Deposit Failed</Trans>,
         description: error?.message || 'Unknown error',
         status: TOAST_STATUS.ERROR,
-        typeIcon: 'icon-chat-close',
-        iconTheme: theme.red100,
+        typeIcon: 'icon-close',
+        iconTheme: theme.black0,
       })
     } finally {
       setIsLoading(false)
@@ -488,8 +488,8 @@ export default memo(function DepositHyperliquidVault({ vaultAddress, onClose }: 
         title: <Trans>No API Wallet</Trans>,
         description: <Trans>Please approve agent first</Trans>,
         status: TOAST_STATUS.ERROR,
-        typeIcon: 'icon-chat-close',
-        iconTheme: theme.red100,
+        typeIcon: 'icon-close',
+        iconTheme: theme.black0,
       })
       return
     }
@@ -523,7 +523,7 @@ export default memo(function DepositHyperliquidVault({ vaultAddress, onClose }: 
           description: '',
           status: TOAST_STATUS.SUCCESS,
           typeIcon: 'icon-chat-complete',
-          iconTheme: theme.green100,
+          iconTheme: theme.black0,
         })
         setAmount('')
         // 刷新余额
@@ -537,8 +537,8 @@ export default memo(function DepositHyperliquidVault({ vaultAddress, onClose }: 
         title: <Trans>Withdraw Failed</Trans>,
         description: error?.message || 'Unknown error',
         status: TOAST_STATUS.ERROR,
-        typeIcon: 'icon-chat-close',
-        iconTheme: theme.red100,
+        typeIcon: 'icon-close',
+        iconTheme: theme.black0,
       })
     } finally {
       setIsLoading(false)

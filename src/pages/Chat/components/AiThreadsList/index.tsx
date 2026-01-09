@@ -313,7 +313,7 @@ export default memo(function AiThreadsList({ closeHistory }: { closeHistory?: ()
             ),
             status: TOAST_STATUS.SUCCESS,
             typeIcon: 'icon-delete',
-            iconTheme: theme.ruby50,
+            iconTheme: theme.black0,
           })
         }
         setCurrentDeleteThreadId('')

@@ -220,7 +220,7 @@ export default memo(function EditStrategyInfoModal({
           description: <Trans>Strategy has been successfully updated</Trans>,
           status: TOAST_STATUS.SUCCESS,
           typeIcon: 'icon-edit',
-          iconTheme: theme.jade10,
+          iconTheme: theme.black0,
         })
       }
     } catch (error) {
@@ -235,7 +235,7 @@ export default memo(function EditStrategyInfoModal({
     descriptionProp,
     editStrategyInfoModalOpen,
     strategyId,
-    theme.jade10,
+    theme.black0,
     toast,
     refetchStrategyDetail,
     triggerEditStrategy,

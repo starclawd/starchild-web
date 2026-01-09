@@ -28,7 +28,7 @@ export function useGoogleLoginErrorHandler() {
               ),
               status: TOAST_STATUS.ERROR,
               typeIcon: 'icon-chat-warning',
-              iconTheme: theme.ruby50,
+              iconTheme: theme.black0,
               autoClose: 6000,
             })
             break
@@ -38,8 +38,8 @@ export function useGoogleLoginErrorHandler() {
               title: <Trans>Network Error</Trans>,
               description: <Trans>Network connection failed. Please check your network and try again.</Trans>,
               status: TOAST_STATUS.ERROR,
-              typeIcon: 'icon-chat-close',
-              iconTheme: theme.ruby50,
+              typeIcon: 'icon-close',
+              iconTheme: theme.black0,
             })
             break
 
@@ -54,7 +54,7 @@ export function useGoogleLoginErrorHandler() {
               ),
               status: TOAST_STATUS.ERROR,
               typeIcon: 'icon-chat-warning',
-              iconTheme: theme.ruby50,
+              iconTheme: theme.black0,
               autoClose: 5000,
             })
             break
@@ -64,8 +64,8 @@ export function useGoogleLoginErrorHandler() {
               title: <Trans>SDK Loading Error</Trans>,
               description: <Trans>Google SDK failed to load. Please refresh the page and try again.</Trans>,
               status: TOAST_STATUS.ERROR,
-              typeIcon: 'icon-chat-close',
-              iconTheme: theme.ruby50,
+              typeIcon: 'icon-close',
+              iconTheme: theme.black0,
             })
             break
 
@@ -79,8 +79,8 @@ export function useGoogleLoginErrorHandler() {
                   <Trans>An error occurred while linking Google account. Please try again later.</Trans>
                 ),
               status: TOAST_STATUS.ERROR,
-              typeIcon: 'icon-chat-close',
-              iconTheme: theme.ruby50,
+              typeIcon: 'icon-close',
+              iconTheme: theme.black0,
             })
         }
       } else {
@@ -94,8 +94,8 @@ export function useGoogleLoginErrorHandler() {
               <Trans>An error occurred while linking Google account. Please try again later.</Trans>
             ),
           status: TOAST_STATUS.ERROR,
-          typeIcon: 'icon-chat-close',
-          iconTheme: theme.ruby50,
+          typeIcon: 'icon-close',
+          iconTheme: theme.black0,
         })
       }
     },

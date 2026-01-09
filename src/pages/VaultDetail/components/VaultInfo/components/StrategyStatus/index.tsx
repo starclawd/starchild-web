@@ -14,12 +14,12 @@ const VaultSubtitle = styled.div<{ $statusColor: string }>`
   height: 18px;
   padding: 0 6px;
   border-radius: 2px;
-  background-color: #0a251a;
+  background-color: ${({ $statusColor, theme }) => ($statusColor === 'green' ? '#0A251A' : theme.black700)};
   span:first-child {
     width: 4px;
     height: 4px;
     border-radius: 1px;
-    background-color: ${({ $statusColor, theme }) => ($statusColor === 'green' ? theme.green100 : theme.black300)};
+    background-color: ${({ $statusColor, theme }) => ($statusColor === 'green' ? theme.green100 : theme.black200)};
   }
   span:last-child {
     font-size: 10px;
@@ -27,7 +27,7 @@ const VaultSubtitle = styled.div<{ $statusColor: string }>`
     font-weight: 300;
     line-height: 120%;
     white-space: nowrap;
-    color: ${({ $statusColor, theme }) => ($statusColor === 'green' ? theme.green100 : theme.black300)};
+    color: ${({ $statusColor, theme }) => ($statusColor === 'green' ? theme.green100 : theme.black200)};
   }
 `
 

@@ -242,7 +242,7 @@ function IconsDemo() {
             description: `已复制 ${className} 到剪贴板`,
             status: TOAST_STATUS.SUCCESS,
             typeIcon: 'icon-copy',
-            iconTheme: theme.jade10,
+            iconTheme: theme.black0,
             autoClose: 2000,
           })
         })
@@ -252,13 +252,13 @@ function IconsDemo() {
             title: '复制失败',
             description: '无法复制到剪贴板，请手动复制',
             status: TOAST_STATUS.ERROR,
-            typeIcon: 'icon-chat-close',
-            iconTheme: theme.ruby50,
+            typeIcon: 'icon-close',
+            iconTheme: theme.black0,
             autoClose: 3000,
           })
         })
     },
-    [toast, theme.jade10, theme.ruby50],
+    [toast, theme.black0],
   )
 
   return (

@@ -481,15 +481,15 @@ const DepositAndWithdraw = memo(() => {
         description: '',
         status: TOAST_STATUS.SUCCESS,
         typeIcon: 'icon-chat-complete',
-        iconTheme: theme.green100,
+        iconTheme: theme.black0,
       })
     } catch (error: any) {
       toast({
         title: <Trans>Approval Failed</Trans>,
         description: formatContractError(error),
         status: TOAST_STATUS.ERROR,
-        typeIcon: 'icon-chat-close',
-        iconTheme: theme.red100,
+        typeIcon: 'icon-close',
+        iconTheme: theme.black0,
       })
     } finally {
       setIsApproving(false)
@@ -525,7 +525,7 @@ const DepositAndWithdraw = memo(() => {
         description: <Trans>You can open the deposit window to view the progress</Trans>,
         status: TOAST_STATUS.SUCCESS,
         typeIcon: 'icon-chat-complete',
-        iconTheme: theme.green100,
+        iconTheme: theme.black0,
       })
       setAmount('')
     } catch (error: any) {
@@ -533,8 +533,8 @@ const DepositAndWithdraw = memo(() => {
         title: <Trans>Deposit Failed</Trans>,
         description: formatContractError(error),
         status: TOAST_STATUS.ERROR,
-        typeIcon: 'icon-chat-close',
-        iconTheme: theme.red100,
+        typeIcon: 'icon-close',
+        iconTheme: theme.black0,
       })
     } finally {
       setIsTransacting(false)
@@ -587,7 +587,7 @@ const DepositAndWithdraw = memo(() => {
         description: <Trans>You can open the withdraw window to view the progress</Trans>,
         status: TOAST_STATUS.SUCCESS,
         typeIcon: 'icon-chat-complete',
-        iconTheme: theme.green100,
+        iconTheme: theme.black0,
       })
       setAmount('')
     } catch (error: any) {
@@ -595,8 +595,8 @@ const DepositAndWithdraw = memo(() => {
         title: <Trans>Withdraw Failed</Trans>,
         description: formatContractError(error),
         status: TOAST_STATUS.ERROR,
-        typeIcon: 'icon-chat-close',
-        iconTheme: theme.red100,
+        typeIcon: 'icon-close',
+        iconTheme: theme.black0,
       })
     } finally {
       setIsTransacting(false)

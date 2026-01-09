@@ -87,6 +87,7 @@ const nodeTypes = {
 // ============================================
 
 function generateFlowElements(strategy: ParsedStrategy): { nodes: Node[]; edges: Edge[] } {
+  const theme = useTheme()
   const nodes: Node[] = []
   const edges: Edge[] = []
 
@@ -218,7 +219,7 @@ function generateFlowElements(strategy: ParsedStrategy): { nodes: Node[]; edges:
       target: cond.id,
       type: 'smoothstep',
       label: 'No Position',
-      labelStyle: { fill: '#636567', fontSize: 10 },
+      labelStyle: { fill: theme.black100, fontSize: 10 },
       labelBgStyle: { fill: '#121315' },
       style: { stroke: '#00DE73', strokeWidth: 2 },
       markerEnd: { type: MarkerType.ArrowClosed, color: '#00DE73' },
@@ -247,7 +248,7 @@ function generateFlowElements(strategy: ParsedStrategy): { nodes: Node[]; edges:
       target: cond.id,
       type: 'smoothstep',
       label: 'Has Position',
-      labelStyle: { fill: '#636567', fontSize: 10 },
+      labelStyle: { fill: theme.black100, fontSize: 10 },
       labelBgStyle: { fill: '#121315' },
       style: { stroke: '#FF375B', strokeWidth: 2 },
       markerEnd: { type: MarkerType.ArrowClosed, color: '#FF375B' },

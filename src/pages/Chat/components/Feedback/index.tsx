@@ -236,7 +236,7 @@ const Feedback = memo(function Feedback({
         ),
         status: TOAST_STATUS.SUCCESS,
         typeIcon: 'icon-feedback',
-        iconTheme: theme.black100,
+        iconTheme: theme.black0,
       })
     } catch (error) {
       setIsLikeLoading(false)
@@ -249,7 +249,7 @@ const Feedback = memo(function Feedback({
     isGoodFeedback,
     isInputDislikeContentLoading,
     isRefreshLoading,
-    theme.black100,
+    theme.black0,
     toast,
     triggerChatFeedback,
     triggerGetAiBotChatContents,
