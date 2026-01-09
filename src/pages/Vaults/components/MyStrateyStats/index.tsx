@@ -590,7 +590,7 @@ const MyStrateyStats = memo(() => {
             <IconBase className='icon-chat-upload' />
           </IconWrapper>
           <span>
-            <Trans>Create strategies</Trans>
+            <Trans>Create strategy</Trans>
           </span>
         </CreateAgentButton>
       </ActionsSection>

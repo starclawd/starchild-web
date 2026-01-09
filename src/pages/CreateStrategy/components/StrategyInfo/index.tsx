@@ -43,7 +43,7 @@ const TopContent = styled.div<{ $isShowExpandPaperTrading: boolean }>`
   flex-direction: column;
   flex-shrink: 0;
   width: 100%;
-  height: 224px;
+  height: 260px;
   transition: all ${ANI_DURATION}s;
   ${({ $isShowExpandPaperTrading }) =>
     $isShowExpandPaperTrading &&

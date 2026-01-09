@@ -132,7 +132,7 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vault
       {
         key: 2,
         icon: <IconBase className='icon-orders' />,
-        text: <Trans>Historys{totalHistory > 0 && ` (${totalHistory})`}</Trans>,
+        text: <Trans>History{totalHistory > 0 && ` (${totalHistory})`}</Trans>,
         clickCallback: () => handleSubTabClick(2),
       },
     ],

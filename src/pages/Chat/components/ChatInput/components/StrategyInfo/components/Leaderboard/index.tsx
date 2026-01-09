@@ -105,7 +105,7 @@ export default memo(function Leaderboard() {
   const [currentIndex, setCurrentIndex] = useState(0)
 
   const sortedStrategies = useMemo(() => {
-    return [...allStrategies].sort((a, b) => b.all_time_apr - a.all_time_apr).slice(0, 3)
+    return allStrategies.slice(0, 3)
   }, [allStrategies])
 
   const goVibePage = useCallback(() => {

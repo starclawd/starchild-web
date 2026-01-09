@@ -1,11 +1,10 @@
 import { memo, useMemo } from 'react'
 import styled, { css } from 'styled-components'
 import { StrategiesOverviewDataType } from 'api/strategy'
-import RankBg from 'assets/vaults/rank-bg.svg'
-import LeaderboardBg from 'assets/vaults/leaderboard-bg.svg'
 import { Trans } from '@lingui/react/macro'
 import { formatPercent } from 'utils/format'
 import { isInvalidValue } from 'utils/calc'
+import Rank from '../Rank'
 
 const LeaderboardItemWrapper = styled.div`
   display: flex;
@@ -13,31 +12,6 @@ const LeaderboardItemWrapper = styled.div`
   gap: 12px;
   width: 100%;
   height: 100%;
-`
-
-const RankWrapper = styled.div`
-  position: relative;
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
-  width: 30px;
-  height: 29px;
-  img {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 20px;
-    height: 20px;
-  }
-  span {
-    position: relative;
-    width: 24px;
-    font-size: 32px;
-    font-style: italic;
-    font-weight: 700;
-    line-height: 25px;
-    z-index: 2;
-  }
 `
 
 const StrategyContent = styled.div`
@@ -126,10 +100,7 @@ export default memo(function LeaderBoardItem({
   }, [strategyData])
   return (
     <LeaderboardItemWrapper className='leaderboard-item'>
-      <RankWrapper>
-        <img src={RankBg} alt='rank' />
-        <span style={{ color: colorMap[rank - 1] || 'rgba(255, 255, 255, 0.80)' }}>{rank}</span>
-      </RankWrapper>
+      <Rank isLeaderboard rank={rank} />
       <StrategyContent className='strategy-content'>
         <StrategyName className='strategy-name'>{strategyData.strategy_name}</StrategyName>
         <StrategyApr>

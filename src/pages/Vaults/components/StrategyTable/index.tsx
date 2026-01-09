@@ -67,10 +67,10 @@ const TableHeaderCell = styled.th<{ $align?: 'left' | 'center' | 'right' }>`
   line-height: 18px;
 
   &:first-child {
-    padding-left: 12px;
+    padding-left: 0;
   }
   &:last-child {
-    padding-right: 12px;
+    padding-right: 0;
   }
 `
 
@@ -90,16 +90,14 @@ interface HeaderConfig {
 
 // 列宽配置 - header 和 body 共用
 export const COLUMN_WIDTHS = [
-  '17%', // name
-  '10%', // leader
-  '8%', // 24H ROE
-  '8%', // 7D ROE
-  '10%', // All time ROE
-  '10%', // Max drawdown
-  '10%', // Sharpe ratio
-  '8%', // Age(days)
-  '6%', // TVF
-  '5%', // Followers
+  '4%', // #
+  '20%', // name
+  '14%', // leader
+  '12%', // All time APR
+  '10%', // Age
+  '12%', // Max drawdown
+  '12%', // TVF
+  '8%', // Followers
   '8%', // Snapshot
 ]
 
@@ -114,18 +112,18 @@ export default function StrategyTable() {
   }, [])
 
   const headers: HeaderConfig[] = [
-    { key: 'name', title: <Trans>Name</Trans>, align: 'left', width: COLUMN_WIDTHS[0] },
-    { key: 'leader', title: <Trans>Leader</Trans>, align: 'left', width: COLUMN_WIDTHS[1] },
-    {
-      key: 'apr24h',
-      title: createSortableHeader(<Trans>24H APR</Trans>, 'apr'),
-      align: 'left',
-      width: COLUMN_WIDTHS[2],
-    },
-    { key: 'apr7d', title: createSortableHeader(<Trans>7D APR</Trans>, 'apr'), align: 'left', width: COLUMN_WIDTHS[3] },
+    { key: 'rank', title: '#', align: 'left', width: COLUMN_WIDTHS[0] },
+    { key: 'name', title: <Trans>Name</Trans>, align: 'left', width: COLUMN_WIDTHS[1] },
+    { key: 'leader', title: <Trans>Leader</Trans>, align: 'left', width: COLUMN_WIDTHS[2] },
     {
       key: 'allTimeApr',
       title: createSortableHeader(<Trans>All time APR</Trans>, 'all_time_apr'),
+      align: 'left',
+      width: COLUMN_WIDTHS[3],
+    },
+    {
+      key: 'ageDays',
+      title: createSortableHeader(<Trans>Age</Trans>, 'age_days'),
       align: 'left',
       width: COLUMN_WIDTHS[4],
     },
@@ -136,30 +134,18 @@ export default function StrategyTable() {
       width: COLUMN_WIDTHS[5],
     },
     {
-      key: 'sharpeRatio',
-      title: createSortableHeader(<Trans>Sharpe ratio</Trans>, 'sharpe_ratio'),
-      align: 'left',
-      width: COLUMN_WIDTHS[6],
-    },
-    {
-      key: 'ageDays',
-      title: createSortableHeader(<Trans>Age(days)</Trans>, 'age_days'),
-      align: 'left',
-      width: COLUMN_WIDTHS[7],
-    },
-    {
       key: 'tvf',
       title: createSortableHeader(<Trans>TVF</Trans>, 'tvf'),
       align: 'left',
-      width: COLUMN_WIDTHS[8],
+      width: COLUMN_WIDTHS[6],
     },
     {
       key: 'followers',
       title: createSortableHeader(<Trans>Followers</Trans>, 'followers'),
       align: 'left',
-      width: COLUMN_WIDTHS[9],
+      width: COLUMN_WIDTHS[7],
     },
-    { key: 'snapshot', title: <Trans>Snapshot</Trans>, align: 'right', width: COLUMN_WIDTHS[10] },
+    { key: 'snapshot', title: <Trans>Snapshot</Trans>, align: 'right', width: COLUMN_WIDTHS[8] },
   ]
 
   return (

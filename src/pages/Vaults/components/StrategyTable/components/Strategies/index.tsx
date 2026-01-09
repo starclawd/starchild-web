@@ -1,16 +1,23 @@
 import { memo, useMemo, useCallback } from 'react'
 import styled, { css } from 'styled-components'
+import { Trans } from '@lingui/react/macro'
 import Pending from 'components/Pending'
 import { useAllStrategiesOverview } from 'store/vaults/hooks'
 import { SortState, SortDirection } from 'components/TableSortableColumn'
 import { toFix } from 'utils/calc'
+import { formatKMBNumber } from 'utils/format'
 import { useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import { ANI_DURATION } from 'constants/index'
-import tagBg from 'assets/vaults/tag-bg.png'
-import VibeItem from '../VibeItem'
+import VibeItem from '../../../../../VaultDetail/components/VaultInfo/components/VibeItem'
+import Rank from '../../../Leaderboard/components/Rank'
+import Avatar from 'components/Avatar'
+import Tooltip from 'components/Tooltip'
+import { IconBase } from 'components/Icons'
 import { COLUMN_WIDTHS } from '../../index'
 import { StrategiesOverviewDataType } from 'api/strategy'
+import Divider from 'components/Divider'
+import { useTheme } from 'store/themecache/hooks'
 
 const StrategiesContainer = styled.div`
   display: flex;
@@ -82,11 +89,11 @@ const TableCell = styled.td<{ $align?: 'left' | 'center' | 'right' }>`
   line-height: 20px;
 
   &:first-child {
-    padding-left: 12px;
+    padding-left: 0;
     border-top-left-radius: 8px;
   }
   &:last-child {
-    padding-right: 12px;
+    padding-right: 0;
     border-top-right-radius: 8px;
   }
 `
@@ -115,6 +122,51 @@ const PercentageText = styled.span<{ $isPositive?: boolean; $isNegative?: boolea
     $isPositive ? theme.green100 : $isNegative ? theme.red100 : theme.black100};
 `
 
+const StrategyName = styled.span`
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: ${({ theme }) => theme.black0};
+`
+
+const LeaderWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`
+
+const LeaderName = styled.span`
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: ${({ theme }) => theme.black100};
+`
+
+const TvfText = styled.span<{ $hasValue?: boolean }>`
+  color: ${({ theme, $hasValue }) => ($hasValue ? theme.brand100 : theme.black100)};
+`
+
+const AprWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  span {
+    color: ${({ theme }) => theme.black100};
+  }
+`
+
+const WarningIcon = styled(IconBase)`
+  font-size: 18px;
+  color: ${({ theme }) => theme.black0};
+  cursor: pointer;
+  transform: rotate(180deg);
+`
+
+const RankPlaceholder = styled.div`
+  width: 34px;
+  height: 32px;
+`
+
 const SnapshotChart = styled.div`
   width: 100%;
   height: 28px;
@@ -128,15 +180,35 @@ const SnapshotSvg = styled.svg`
   height: 100%;
 `
 
-// 标签颜色映射
-const TAG_COLORS: Record<string, string> = {
-  orange: '#F59E0B',
-  green: '#22C55E',
-  yellow: '#EAB308',
-  blue: '#3B82F6',
-  purple: '#A855F7',
-  red: '#EF4444',
-}
+const NormalRank = styled.span`
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  color: ${({ theme }) => theme.black0};
+`
+
+const VibeWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  height: 40px;
+  span {
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+    &:first-child {
+      color: ${({ theme }) => theme.brand200};
+    }
+    &:last-child {
+      font-size: 13px;
+      font-style: italic;
+      font-weight: 400;
+      line-height: 18px;
+      color: ${({ theme }) => theme.black0};
+    }
+  }
+`
 
 // 简单的折线图组件，用于 Snapshot 列
 const MiniChart = memo<{ dataPoints: number; isPositive: boolean }>(({ dataPoints, isPositive }) => {
@@ -177,6 +249,7 @@ interface StrategiesProps {
 }
 
 const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
+  const theme = useTheme()
   const { allStrategies, isLoading: isLoadingAllStrategies } = useAllStrategiesOverview()
   const setCurrentRouter = useSetCurrentRouter()
   // 通过 searchValue 筛选数据
@@ -243,9 +316,6 @@ const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
     return `${formatted}%`
   }
 
-  // 列数
-  const columnCount = 11
-
   if (isLoadingAllStrategies) {
     return (
       <StrategiesContainer>
@@ -265,42 +335,64 @@ const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
           </colgroup>
           {sortedStrategies.map((record, rowIndex) => {
             const vibe = record.vibe
+            const rankIndex = rowIndex + 1
+            const tvf = (record as any).tvf || 0
+            const followers = (record as any).followers || 0
+            const userName = record.user_info?.user_name || ''
+            const columnCount = 9
+            const showRank = rankIndex <= 3
+            const isAgeLessThan30 = record.age_days < 30
             return (
               <StrategyTbody key={record.strategy_id || rowIndex} onClick={() => handleRowClick(record)}>
                 <DataRow>
-                  <TableCell>{record.strategy_name}</TableCell>
-                  <TableCell>{record.user_info?.user_name}</TableCell>
                   <TableCell>
-                    <PercentageText $isPositive={record.apr > 0} $isNegative={record.apr < 0}>
-                      {formatPercent(record.apr)}
-                    </PercentageText>
+                    {showRank ? <Rank rank={rankIndex} isLeaderboard={false} /> : <NormalRank>{rankIndex}</NormalRank>}
                   </TableCell>
                   <TableCell>
-                    <PercentageText $isPositive={record.apr > 0} $isNegative={record.apr < 0}>
-                      {formatPercent(record.apr)}
-                    </PercentageText>
+                    <StrategyName>{record.strategy_name}</StrategyName>
                   </TableCell>
                   <TableCell>
-                    <PercentageText $isPositive={record.all_time_apr > 0} $isNegative={record.all_time_apr < 0}>
-                      {formatPercent(record.all_time_apr)}
-                    </PercentageText>
+                    <LeaderWrapper>
+                      <Avatar avatar={record.user_info?.user_avatar} name={userName} size={24} />
+                      <LeaderName>{userName}</LeaderName>
+                    </LeaderWrapper>
                   </TableCell>
+                  <TableCell>
+                    {isAgeLessThan30 ? (
+                      <AprWrapper>
+                        <span>--</span>
+                        <Tooltip placement='top' content={<Trans>APR shown for strategies aged over 30 days.</Trans>}>
+                          <WarningIcon className='icon-circle-warning' />
+                        </Tooltip>
+                      </AprWrapper>
+                    ) : (
+                      <PercentageText $isPositive={record.all_time_apr > 0} $isNegative={record.all_time_apr < 0}>
+                        {formatPercent(record.all_time_apr)}
+                      </PercentageText>
+                    )}
+                  </TableCell>
+                  <TableCell>{Math.floor(record.age_days)}</TableCell>
                   <TableCell>
                     <PercentageText $isNegative={record.max_drawdown > 0}>
                       {formatPercent(record.max_drawdown)}
                     </PercentageText>
                   </TableCell>
-                  <TableCell>{toFix(record.sharpe_ratio, 1)}</TableCell>
-                  <TableCell>{Math.floor(record.age_days)}</TableCell>
-                  <TableCell>--</TableCell>
-                  <TableCell>--</TableCell>
+                  <TableCell>
+                    <TvfText $hasValue={tvf > 0}>{tvf > 0 ? `$${formatKMBNumber(tvf)}` : '--'}</TvfText>
+                  </TableCell>
+                  <TableCell>{followers > 0 ? formatKMBNumber(followers) : '--'}</TableCell>
                   <TableCell $align='right'>
                     <MiniChart dataPoints={record.data_points} isPositive={record.all_time_apr >= 0} />
                   </TableCell>
                 </DataRow>
                 <TagsRow>
-                  <TagsCell colSpan={columnCount}>
-                    <TagsContainer>{vibe && <VibeItem colorType='brand' text={vibe} size='small' />}</TagsContainer>
+                  <TagsCell />
+                  <TagsCell colSpan={columnCount - 1}>
+                    <VibeWrapper>
+                      <span>Just for test</span>
+                      <Divider height={1} length={18} color={theme.black600} vertical paddingHorizontal={8} />
+                      <span>"{vibe || '--'}"</span>
+                    </VibeWrapper>
                   </TagsCell>
                 </TagsRow>
               </StrategyTbody>

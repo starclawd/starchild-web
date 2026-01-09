@@ -25,7 +25,13 @@ export function useAllStrategiesOverview() {
 
   useEffect(() => {
     if (data?.strategies) {
-      dispatch(updateAllStrategies(data.strategies))
+      // 按 all_time_apr 倒序排列
+      const sortedStrategies = [...data.strategies].sort((a, b) => {
+        const aprA = a.all_time_apr ?? 0
+        const aprB = b.all_time_apr ?? 0
+        return aprB - aprA
+      })
+      dispatch(updateAllStrategies(sortedStrategies))
     }
   }, [data, dispatch])
 

@@ -1,5 +1,5 @@
 import { memo, useEffect, useMemo } from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { useCurrentVaultId, useActiveTab, useStrategyInfo } from 'store/vaultsdetail/hooks'
@@ -9,18 +9,23 @@ import StrategyStatus from './components/StrategyStatus'
 import { DETAIL_TYPE } from 'store/vaultsdetail/vaultsdetail'
 import PixelCanvas from 'pages/Chat/components/PixelCanvas'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import VibeItem from 'pages/Vaults/components/StrategyTable/components/VibeItem'
+import VibeItem from 'pages/VaultDetail/components/VaultInfo/components/VibeItem'
 import MoveTabList, { MoveType } from 'components/MoveTabList'
 import DepositSection from './components/DepositSection'
 import TvfSection from './components/TvfSection'
 
-const VaultInfoContainer = styled.div`
+const VaultInfoContainer = styled.div<{ $vaultId: boolean }>`
   position: relative;
   display: flex;
   justify-content: space-between;
   flex-direction: column;
   flex-shrink: 0;
-  height: 244px;
+  height: 200px;
+  ${({ $vaultId }) =>
+    $vaultId &&
+    css`
+      height: 280px;
+    `}
 `
 
 const InnerContent = styled.div`
@@ -133,7 +138,7 @@ export default memo(function VaultInfo() {
   }, [vaultId, setActiveTab])
 
   return (
-    <VaultInfoContainer>
+    <VaultInfoContainer $vaultId={!!vaultId}>
       <PixelCanvas />
       <InnerContent>
         <LeftWrapper>
@@ -146,7 +151,7 @@ export default memo(function VaultInfo() {
               </ProvideInfo>
               <StrategyStatus status={paperTradingPublicData?.status} />
             </HeaderTop>
-            {vibe && <VibeItem colorType='brand' text={vibe} size='big' />}
+            <VibeItem vibe={vibe} />
           </VaultHeader>
           {/* 只有当vaultId存在时才显示Tabs */}
           {vaultId && (

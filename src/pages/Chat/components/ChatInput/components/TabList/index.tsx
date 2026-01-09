@@ -37,7 +37,7 @@ export default function TabList() {
       },
       {
         key: 1,
-        text: <Trans>Create strategies</Trans>,
+        text: <Trans>Create strategy</Trans>,
         clickCallback: changeTabIndex(1),
       },
     ]

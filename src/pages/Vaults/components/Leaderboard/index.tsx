@@ -40,7 +40,7 @@ const Leaderboard = memo(() => {
   const { allStrategies } = useAllStrategiesOverview()
   const setCurrentRouter = useSetCurrentRouter()
   const filterStrategies = useMemo(() => {
-    return [...allStrategies].sort((a, b) => b.all_time_apr - a.all_time_apr).slice(0, 3)
+    return allStrategies.slice(0, 3)
   }, [allStrategies])
   const goVaultDetailPage = useCallback(
     (strategyId: string) => {

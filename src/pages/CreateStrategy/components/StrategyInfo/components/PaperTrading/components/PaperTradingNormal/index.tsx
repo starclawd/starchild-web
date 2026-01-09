@@ -125,7 +125,7 @@ export default memo(function PaperTradingTabs() {
         icon: isShowIcon ? <IconBase className='icon-orders' /> : null,
         text: (
           <>
-            <Trans>Historys</Trans>
+            <Trans>History</Trans>
             {isShowCount && ` (${totalStrategyHistory})`}
           </>
         ),

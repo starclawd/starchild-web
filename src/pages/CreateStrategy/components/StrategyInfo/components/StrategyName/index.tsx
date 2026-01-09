@@ -5,7 +5,7 @@ import { ButtonBorder } from 'components/Button'
 import { ChangeEvent, memo, useCallback, useState, useEffect, useRef, KeyboardEvent, useMemo } from 'react'
 import { useIsStep3Deploying } from 'store/createstrategy/hooks/useDeployment'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import VibeItem from 'pages/Vaults/components/StrategyTable/components/VibeItem'
+import VibeItem from 'pages/VaultDetail/components/VaultInfo/components/VibeItem'
 import { useTheme } from 'store/themecache/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useEditStrategy, useIsCreateStrategy, useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
@@ -24,6 +24,7 @@ const NameContent = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 40px;
   width: 100%;
   height: 100%;
 `
@@ -273,11 +274,9 @@ export default memo(function StrategyName({
             </ButtonWrapper>
           )}
         </StrategyTitle>
-        {vibe && (
-          <StrategyDescription>
-            <VibeItem colorType='brand' text={vibe} size='big' />
-          </StrategyDescription>
-        )}
+        <StrategyDescription>
+          <VibeItem vibe={vibe || ''} />
+        </StrategyDescription>
       </NameContent>
     </StrategyNameWrapper>
   )
