@@ -244,7 +244,7 @@ export default memo(function DeploySteps({ onClose }: DeployStepsProps) {
               </Trans>
             </StepDescription>
 
-            {deployingStatus !== DEPLOYING_STATUS.DEPLOYING_SUCCESS && (
+            {deployingStatus !== DEPLOYING_STATUS.DEPLOYING_SUCCESS && !isDeploying && (
               <ActionButton onClick={handleStep3Click} $disabled={isDeploying}>
                 {isDeploying && <Pending />}
                 <Trans>Deploy</Trans>

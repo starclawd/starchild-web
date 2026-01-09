@@ -380,19 +380,19 @@ function StrategyFlowInner({ strategy, visible }: { strategy: ParsedStrategy; vi
   }, [])
 
   // 当组件变为可见时，调用 fitView
-  useEffect(() => {
-    if (visible && reactFlowInstance.current) {
-      // 延迟执行确保容器尺寸正确
-      setTimeout(() => {
-        reactFlowInstance.current?.fitView({
-          padding: 0.1,
-          duration: 200,
-          maxZoom: 1,
-          minZoom: 0.4,
-        })
-      }, 50)
-    }
-  }, [visible])
+  // useEffect(() => {
+  //   if (visible && reactFlowInstance.current) {
+  //     // 延迟执行确保容器尺寸正确
+  //     setTimeout(() => {
+  //       reactFlowInstance.current?.fitView({
+  //         padding: 0.1,
+  //         duration: 200,
+  //         maxZoom: 1,
+  //         minZoom: 0.4,
+  //       })
+  //     }, 50)
+  //   }
+  // }, [visible])
 
   return (
     <ReactFlow
@@ -402,8 +402,8 @@ function StrategyFlowInner({ strategy, visible }: { strategy: ParsedStrategy; vi
       onEdgesChange={onEdgesChange}
       nodeTypes={nodeTypes}
       onInit={handleInit}
-      minZoom={0.2}
-      maxZoom={2}
+      minZoom={0.4}
+      maxZoom={1}
       proOptions={proOptions}
       nodesDraggable={true}
       nodesConnectable={false}

@@ -16,6 +16,9 @@ import { RootState } from 'store'
 import { setShouldRefreshData } from 'store/createstrategy/reducer'
 import TabList from 'components/TabList'
 import { IconBase } from 'components/Icons'
+import { useCurrentRouter } from 'store/application/hooks'
+import { isMatchCurrentRouter } from 'utils'
+import { ROUTER } from 'pages/router'
 
 export interface VaultPositionsOrdersProps {
   activeTab: DETAIL_TYPE
@@ -23,7 +26,7 @@ export interface VaultPositionsOrdersProps {
   strategyId: string
 }
 
-const TableContainer = styled.div`
+const TableContainer = styled.div<{ $isVaultDetailPage?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -38,11 +41,10 @@ const TableContainer = styled.div`
     line-height: 20px;
   }
 
-  ${({ theme }) =>
-    theme.isMobile &&
+  ${({ $isVaultDetailPage }) =>
+    $isVaultDetailPage &&
     css`
-      padding: ${vm(20)};
-      gap: ${vm(16)};
+      padding: 20px 40px;
     `}
 `
 
@@ -55,6 +57,8 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vault
   const [activeSubTab, setActiveSubTab] = useState<number>(0)
   const dispatch = useDispatch()
   const hasInitialized = useRef(false)
+  const currentRouter = useCurrentRouter()
+  const isVaultDetailPage = isMatchCurrentRouter(currentRouter, ROUTER.VAULT_DETAIL)
 
   // 获取数据统计信息用于显示Tab标题
   const { totalCount: totalVaultPositions } = useVaultPositions(vaultId || '')
@@ -136,7 +140,7 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vault
   )
 
   return (
-    <TableContainer>
+    <TableContainer $isVaultDetailPage={isVaultDetailPage}>
       <MoveTabList gap={20} moveType={MoveType.LINE} tabList={subTabList} tabKey={activeSubTab} />
       <TableContent>
         {activeSubTab === 0 ? (

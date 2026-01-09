@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'icomoon';
   src:
-    url('fonts/icomoon.ttf?375hgt') format('truetype'),
-    url('fonts/icomoon.woff?375hgt') format('woff'),
-    url('fonts/icomoon.svg?375hgt#icomoon') format('svg');
+    url('fonts/icomoon.ttf?bwe09f') format('truetype'),
+    url('fonts/icomoon.woff?bwe09f') format('woff'),
+    url('fonts/icomoon.svg?bwe09f#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -57,168 +57,174 @@
 .icon-close:before {
   content: "\e90a";
 }
-.icon-complete:before {
+.icon-code:before {
   content: "\e90b";
 }
-.icon-copy:before {
+.icon-complete:before {
   content: "\e90c";
 }
-.icon-create-strategy:before {
+.icon-copy:before {
   content: "\e90d";
 }
-.icon-data-layer:before {
+.icon-create-strategy:before {
   content: "\e90e";
 }
-.icon-decision:before {
+.icon-data-layer:before {
   content: "\e90f";
 }
-.icon-delete:before {
+.icon-decision:before {
   content: "\e910";
 }
-.icon-discord:before {
+.icon-delete:before {
   content: "\e911";
 }
-.icon-download:before {
+.icon-discord:before {
   content: "\e912";
 }
-.icon-drag-expand:before {
+.icon-download:before {
   content: "\e913";
 }
-.icon-edit:before {
+.icon-drag-expand:before {
   content: "\e914";
 }
-.icon-email:before {
+.icon-edit:before {
   content: "\e915";
 }
-.icon-execution-layer:before {
+.icon-email:before {
   content: "\e916";
 }
-.icon-expand:before {
+.icon-execution-layer:before {
   content: "\e917";
 }
-.icon-flower:before {
+.icon-expand:before {
   content: "\e918";
 }
-.icon-fold:before {
+.icon-flow:before {
   content: "\e919";
 }
-.icon-generate-code:before {
+.icon-flower:before {
   content: "\e91a";
 }
-.icon-history:before {
+.icon-fold:before {
   content: "\e91b";
 }
-.icon-Info-circle:before {
+.icon-generate-code:before {
   content: "\e91c";
 }
-.icon-launch:before {
+.icon-history:before {
   content: "\e91d";
 }
-.icon-loading:before {
+.icon-Info-circle:before {
   content: "\e91e";
 }
-.icon-logout:before {
+.icon-launch:before {
   content: "\e91f";
 }
-.icon-menu-chat:before {
+.icon-loading:before {
   content: "\e920";
 }
-.icon-menu-language:before {
+.icon-logout:before {
   content: "\e921";
 }
-.icon-menu-login:before {
+.icon-menu-chat:before {
   content: "\e922";
 }
-.icon-menu-my:before {
+.icon-menu-language:before {
   content: "\e923";
 }
-.icon-menu-vibe:before {
+.icon-menu-login:before {
   content: "\e924";
 }
-.icon-more:before {
+.icon-menu-my:before {
   content: "\e925";
 }
-.icon-my-strategy:before {
+.icon-menu-vibe:before {
   content: "\e926";
 }
-.icon-my-vault:before {
+.icon-more:before {
   content: "\e927";
 }
-.icon-orders:before {
+.icon-my-strategy:before {
   content: "\e928";
 }
-.icon-paper-trading:before {
+.icon-my-vault:before {
   content: "\e929";
 }
-.icon-pause:before {
+.icon-orders:before {
   content: "\e92a";
 }
-.icon-performance:before {
+.icon-paper-trading:before {
   content: "\e92b";
 }
-.icon-play:before {
+.icon-pause:before {
   content: "\e92c";
 }
-.icon-positions:before {
+.icon-performance:before {
   content: "\e92d";
 }
-.icon-preference:before {
+.icon-play:before {
   content: "\e92e";
 }
-.icon-progress-response:before {
+.icon-positions:before {
   content: "\e92f";
 }
-.icon-risk-appetite:before {
+.icon-preference:before {
   content: "\e930";
 }
-.icon-risk-layer:before {
+.icon-progress-response:before {
   content: "\e931";
 }
-.icon-search:before {
+.icon-risk-appetite:before {
   content: "\e932";
 }
-.icon-share:before {
+.icon-risk-layer:before {
   content: "\e933";
 }
-.icon-signal-layer:before {
+.icon-search:before {
   content: "\e934";
 }
-.icon-signal-log:before {
+.icon-share:before {
   content: "\e935";
 }
-.icon-signals:before {
+.icon-signal-layer:before {
   content: "\e936";
 }
-.icon-sorting:before {
+.icon-signal-log:before {
   content: "\e937";
 }
-.icon-stratege-expand:before {
+.icon-signals:before {
   content: "\e938";
 }
-.icon-switch:before {
+.icon-sorting:before {
   content: "\e939";
 }
-.icon-tag-border:before {
+.icon-stratege-expand:before {
   content: "\e93a";
 }
-.icon-telegram:before {
+.icon-switch:before {
   content: "\e93b";
 }
-.icon-tools:before {
+.icon-tag-border:before {
   content: "\e93c";
 }
-.icon-tooltip-arrow:before {
+.icon-telegram:before {
   content: "\e93d";
 }
-.icon-wallet:before {
+.icon-tools:before {
   content: "\e93e";
 }
-.icon-x:before {
+.icon-tooltip-arrow:before {
   content: "\e93f";
 }
-.icon-zoom-in:before {
+.icon-wallet:before {
   content: "\e940";
 }
-.icon-zoom-out:before {
+.icon-x:before {
   content: "\e941";
+}
+.icon-zoom-in:before {
+  content: "\e942";
+}
+.icon-zoom-out:before {
+  content: "\e943";
 }

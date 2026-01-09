@@ -10,6 +10,7 @@ import Pagination from '../Pagination'
 import { formatPercent } from 'utils/format'
 import { useTheme } from 'store/themecache/hooks'
 import { useIsLogin } from 'store/login/hooks'
+import Pending from 'components/Pending'
 
 const MyStrategyWrapper = styled.div<{ $isShowDefaultStyle: boolean }>`
   position: relative;
@@ -80,6 +81,14 @@ const MyStrategyList = styled.div`
   width: 366px;
   height: 88px;
   z-index: 2;
+`
+
+const PendingWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
 `
 
 const ListWrapper = styled.div<{ $translateX: number }>`
@@ -169,11 +178,11 @@ export default memo(function MyStrategy() {
   const isLogin = useIsLogin()
   const setCurrentRouter = useSetCurrentRouter()
   const [currentIndex, setCurrentIndex] = useState(0)
-  const { myStrategies } = useMyStrategies()
+  const { myStrategies, isLoadingMyStrategies } = useMyStrategies()
 
   const isShowDefaultStyle = useMemo(() => {
-    return myStrategies.length === 0 || !isLogin
-  }, [myStrategies, isLogin])
+    return (myStrategies.length === 0 && !isLoadingMyStrategies) || !isLogin
+  }, [myStrategies, isLogin, isLoadingMyStrategies])
 
   const goCreateStrategyPage = useCallback(
     (strategyId: string) => {
@@ -204,17 +213,23 @@ export default memo(function MyStrategy() {
       </Title>
       {!isShowDefaultStyle && (
         <MyStrategyList>
-          <ListWrapper $translateX={-currentIndex * 366}>
-            {myStrategies.map((strategy, index) => (
-              <StrategyItem key={strategy.strategy_id}>
-                <StrategyName>{strategy.strategy_name}</StrategyName>
-                <AprItem $emptyVaule={!strategy.all_time_apr}>
-                  <span>All-time APR:</span>
-                  <span>{strategy.all_time_apr ? formatPercent({ value: strategy.all_time_apr }) : '--'}</span>
-                </AprItem>
-              </StrategyItem>
-            ))}
-          </ListWrapper>
+          {isLoadingMyStrategies ? (
+            <PendingWrapper>
+              <Pending />
+            </PendingWrapper>
+          ) : (
+            <ListWrapper $translateX={-currentIndex * 366}>
+              {myStrategies.map((strategy, index) => (
+                <StrategyItem key={strategy.strategy_id}>
+                  <StrategyName>{strategy.strategy_name}</StrategyName>
+                  <AprItem $emptyVaule={!strategy.all_time_apr}>
+                    <span>All-time APR:</span>
+                    <span>{strategy.all_time_apr ? formatPercent({ value: strategy.all_time_apr }) : '--'}</span>
+                  </AprItem>
+                </StrategyItem>
+              ))}
+            </ListWrapper>
+          )}
         </MyStrategyList>
       )}
       {!isShowDefaultStyle && (

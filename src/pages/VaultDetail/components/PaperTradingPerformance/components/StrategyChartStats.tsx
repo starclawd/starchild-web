@@ -14,6 +14,7 @@ import { ROUTER } from 'pages/router'
 const ChartStats = styled.div<{ $isVaultDetailPage?: boolean }>`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   width: 100%;
   height: 60px;
   border-bottom: 1px solid ${({ theme }) => theme.black800};

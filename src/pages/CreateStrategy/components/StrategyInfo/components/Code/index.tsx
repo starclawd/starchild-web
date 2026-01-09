@@ -48,14 +48,12 @@ const Header = styled.div`
   width: 100%;
   height: 40px;
   border-left: 1px solid ${({ theme }) => theme.black800};
-  border-bottom: 1px solid ${({ theme }) => theme.black800};
 `
 
 const Left = styled.div`
   display: flex;
   align-items: center;
   height: 100%;
-  gap: 4px;
   padding: 0 12px;
   font-size: 13px;
   font-style: normal;
@@ -69,6 +67,7 @@ const Left = styled.div`
     padding: 0;
   }
   .icon-circle-success {
+    margin-right: 4px;
     font-size: 18px;
     color: ${({ theme }) => theme.green200};
   }
@@ -212,13 +211,13 @@ export default memo(function Code() {
       {
         key: 'code',
         text: 'Code',
-        icon: <IconBase className='icon icon-code' />,
+        icon: <IconBase className='icon-code' />,
         clickCallback: () => setViewMode(ViewMode.CODE),
       },
       {
         key: 'flow',
         text: 'Flow',
-        icon: <IconBase className='icon icon-strategy' />,
+        icon: <IconBase className='icon-flow' />,
         clickCallback: () => setViewMode(ViewMode.FLOW),
       },
     ]

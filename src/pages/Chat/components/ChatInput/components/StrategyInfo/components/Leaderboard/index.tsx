@@ -8,6 +8,7 @@ import { useSetCurrentRouter } from 'store/application/hooks'
 import { useAllStrategiesOverview } from 'store/vaults/hooks'
 import styled from 'styled-components'
 import Pagination from '../Pagination'
+import Pending from 'components/Pending'
 
 const LeaderboardWrapper = styled.div`
   position: relative;
@@ -72,6 +73,14 @@ const LeaderboardList = styled.div`
   height: 88px;
 `
 
+const PendingWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+`
+
 const ListWrapper = styled.div<{ $translateX: number }>`
   display: flex;
   width: auto;
@@ -92,7 +101,7 @@ const LeaderboardItemWrapper = styled.div`
 
 export default memo(function Leaderboard() {
   const setCurrentRouter = useSetCurrentRouter()
-  const { allStrategies } = useAllStrategiesOverview()
+  const { allStrategies, isLoading } = useAllStrategiesOverview()
   const [currentIndex, setCurrentIndex] = useState(0)
 
   const sortedStrategies = useMemo(() => {
@@ -124,13 +133,19 @@ export default memo(function Leaderboard() {
         </span>
       </Title>
       <LeaderboardList>
-        <ListWrapper $translateX={-currentIndex * 366}>
-          {sortedStrategies.map((strategy, index) => (
-            <LeaderboardItemWrapper onClick={goVaultDetailPage(strategy.strategy_id)} key={strategy.strategy_id}>
-              <LeaderboardItem strategyData={strategy} rank={index + 1} />
-            </LeaderboardItemWrapper>
-          ))}
-        </ListWrapper>
+        {isLoading ? (
+          <PendingWrapper>
+            <Pending />
+          </PendingWrapper>
+        ) : (
+          <ListWrapper $translateX={-currentIndex * 366}>
+            {sortedStrategies.map((strategy, index) => (
+              <LeaderboardItemWrapper onClick={goVaultDetailPage(strategy.strategy_id)} key={strategy.strategy_id}>
+                <LeaderboardItem strategyData={strategy} rank={index + 1} />
+              </LeaderboardItemWrapper>
+            ))}
+          </ListWrapper>
+        )}
       </LeaderboardList>
       <Pagination currentIndex={currentIndex} setCurrentIndex={setCurrentIndex} total={sortedStrategies.length} />
     </LeaderboardWrapper>

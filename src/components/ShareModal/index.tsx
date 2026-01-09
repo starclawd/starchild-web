@@ -345,7 +345,6 @@ export default memo(function ShareModal() {
           status: TOAST_STATUS.SUCCESS,
           typeIcon: 'icon-download',
           iconTheme: theme.black0,
-          autoClose: 2000,
         })
       }
     } catch (error) {
@@ -378,7 +377,6 @@ export default memo(function ShareModal() {
                 status: TOAST_STATUS.SUCCESS,
                 typeIcon: 'icon-copy',
                 iconTheme: theme.black0,
-                autoClose: 2000,
               })
             } catch (error) {
               // 降级处理：只复制文本
@@ -389,7 +387,6 @@ export default memo(function ShareModal() {
                 status: TOAST_STATUS.SUCCESS,
                 typeIcon: 'icon-copy',
                 iconTheme: theme.black0,
-                autoClose: 2000,
               })
             }
           }
