@@ -86,8 +86,7 @@ const nodeTypes = {
 // Flow Generation
 // ============================================
 
-function generateFlowElements(strategy: ParsedStrategy): { nodes: Node[]; edges: Edge[] } {
-  const theme = useTheme()
+function generateFlowElements(strategy: ParsedStrategy, theme: ReturnType<typeof useTheme>): { nodes: Node[]; edges: Edge[] } {
   const nodes: Node[] = []
   const edges: Edge[] = []
 
@@ -365,9 +364,9 @@ function StrategyFlowInner({ strategy, visible }: { strategy: ParsedStrategy; vi
   const reactFlowInstance = useRef<any>(null)
 
   const { initialNodes, initialEdges } = useMemo(() => {
-    const { nodes, edges } = generateFlowElements(strategy)
+    const { nodes, edges } = generateFlowElements(strategy, theme)
     return { initialNodes: nodes, initialEdges: edges }
-  }, [strategy])
+  }, [strategy, theme])
 
   const [nodes, , onNodesChange] = useNodesState(initialNodes)
   const [edges, , onEdgesChange] = useEdgesState(initialEdges)

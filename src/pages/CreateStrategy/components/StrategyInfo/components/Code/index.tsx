@@ -20,6 +20,8 @@ import TypewriterCursor from 'components/TypewriterCursor'
 import StrategyCodeVisualizer from 'components/StrategyCodeVisualizer'
 import { ANI_DURATION } from 'constants/index'
 import MoveTabList, { MoveType } from 'components/MoveTabList'
+import { useWindowSize } from 'hooks/useWindowSize'
+import { MEDIA_WIDTHS } from 'theme/styled'
 
 // 打字机效果的速度（每个字符的间隔时间，单位毫秒）
 const TYPEWRITER_SPEED = 17
@@ -175,6 +177,7 @@ const FlowContentWrapper = styled.div<{ $visible: boolean }>`
 
 export default memo(function Code() {
   const { strategyId } = useParsedQueryString()
+  const { width } = useWindowSize()
   const { strategyCode, refetch: refetchStrategyCode } = useStrategyCode({ strategyId: strategyId || '' })
   const [isGeneratingCodeFrontend] = useIsGeneratingCode()
   const handleGenerateCode = useHandleGenerateCode()
@@ -185,6 +188,9 @@ export default memo(function Code() {
     customProcessor: extractExecutableCode,
   })
 
+  const isShowText = useMemo(() => {
+    return Number(width) >= MEDIA_WIDTHS.width1360
+  }, [width])
   // 打字机效果相关状态
   const [isTypewriting, setIsTypewriting] = useIsTypewritingCode()
   const [typewriterCode, setTypewriterCode] = useState('')
@@ -420,11 +426,11 @@ export default memo(function Code() {
         <OperatorWrapper>
           <RegenerateButton $disabled={isGeneratingCodeFrontend} onClick={() => handleGenerateCode(2)}>
             <IconBase className='icon-arrow-loading' />
-            <Trans>Regenerate</Trans>
+            {isShowText && <Trans>Regenerate</Trans>}
           </RegenerateButton>
           <CopyButton $disabled={isGeneratingCodeFrontend} onClick={handleCopyCode}>
             <IconBase className='icon-copy' />
-            <Trans>Copy</Trans>
+            {isShowText && <Trans>Copy</Trans>}
           </CopyButton>
           <ZoomButton onClick={handleZoom}>
             <IconBase className={isShowExpandCode ? 'icon-zoom-out' : 'icon-zoom-in'} />

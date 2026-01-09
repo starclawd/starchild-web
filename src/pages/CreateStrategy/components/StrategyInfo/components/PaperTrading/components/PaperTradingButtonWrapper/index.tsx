@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import { memo, useCallback, useMemo } from 'react'
+import { memo, useCallback, useEffect, useMemo } from 'react'
 import { IconBase } from 'components/Icons'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -10,6 +10,7 @@ import { useIsShowExpandPaperTrading } from 'store/createstrategy/hooks/usePaper
 import PaperTradingRunPause from '../PaperTradingNormal/components/PaperTradingRunPause'
 import { useWindowSize } from 'hooks/useWindowSize'
 import { MEDIA_WIDTHS } from 'theme/styled'
+import { useIsShowExpandCode } from 'store/createstrategy/hooks/useCode'
 
 const ButtonWrapper = styled.div`
   display: flex;

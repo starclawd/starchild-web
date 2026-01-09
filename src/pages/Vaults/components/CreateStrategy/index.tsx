@@ -130,7 +130,7 @@ export default memo(function CreateStrategy() {
       </TopContent>
       <BottomContent>
         <span className='bottom-content-text'>
-          <Trans>How to create strategie</Trans>
+          <Trans>How to create a strategy?</Trans>
         </span>
         <ButtonCreate onClick={goCreateStrategyPage}>
           <IconBase className='icon-create-strategy' />
