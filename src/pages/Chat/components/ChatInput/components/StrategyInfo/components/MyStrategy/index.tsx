@@ -207,6 +207,7 @@ export default memo(function MyStrategy() {
         </span>
         {!isShowDefaultStyle && (
           <span className='title-arrow'>
+            <Trans>Continue</Trans>
             <IconBase className='icon-arrow' />
           </span>
         )}

@@ -128,7 +128,7 @@ export default memo(function Leaderboard() {
           <Trans>Leaderboard</Trans>
         </span>
         <span onClick={goVibePage}>
-          <Trans>View more</Trans>
+          <Trans>View</Trans>
           <IconBase className='icon-arrow' />
         </span>
       </Title>

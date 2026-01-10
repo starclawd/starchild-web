@@ -100,7 +100,7 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ strategyId, chartTim
     },
     {
       key: 'age',
-      label: <Trans>Age</Trans>,
+      label: <Trans>Age(days)</Trans>,
       getValue: () => performanceData?.age_days,
       formatValue: (v) => `${v} ${v === 1 ? t`Day` : t`Days`}`,
     },

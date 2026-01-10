@@ -123,7 +123,7 @@ export default function StrategyTable() {
     },
     {
       key: 'ageDays',
-      title: createSortableHeader(<Trans>Age</Trans>, 'age_days'),
+      title: createSortableHeader(<Trans>Age(days)</Trans>, 'age_days'),
       align: 'left',
       width: COLUMN_WIDTHS[4],
     },

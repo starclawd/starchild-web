@@ -128,14 +128,29 @@ export default memo(function StrategyName({
     return strategyDetail?.vibe
   }, [strategyDetail])
 
+  // 计算字符长度：中文算2个字符，英文算1个字符
+  const getCharacterLength = useCallback((str: string) => {
+    let length = 0
+    for (const char of str) {
+      // 中文字符范围判断
+      if (/[\u4e00-\u9fa5]/.test(char)) {
+        length += 2
+      } else {
+        length += 1
+      }
+    }
+    return length
+  }, [])
+
   const changeName = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       if (isLoading) return
       const value = e.target.value
-      if (value.length > 20) return
+      // 限制40个字符（中文算2个，英文算1个）
+      if (getCharacterLength(value) > 40) return
       setName(value)
     },
-    [isLoading],
+    [isLoading, getCharacterLength],
   )
 
   const openEdit = useCallback(() => {
@@ -243,7 +258,7 @@ export default memo(function StrategyName({
                 onKeyDown={handleKeyDown}
                 disabled={isLoading}
                 placeholder='Strategy Name'
-                maxLength={20}
+                maxLength={40}
               />
             </StrategyNameInputWrapper>
           ) : (
