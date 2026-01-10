@@ -1,4 +1,4 @@
-import { memo, useMemo } from 'react'
+import { memo, useCallback, useMemo } from 'react'
 import { Trans } from '@lingui/react/macro'
 import { useAppKitAccount } from '@reown/appkit/react'
 import { useAppKitWallet } from '@reown/appkit-wallet-button/react'
@@ -14,6 +14,7 @@ import { useConnectWalletModalToggle } from 'store/application/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useTheme } from 'store/themecache/hooks'
 import { WALLET_CONNECT_MODE } from 'store/vaults/vaults'
+import { useAuthToken } from 'store/logincache/hooks'
 
 // 组件属性接口
 interface VaultsWalletConnectProps {
@@ -21,6 +22,7 @@ interface VaultsWalletConnectProps {
 }
 
 const VaultsWalletConnect = memo(({ mode = WALLET_CONNECT_MODE.SHRINK }: VaultsWalletConnectProps) => {
+  const [, setAuthToken] = useAuthToken()
   const { address, isConnected } = useAppKitAccount()
   const toggleConnectWalletModal = useConnectWalletModalToggle()
   const { isPending } = useAppKitWallet({
@@ -72,17 +74,17 @@ const VaultsWalletConnect = memo(({ mode = WALLET_CONNECT_MODE.SHRINK }: VaultsW
     }
   }, [balance])
 
-  const handleDisconnect = async () => {
+  const handleDisconnect = useCallback(async () => {
     try {
-      await disconnect({ namespace: 'eip155' })
-      await disconnect({ namespace: 'solana' })
-      clearMyVaultStats() // 清除 MyVaultStats 数据
+      setAuthToken('')
+      await disconnect()
+      window.location.reload()
     } catch (error) {
       console.error('断开钱包失败:', error)
     }
-  }
+  }, [setAuthToken, disconnect])
 
-  const handleCopy = async () => {
+  const handleCopy = useCallback(async () => {
     if (!address) {
       toast({
         title: <Trans>Copy failed</Trans>,
@@ -136,7 +138,7 @@ const VaultsWalletConnect = memo(({ mode = WALLET_CONNECT_MODE.SHRINK }: VaultsW
         })
       }
     }
-  }
+  }, [address, toast, theme])
 
   // 根据模式渲染不同的组件
   if (mode === WALLET_CONNECT_MODE.SHRINK) {

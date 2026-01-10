@@ -33,7 +33,7 @@ import {
   useIsMobile,
   useModalOpen,
 } from 'store/application/hooks'
-import { Suspense, useEffect, useMemo } from 'react'
+import { Suspense, useEffect } from 'react'
 // import Mobile from './Mobile' // 改为从 router.ts 导入
 import RouteLoading from 'components/RouteLoading'
 import { useAuthToken } from 'store/logincache/hooks'
@@ -45,29 +45,18 @@ import { LOGIN_STATUS } from 'store/login/login.d'
 import { useInitializeLanguage } from 'store/language/hooks'
 // import Footer from 'components/Footer'
 import { ANI_DURATION } from 'constants/index'
-import { useChangeHtmlBg, useTheme } from 'store/themecache/hooks'
-// import Chat from './Chat' // 改为从 router.ts 导入
-// import Signals from './Signals'
-// import LiveChatPage from './LiveChatPage'
-// import Portfolio from './Portfolio' // 改为从 router.ts 导入
-import useToast, { StyledToastContent } from 'components/Toast'
-// import Connect from './Connect' // 改为从 router.ts 导入
+import { useChangeHtmlBg } from 'store/themecache/hooks'
+import { StyledToastContent } from 'components/Toast'
 import { useGetExchangeInfo, useInsightsSubscription } from 'store/insights/hooks'
-import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
+import { isMatchCurrentRouter } from 'utils'
 import ErrorBoundary from 'components/ErrorBoundary'
-// import MyAgent from './MyAgent' // 改为从 router.ts 导入
-// import AgentDetail from './AgentDetail' // 改为从 router.ts 导入
-import { useIsAiContentEmpty, useIsOpenFullScreen } from 'store/chat/hooks'
+import { useIsOpenFullScreen } from 'store/chat/hooks'
 import { trackEvent } from 'utils/common'
 import { useIsFixMenu } from 'store/headercache/hooks'
 import useWindowVisible from 'hooks/useWindowVisible'
-// import DemoPage from './DemoPage' // 改为从 router.ts 导入
 import { isLocalEnv } from 'utils/url'
-// import AgentRoutes from './AgentRoutes' // 改为从 router.ts 导入
-import { useGetSubscribedAgents } from 'store/agenthub/hooks'
 import { CreateAgentModal } from './MyAgent/components/CreateModal'
 import { ApplicationModal } from 'store/application/application'
-// import Home from './Home' // 改为从 router.ts 导入
 import { TgLogin } from 'components/Header/components/TgLogin'
 import { useTelegramWebAppLogin } from 'hooks/useTelegramWebAppLogin'
 import { isTelegramWebApp } from 'utils/telegramWebApp'
@@ -75,10 +64,7 @@ import DeleteMyAgentModal from './MyAgent/components/DeleteMyAgentModal'
 import Preference from 'components/Header/components/Preference'
 import { useGetPreference } from 'store/perference/hooks'
 import { AccountManegeModal } from 'components/Header/components/AccountManege'
-import SocialLoginModal from 'components/ConnectWalletModal'
 import { EditNicknameModal } from 'components/Header/components/AccountManege/components/EditNicknameModal'
-import BindWalletModal from 'components/Header/components/AccountManege/components/BindWalletModal'
-import { useGetSystemSignalAgents } from 'store/insights/hooks/useSystemSignalHooks'
 import DepositAndWithdraw from './VaultDetail/components/DepositAndWithdraw'
 import { useAppKitEventHandler } from 'hooks/useAppKitEventHandler'
 import { useLeaderboardWebSocketSubscription } from 'store/vaults/hooks'
@@ -158,17 +144,14 @@ function App() {
   const { subscribe, unsubscribe, isOpen } = useInsightsSubscription() // 只建立连接，不处理消息
   useWindowVisible()
   useAppKitEventHandler()
-  const toast = useToast()
-  const theme = useTheme()
   const [authToken] = useAuthToken()
   const isMobile = useIsMobile()
   const isLogin = useIsLogin()
   const [{ userInfoId }] = useUserInfo()
   const [isFixMenu] = useIsFixMenu()
   const { pathname } = useLocation()
-  const isEmpty = useIsAiContentEmpty()
   const triggerGetCoinId = useGetCoinId()
-  const [loginStatus, setLoginStatus] = useLoginStatus()
+  const [, setLoginStatus] = useLoginStatus()
   const getRouteByPathname = useGetRouteByPathname()
   const triggerGetUserInfo = useGetUserInfo()
   const triggerGetExchangeInfo = useGetExchangeInfo()
@@ -178,19 +161,13 @@ function App() {
   const resetCreateStrategyState = useResetCreateStrategyState()
   const resetVaultDetailState = useResetVaultDetailState()
   const setCurrentRouter = useSetCurrentRouter(false)
-  const setCurrentRouter2 = useSetCurrentRouter()
-  const triggerGetSubscribedAgents = useGetSubscribedAgents()
-  const triggerGetSystemSignalAgents = useGetSystemSignalAgents()
   const triggerGetPreference = useGetPreference()
   const isChatPage = isMatchCurrentRouter(currentRouter, ROUTER.CHAT)
-  const isCreateStrategyPage = isMatchCurrentRouter(currentRouter, ROUTER.CREATE_STRATEGY)
-  const isVibeTradingDetailPage = isMatchCurrentRouter(currentRouter, ROUTER.VAULT_DETAIL)
   const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)
   const deleteAgentModalOpen = useModalOpen(ApplicationModal.DELETE_MY_AGENT_MODAL)
   const preferenceModalOpen = useModalOpen(ApplicationModal.PREFERENCE_MODAL)
   const accountManegeModalOpen = useModalOpen(ApplicationModal.ACCOUNT_MANEGE_MODAL)
   const editNicknameModalOpen = useModalOpen(ApplicationModal.EDIT_NICKNAME_MODAL)
-  const bindWalletModalOpen = useModalOpen(ApplicationModal.BIND_WALLET_MODAL)
   const depositAndWithdrawModalOpen = useModalOpen(ApplicationModal.DEPOSIT_AND_WITHDRAW_MODAL)
   const connectWalletModalOpen = useModalOpen(ApplicationModal.CONNECT_WALLET_MODAL)
   const switchChainModalOpen = useModalOpen(ApplicationModal.SWITCH_CHAIN_MODAL)
@@ -357,7 +334,6 @@ function App() {
         {preferenceModalOpen && <Preference />}
         {accountManegeModalOpen && <AccountManegeModal />}
         {editNicknameModalOpen && <EditNicknameModal />}
-        {bindWalletModalOpen && <BindWalletModal />}
         {depositAndWithdrawModalOpen && <DepositAndWithdraw />}
         {connectWalletModalOpen && <ConnectWalletModal />}
         {switchChainModalOpen && <SwitchChainModal />}

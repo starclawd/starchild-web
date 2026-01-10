@@ -1,7 +1,6 @@
 import { memo, useMemo } from 'react'
 import styled from 'styled-components'
 import RankBg from 'assets/vaults/rank-bg.svg'
-import RankRedBg from 'assets/vaults/rank-red-bg.svg'
 import { css } from 'styled-components'
 
 const RankWrapper = styled.div<{ $isLeaderboard: boolean }>`
@@ -51,8 +50,8 @@ export default memo(function Rank({ rank, isLeaderboard }: { rank: number; isLea
   }, [])
   return (
     <RankWrapper $isLeaderboard={isLeaderboard}>
-      <img src={isLeaderboard ? RankRedBg : RankBg} alt='rank' />
-      <span style={{ color: isLeaderboard ? '#FFF' : colorMap[rank - 1] || 'rgba(255, 255, 255, 0.80)' }}>{rank}</span>
+      <img src={RankBg} alt='rank' />
+      <span style={{ color: colorMap[rank - 1] || 'rgba(255, 255, 255, 0.80)' }}>{rank}</span>
     </RankWrapper>
   )
 })

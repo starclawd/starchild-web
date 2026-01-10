@@ -19,6 +19,7 @@ import { useGetAuthTokenGoogle, useIsGetAuthToken, useIsLogin } from 'store/logi
 import { trackEvent } from 'utils/common'
 import { openTelegramLoginWindow } from 'store/login/utils'
 import ChainConnect from './components/ChainConnect'
+import Pending from 'components/Pending'
 
 // 桌面端模态框内容容器
 const ModalContent = styled(CommonModalContentWrapper)`
@@ -110,7 +111,7 @@ export default memo(function ConnectWalletModal() {
 
         <CommonModalContent className='scroll-style'>
           {/* 钱包登录 */}
-          <ChainConnect type='login' onSuccess={toggleConnectWalletModal} />
+          <ChainConnect onSuccess={toggleConnectWalletModal} />
         </CommonModalContent>
       </>
     )

@@ -113,15 +113,6 @@ export default function Wallet() {
   )
   const addressCount = addresses.length
 
-  // 如果没有地址，显示绑定按钮
-  if (addressCount === 0) {
-    return (
-      <WalletWrapper>
-        <IconBase className='icon-menu-chat' onClick={handleWalletBind} />
-      </WalletWrapper>
-    )
-  }
-
   // 如果只有一个地址
   if (addressCount === 1) {
     return (
@@ -131,8 +122,6 @@ export default function Wallet() {
             <Address>{formatAddress(addresses[0])}</Address>
             <ChainLabel>({getChainLabel(addresses[0])})</ChainLabel>
           </AddressWithLabel>
-          <IconBase className='icon-edit' onClick={() => handleEditWallet(addresses[0])} />
-          <IconBase className='icon-menu-chat' onClick={handleWalletBind} />
         </WalletItem>
       </WalletWrapper>
     )
@@ -147,7 +136,6 @@ export default function Wallet() {
             <Address>{formatAddress(address)}</Address>
             <ChainLabel>({getChainLabel(address)})</ChainLabel>
           </AddressWithLabel>
-          <IconBase className='icon-edit' onClick={() => handleEditWallet(address)} />
         </WalletItem>
       ))}
     </WalletWrapper>

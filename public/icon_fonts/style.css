@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'icomoon';
   src:
-    url('fonts/icomoon.ttf?bwe09f') format('truetype'),
-    url('fonts/icomoon.woff?bwe09f') format('woff'),
-    url('fonts/icomoon.svg?bwe09f#icomoon') format('svg');
+    url('fonts/icomoon.ttf?rhf5b1') format('truetype'),
+    url('fonts/icomoon.woff?rhf5b1') format('woff'),
+    url('fonts/icomoon.svg?rhf5b1#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -150,81 +150,84 @@
 .icon-my-vault:before {
   content: "\e929";
 }
-.icon-orders:before {
+.icon-no-data:before {
   content: "\e92a";
 }
-.icon-paper-trading:before {
+.icon-orders:before {
   content: "\e92b";
 }
-.icon-pause:before {
+.icon-paper-trading:before {
   content: "\e92c";
 }
-.icon-performance:before {
+.icon-pause:before {
   content: "\e92d";
 }
-.icon-play:before {
+.icon-performance:before {
   content: "\e92e";
 }
-.icon-positions:before {
+.icon-play:before {
   content: "\e92f";
 }
-.icon-preference:before {
+.icon-positions:before {
   content: "\e930";
 }
-.icon-progress-response:before {
+.icon-preference:before {
   content: "\e931";
 }
-.icon-risk-appetite:before {
+.icon-progress-response:before {
   content: "\e932";
 }
-.icon-risk-layer:before {
+.icon-risk-appetite:before {
   content: "\e933";
 }
-.icon-search:before {
+.icon-risk-layer:before {
   content: "\e934";
 }
-.icon-share:before {
+.icon-search:before {
   content: "\e935";
 }
-.icon-signal-layer:before {
+.icon-share:before {
   content: "\e936";
 }
-.icon-signal-log:before {
+.icon-signal-layer:before {
   content: "\e937";
 }
-.icon-signals:before {
+.icon-signal-log:before {
   content: "\e938";
 }
-.icon-sorting:before {
+.icon-signals:before {
   content: "\e939";
 }
-.icon-stratege-expand:before {
+.icon-sorting:before {
   content: "\e93a";
 }
-.icon-switch:before {
+.icon-stratege-expand:before {
   content: "\e93b";
 }
-.icon-tag-border:before {
+.icon-switch:before {
   content: "\e93c";
 }
-.icon-telegram:before {
+.icon-tag-border:before {
   content: "\e93d";
 }
-.icon-tools:before {
+.icon-telegram:before {
   content: "\e93e";
 }
-.icon-tooltip-arrow:before {
+.icon-tools:before {
   content: "\e93f";
 }
-.icon-wallet:before {
+.icon-tooltip-arrow:before {
   content: "\e940";
 }
-.icon-x:before {
+.icon-wallet:before {
   content: "\e941";
 }
-.icon-zoom-in:before {
+.icon-x:before {
   content: "\e942";
 }
-.icon-zoom-out:before {
+.icon-zoom-in:before {
   content: "\e943";
+}
+.icon-zoom-out:before {
+  content: "\e944";
 }

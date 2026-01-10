@@ -34,7 +34,6 @@ const LeftTopContent = styled.div`
   gap: 60px;
   width: 100%;
   padding: 80px 40px 20px;
-  border-bottom: 1px solid ${({ theme }) => theme.black800};
   .tab-list-strategy {
     height: 24px;
     gap: 4px;
