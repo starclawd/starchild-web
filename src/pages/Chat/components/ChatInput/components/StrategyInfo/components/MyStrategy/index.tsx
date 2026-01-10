@@ -35,7 +35,8 @@ const MyStrategyWrapper = styled.div<{ $isShowDefaultStyle: boolean }>`
   }
   &:hover {
     border-color: ${({ theme }) => theme.black600};
-    .title-arrow .icon-arrow {
+    .title-arrow .icon-arrow,
+    .title-arrow {
       color: ${({ theme }) => theme.black0};
     }
   }
