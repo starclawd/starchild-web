@@ -22,6 +22,8 @@ import ConditionNode from './nodes/ConditionNode'
 import ActionNode from './nodes/ActionNode'
 import HeaderNode from './nodes/HeaderNode'
 import RiskNode from './nodes/RiskNode'
+import AnalyzeDetailNode from './nodes/AnalyzeDetailNode'
+import DecisionDetailNode from './nodes/DecisionDetailNode'
 
 // ============================================
 // Styled Components
@@ -80,13 +82,18 @@ const nodeTypes = {
   action: ActionNode,
   header: HeaderNode,
   risk: RiskNode,
+  analyzeDetail: AnalyzeDetailNode,
+  decisionDetail: DecisionDetailNode,
 }
 
 // ============================================
 // Flow Generation
 // ============================================
 
-function generateFlowElements(strategy: ParsedStrategy, theme: ReturnType<typeof useTheme>): { nodes: Node[]; edges: Edge[] } {
+function generateFlowElements(
+  strategy: ParsedStrategy,
+  theme: ReturnType<typeof useTheme>,
+): { nodes: Node[]; edges: Edge[] } {
   const nodes: Node[] = []
   const edges: Edge[] = []
 
@@ -108,6 +115,7 @@ function generateFlowElements(strategy: ParsedStrategy, theme: ReturnType<typeof
       strategyType: strategy.strategyType,
       timeframe: strategy.config.timeframe,
       symbol: strategy.config.trading_symbol,
+      crossAssetInfo: strategy.crossAssetInfo,
     },
   })
 
@@ -153,13 +161,13 @@ function generateFlowElements(strategy: ParsedStrategy, theme: ReturnType<typeof
   const indMaxY = indStartY + strategy.indicators.length * 80
   currentY = Math.max(dsMaxY, indMaxY) + 40
 
-  // 4. Process Node (Center)
+  // 4. Analyze Detail Node (Center) - 展示详细的分析步骤
   const processNodeId = 'process-analyze'
   nodes.push({
     id: processNodeId,
-    type: 'action',
-    position: { x: COLUMN_X.center, y: currentY },
-    data: { action: 'process', description: 'Analyze Conditions' },
+    type: 'analyzeDetail',
+    position: { x: COLUMN_X.center - 40, y: currentY },
+    data: { steps: strategy.analyzeSteps },
   })
 
   // Connect indicators to process
@@ -174,15 +182,20 @@ function generateFlowElements(strategy: ParsedStrategy, theme: ReturnType<typeof
     })
   })
 
-  currentY += 100
+  // 根据分析步骤数量计算高度
+  const analyzeNodeHeight = Math.max(120, strategy.analyzeSteps.length * 50 + 60)
+  currentY += analyzeNodeHeight
 
-  // 5. Decision Node
+  // 5. Decision Detail Node - 展示详细的决策逻辑
   const decisionNodeId = 'decision'
   nodes.push({
     id: decisionNodeId,
-    type: 'action',
-    position: { x: COLUMN_X.center, y: currentY },
-    data: { action: 'decision', description: 'Check Position' },
+    type: 'decisionDetail',
+    position: { x: COLUMN_X.center - 60, y: currentY },
+    data: {
+      hasPosition: strategy.decisionLogic.hasPosition,
+      noPosition: strategy.decisionLogic.noPosition,
+    },
   })
 
   edges.push({
@@ -194,7 +207,10 @@ function generateFlowElements(strategy: ParsedStrategy, theme: ReturnType<typeof
     markerEnd: { type: MarkerType.ArrowClosed, color: '#FFA940' },
   })
 
-  currentY += 100
+  // 根据决策分支数量计算高度
+  const decisionBranches = strategy.decisionLogic.hasPosition.length + strategy.decisionLogic.noPosition.length
+  const decisionNodeHeight = Math.max(120, decisionBranches * 30 + 80)
+  currentY += decisionNodeHeight
 
   // 6. Entry Conditions (Left side)
   const entryStartY = currentY
@@ -342,6 +358,13 @@ function generateFlowElements(strategy: ParsedStrategy, theme: ReturnType<typeof
       stopLoss: strategy.riskParams.stopLoss,
       leverage: strategy.riskParams.leverage,
       positionSize: strategy.riskParams.positionSize,
+      // 非对称仓位大小
+      longPositionSize: strategy.riskParams.longPositionSize,
+      shortPositionSize: strategy.riskParams.shortPositionSize,
+      // 高级风控参数
+      maxRoeLoss: strategy.riskParams.maxRoeLoss,
+      maxDrawdown: strategy.riskParams.maxDrawdown,
+      maxAccountRisk: strategy.riskParams.maxAccountRisk,
     },
   })
 

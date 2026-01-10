@@ -13,6 +13,7 @@ import VibeItem from 'pages/VaultDetail/components/VaultInfo/components/VibeItem
 import MoveTabList, { MoveType } from 'components/MoveTabList'
 import DepositSection from './components/DepositSection'
 import TvfSection from './components/TvfSection'
+import { ANI_DURATION } from 'constants/index'
 
 const VaultInfoContainer = styled.div<{ $vaultId: boolean }>`
   position: relative;
@@ -21,6 +22,7 @@ const VaultInfoContainer = styled.div<{ $vaultId: boolean }>`
   flex-direction: column;
   flex-shrink: 0;
   height: 200px;
+  transition: height ${ANI_DURATION}s;
   ${({ $vaultId }) =>
     $vaultId &&
     css`

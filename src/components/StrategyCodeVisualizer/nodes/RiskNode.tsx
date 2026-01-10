@@ -29,6 +29,24 @@ const RiskGrid = styled.div`
   gap: 12px;
 `
 
+const AdvancedGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+`
+
+const AsymmetricRow = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+`
+
 const RiskItem = styled.div<{ $type?: 'profit' | 'loss' | 'neutral' }>`
   display: flex;
   flex-direction: column;
@@ -69,10 +87,20 @@ interface RiskNodeData {
   stopLoss: string
   leverage: string
   positionSize: string
+  // 非对称仓位大小
+  longPositionSize?: string
+  shortPositionSize?: string
+  // 高级风控
+  maxRoeLoss?: string
+  maxDrawdown?: string
+  maxAccountRisk?: string
 }
 
 function RiskNode({ data }: NodeProps) {
   const nodeData = data as unknown as RiskNodeData
+
+  const hasAsymmetricSize = nodeData.longPositionSize || nodeData.shortPositionSize
+  const hasAdvancedRisk = nodeData.maxRoeLoss || nodeData.maxDrawdown || nodeData.maxAccountRisk
 
   return (
     <NodeWrapper>
@@ -96,6 +124,46 @@ function RiskNode({ data }: NodeProps) {
           <RiskValue>{nodeData.positionSize}</RiskValue>
         </RiskItem>
       </RiskGrid>
+
+      {hasAsymmetricSize && (
+        <AsymmetricRow>
+          {nodeData.longPositionSize && (
+            <RiskItem $type="profit">
+              <RiskLabel>Long Size</RiskLabel>
+              <RiskValue $type="profit">{nodeData.longPositionSize}</RiskValue>
+            </RiskItem>
+          )}
+          {nodeData.shortPositionSize && (
+            <RiskItem $type="loss">
+              <RiskLabel>Short Size</RiskLabel>
+              <RiskValue $type="loss">{nodeData.shortPositionSize}</RiskValue>
+            </RiskItem>
+          )}
+        </AsymmetricRow>
+      )}
+
+      {hasAdvancedRisk && (
+        <AdvancedGrid>
+          {nodeData.maxRoeLoss && (
+            <RiskItem $type="loss">
+              <RiskLabel>Max ROE Loss</RiskLabel>
+              <RiskValue $type="loss">-{nodeData.maxRoeLoss}</RiskValue>
+            </RiskItem>
+          )}
+          {nodeData.maxDrawdown && (
+            <RiskItem $type="loss">
+              <RiskLabel>Max Drawdown</RiskLabel>
+              <RiskValue $type="loss">{nodeData.maxDrawdown}</RiskValue>
+            </RiskItem>
+          )}
+          {nodeData.maxAccountRisk && (
+            <RiskItem $type="loss">
+              <RiskLabel>Max Risk</RiskLabel>
+              <RiskValue $type="loss">{nodeData.maxAccountRisk}</RiskValue>
+            </RiskItem>
+          )}
+        </AdvancedGrid>
+      )}
     </NodeWrapper>
   )
 }
