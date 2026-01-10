@@ -4,7 +4,7 @@ import Input, { InputType } from 'components/Input'
 import { ChangeEvent, useCallback, useState, ReactNode } from 'react'
 import styled from 'styled-components'
 import Strategies from './components/Strategies'
-import { useSort, useSortableHeader } from 'components/TableSortableColumn'
+import { useSort, useSortableHeader, SortDirection } from 'components/TableSortableColumn'
 
 const StrategyTableWrapper = styled.div`
   display: flex;
@@ -103,7 +103,7 @@ export const COLUMN_WIDTHS = [
 
 export default function StrategyTable() {
   const [searchValue, setSearchValue] = useState('')
-  const { sortState, handleSort } = useSort()
+  const { sortState, handleSort } = useSort('all_time_apr', SortDirection.DESC)
   const createSortableHeader = useSortableHeader(sortState, handleSort)
 
   const changeSearchValue = useCallback((e: ChangeEvent<HTMLInputElement>) => {

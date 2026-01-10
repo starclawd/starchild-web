@@ -18,6 +18,7 @@ import { COLUMN_WIDTHS } from '../../index'
 import { StrategiesOverviewDataType } from 'api/strategy'
 import Divider from 'components/Divider'
 import { useTheme } from 'store/themecache/hooks'
+import Snapshot from '../Snapshort'
 
 const StrategiesContainer = styled.div`
   display: flex;
@@ -167,19 +168,6 @@ const RankPlaceholder = styled.div`
   height: 32px;
 `
 
-const SnapshotChart = styled.div`
-  width: 100%;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-`
-
-const SnapshotSvg = styled.svg`
-  width: 100%;
-  height: 100%;
-`
-
 const NormalRank = styled.span`
   font-size: 13px;
   font-style: normal;
@@ -210,39 +198,6 @@ const VibeWrapper = styled.div`
   }
 `
 
-// 简单的折线图组件，用于 Snapshot 列
-const MiniChart = memo<{ dataPoints: number; isPositive: boolean }>(({ dataPoints, isPositive }) => {
-  // 生成简单的模拟数据点用于展示
-  const points = useMemo(() => {
-    const numPoints = Math.min(dataPoints, 20)
-    const arr = []
-    let y = 50
-    for (let i = 0; i < numPoints; i++) {
-      y = Math.max(10, Math.min(90, y + (Math.random() - 0.5) * 20))
-      arr.push({ x: (i / (numPoints - 1 || 1)) * 80, y: 100 - y })
-    }
-    return arr
-  }, [dataPoints])
-
-  const pathD = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ')
-
-  return (
-    <SnapshotChart>
-      <SnapshotSvg viewBox='0 0 80 100' preserveAspectRatio='none'>
-        <path
-          d={pathD}
-          fill='none'
-          stroke={isPositive ? '#22c55e' : '#ef4444'}
-          strokeWidth='2'
-          strokeLinecap='round'
-          strokeLinejoin='round'
-        />
-      </SnapshotSvg>
-    </SnapshotChart>
-  )
-})
-
-MiniChart.displayName = 'MiniChart'
 interface StrategiesProps {
   searchValue: string
   sortState: SortState
@@ -341,7 +296,6 @@ const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
             const userName = record.user_info?.user_name || ''
             const columnCount = 9
             const showRank = rankIndex <= 3
-            const isAgeLessThan30 = record.age_days < 30
             return (
               <StrategyTbody key={record.strategy_id || rowIndex} onClick={() => handleRowClick(record)}>
                 <DataRow>
@@ -358,7 +312,7 @@ const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
                     </LeaderWrapper>
                   </TableCell>
                   <TableCell>
-                    {isAgeLessThan30 ? (
+                    {/* {isAgeLessThan30 ? (
                       <AprWrapper>
                         <span>--</span>
                         <Tooltip placement='top' content={<Trans>APR shown for strategies aged over 30 days.</Trans>}>
@@ -366,10 +320,10 @@ const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
                         </Tooltip>
                       </AprWrapper>
                     ) : (
-                      <PercentageText $isPositive={record.all_time_apr > 0} $isNegative={record.all_time_apr < 0}>
-                        {formatPercent(record.all_time_apr)}
-                      </PercentageText>
-                    )}
+                    )} */}
+                    <PercentageText $isPositive={record.all_time_apr > 0} $isNegative={record.all_time_apr < 0}>
+                      {formatPercent(record.all_time_apr)}
+                    </PercentageText>
                   </TableCell>
                   <TableCell>{Math.floor(record.age_days)}</TableCell>
                   <TableCell>
@@ -378,11 +332,11 @@ const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
                     </PercentageText>
                   </TableCell>
                   <TableCell>
-                    <TvfText $hasValue={tvf > 0}>{tvf > 0 ? `$${formatKMBNumber(tvf)}` : '--'}</TvfText>
+                    <TvfText $hasValue={tvf > 0}>{tvf ? `$${formatKMBNumber(tvf)}` : '0'}</TvfText>
                   </TableCell>
-                  <TableCell>{followers > 0 ? formatKMBNumber(followers) : '--'}</TableCell>
+                  <TableCell>{followers ? formatKMBNumber(followers) : '0'}</TableCell>
                   <TableCell $align='right'>
-                    <MiniChart dataPoints={record.data_points} isPositive={record.all_time_apr >= 0} />
+                    <Snapshot data={record.s24h} />
                   </TableCell>
                 </DataRow>
                 <TagsRow>
