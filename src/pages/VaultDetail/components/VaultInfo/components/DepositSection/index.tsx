@@ -15,6 +15,7 @@ import { ROUTER } from 'pages/router'
 import { CHAIN_ID_TO_CHAIN, CHAIN_INFO } from 'constants/chainInfo'
 import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
 import useParsedQueryString from 'hooks/useParsedQueryString'
+import { ANI_DURATION } from 'constants/index'
 
 const DepositWrapper = styled.div`
   display: flex;
@@ -30,6 +31,13 @@ const RightWrapper = styled.div`
   padding: 12px 16px;
   border-radius: 4px;
   background: ${({ theme }) => theme.black700};
+  transition: all ${ANI_DURATION}s;
+  ${({ theme }) => theme.mediaMaxWidth.width1440`
+    width: 240px;
+  `}
+  ${({ theme }) => theme.mediaMaxWidth.width1280`
+    width: 200px;
+  `}
 `
 
 const TopContent = styled.div`

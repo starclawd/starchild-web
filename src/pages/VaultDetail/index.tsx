@@ -28,7 +28,7 @@ const VaultDetailMainContent = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  width: calc(100% - 400px);
+  width: calc(100% - 300px);
   height: 100%;
   margin: 0;
   .vault-scroll {
@@ -40,7 +40,7 @@ const VaultDetailChatSidebar = styled.div`
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  width: 400px;
+  width: 300px;
   background: ${({ theme }) => theme.black1000};
   .chat-area-container {
     width: 100%;
@@ -57,6 +57,7 @@ const VaultDetailContentWrapper = styled.div`
 const RightInfo = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
   height: 100%;
 `
 

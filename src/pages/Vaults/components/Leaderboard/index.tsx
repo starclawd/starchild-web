@@ -9,19 +9,19 @@ import { useSetCurrentRouter } from 'store/application/hooks'
 const LeaderboardContainer = styled.div`
   display: flex;
   align-items: center;
+  flex-shrink: 0;
   width: 100%;
-  height: 108px;
+  height: 100px;
   gap: 12px;
-  padding-right: 100px;
 `
 
 const LeaderboardItemWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
-  max-width: 392px;
+  flex-shrink: 0;
+  width: 360px;
   height: 100%;
-  padding: 16px;
+  padding: 20px;
   cursor: pointer;
   border-radius: 8px;
   transition: all ${ANI_DURATION}s;
@@ -33,6 +33,12 @@ const LeaderboardItemWrapper = styled.div`
   }
   .strategy-content {
     padding-bottom: 6px;
+  }
+  .strategy-name {
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
   }
 `
 

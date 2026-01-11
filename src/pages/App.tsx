@@ -67,7 +67,7 @@ import { AccountManegeModal } from 'components/Header/components/AccountManege'
 import { EditNicknameModal } from 'components/Header/components/AccountManege/components/EditNicknameModal'
 import DepositAndWithdraw from './VaultDetail/components/DepositAndWithdraw'
 import { useAppKitEventHandler } from 'hooks/useAppKitEventHandler'
-import { useLeaderboardWebSocketSubscription } from 'store/vaults/hooks'
+import { useLeaderboardWebSocketSubscription, useOnchainBalance } from 'store/vaults/hooks'
 import ConnectWalletModal from 'components/ConnectWalletModal'
 import SwitchChainModal from 'components/SwitchChainModal'
 import DeployModal from 'pages/CreateStrategy/components/StrategyInfo/components/DeployModal'
@@ -144,6 +144,7 @@ function App() {
   const { subscribe, unsubscribe, isOpen } = useInsightsSubscription() // 只建立连接，不处理消息
   useWindowVisible()
   useAppKitEventHandler()
+  useOnchainBalance()
   const [authToken] = useAuthToken()
   const isMobile = useIsMobile()
   const isLogin = useIsLogin()

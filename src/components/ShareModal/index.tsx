@@ -12,7 +12,7 @@ import { ROUTER } from 'pages/router'
 import { useTheme } from 'store/themecache/hooks'
 import shareLeftBg from 'assets/vaults/share-left-bg.png'
 import shareRightBg from 'assets/vaults/share-right-bg.png'
-import { formatPercent, getStatValueColor } from 'utils/format'
+import { formatPercent, getStatValueColor, formatKMBNumber } from 'utils/format'
 import { IconBase } from 'components/Icons'
 import Divider from 'components/Divider'
 import { ANI_DURATION } from 'constants/index'
@@ -278,12 +278,12 @@ export default memo(function ShareModal() {
       {
         key: 'TVF',
         text: <Trans>TVF</Trans>,
-        value: '--',
+        value: `${currentShareStrategyData?.tvf ? formatKMBNumber(currentShareStrategyData?.tvf, 2, { showDollar: true }) : '0'}`,
       },
       {
         key: 'Followers',
         text: <Trans>Followers</Trans>,
-        value: '--',
+        value: `${currentShareStrategyData?.followers || 0}`,
       },
     ]
   }, [currentShareStrategyData, theme])

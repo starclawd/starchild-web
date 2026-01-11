@@ -238,8 +238,11 @@ export type StrategiesOverviewDataType = {
   mode: string
   vibe: string | null
   s24h: { t: number; b: number }[]
+  followers: number
+  tvf: number
   user_info: {
     user_avatar: string
+    user_info_id: number
     user_name: string
   }
 }
@@ -428,6 +431,13 @@ export const strategyApi = liveTradingApi.injectEndpoints({
       }),
     }),
     // 获取所有策略概览
+    getAllFollowedStrategiesOverview: builder.query<StrategiesOverviewResponse, void>({
+      query: () => ({
+        url: '/strategy/following',
+        method: 'GET',
+      }),
+    }),
+    // 获取所有策略概览
     getVaultsTotalUserData: builder.query<TotalUserData, { walletAddress: string }>({
       query: ({ walletAddress }) => ({
         url: `/strategy/address/overall?wallet_address=${walletAddress}`,
@@ -529,4 +539,6 @@ export const {
   useLazyGetMyStrategiesQuery,
   useGetUserBalanceHistoryQuery,
   useLazyGetUserBalanceHistoryQuery,
+  useGetAllFollowedStrategiesOverviewQuery,
+  useLazyGetAllFollowedStrategiesOverviewQuery,
 } = strategyApi

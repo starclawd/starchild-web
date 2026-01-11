@@ -5,8 +5,10 @@ import { IconBase } from 'components/Icons'
 import { useCurrentRouter } from 'store/application/hooks'
 import { isMatchCurrentRouter } from 'utils'
 import { ROUTER } from 'pages/router'
+import { ANI_DURATION } from 'constants/index'
+import { useIsShowStrategyMarket } from 'store/vaultsdetailcache/hooks'
 
-const AiSummaryWrapper = styled.div<{ $isVaultDetailPage?: boolean }>`
+const AiSummaryWrapper = styled.div<{ $isShowStrategyMarket: boolean; $isVaultDetailPage?: boolean }>`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -15,11 +17,20 @@ const AiSummaryWrapper = styled.div<{ $isVaultDetailPage?: boolean }>`
   width: 100%;
   height: 100%;
   position: relative;
-
-  ${({ $isVaultDetailPage }) =>
+  transition: all ${ANI_DURATION}s;
+  ${({ $isVaultDetailPage, theme, $isShowStrategyMarket }) =>
     $isVaultDetailPage &&
     css`
       padding: 20px 40px;
+      ${theme.mediaMaxWidth.width1280`
+        padding: 20px;
+      `}
+      ${$isShowStrategyMarket &&
+      css`
+        ${theme.mediaMaxWidth.width1440`
+          padding: 20px;
+        `}
+      `}
     `}
 `
 
@@ -27,6 +38,7 @@ const ContentSection = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 20px;
   height: 100%;
 
   ${({ theme }) =>
@@ -102,11 +114,12 @@ const SummaryText = styled.div`
  * 展示策略的AI分析总结
  */
 const AiSummary = memo(() => {
+  const [isShowStrategyMarket] = useIsShowStrategyMarket()
   const currentRouter = useCurrentRouter()
   const isVaultDetailPage = isMatchCurrentRouter(currentRouter, ROUTER.VAULT_DETAIL)
   const summary = 'Just for test Just for test Just for test Just for test Just for test Just for test'
   return (
-    <AiSummaryWrapper $isVaultDetailPage={isVaultDetailPage}>
+    <AiSummaryWrapper $isShowStrategyMarket={isShowStrategyMarket} $isVaultDetailPage={isVaultDetailPage}>
       <ContentSection>
         <IconWrapper>
           <AiIcon className='icon-ai-summary' />

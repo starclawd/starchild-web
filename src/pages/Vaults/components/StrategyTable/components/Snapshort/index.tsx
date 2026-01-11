@@ -2,7 +2,7 @@ import { memo, useMemo } from 'react'
 import styled from 'styled-components'
 
 const ChartContainer = styled.div`
-  width: 100%;
+  width: 80px;
   height: 28px;
   display: flex;
   align-items: center;

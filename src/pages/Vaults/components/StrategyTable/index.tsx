@@ -5,6 +5,7 @@ import { ChangeEvent, useCallback, useState, ReactNode } from 'react'
 import styled from 'styled-components'
 import Strategies from './components/Strategies'
 import { useSort, useSortableHeader, SortDirection } from 'components/TableSortableColumn'
+import { ANI_DURATION } from 'constants/index'
 
 const StrategyTableWrapper = styled.div`
   display: flex;
@@ -34,6 +35,10 @@ const Title = styled.div`
     line-height: 28px;
     color: ${({ theme }) => theme.black0};
   }
+  transition: all ${ANI_DURATION}s;
+  ${({ theme }) => theme.mediaMaxWidth.width1280`
+    padding: 20px 20px;
+  `}
 `
 
 const InputWrapper = styled.div`
@@ -43,6 +48,10 @@ const InputWrapper = styled.div`
 
 const TableHeaderWrapper = styled.div`
   padding: 12px 40px 0;
+  transition: all ${ANI_DURATION}s;
+  ${({ theme }) => theme.mediaMaxWidth.width1280`
+    padding: 12px 20px 0;
+  `}
 `
 
 const HeaderTable = styled.table`
@@ -50,6 +59,17 @@ const HeaderTable = styled.table`
   height: 38px;
   border-collapse: collapse;
   table-layout: fixed;
+
+  /* name 列响应式宽度 */
+  --name-column-width: 400px;
+
+  @media (max-width: 1440px) {
+    --name-column-width: 280px;
+  }
+
+  @media (max-width: 1280px) {
+    --name-column-width: 240px;
+  }
 `
 
 const HeaderRow = styled.tr`
@@ -70,6 +90,7 @@ const TableHeaderCell = styled.th<{ $align?: 'left' | 'center' | 'right' }>`
     padding-left: 0;
   }
   &:last-child {
+    padding-left: 0;
     padding-right: 0;
   }
 `
@@ -79,6 +100,10 @@ const TableContent = styled.div`
   flex-direction: column;
   width: 100%;
   padding: 0 40px;
+  transition: all ${ANI_DURATION}s;
+  ${({ theme }) => theme.mediaMaxWidth.width1280`
+    padding: 0 20px;
+  `}
 `
 
 interface HeaderConfig {
@@ -89,16 +114,17 @@ interface HeaderConfig {
 }
 
 // 列宽配置 - header 和 body 共用
+// name 列使用 CSS 变量实现响应式，Snapshot 列固定 80px
 export const COLUMN_WIDTHS = [
   '4%', // #
-  '20%', // name
-  '14%', // leader
+  'var(--name-column-width)', // name - 响应式宽度
+  'auto', // leader
   '12%', // All time APR
   '10%', // Age
-  '12%', // Max drawdown
-  '12%', // TVF
-  '8%', // Followers
-  '8%', // Snapshot
+  '10%', // Max drawdown
+  '10%', // TVF
+  '10%', // Followers
+  '80px', // Snapshot - 固定宽度
 ]
 
 export default function StrategyTable() {

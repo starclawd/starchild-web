@@ -11,13 +11,13 @@ const CreateStrategyWrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
+  height: 158px;
   flex-shrink: 0;
   flex-grow: 0;
-  gap: 20px;
+  gap: 12px;
   padding: 16px;
   width: 400px;
-  height: fit-content;
-  border-radius: 12px;
+  border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.black800};
   background: ${({ theme }) => theme.black700};
   img {
@@ -54,10 +54,10 @@ const TopRight = styled.div`
     height: 64px;
     text-align: right;
     span:first-child {
-      font-size: 56px;
+      font-size: 48px;
       font-style: italic;
       font-weight: 700;
-      line-height: 64px;
+      line-height: 56px;
     }
     span:last-child {
       font-size: 20px;

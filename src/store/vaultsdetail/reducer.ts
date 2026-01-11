@@ -24,6 +24,8 @@ const initialState: VaultDetailState = {
   activeTab: DETAIL_TYPE.STRATEGY,
   vaultInfo: null,
   strategyInfo: null,
+  isFollowing: false,
+  isLoadingFollowing: false,
   chartType: CHART_TYPE.TVL,
   isLoadingChart: false,
   isLoadingVaultInfo: false,
@@ -61,6 +63,14 @@ const vaultsdetailSlice = createSlice({
 
     setLoadingStrategyInfo: (state, action: PayloadAction<boolean>) => {
       state.isLoadingStrategyInfo = action.payload
+    },
+
+    setIsFollowing: (state, action: PayloadAction<boolean>) => {
+      state.isFollowing = action.payload
+    },
+
+    setLoadingFollowing: (state, action: PayloadAction<boolean>) => {
+      state.isLoadingFollowing = action.payload
     },
 
     setChartType: (state, action: PayloadAction<CHART_TYPE>) => {
@@ -114,6 +124,8 @@ export const {
   setLoadingVaultInfo,
   updateStrategyInfo,
   setLoadingStrategyInfo,
+  setIsFollowing,
+  setLoadingFollowing,
   setChartType,
   setIsLoadingChart,
   setDepositAndWithdrawTabIndex,

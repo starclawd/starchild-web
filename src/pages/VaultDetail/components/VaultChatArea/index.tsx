@@ -8,24 +8,17 @@ import { useSignalList } from 'store/vaultsdetail/hooks/useSignal'
 import { usePaperTradingPublic } from 'store/vaultsdetail/hooks/usePaperTradingPublic'
 import MonitoringProgress from './components/MonitoringProgress'
 import ResponseProgress from './components/ResponseProgress'
-import PaperTradingStatus from './components/PaperTradingStatus'
 import { PAPER_TRADING_STATUS } from 'store/createstrategy/createstrategy'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useTimezone } from 'store/timezonecache/hooks'
 import { SIGNAL_TYPE } from 'api/strategy'
 import LogItem from './components/LogItem'
-const ChatAreaContainer = styled.div<{ $isPaperTrading?: boolean }>`
+const ChatAreaContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
   width: 100%;
   gap: 12px;
-  ${({ $isPaperTrading }) =>
-    $isPaperTrading &&
-    css`
-      width: 300px;
-      flex-shrink: 0;
-    `}
 `
 
 const TopContent = styled.div`

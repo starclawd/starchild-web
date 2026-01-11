@@ -14,23 +14,35 @@ import MoveTabList, { MoveType } from 'components/MoveTabList'
 import DepositSection from './components/DepositSection'
 import TvfSection from './components/TvfSection'
 import { ANI_DURATION } from 'constants/index'
+import { useIsShowStrategyMarket } from 'store/vaultsdetailcache/hooks'
 
-const VaultInfoContainer = styled.div<{ $vaultId: boolean }>`
+const VaultInfoContainer = styled.div<{ $isShowStrategyMarket: boolean }>`
   position: relative;
   display: flex;
   justify-content: space-between;
   flex-direction: column;
   flex-shrink: 0;
-  height: 200px;
-  transition: height ${ANI_DURATION}s;
-  ${({ $vaultId }) =>
-    $vaultId &&
+  min-height: 280px;
+  transition: all ${ANI_DURATION}s;
+  ${({ theme }) => theme.mediaMaxWidth.width1440`
+    min-height: 272px;
+  `}
+  ${({ theme }) => theme.mediaMaxWidth.width1280`
+    min-height: 248px;
+  `}
+  ${({ $isShowStrategyMarket, theme }) =>
+    $isShowStrategyMarket &&
     css`
-      height: 280px;
+      ${theme.mediaMaxWidth.width1440`
+        min-height: 282px;
+      `}
+      ${theme.mediaMaxWidth.width1280`
+        min-height: 310px;
+      `}
     `}
 `
 
-const InnerContent = styled.div`
+const InnerContent = styled.div<{ $isShowStrategyMarket: boolean }>`
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -38,6 +50,17 @@ const InnerContent = styled.div`
   gap: 40px;
   padding: 40px 40px 20px;
   z-index: 2;
+  transition: all ${ANI_DURATION}s;
+  ${({ theme }) => theme.mediaMaxWidth.width1280`
+    padding: 20px;
+  `}
+  ${({ $isShowStrategyMarket, theme }) =>
+    $isShowStrategyMarket &&
+    css`
+      ${theme.mediaMaxWidth.width1440`
+        padding: 20px;
+      `}
+    `}
 `
 
 const LeftWrapper = styled.div`
@@ -53,11 +76,20 @@ const VaultHeader = styled.div`
   gap: 20px;
 `
 
-const HeaderTop = styled.div`
+const HeaderTop = styled.div<{ $isShowStrategyMarket: boolean }>`
   display: flex;
   align-items: center;
-  height: 44px;
+  min-height: 44px;
   gap: 20px;
+  ${({ $isShowStrategyMarket, theme }) =>
+    $isShowStrategyMarket &&
+    css`
+      ${theme.mediaMaxWidth.width1600`
+        height: auto;
+        flex-direction: column;
+        align-items: flex-start;
+      `}
+    `}
 `
 
 const VaultTitle = styled.div`
@@ -66,6 +98,25 @@ const VaultTitle = styled.div`
   font-weight: 400;
   line-height: 44px;
   color: ${({ theme }) => theme.black0};
+  transition: all ${ANI_DURATION}s;
+  ${({ theme }) => theme.mediaMaxWidth.width1440`
+    font-size: 28px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 36px; 
+  `}
+  ${({ theme }) => theme.mediaMaxWidth.width1280`
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 32px; 
+  `}
+`
+
+const RightStatuswrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
 `
 
 const ProvideInfo = styled.div`
@@ -103,6 +154,7 @@ const TabsWrapper = styled.div`
 export default memo(function VaultInfo() {
   const { address } = useAppKitAccount()
   const { strategyId } = useParsedQueryString()
+  const [isShowStrategyMarket] = useIsShowStrategyMarket()
   const [activeTab, setActiveTab] = useActiveTab()
   const vaultId = useCurrentVaultId()
   const { strategyInfo } = useStrategyInfo({ strategyId: strategyId || null })
@@ -115,8 +167,18 @@ export default memo(function VaultInfo() {
       strategyInfo?.user_info?.user_avatar || '',
     ]
   }, [strategyInfo])
-  const tabList = useMemo(
-    () => [
+  const tabList = useMemo(() => {
+    if (!vaultId) {
+      return [
+        {
+          key: DETAIL_TYPE.STRATEGY,
+          text: <Trans>Strategy</Trans>,
+          icon: <IconBase className='icon-my-strategy' />,
+          clickCallback: () => setActiveTab(DETAIL_TYPE.STRATEGY),
+        },
+      ]
+    }
+    return [
       {
         key: DETAIL_TYPE.STRATEGY,
         text: <Trans>Strategy</Trans>,
@@ -129,9 +191,8 @@ export default memo(function VaultInfo() {
         icon: <IconBase className='icon-my-vault' />,
         clickCallback: () => setActiveTab(DETAIL_TYPE.VAULT),
       },
-    ],
-    [setActiveTab],
-  )
+    ]
+  }, [setActiveTab, vaultId])
 
   useEffect(() => {
     if (!vaultId) {
@@ -140,27 +201,27 @@ export default memo(function VaultInfo() {
   }, [vaultId, setActiveTab])
 
   return (
-    <VaultInfoContainer $vaultId={!!vaultId}>
+    <VaultInfoContainer $isShowStrategyMarket={isShowStrategyMarket}>
       <PixelCanvas />
-      <InnerContent>
+      <InnerContent $isShowStrategyMarket={isShowStrategyMarket}>
         <LeftWrapper>
           <VaultHeader>
-            <HeaderTop>
+            <HeaderTop $isShowStrategyMarket={isShowStrategyMarket}>
               <VaultTitle>{strategyName}</VaultTitle>
-              <ProvideInfo>
-                {userAvatar && <img src={userAvatar} alt='userAvatar' />}
-                {userName && <span>{userName}</span>}
-              </ProvideInfo>
-              <StrategyStatus status={paperTradingPublicData?.status} />
+              <RightStatuswrapper>
+                <ProvideInfo>
+                  {userAvatar && <img src={userAvatar} alt='userAvatar' />}
+                  {userName && <span>{userName}</span>}
+                </ProvideInfo>
+                <StrategyStatus status={paperTradingPublicData?.status} />
+              </RightStatuswrapper>
             </HeaderTop>
             <VibeItem vibe={vibe} />
           </VaultHeader>
-          {/* 只有当vaultId存在时才显示Tabs */}
-          {vaultId && (
-            <TabsWrapper>
-              <MoveTabList gap={20} tabKey={activeTab} tabList={tabList} moveType={MoveType.LINE} />
-            </TabsWrapper>
-          )}
+
+          <TabsWrapper>
+            <MoveTabList gap={20} tabKey={activeTab} tabList={tabList} moveType={MoveType.LINE} />
+          </TabsWrapper>
         </LeftWrapper>
         {activeTab === DETAIL_TYPE.STRATEGY && <TvfSection />}
         {activeTab === DETAIL_TYPE.VAULT && vaultId && address && <DepositSection />}

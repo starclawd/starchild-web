@@ -67,7 +67,7 @@ const InnerContent = styled.div`
 const BottomContent = styled.div<{ $isShowExpandPaperTrading: boolean }>`
   display: flex;
   width: 100%;
-  height: calc(100% - 224px);
+  height: calc(100% - 260px);
   border-top: 1px solid ${({ theme }) => theme.black800};
   ${({ $isShowExpandPaperTrading }) =>
     $isShowExpandPaperTrading &&

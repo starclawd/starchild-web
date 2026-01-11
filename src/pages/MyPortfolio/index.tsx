@@ -21,6 +21,13 @@ const MyPortfolioWrapper = styled.div`
   height: 100%;
 `
 
+const InnerContent = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  min-width: 1220px;
+`
+
 const LeftContent = styled.div`
   display: flex;
   flex-direction: column;
@@ -163,36 +170,38 @@ export default memo(function MyPortfolio() {
   }, [releasedLen, archivedLen, unreleasedLen, setStrategyTabKey])
   return (
     <MyPortfolioWrapper>
-      <LeftContent className='transparent-scroll-style'>
-        <LeftTopContent>
-          <Title>
-            <Trans>My portfolio</Trans>
-          </Title>
-          <Performance />
-          <TabListWrapper>
-            <MoveTabList
-              className='tab-list-all'
-              gap={20}
-              moveType={MoveType.LINE}
-              tabKey={activeTab}
-              tabList={tabList}
-            />
-            {activeTab === MY_PORTFOLIO_TAB_KEY.STRATEGY && (
-              <TabList className='tab-list-strategy' tabKey={strategyTabKey} tabList={strategyTabList} />
-            )}
-          </TabListWrapper>
-        </LeftTopContent>
-        <LeftBottomContent>
-          {activeTab === MY_PORTFOLIO_TAB_KEY.VAULT && <MyVaults />}
-          {activeTab === MY_PORTFOLIO_TAB_KEY.STRATEGY && <MyStrategies />}
-        </LeftBottomContent>
-      </LeftContent>
-      <RightContent>
-        <RightTop>
-          <VaultsWalletConnect mode={WALLET_CONNECT_MODE.EXPAND} />
-        </RightTop>
-        <Transactions />
-      </RightContent>
+      <InnerContent>
+        <LeftContent className='transparent-scroll-style'>
+          <LeftTopContent>
+            <Title>
+              <Trans>My portfolio</Trans>
+            </Title>
+            <Performance />
+            <TabListWrapper>
+              <MoveTabList
+                className='tab-list-all'
+                gap={20}
+                moveType={MoveType.LINE}
+                tabKey={activeTab}
+                tabList={tabList}
+              />
+              {activeTab === MY_PORTFOLIO_TAB_KEY.STRATEGY && (
+                <TabList className='tab-list-strategy' tabKey={strategyTabKey} tabList={strategyTabList} />
+              )}
+            </TabListWrapper>
+          </LeftTopContent>
+          <LeftBottomContent>
+            {activeTab === MY_PORTFOLIO_TAB_KEY.VAULT && <MyVaults />}
+            {activeTab === MY_PORTFOLIO_TAB_KEY.STRATEGY && <MyStrategies />}
+          </LeftBottomContent>
+        </LeftContent>
+        <RightContent>
+          <RightTop>
+            <VaultsWalletConnect mode={WALLET_CONNECT_MODE.EXPAND} />
+          </RightTop>
+          <Transactions />
+        </RightContent>
+      </InnerContent>
     </MyPortfolioWrapper>
   )
 })

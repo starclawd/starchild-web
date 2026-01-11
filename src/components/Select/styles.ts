@@ -156,6 +156,7 @@ export const ReferenceElement = styled.div<{
   width: 100%;
   height: 100%;
   .icon-expand {
+    font-size: 14px;
     color: ${({ theme }) => theme.black300};
     transition: all ${ANI_DURATION}s;
   }

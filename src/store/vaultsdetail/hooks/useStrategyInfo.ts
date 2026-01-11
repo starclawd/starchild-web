@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { RootState } from 'store'
 import { updateStrategyInfo, setLoadingStrategyInfo } from '../reducer'
-import { useGetStrategyPerformanceQuery } from 'api/strategy'
+import { useGetStrategyPerformanceQuery, useLazyGetStrategyPerformanceQuery } from 'api/strategy'
 
 export function useStrategyInfo({ strategyId }: { strategyId: string | null }) {
   const dispatch = useDispatch()
@@ -20,6 +20,28 @@ export function useStrategyInfo({ strategyId }: { strategyId: string | null }) {
     },
   )
 
+  const [getStrategyPerformance, { isLoading: isLazyLoading }] = useLazyGetStrategyPerformanceQuery()
+
+  const fetchStrategyInfo = useCallback(
+    async (id?: string) => {
+      const targetId = id || strategyId
+      if (!targetId) return
+      try {
+        dispatch(setLoadingStrategyInfo(true))
+        const result = await getStrategyPerformance({ strategy_id: targetId, period: 'all' }).unwrap()
+        if (result) {
+          dispatch(updateStrategyInfo(result))
+        }
+      } catch (err) {
+        console.error('Fetch strategy info failed:', err)
+        dispatch(updateStrategyInfo(null))
+      } finally {
+        dispatch(setLoadingStrategyInfo(false))
+      }
+    },
+    [getStrategyPerformance, strategyId, dispatch],
+  )
+
   useEffect(() => {
     if (data) {
       dispatch(updateStrategyInfo(data))
@@ -34,8 +56,9 @@ export function useStrategyInfo({ strategyId }: { strategyId: string | null }) {
 
   return {
     strategyInfo,
-    isLoadingStrategyInfo,
+    isLoadingStrategyInfo: isLoadingStrategyInfo || isLazyLoading,
     error,
     refetch,
+    fetchStrategyInfo,
   }
 }

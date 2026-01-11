@@ -6,6 +6,9 @@ export interface MyStrategyState {
   isLoadingMyStrategies: boolean
   chartStrategyId: string | null
   currentStrategyId: string
+  // 所有关注的策略概览数据
+  allFollowedStrategies: StrategiesOverviewDataType[]
+  isLoadingAllFollowedStrategies: boolean
 }
 
 const initialState: MyStrategyState = {
@@ -13,6 +16,8 @@ const initialState: MyStrategyState = {
   isLoadingMyStrategies: false,
   chartStrategyId: null,
   currentStrategyId: '',
+  allFollowedStrategies: [],
+  isLoadingAllFollowedStrategies: false,
 }
 
 export const myStrategySlice = createSlice({
@@ -31,13 +36,27 @@ export const myStrategySlice = createSlice({
     setCurrentStrategyId: (state, action: PayloadAction<string>) => {
       state.currentStrategyId = action.payload
     },
+    // 所有关注的策略概览相关
+    updateAllFollowedStrategies: (state, action: PayloadAction<StrategiesOverviewDataType[]>) => {
+      state.allFollowedStrategies = action.payload
+    },
+    setLoadingAllFollowedStrategies: (state, action: PayloadAction<boolean>) => {
+      state.isLoadingAllFollowedStrategies = action.payload
+    },
     resetMyStrategy: (state) => {
       return { ...initialState }
     },
   },
 })
 
-export const { updateMyStrategies, setLoadingMyStrategies, setChartStrategyId, setCurrentStrategyId, resetMyStrategy } =
-  myStrategySlice.actions
+export const {
+  updateMyStrategies,
+  setLoadingMyStrategies,
+  setChartStrategyId,
+  setCurrentStrategyId,
+  updateAllFollowedStrategies,
+  setLoadingAllFollowedStrategies,
+  resetMyStrategy,
+} = myStrategySlice.actions
 
 export default myStrategySlice.reducer

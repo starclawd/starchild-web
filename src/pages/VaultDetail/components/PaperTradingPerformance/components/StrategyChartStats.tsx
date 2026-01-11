@@ -1,7 +1,6 @@
 import { memo } from 'react'
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import { vm } from 'pages/helper'
 import { formatNumber, formatKMBNumber, formatPercent, getStatValueColor } from 'utils/format'
 import { useStrategyPerformance } from 'store/vaultsdetail/hooks/useStrategyPerformance'
 import { CHAT_TIME_RANGE } from 'store/vaultsdetail/vaultsdetail.d'
@@ -10,19 +9,33 @@ import { t } from '@lingui/core/macro'
 import { isMatchCurrentRouter } from 'utils'
 import { useCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
+import { ANI_DURATION } from 'constants/index'
+import { useIsShowStrategyMarket } from 'store/vaultsdetailcache/hooks'
 
-const ChartStats = styled.div<{ $isVaultDetailPage?: boolean }>`
+const ChartStats = styled.div<{ $isShowStrategyMarket: boolean; $isVaultDetailPage?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
   height: 60px;
+  padding: 0 20px;
   border-bottom: 1px solid ${({ theme }) => theme.black800};
-  ${({ $isVaultDetailPage }) =>
+  transition: all ${ANI_DURATION}s;
+  ${({ $isVaultDetailPage, theme, $isShowStrategyMarket }) =>
     $isVaultDetailPage &&
     css`
+      padding: 0 40px;
       height: 74px;
-      border-top: 1px solid ${({ theme }) => theme.black800};
+      border-top: 1px solid ${theme.black800};
+      ${theme.mediaMaxWidth.width1280`
+        padding: 0 20px;
+      `}
+      ${$isShowStrategyMarket &&
+      css`
+        ${theme.mediaMaxWidth.width1440`
+          padding: 0 20px;
+        `}
+      `}
     `}
 `
 
@@ -30,12 +43,6 @@ const StatItem = styled.div<{ $isVaultDetailPage?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 0 20px;
-  ${({ $isVaultDetailPage }) =>
-    $isVaultDetailPage &&
-    css`
-      padding: 0 40px;
-    `}
 `
 
 const StatLabel = styled.span`
@@ -63,23 +70,7 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ strategyId, chartTim
   const { performanceData, isLoading, error } = useStrategyPerformance(strategyId, chartTimeRange)
   const currentRouter = useCurrentRouter()
   const isVaultDetailPage = isMatchCurrentRouter(currentRouter, ROUTER.VAULT_DETAIL)
-
-  // 根据期间获取APR标签名称
-  const getPeriodAprLabel = () => {
-    switch (chartTimeRange) {
-      case CHAT_TIME_RANGE.DAILY:
-        return t`24H APR`
-      case CHAT_TIME_RANGE.WEEKLY:
-        return t`7D APR`
-      case CHAT_TIME_RANGE.MONTHLY:
-        return t`30D APR`
-      default:
-        return t`Period APR`
-    }
-  }
-
-  // 是否显示Period APR（all_time时不显示）
-  const shouldShowPeriodApr = chartTimeRange !== CHAT_TIME_RANGE.ALL_TIME
+  const [isShowStrategyMarket] = useIsShowStrategyMarket()
 
   // 定义统计项配置
   interface StatConfig {
@@ -112,14 +103,6 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ strategyId, chartTim
       showPnlColor: true,
     },
     {
-      key: 'periodApr',
-      label: getPeriodAprLabel(),
-      getValue: () => performanceData?.apr,
-      formatValue: (v) => formatPercent({ value: v, precision: 2 }),
-      showPnlColor: true,
-      visible: shouldShowPeriodApr,
-    },
-    {
       key: 'allTimeApy',
       label: <Trans>All-time APR</Trans>,
       getValue: () => performanceData?.all_time_apr,
@@ -144,7 +127,7 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ strategyId, chartTim
   const visibleStats = statConfigs.filter((config) => config.visible !== false)
 
   return (
-    <ChartStats $isVaultDetailPage={isVaultDetailPage}>
+    <ChartStats $isShowStrategyMarket={isShowStrategyMarket} $isVaultDetailPage={isVaultDetailPage}>
       {visibleStats.map((config) => {
         const value = isLoading || !performanceData ? undefined : config.getValue()
         const displayValue = value === null || value === undefined ? '--' : config.formatValue(value)

@@ -348,6 +348,33 @@ export const strategyApi = chatApi.injectEndpoints({
         body: data,
       }),
     }),
+    followStrategy: builder.mutation<any, { strategy_id: string }>({
+      query: (data) => ({
+        url: '/vibe-trading/strategy/follow',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    unfollowStrategy: builder.mutation<any, { strategy_id: string }>({
+      query: (data) => ({
+        url: '/vibe-trading/strategy/unfollow',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    getOnchainBalance: builder.query<any, any>({
+      query: () => ({
+        url: '/vibe-trading/user/onchain-balance',
+        method: 'GET',
+      }),
+    }),
+    getIsFollowedStrategy: builder.query<any, { strategy_id: string }>({
+      query: ({ strategy_id }) => ({
+        url: '/vibe-trading/strategy/is-following',
+        method: 'GET',
+        params: { strategy_id },
+      }),
+    }),
   }),
 })
 
@@ -389,4 +416,10 @@ export const {
   useLazyDelistStrategyQuery,
   useDeleteStrategyQuery,
   useLazyDeleteStrategyQuery,
+  useFollowStrategyMutation,
+  useUnfollowStrategyMutation,
+  useGetOnchainBalanceQuery,
+  useLazyGetOnchainBalanceQuery,
+  useGetIsFollowedStrategyQuery,
+  useLazyGetIsFollowedStrategyQuery,
 } = strategyApi

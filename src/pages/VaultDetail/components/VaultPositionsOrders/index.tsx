@@ -19,6 +19,8 @@ import { IconBase } from 'components/Icons'
 import { useCurrentRouter } from 'store/application/hooks'
 import { isMatchCurrentRouter } from 'utils'
 import { ROUTER } from 'pages/router'
+import { ANI_DURATION } from 'constants/index'
+import { useIsShowStrategyMarket } from 'store/vaultsdetailcache/hooks'
 
 export interface VaultPositionsOrdersProps {
   activeTab: DETAIL_TYPE
@@ -26,12 +28,12 @@ export interface VaultPositionsOrdersProps {
   strategyId: string
 }
 
-const TableContainer = styled.div<{ $isVaultDetailPage?: boolean }>`
+const TableContainer = styled.div<{ $isShowStrategyMarket: boolean; $isVaultDetailPage?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 12px;
   padding: 20px;
-
+  transition: all ${ANI_DURATION}s;
   .move-tab-item {
     height: 40px;
     padding: 0;
@@ -41,10 +43,19 @@ const TableContainer = styled.div<{ $isVaultDetailPage?: boolean }>`
     line-height: 20px;
   }
 
-  ${({ $isVaultDetailPage }) =>
+  ${({ $isVaultDetailPage, theme, $isShowStrategyMarket }) =>
     $isVaultDetailPage &&
     css`
       padding: 20px 40px;
+      ${theme.mediaMaxWidth.width1280`
+        padding: 20px;
+      `}
+      ${$isShowStrategyMarket &&
+      css`
+        ${theme.mediaMaxWidth.width1440`
+          padding: 20px;
+        `}
+      `}
     `}
 `
 
@@ -59,6 +70,7 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vault
   const hasInitialized = useRef(false)
   const currentRouter = useCurrentRouter()
   const isVaultDetailPage = isMatchCurrentRouter(currentRouter, ROUTER.VAULT_DETAIL)
+  const [isShowStrategyMarket] = useIsShowStrategyMarket()
 
   // 获取数据统计信息用于显示Tab标题
   const { totalCount: totalVaultPositions } = useVaultPositions(vaultId || '')
@@ -140,7 +152,7 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vault
   )
 
   return (
-    <TableContainer $isVaultDetailPage={isVaultDetailPage}>
+    <TableContainer $isShowStrategyMarket={isShowStrategyMarket} $isVaultDetailPage={isVaultDetailPage}>
       <MoveTabList gap={20} moveType={MoveType.LINE} tabList={subTabList} tabKey={activeSubTab} />
       <TableContent>
         {activeSubTab === 0 ? (

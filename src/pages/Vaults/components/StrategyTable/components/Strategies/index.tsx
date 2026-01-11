@@ -1,6 +1,5 @@
 import { memo, useMemo, useCallback } from 'react'
 import styled, { css } from 'styled-components'
-import { Trans } from '@lingui/react/macro'
 import Pending from 'components/Pending'
 import { useAllStrategiesOverview } from 'store/vaults/hooks'
 import { SortState, SortDirection } from 'components/TableSortableColumn'
@@ -9,16 +8,14 @@ import { formatKMBNumber } from 'utils/format'
 import { useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import { ANI_DURATION } from 'constants/index'
-import VibeItem from '../../../../../VaultDetail/components/VaultInfo/components/VibeItem'
 import Rank from '../../../Leaderboard/components/Rank'
 import Avatar from 'components/Avatar'
-import Tooltip from 'components/Tooltip'
-import { IconBase } from 'components/Icons'
 import { COLUMN_WIDTHS } from '../../index'
 import { StrategiesOverviewDataType } from 'api/strategy'
 import Divider from 'components/Divider'
 import { useTheme } from 'store/themecache/hooks'
 import Snapshot from '../Snapshort'
+import { useUserInfo } from 'store/login/hooks'
 
 const StrategiesContainer = styled.div`
   display: flex;
@@ -37,6 +34,17 @@ const StyledTable = styled.table`
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
+
+  /* name 列响应式宽度 */
+  --name-column-width: 400px;
+
+  @media (max-width: 1440px) {
+    --name-column-width: 280px;
+  }
+
+  @media (max-width: 1280px) {
+    --name-column-width: 240px;
+  }
 `
 
 // 每个策略用一个 tbody 包裹，实现数据行+标签行共同 hover
@@ -58,6 +66,11 @@ const StrategyTbody = styled.tbody`
       : css`
           &:hover tr td {
             background-color: ${theme.black800};
+            .vibe-wrapper {
+              span:last-child {
+                color: ${theme.black0};
+              }
+            }
           }
         `}
 `
@@ -85,8 +98,9 @@ const TableCell = styled.td<{ $align?: 'left' | 'center' | 'right' }>`
   color: ${({ theme }) => theme.black100};
   padding: 0 12px;
   vertical-align: middle;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
   line-height: 20px;
 
   &:first-child {
@@ -94,6 +108,7 @@ const TableCell = styled.td<{ $align?: 'left' | 'center' | 'right' }>`
     border-top-left-radius: 8px;
   }
   &:last-child {
+    padding-left: 0;
     padding-right: 0;
     border-top-right-radius: 8px;
   }
@@ -111,16 +126,12 @@ const TagsCell = styled.td`
   }
 `
 
-const TagsContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 25px;
-  height: 40px;
-`
-
 const PercentageText = styled.span<{ $isPositive?: boolean; $isNegative?: boolean }>`
   color: ${({ theme, $isPositive, $isNegative }) =>
     $isPositive ? theme.green100 : $isNegative ? theme.red100 : theme.black100};
+`
+const MaxDrawdownText = styled.span`
+  color: ${({ theme }) => theme.black100};
 `
 
 const StrategyName = styled.span`
@@ -137,35 +148,50 @@ const LeaderWrapper = styled.div`
 `
 
 const LeaderName = styled.span`
-  font-size: 14px;
-  font-weight: 500;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.black100};
+  color: ${({ theme }) => theme.black0};
+`
+
+const CurrentUser = styled.span`
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  color: ${({ theme }) => theme.brand100};
+`
+
+const TvfWrapper = styled.div<{ $isTopTvf?: boolean }>`
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  gap: 4px;
+  ${({ $isTopTvf }) =>
+    $isTopTvf
+      ? css`
+          background: linear-gradient(180deg, #f84600 0%, #f7bfa9 100%);
+          background-clip: text;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+        `
+      : css`
+          color: ${({ theme }) => theme.black100};
+        `}
+`
+
+const BoostIcon = styled.span`
+  font-size: 18px;
 `
 
 const TvfText = styled.span<{ $hasValue?: boolean }>`
-  color: ${({ theme, $hasValue }) => ($hasValue ? theme.brand100 : theme.black100)};
-`
-
-const AprWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  span {
-    color: ${({ theme }) => theme.black100};
-  }
-`
-
-const WarningIcon = styled(IconBase)`
-  font-size: 18px;
-  color: ${({ theme }) => theme.black0};
-  cursor: pointer;
-  transform: rotate(180deg);
-`
-
-const RankPlaceholder = styled.div`
-  width: 34px;
-  height: 32px;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
 `
 
 const NormalRank = styled.span`
@@ -193,7 +219,8 @@ const VibeWrapper = styled.div`
       font-style: italic;
       font-weight: 400;
       line-height: 18px;
-      color: ${({ theme }) => theme.black0};
+      transition: color ${ANI_DURATION}s;
+      color: ${({ theme }) => theme.black200};
     }
   }
 `
@@ -205,6 +232,7 @@ interface StrategiesProps {
 
 const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
   const theme = useTheme()
+  const [{ userInfoId }] = useUserInfo()
   const { allStrategies, isLoading: isLoadingAllStrategies } = useAllStrategiesOverview()
   const setCurrentRouter = useSetCurrentRouter()
   // 通过 searchValue 筛选数据
@@ -257,6 +285,15 @@ const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
     return sorted
   }, [filteredStrategies, sortState])
 
+  // 计算 TVF 排名前三的策略 ID 集合（TVF > 0）
+  const topTvfStrategyIds = useMemo(() => {
+    const strategiesWithTvf = allStrategies
+      .filter((strategy) => (strategy.tvf || 0) > 0)
+      .sort((a, b) => (b.tvf || 0) - (a.tvf || 0))
+      .slice(0, 3)
+    return new Set(strategiesWithTvf.map((s) => s.strategy_id))
+  }, [allStrategies])
+
   // 行点击跳转到详情页
   const handleRowClick = useCallback(
     (record: StrategiesOverviewDataType) => {
@@ -291,11 +328,13 @@ const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
           {sortedStrategies.map((record, rowIndex) => {
             const vibe = record.vibe
             const rankIndex = rowIndex + 1
-            const tvf = (record as any).tvf || 0
-            const followers = (record as any).followers || 0
+            const tvf = record.tvf || 0
+            const followers = record.followers || 0
             const userName = record.user_info?.user_name || ''
             const columnCount = 9
             const showRank = rankIndex <= 3
+            const isCurrentUser = record.user_info?.user_info_id === Number(userInfoId)
+            const isTopTvf = topTvfStrategyIds.has(record.strategy_id)
             return (
               <StrategyTbody key={record.strategy_id || rowIndex} onClick={() => handleRowClick(record)}>
                 <DataRow>
@@ -308,7 +347,10 @@ const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
                   <TableCell>
                     <LeaderWrapper>
                       <Avatar avatar={record.user_info?.user_avatar} name={userName} size={24} />
-                      <LeaderName>{userName}</LeaderName>
+                      <LeaderName>
+                        {userName}&nbsp;
+                        <CurrentUser>{isCurrentUser ? `(you)` : ''}</CurrentUser>
+                      </LeaderName>
                     </LeaderWrapper>
                   </TableCell>
                   <TableCell>
@@ -327,14 +369,15 @@ const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
                   </TableCell>
                   <TableCell>{Math.floor(record.age_days)}</TableCell>
                   <TableCell>
-                    <PercentageText $isNegative={record.max_drawdown > 0}>
-                      {formatPercent(record.max_drawdown)}
-                    </PercentageText>
+                    <MaxDrawdownText>{formatPercent(record.max_drawdown)}</MaxDrawdownText>
                   </TableCell>
                   <TableCell>
-                    <TvfText $hasValue={tvf > 0}>{tvf ? `$${formatKMBNumber(tvf)}` : '0'}</TvfText>
+                    <TvfWrapper $isTopTvf={isTopTvf}>
+                      {isTopTvf && <BoostIcon className='icon-boost' />}
+                      <TvfText $hasValue={tvf > 0}>{tvf ? formatKMBNumber(tvf, 2, { showDollar: true }) : '0'}</TvfText>
+                    </TvfWrapper>
                   </TableCell>
-                  <TableCell>{followers ? formatKMBNumber(followers) : '0'}</TableCell>
+                  <TableCell>{followers ? followers : '0'}</TableCell>
                   <TableCell $align='right'>
                     <Snapshot data={record.s24h} />
                   </TableCell>
@@ -342,7 +385,7 @@ const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
                 <TagsRow>
                   <TagsCell />
                   <TagsCell colSpan={columnCount - 1}>
-                    <VibeWrapper>
+                    <VibeWrapper className='vibe-wrapper'>
                       <span>Just for test</span>
                       <Divider height={1} length={18} color={theme.black600} vertical paddingHorizontal={8} />
                       <span>"{vibe || '--'}"</span>

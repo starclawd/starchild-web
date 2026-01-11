@@ -21,6 +21,7 @@ const TabListWrapper = styled.div<{ $isShowExpandPaperTrading: boolean }>`
   width: 30%;
   min-width: 300px;
   max-width: 480px;
+  height: 100%;
   transition: width ${ANI_DURATION}s;
   ${({ $isShowExpandPaperTrading }) =>
     $isShowExpandPaperTrading &&
@@ -190,7 +191,7 @@ export default memo(function TabList() {
   }, [strategyId, strategyDetail, codeGenerated, paperTradingPublicData, strategy_config, setCurrentStrategyTabIndex])
 
   return (
-    <TabListWrapper $isShowExpandPaperTrading={isShowExpand}>
+    <TabListWrapper className='transparent-scroll-style' $isShowExpandPaperTrading={isShowExpand}>
       <InnerContent>
         {tabList.map((tab) => (
           <TabItem key={tab.key} tab={tab} />

@@ -22,6 +22,8 @@ import AiSummary from '../AiSummary'
 import { useCurrentRouter } from 'store/application/hooks'
 import { isMatchCurrentRouter } from 'utils'
 import { ROUTER } from 'pages/router'
+import { ANI_DURATION } from 'constants/index'
+import { useIsShowStrategyMarket } from 'store/vaultsdetailcache/hooks'
 
 const PaperTradingPerformanceWrapper = styled.div`
   display: flex;
@@ -30,20 +32,29 @@ const PaperTradingPerformanceWrapper = styled.div`
 
 const AiAnalysis = styled.div`
   display: flex;
-  height: 160px;
   border-bottom: 1px solid ${({ theme }) => theme.black800};
 `
 
-const ChatWrapper = styled.div<{ $isVaultDetailPage?: boolean }>`
+const ChatWrapper = styled.div<{ $isShowStrategyMarket: boolean; $isVaultDetailPage?: boolean }>`
   display: flex;
   flex-direction: column;
   gap: 12px;
   padding: 20px;
   border-bottom: 1px solid ${({ theme }) => theme.black800};
-  ${({ $isVaultDetailPage }) =>
+  transition: all ${ANI_DURATION}s;
+  ${({ $isVaultDetailPage, theme, $isShowStrategyMarket }) =>
     $isVaultDetailPage &&
     css`
       padding: 20px 40px;
+      ${theme.mediaMaxWidth.width1280`
+        padding: 20px;
+      `}
+      ${$isShowStrategyMarket &&
+      css`
+        ${theme.mediaMaxWidth.width1440`
+          padding: 20px;
+        `}
+      `}
     `}
 `
 
@@ -58,6 +69,7 @@ interface VaultPnLChartProps extends VaultPositionsOrdersProps {
 const PaperTradingPerformance = memo<VaultPnLChartProps>(({ activeTab, vaultId, strategyId }) => {
   const currentRouter = useCurrentRouter()
   const isVaultDetailPage = isMatchCurrentRouter(currentRouter, ROUTER.VAULT_DETAIL)
+  const [isShowStrategyMarket] = useIsShowStrategyMarket()
   // 设置默认时间范围
   const defaultTimeRange = CHAT_TIME_RANGE.ALL_TIME
   const theme = useTheme()
@@ -125,7 +137,7 @@ const PaperTradingPerformance = memo<VaultPnLChartProps>(({ activeTab, vaultId, 
       <AiAnalysis>
         <AiSummary />
       </AiAnalysis>
-      <ChatWrapper $isVaultDetailPage={isVaultDetailPage}>
+      <ChatWrapper $isShowStrategyMarket={isShowStrategyMarket} $isVaultDetailPage={isVaultDetailPage}>
         <TimeRangeSelector chartTimeRange={chartState.timeRange} setChartTimeRange={chartState.setTimeRange} />
         <PerformanceChart
           chartData={chartData}

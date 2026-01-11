@@ -38,6 +38,10 @@ export interface VaultDetailState {
   // StrategyInfo 数据
   strategyInfo: StrategiesOverviewDataType | null
 
+  // 策略关注状态
+  isFollowing: boolean
+  isLoadingFollowing: boolean
+
   // 图表相关状态
   chartType: CHART_TYPE
   claimData: ClaimData

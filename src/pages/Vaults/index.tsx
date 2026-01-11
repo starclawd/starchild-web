@@ -5,6 +5,7 @@ import StrategyTable from './components/StrategyTable'
 import Leaderboard from './components/Leaderboard'
 import CreateStrategy from './components/CreateStrategy'
 import vaultsBg from 'assets/vaults/vault-bg.png'
+import { ANI_DURATION } from 'constants/index'
 
 const VaultsContainer = styled.div`
   display: flex;
@@ -27,11 +28,15 @@ const VaultsHeader = styled.div`
   gap: 30px;
   flex-shrink: 0;
   width: 100%;
-  height: 376px;
+  height: 362px;
   padding: 40px;
   background-size: auto 100%;
   background-position: center;
   background-repeat: no-repeat;
+  transition: all ${ANI_DURATION}s;
+  ${({ theme }) => theme.mediaMaxWidth.width1280`
+    padding: 40px 20px;
+  `}
 `
 
 const VaultsHeaderTop = styled.div`
@@ -57,6 +62,18 @@ const VaultsTitleLine1 = styled.div`
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  ${({ theme }) => theme.mediaMaxWidth.width1440`
+    font-size: 64px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 72px;
+  `}
+  ${({ theme }) => theme.mediaMaxWidth.width1280`
+    font-size: 56px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 64px; 
+  `}
 `
 
 const VaultsContent = styled.div`
