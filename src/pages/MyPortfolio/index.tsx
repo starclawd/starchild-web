@@ -116,7 +116,8 @@ export default memo(function MyPortfolio() {
     (strategy) =>
       strategy.status === STRATEGY_STATUS.DRAFT ||
       strategy.status === STRATEGY_STATUS.DRAFT_READY ||
-      strategy.status === STRATEGY_STATUS.DEPLOYING,
+      strategy.status === STRATEGY_STATUS.DEPLOYING ||
+      strategy.status === STRATEGY_STATUS.PAPER_TRADING,
   ).length
   const archivedLen = myStrategies.filter(
     (strategy) => strategy.status === STRATEGY_STATUS.DELISTED || strategy.status === STRATEGY_STATUS.ARCHIVED,

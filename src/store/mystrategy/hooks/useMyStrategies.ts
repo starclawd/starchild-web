@@ -3,7 +3,7 @@ import { RootState } from 'store'
 import { useCallback, useEffect } from 'react'
 import { updateMyStrategies, setLoadingMyStrategies, setCurrentStrategyId } from '../reducer'
 import { useGetMyStrategiesQuery } from 'api/strategy'
-import { useUserInfo } from 'store/login/hooks'
+import { useIsLogin, useUserInfo } from 'store/login/hooks'
 import {
   useLazyDeleteStrategyQuery,
   useLazyDelistStrategyQuery,
@@ -13,12 +13,13 @@ import {
 import { ParamFun } from 'types/global'
 
 export function useMyStrategies() {
+  const isLogin = useIsLogin()
   const dispatch = useDispatch()
   const [{ userInfoId }] = useUserInfo()
   const myStrategies = useSelector((state: RootState) => state.mystrategy.myStrategies)
   const isLoadingMyStrategies = useSelector((state: RootState) => state.mystrategy.isLoadingMyStrategies)
   const { data, isLoading, refetch } = useGetMyStrategiesQuery(undefined, {
-    skip: !userInfoId,
+    skip: !userInfoId || !isLogin,
     refetchOnMountOrArgChange: true,
   })
 

@@ -9,7 +9,7 @@ import {
 import { useCallback, useEffect, useMemo } from 'react'
 import { useGetStrategyDetailQuery, useLazyEditStrategyQuery, useLazyGetStrategyDetailQuery } from 'api/createStrategy'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import { useUserInfo } from 'store/login/hooks'
+import { useIsLogin, useUserInfo } from 'store/login/hooks'
 import { useStrategyCode } from './useCode'
 import { usePaperTradingPublic } from 'store/vaultsdetail/hooks/usePaperTradingPublic'
 import { GENERATION_STATUS, STRATEGY_STATUS, STRATEGY_TAB_INDEX } from '../createstrategy'
@@ -81,6 +81,7 @@ export function useEditStrategy() {
 }
 
 export function useIsShowActionLayer() {
+  const isLogin = useIsLogin()
   const { strategyId } = useParsedQueryString()
   const [currentStrategyTabIndex] = useCurrentStrategyTabIndex()
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
@@ -107,8 +108,8 @@ export function useIsShowActionLayer() {
   }, [currentStrategyTabIndex, status])
 
   const isShowActionLayer = useMemo(() => {
-    return isShowGenerateCodeOperation || isShowPaperTradingOperation || isShowLaunchOperation
-  }, [isShowGenerateCodeOperation, isShowPaperTradingOperation, isShowLaunchOperation])
+    return (isShowGenerateCodeOperation || isShowPaperTradingOperation || isShowLaunchOperation) && isLogin
+  }, [isShowGenerateCodeOperation, isShowPaperTradingOperation, isShowLaunchOperation, isLogin])
 
   const isShowGenerateCodeOperationWithoutTab = useMemo(() => {
     return !codeGenerated && !!strategy_config

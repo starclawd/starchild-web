@@ -36,11 +36,11 @@ import {
 import { Suspense, useEffect } from 'react'
 // import Mobile from './Mobile' // 改为从 router.ts 导入
 import RouteLoading from 'components/RouteLoading'
-import { useAuthToken } from 'store/logincache/hooks'
+import { useAuthToken, useGuestUser } from 'store/logincache/hooks'
 import usePrevious from 'hooks/usePrevious'
 import { useResetAllState as useResetCreateStrategyState } from 'store/createstrategy/hooks/useResetAllState'
 import { useResetAllState as useResetVaultDetailState } from 'store/vaultsdetail/hooks/useResetAllState'
-import { useGetUserInfo, useIsLogin, useLoginStatus, useUserInfo } from 'store/login/hooks'
+import { useGetUserInfo, useIsLogin, useIsLogout, useLoginStatus, useUserInfo } from 'store/login/hooks'
 import { LOGIN_STATUS } from 'store/login/login.d'
 import { useInitializeLanguage } from 'store/language/hooks'
 // import Footer from 'components/Footer'
@@ -74,6 +74,8 @@ import DeployModal from 'pages/CreateStrategy/components/StrategyInfo/components
 import { STRATEGY_SIGNAL_SUB_ID, STRATEGY_SIGNAL_UNSUB_ID } from 'store/websocket/websocket'
 import PromptModal from './CreateStrategy/components/Chat/components/PromptModal'
 import ShareModal from 'components/ShareModal'
+import { useGenerateGuestUser } from 'store/login/hooks/useGenerateGuestUser'
+import { useBindStrategyToGuest } from 'store/login/hooks/useBindStrategyToGuest'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -141,14 +143,16 @@ const MobileBodyWrapper = styled.div`
 function App() {
   useInitializeLanguage()
   useChangeHtmlBg()
-  const { subscribe, unsubscribe, isOpen } = useInsightsSubscription() // 只建立连接，不处理消息
   useWindowVisible()
   useAppKitEventHandler()
   useOnchainBalance()
+  const { subscribe, unsubscribe, isOpen } = useInsightsSubscription() // 只建立连接，不处理消息
   const [authToken] = useAuthToken()
   const isMobile = useIsMobile()
   const isLogin = useIsLogin()
-  const [{ userInfoId }] = useUserInfo()
+  const isLoginOut = useIsLogout()
+  const [userInfo, setUserInfo] = useUserInfo()
+  const [guestUser] = useGuestUser()
   const [isFixMenu] = useIsFixMenu()
   const { pathname } = useLocation()
   const triggerGetCoinId = useGetCoinId()
@@ -163,6 +167,7 @@ function App() {
   const resetVaultDetailState = useResetVaultDetailState()
   const setCurrentRouter = useSetCurrentRouter(false)
   const triggerGetPreference = useGetPreference()
+  const generateGuestUser = useGenerateGuestUser()
   const isChatPage = isMatchCurrentRouter(currentRouter, ROUTER.CHAT)
   const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)
   const deleteAgentModalOpen = useModalOpen(ApplicationModal.DELETE_MY_AGENT_MODAL)
@@ -177,6 +182,11 @@ function App() {
   const shareStrategyModalOpen = useModalOpen(ApplicationModal.SHARE_STRATEGY_MODAL)
   // const isSignalsPage = isMatchCurrentRouter(currentRouter, ROUTER.SIGNALS)
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
+  const { userInfoId } = userInfo
+  const { account_api_key, user_info_id } = guestUser || {
+    account_api_key: '',
+    user_info_id: 0,
+  }
 
   // WebSocket 订阅 leaderboard-balances频道
   useLeaderboardWebSocketSubscription()
@@ -247,20 +257,14 @@ function App() {
   }, [triggerGetCoinId])
 
   useEffect(() => {
-    if (isLogin) {
-      triggerGetCoinId()
-    }
-  }, [triggerGetCoinId, isLogin])
-
-  useEffect(() => {
     triggerGetExchangeInfo()
   }, [triggerGetExchangeInfo])
 
   useEffect(() => {
-    if (userInfoId) {
+    if (userInfoId && isLogin) {
       triggerGetPreference()
     }
-  }, [userInfoId, triggerGetPreference])
+  }, [userInfoId, triggerGetPreference, isLogin])
 
   useEffect(() => {
     if (isOpen) {
@@ -270,6 +274,23 @@ function App() {
       unsubscribe('strategy-signal-notification', STRATEGY_SIGNAL_UNSUB_ID)
     }
   }, [subscribe, unsubscribe, isOpen])
+
+  // 初始化时，如果是未登录状态且没有访客信息，调用 generateGuestUser
+  useEffect(() => {
+    if (isLoginOut && !guestUser) {
+      generateGuestUser()
+    }
+  }, [generateGuestUser, isLoginOut, guestUser])
+
+  useEffect(() => {
+    if (isLoginOut && !userInfoId && account_api_key && user_info_id) {
+      setUserInfo({
+        ...userInfo,
+        aiChatKey: account_api_key,
+        userInfoId: user_info_id.toString(),
+      })
+    }
+  }, [isLoginOut, userInfoId, userInfo, account_api_key, user_info_id, setUserInfo])
 
   return (
     <ErrorBoundary>

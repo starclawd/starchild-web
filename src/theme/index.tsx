@@ -153,6 +153,9 @@ function colors(darkMode: boolean): Theme {
     brand200: darkMode ? '#C63A00' : '#C63A00',
     // Brand/300
     brand300: darkMode ? '#8F2A00' : '#8F2A00',
+    thinkingGradient: darkMode
+      ? 'linear-gradient(180deg, #f84600 0%, #f7bfa9 100%)'
+      : 'linear-gradient(180deg, #f84600 0%, #f7bfa9 100%)',
   }
 }
 

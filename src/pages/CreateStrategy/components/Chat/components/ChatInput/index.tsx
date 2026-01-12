@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { memo, useCallback, useRef, useState } from 'react'
+import { memo, useCallback, useMemo, useRef, useState } from 'react'
 import { IconBase } from 'components/Icons'
 import InputArea from 'components/InputArea'
 import { vm } from 'pages/helper'
@@ -15,6 +15,8 @@ import { useResetAllState } from 'store/createstrategy/hooks/useResetAllState'
 // import ModeSelect from 'pages/Chat/components/ChatInput/components/ModeSelect'
 import { Trans } from '@lingui/react/macro'
 import { useIsLogin } from 'store/login/hooks'
+import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
+import useParsedQueryString from 'hooks/useParsedQueryString'
 
 const ChatInputWrapper = styled.div`
   position: relative;
@@ -192,6 +194,14 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
   const resetAllState = useResetAllState()
   const toggleConnectWalletModal = useConnectWalletModalToggle()
   const sendChatUserContent = useSendChatUserContent()
+  const { strategyId } = useParsedQueryString()
+  const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
+  const { strategy_config } = strategyDetail || {
+    strategy_config: null,
+  }
+  const inputDisabled = useMemo(() => {
+    return !!strategy_config && !isLogin
+  }, [strategy_config, isLogin])
   const handleWrapperClick = useCallback(() => {
     inputRef.current?.focus()
   }, [])
@@ -265,7 +275,7 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
             value={value}
             ref={inputRef as any}
             setValue={setValue}
-            disabled={isLoadingChatStream}
+            disabled={isLoadingChatStream || inputDisabled}
             placeholder={
               isChatPage
                 ? t`Turn your idea into live strategy. e.g., Buy ETH when RSI < 30 on 15m chart.`
@@ -276,7 +286,7 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
           <Operator $isChatPage={isChatPage}>
             {/* {isChatPage && <ModeSelect />} */}
             <div></div>
-            <SendButton $disabled={!value?.trim()} onClick={requestStream}>
+            <SendButton $disabled={!value?.trim() || inputDisabled} onClick={requestStream}>
               <IconBase className='icon-arrow' />
             </SendButton>
           </Operator>

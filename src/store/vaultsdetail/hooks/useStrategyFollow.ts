@@ -9,19 +9,23 @@ import {
 } from 'api/createStrategy'
 import { setIsFollowing, setLoadingFollowing } from 'store/vaultsdetail/reducer'
 import { useStrategyInfo } from './useStrategyInfo'
+import { useIsLogin } from 'store/login/hooks'
+import { useUserInfo } from 'store/login/hooks'
 
 /**
  * 查询策略是否已关注hook
  */
 export function useIsFollowedStrategy({ strategyId }: { strategyId: string | null }) {
   const dispatch = useDispatch()
+  const isLogin = useIsLogin()
+  const [{ userInfoId }] = useUserInfo()
   const isFollowing = useSelector((state: RootState) => state.vaultsdetail.isFollowing)
   const isLoadingFollowing = useSelector((state: RootState) => state.vaultsdetail.isLoadingFollowing)
 
   const { data, isLoading, error, refetch } = useGetIsFollowedStrategyQuery(
     { strategy_id: strategyId || '' },
     {
-      skip: !strategyId,
+      skip: !strategyId || !isLogin || !userInfoId,
       refetchOnMountOrArgChange: true,
     },
   )
@@ -73,21 +77,17 @@ export function useIsFollowedStrategy({ strategyId }: { strategyId: string | nul
  */
 export function useFollowStrategy() {
   const [followStrategyMutation] = useFollowStrategyMutation()
-  const { fetchIsFollowed } = useIsFollowedStrategy({ strategyId: '' })
-  const { fetchStrategyInfo } = useStrategyInfo({ strategyId: '' })
 
   const followStrategy = useCallback(
     async (strategyId: string) => {
       try {
         await followStrategyMutation({ strategy_id: strategyId }).unwrap()
-        await fetchIsFollowed(strategyId)
-        await fetchStrategyInfo(strategyId)
       } catch (err) {
         console.error('Follow strategy failed:', err)
         throw err
       }
     },
-    [followStrategyMutation, fetchIsFollowed, fetchStrategyInfo],
+    [followStrategyMutation],
   )
 
   return followStrategy
@@ -98,21 +98,17 @@ export function useFollowStrategy() {
  */
 export function useUnfollowStrategy() {
   const [unfollowStrategyMutation] = useUnfollowStrategyMutation()
-  const { fetchIsFollowed } = useIsFollowedStrategy({ strategyId: '' })
-  const { fetchStrategyInfo } = useStrategyInfo({ strategyId: '' })
 
   const unfollowStrategy = useCallback(
     async (strategyId: string) => {
       try {
         await unfollowStrategyMutation({ strategy_id: strategyId }).unwrap()
-        await fetchIsFollowed(strategyId)
-        await fetchStrategyInfo(strategyId)
       } catch (err) {
         console.error('Unfollow strategy failed:', err)
         throw err
       }
     },
-    [unfollowStrategyMutation, fetchIsFollowed, fetchStrategyInfo],
+    [unfollowStrategyMutation],
   )
 
   return unfollowStrategy

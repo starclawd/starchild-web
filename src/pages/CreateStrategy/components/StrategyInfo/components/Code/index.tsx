@@ -189,7 +189,7 @@ export default memo(function Code() {
   })
 
   const isShowText = useMemo(() => {
-    return Number(width) >= MEDIA_WIDTHS.width1360
+    return Number(width) >= MEDIA_WIDTHS.width1440
   }, [width])
   // 打字机效果相关状态
   const [isTypewriting, setIsTypewriting] = useIsTypewritingCode()
@@ -216,18 +216,18 @@ export default memo(function Code() {
     return [
       {
         key: 'code',
-        text: 'Code',
-        icon: <IconBase className='icon-code' />,
+        text: <Trans>Code</Trans>,
+        icon: isShowText ? <IconBase className='icon-code' /> : null,
         clickCallback: () => setViewMode(ViewMode.CODE),
       },
       {
         key: 'flow',
-        text: 'Flow',
-        icon: <IconBase className='icon-flow' />,
+        text: <Trans>Flow</Trans>,
+        icon: isShowText ? <IconBase className='icon-flow' /> : null,
         clickCallback: () => setViewMode(ViewMode.FLOW),
       },
     ]
-  }, [])
+  }, [isShowText])
 
   const isGeneratingCodeStatus = useMemo(() => {
     return generation_status === GENERATION_STATUS.GENERATING

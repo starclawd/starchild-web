@@ -354,7 +354,7 @@ export function useGetChatStreamData() {
 }
 
 export function useSendChatUserContent() {
-  const isLogin = useIsLogin()
+  const [{ userInfoId }] = useUserInfo()
   const [, setValue] = useChatValue()
   const { strategyId } = useParsedQueryString()
   const [chatResponseContentList, setChatResponseContentList] = useChatResponseContentList()
@@ -369,7 +369,7 @@ export function useSendChatUserContent() {
       value: string
       nextChatResponseContentList?: ChatResponseContentDataType[]
     }) => {
-      if (!value || isLoadingChatStream || !isLogin) return
+      if (!value || isLoadingChatStream || !userInfoId) return
       try {
         setIsLoadingChatStream(true)
         setIsAnalyzeContent(true)
@@ -395,7 +395,7 @@ export function useSendChatUserContent() {
       }
     },
     [
-      isLogin,
+      userInfoId,
       strategyId,
       isLoadingChatStream,
       chatResponseContentList,

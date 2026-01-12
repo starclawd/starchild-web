@@ -19,12 +19,13 @@ import {
 } from 'api/createStrategy'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useTheme } from 'styled-components'
+import { useIsLogin } from 'store/login/hooks'
 
 export function useDeployment(strategyId: string) {
   const dispatch = useDispatch()
   const toast = useToast()
   const theme = useTheme()
-
+  const isLogin = useIsLogin()
   // Redux 状态 - 确保所有组件共享同一状态实例
   const deployingStatus = useSelector((state: RootState) => state.createstrategy.deployingStatus)
   const deployModalStatus = useSelector((state: RootState) => state.createstrategy.deployModalStatus)
@@ -46,7 +47,7 @@ export function useDeployment(strategyId: string) {
   const { data: deployStatusData } = useGetStrategyDeployStatusQuery(
     { strategy_id: strategyId },
     {
-      skip: !shouldPoll, // 不满足条件时跳过查询
+      skip: !shouldPoll || !isLogin, // 不满足条件时跳过查询
       pollingInterval: 10000, // 10秒轮询一次
       refetchOnMountOrArgChange: true,
     },
@@ -161,6 +162,7 @@ export function useDeployment(strategyId: string) {
   const checkDeployStatus = useCallback(
     async (strategyId: string) => {
       try {
+        if (!isLogin) return
         dispatch(updateDeployCheckStatusLoading(true))
         const response = await getDeployStatus({
           strategy_id: strategyId,
@@ -182,7 +184,7 @@ export function useDeployment(strategyId: string) {
         dispatch(updateDeployCheckStatusLoading(false))
       }
     },
-    [getDeployStatus, dispatch, setDeployingStatus],
+    [getDeployStatus, dispatch, setDeployingStatus, isLogin],
   )
 
   // 进入实盘部署状态

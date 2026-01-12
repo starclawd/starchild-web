@@ -11,6 +11,8 @@ import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useEditStrategy, useIsCreateStrategy, useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 import Pending from 'components/Pending'
 import TypewriterCursor from 'components/TypewriterCursor'
+import { ANI_DURATION } from 'constants/index'
+import { useIsLogin } from 'store/login/hooks'
 
 const StrategyNameWrapper = styled.div`
   display: flex;
@@ -33,8 +35,15 @@ const ButtonEdit = styled(ButtonBorder)`
   width: 32px;
   height: 32px;
   border-radius: 4px;
+  border: 1px solid ${({ theme }) => theme.black600};
   .icon-edit {
     font-size: 18px;
+  }
+  &:hover {
+    border-color: ${({ theme }) => theme.black400};
+    .icon-edit {
+      color: ${({ theme }) => theme.black0};
+    }
   }
 `
 
@@ -53,7 +62,14 @@ const StrategyNameText = styled.span<{ $editable?: boolean }>`
   font-weight: 400;
   line-height: 72px;
   color: ${({ theme }) => theme.black0};
+  transition: all ${ANI_DURATION}s;
   cursor: ${({ $editable }) => ($editable ? 'pointer' : 'default')};
+  ${({ theme }) => theme.mediaMaxWidth.width1560`
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 48px; 
+  `}
 `
 
 const StrategyNameInputWrapper = styled.div`
@@ -83,6 +99,12 @@ const StrategyNameInput = styled.input`
     background-color: ${({ theme }) => theme.brand100};
     color: ${({ theme }) => theme.black0};
   }
+  ${({ theme }) => theme.mediaMaxWidth.width1560`
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 48px; 
+  `}
 `
 
 const StrategyDescription = styled.div`
@@ -111,6 +133,7 @@ export default memo(function StrategyName({
 }) {
   const theme = useTheme()
   const toast = useToast()
+  const isLogin = useIsLogin()
   const [name, setName] = useState(nameProp)
   const [isEdit, setIsEdit] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -154,11 +177,11 @@ export default memo(function StrategyName({
   )
 
   const openEdit = useCallback(() => {
-    if (isStep3Deploying || !name || isTyping || isCreateStrategyFrontend) {
+    if (isStep3Deploying || !name || isTyping || isCreateStrategyFrontend || !isLogin) {
       return
     }
     setIsEdit(true)
-  }, [isStep3Deploying, name, isTyping, isCreateStrategyFrontend])
+  }, [isStep3Deploying, name, isTyping, isCreateStrategyFrontend, isLogin])
 
   const cancelEdit = useCallback(() => {
     if (isLoading) return
@@ -263,7 +286,7 @@ export default memo(function StrategyName({
             </StrategyNameInputWrapper>
           ) : (
             <StrategyNameText
-              $editable={!isStep3Deploying && !!name?.trim() && !isTyping && !isCreateStrategyFrontend}
+              $editable={!isStep3Deploying && !!name?.trim() && !isTyping && !isCreateStrategyFrontend && isLogin}
               onClick={openEdit}
             >
               {nameProp.slice(0, displayedLength)}
@@ -282,9 +305,11 @@ export default memo(function StrategyName({
                   </ButtonConfirm>
                 </>
               ) : (
-                <ButtonEdit onClick={openEdit} $disabled={isStep3Deploying || isTyping || isCreateStrategyFrontend}>
-                  <IconBase className='icon-edit' />
-                </ButtonEdit>
+                isLogin && (
+                  <ButtonEdit onClick={openEdit} $disabled={isStep3Deploying || isTyping || isCreateStrategyFrontend}>
+                    <IconBase className='icon-edit' />
+                  </ButtonEdit>
+                )
               )}
             </ButtonWrapper>
           )}

@@ -268,7 +268,7 @@ export const Header = () => {
         text: <Trans>Home</Trans>,
         icon: <IconBase className='icon-menu-chat' />,
         value: ROUTER.CHAT,
-        tooltip: <Trans>New chat</Trans>,
+        tooltip: <Trans>Create strategy</Trans>,
         clickCallback: goOtherPage,
       },
       {
@@ -311,10 +311,6 @@ export const Header = () => {
       }
     }
   }, [])
-
-  useEffect(() => {
-    getThreadsList()
-  }, [getThreadsList])
 
   useEffect(() => {
     setCurrentHoverMenuKey(currentRouter)

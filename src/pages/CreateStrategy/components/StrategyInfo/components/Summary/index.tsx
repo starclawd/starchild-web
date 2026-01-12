@@ -14,6 +14,8 @@ import MoveTabList, { MoveType } from 'components/MoveTabList'
 import { ANI_DURATION } from 'constants/index'
 import TypewriterCursor from 'components/TypewriterCursor'
 import { useIsLogin } from 'store/login/hooks'
+import { MEDIA_WIDTHS } from 'theme/styled'
+import { useWindowSize } from 'hooks/useWindowSize'
 
 // 光标闪烁动画
 const cursorBlink = keyframes`
@@ -197,6 +199,7 @@ const TYPING_INTERVAL = 17 // 每次显示的间隔时间（毫秒）
 
 export default memo(function Summary() {
   const isLogin = useIsLogin()
+  const { width } = useWindowSize()
   const { strategyId } = useParsedQueryString()
   const isStep3Deploying = useIsStep3Deploying(strategyId || '')
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
@@ -232,6 +235,9 @@ export default memo(function Summary() {
   const [layerHeights, setLayerHeights] = useState<Record<SUMMARY_TAB_KEY, number>>(
     {} as Record<SUMMARY_TAB_KEY, number>,
   )
+  const isShowIcon = useMemo(() => {
+    return !(Number(width) < MEDIA_WIDTHS.width1440)
+  }, [width])
 
   // 处理 Layer 高度变化的回调
   const handleLayerHeightChange = useCallback((key: SUMMARY_TAB_KEY, height: number) => {
@@ -465,36 +471,36 @@ export default memo(function Summary() {
     return [
       {
         key: SUMMARY_TAB_KEY.DATA,
-        icon: <IconBase className='icon-data-layer' />,
+        icon: isShowIcon ? <IconBase className='icon-data-layer' /> : null,
         text: <Trans>Data Layer</Trans>,
         clickCallback: () => handleTabClick(SUMMARY_TAB_KEY.DATA),
       },
       {
         key: SUMMARY_TAB_KEY.SIGNAL,
-        icon: <IconBase className='icon-signal-layer' />,
+        icon: isShowIcon ? <IconBase className='icon-signal-layer' /> : null,
         text: <Trans>Signal Layer</Trans>,
         clickCallback: () => handleTabClick(SUMMARY_TAB_KEY.SIGNAL),
       },
       {
         key: SUMMARY_TAB_KEY.CAPITAL,
-        icon: <IconBase className='icon-capital-layer' />,
+        icon: isShowIcon ? <IconBase className='icon-capital-layer' /> : null,
         text: <Trans>Capital Layer</Trans>,
         clickCallback: () => handleTabClick(SUMMARY_TAB_KEY.CAPITAL),
       },
       {
         key: SUMMARY_TAB_KEY.RISK,
-        icon: <IconBase className='icon-risk-layer' />,
+        icon: isShowIcon ? <IconBase className='icon-risk-layer' /> : null,
         text: <Trans>Risk Layer</Trans>,
         clickCallback: () => handleTabClick(SUMMARY_TAB_KEY.RISK),
       },
       {
         key: SUMMARY_TAB_KEY.EXECUTION,
-        icon: <IconBase className='icon-execution-layer' />,
+        icon: isShowIcon ? <IconBase className='icon-execution-layer' /> : null,
         text: <Trans>Execution Layer</Trans>,
         clickCallback: () => handleTabClick(SUMMARY_TAB_KEY.EXECUTION),
       },
     ]
-  }, [handleTabClick])
+  }, [isShowIcon, handleTabClick])
 
   // 判断某个 layer 是否应该显示（打字机效果中，只显示已开始打字的 layer）
   const shouldShowLayer = useCallback(
@@ -696,10 +702,12 @@ export default memo(function Summary() {
         {!typewriterState.isTyping && (
           <ButtonWrapper>
             {!isEdit ? (
-              <ButtonEdit id='strategyEditButton' $disabled={isStep3Deploying || !strategy_config} onClick={openEdit}>
-                <IconBase className='icon-edit' />
-                <Trans>Edit</Trans>
-              </ButtonEdit>
+              isLogin && (
+                <ButtonEdit id='strategyEditButton' $disabled={isStep3Deploying || !strategy_config} onClick={openEdit}>
+                  <IconBase className='icon-edit' />
+                  <Trans>Edit</Trans>
+                </ButtonEdit>
+              )
             ) : (
               <>
                 <ButtonCancel onClick={cancelEdit}>

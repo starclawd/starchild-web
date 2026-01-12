@@ -375,6 +375,20 @@ export const strategyApi = chatApi.injectEndpoints({
         params: { strategy_id },
       }),
     }),
+    generateGuestUser: builder.query<any, { guestUuid: string }>({
+      query: ({ guestUuid }) => ({
+        url: '/vibe-trading/guest/register',
+        method: 'POST',
+        body: { guest_uuid: guestUuid },
+      }),
+    }),
+    bindStrategyToGuest: builder.query<any, { guestUuid: string; userInfoId: string; guestApiKey: string }>({
+      query: ({ guestUuid, userInfoId, guestApiKey }) => ({
+        url: '/vibe-trading/guest/claim',
+        method: 'POST',
+        body: { guest_uuid: guestUuid, target_user_info_id: Number(userInfoId), guest_api_key: guestApiKey },
+      }),
+    }),
   }),
 })
 
@@ -422,4 +436,8 @@ export const {
   useLazyGetOnchainBalanceQuery,
   useGetIsFollowedStrategyQuery,
   useLazyGetIsFollowedStrategyQuery,
+  useGenerateGuestUserQuery,
+  useLazyGenerateGuestUserQuery,
+  useBindStrategyToGuestQuery,
+  useLazyBindStrategyToGuestQuery,
 } = strategyApi

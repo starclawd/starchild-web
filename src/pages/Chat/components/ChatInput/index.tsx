@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components'
 import { memo, useCallback, useMemo } from 'react'
 import { useChatTabIndex, useIsAiContentEmpty } from 'store/chat/hooks'
 import { vm } from 'pages/helper'
-import { useConnectWalletModalToggle } from 'store/application/hooks'
+import { useConnectWalletModalToggle, useIsMobile } from 'store/application/hooks'
 import { Trans } from '@lingui/react/macro'
 import CreateStrategy from './components/CreateStrategy'
 import Research from './components/Research'
@@ -71,6 +71,7 @@ const ChatInputEmptyContent = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
+      width: 100%;
       padding: 0 ${vm(12)};
     `}
 `
@@ -101,6 +102,7 @@ const ButtonWatchDemo = styled(ButtonBorder)`
 `
 
 export default memo(function ChatInput() {
+  const isMobile = useIsMobile()
   const isLogin = useIsLogin()
   const [{ userName }] = useUserInfo()
   const [chatTabIndex] = useChatTabIndex()
@@ -147,7 +149,7 @@ export default memo(function ChatInput() {
         </ChatInputEmptyContent>
       )}
       {showCreateStrategy ? <CreateStrategy /> : <Research />}
-      {isEmpty && <StrategyInfo />}
+      {isEmpty && !isMobile && <StrategyInfo />}
     </ChatInputWrapper>
   )
 })

@@ -68,7 +68,7 @@ export default memo(function PaperTradingTabs() {
   }, [isShowExpandPaperTrading, width])
 
   const isShowIcon = useMemo(() => {
-    return !(!isShowExpandPaperTrading && Number(width) < MEDIA_WIDTHS.width1360)
+    return !(!isShowExpandPaperTrading && Number(width) < MEDIA_WIDTHS.width1440)
   }, [isShowExpandPaperTrading, width])
 
   // 获取数据统计信息用于显示Tab标题

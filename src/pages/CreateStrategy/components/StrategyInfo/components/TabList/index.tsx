@@ -13,6 +13,7 @@ import { useIsShowExpandPaperTrading } from 'store/createstrategy/hooks/usePaper
 import { ANI_DURATION } from 'constants/index'
 import TabItem from './components/TabItem'
 import { usePaperTradingPublic } from 'store/vaultsdetail/hooks/usePaperTradingPublic'
+import { useIsLogin } from 'store/login/hooks'
 
 const TabListWrapper = styled.div<{ $isShowExpandPaperTrading: boolean }>`
   display: flex;
@@ -40,6 +41,7 @@ const InnerContent = styled.div`
 `
 
 export default memo(function TabList() {
+  const isLogin = useIsLogin()
   const [isShowExpandPaperTrading] = useIsShowExpandPaperTrading()
   const [isShowExpandCode] = useIsShowExpandCode()
   // 合并展开状态：PaperTrading 或 Code 任一展开时都隐藏 TabList
@@ -95,11 +97,11 @@ export default memo(function TabList() {
         key: STRATEGY_TAB_INDEX.CODE,
         text: <Trans>Generate Code</Trans>,
         icon: <IconBase className='icon-generate-code' />,
-        isComplete: codeGenerated,
-        disabled: !codeGenerated && !isGeneratingCode && !isGeneratingCodeFrontend,
+        isComplete: codeGenerated && isLogin,
+        disabled: (!codeGenerated && !isGeneratingCode && !isGeneratingCodeFrontend) || !isLogin,
         tooltipContent: <Trans>Finish defining your strategy in Step 1 first.</Trans>,
         description: <Trans>Turns your text description into code.</Trans>,
-        showTooltip: !codeGenerated && !isGeneratingCode && !isGeneratingCodeFrontend,
+        showTooltip: !codeGenerated && !isGeneratingCode && !isGeneratingCodeFrontend && isLogin,
         intervalDuration: 30000,
         isLoading: isGeneratingCodeFrontend || isGeneratingCode,
         clickCallback: handleTabClick(STRATEGY_TAB_INDEX.CODE),
@@ -109,11 +111,11 @@ export default memo(function TabList() {
         key: STRATEGY_TAB_INDEX.PAPER_TRADING,
         text: <Trans>Paper trading</Trans>,
         icon: <IconBase className='icon-paper-trading' />,
-        isComplete: !!paperTradingPublicData,
-        disabled: !paperTradingPublicData && !isStartingPaperTradingFrontend,
+        isComplete: !!paperTradingPublicData && isLogin,
+        disabled: (!paperTradingPublicData && !isStartingPaperTradingFrontend) || !isLogin,
         tooltipContent: <Trans>Please generate valid code (Step 2) before starting Paper Trading.</Trans>,
         description: <Trans>Start the simulator to see how it performs.</Trans>,
-        showTooltip: !paperTradingPublicData && !isStartingPaperTradingFrontend,
+        showTooltip: !paperTradingPublicData && !isStartingPaperTradingFrontend && isLogin,
         intervalDuration: 5000,
         isLoading: isStartingPaperTradingFrontend,
         clickCallback: handleTabClick(STRATEGY_TAB_INDEX.PAPER_TRADING),
@@ -123,10 +125,10 @@ export default memo(function TabList() {
         key: STRATEGY_TAB_INDEX.LAUNCH,
         text: <Trans>Launch</Trans>,
         icon: <IconBase className='icon-launch' />,
-        isComplete: status === STRATEGY_STATUS.DEPLOYED,
-        disabled: !paperTradingPublicData,
+        isComplete: status === STRATEGY_STATUS.DEPLOYED && isLogin,
+        disabled: !paperTradingPublicData || !isLogin,
         tooltipContent: <Trans>Comming soon</Trans>,
-        showTooltip: true,
+        showTooltip: isLogin,
         description: '',
         intervalDuration: 0,
         isLoading: false,
@@ -134,6 +136,7 @@ export default memo(function TabList() {
       },
     ]
   }, [
+    isLogin,
     strategy_config,
     codeGenerated,
     paperTradingPublicData,
@@ -171,7 +174,7 @@ export default memo(function TabList() {
   // 初始化或切换策略时，自动切换到最后一个已完成的 tab
   useEffect(() => {
     // 已锁定时不执行自动切换
-    if (isAutoSwitchLockedRef.current) return
+    if (isAutoSwitchLockedRef.current || !isLogin) return
 
     // 数据未加载完成时不执行
     if (!strategyDetail) return
@@ -188,7 +191,15 @@ export default memo(function TabList() {
       lastCompletedIndex = STRATEGY_TAB_INDEX.PAPER_TRADING
     }
     setCurrentStrategyTabIndex(lastCompletedIndex)
-  }, [strategyId, strategyDetail, codeGenerated, paperTradingPublicData, strategy_config, setCurrentStrategyTabIndex])
+  }, [
+    isLogin,
+    strategyId,
+    strategyDetail,
+    codeGenerated,
+    paperTradingPublicData,
+    strategy_config,
+    setCurrentStrategyTabIndex,
+  ])
 
   return (
     <TabListWrapper className='transparent-scroll-style' $isShowExpandPaperTrading={isShowExpand}>

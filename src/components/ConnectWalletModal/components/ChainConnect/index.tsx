@@ -17,17 +17,21 @@ import phantomIcon from 'assets/media/phantom.png'
 import walletConnectIcon from 'assets/media/wallet_connect.png'
 import coinbaseIcon from 'assets/media/coinbase.png'
 import okxIcon from 'assets/media/okx.png'
+// TODO: 后续替换为 Rabby 官方图标
+import rabbyIcon from 'assets/media/rabby.png'
 import { useSolanaWalletManagement } from 'store/home/hooks/useSolanaWalletManagement'
 import { useEVMWalletManagement } from 'store/home/hooks/useEVMWalletManagement'
 import { handleSignature } from 'utils'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useAppKitNetwork, useDisconnect } from '@reown/appkit/react'
+import { ConnectorController, ConnectorControllerUtil } from '@reown/appkit-controllers'
 import { solana } from '@reown/appkit/networks'
 import Pending from 'components/Pending'
-import { useIsGetAuthToken } from 'store/login/hooks'
+import { useIsGetAuthToken, useLoginStatus } from 'store/login/hooks'
+import { LOGIN_STATUS } from 'store/login/login'
 
 // 钱包类型定义
-type WalletType = 'metamask' | 'phantom' | 'walletConnect' | 'coinbase' | 'okx'
+type WalletType = 'metamask' | 'phantom' | 'walletConnect' | 'coinbase' | 'okx' | 'rabby'
 type ChainType = 'evm' | 'solana'
 
 // 钱包按钮配置
@@ -159,6 +163,9 @@ const PendingWrapper = styled.div`
   height: 100px;
 `
 
+// Rabby 钱包 ID
+const RABBY_WALLET_ID = '18388be9ac2d02726dbac9777c96efaac06d744b2f6d580fccdd4127a6d01fd1'
+
 export default memo(function ChainConnect({ className, oldWalletAddress, onSuccess, onError }: ChainConnectProps) {
   const [isGetAuthToken] = useIsGetAuthToken()
   const { loginWithWallet } = useWalletLogin()
@@ -185,6 +192,7 @@ export default memo(function ChainConnect({ className, oldWalletAddress, onSucce
   const toast = useToast()
   const theme = useTheme()
   const isMobile = useIsMobile()
+  const [, setLoginStatus] = useLoginStatus()
 
   // EVM 钱包登录处理
   const handleEVMWalletLogin = useCallback(
@@ -192,7 +200,7 @@ export default memo(function ChainConnect({ className, oldWalletAddress, onSucce
       try {
         // 生成签名消息
         const message = evmGetSignatureText()
-
+        setLoginStatus(LOGIN_STATUS.LOGINING)
         // 请求用户签名
         const signature = await evmSignMessage(`${message.chainType}:${message.timestamp}`)
 
@@ -218,7 +226,17 @@ export default memo(function ChainConnect({ className, oldWalletAddress, onSucce
         onError?.(error as Error)
       }
     },
-    [evmSignMessage, evmGetSignatureText, loginWithWallet, onSuccess, onError, toast, theme.black0, disconnect],
+    [
+      evmSignMessage,
+      evmGetSignatureText,
+      loginWithWallet,
+      onSuccess,
+      onError,
+      toast,
+      setLoginStatus,
+      theme.black0,
+      disconnect,
+    ],
   )
 
   // EVM 钱包绑定处理
@@ -403,13 +421,35 @@ export default memo(function ChainConnect({ className, oldWalletAddress, onSucce
   // 钱包连接处理函数
   const handleWalletConnect = useCallback(
     (walletType: WalletType, chainType: ChainType) => {
+      // Rabby 钱包通过 ConnectorController 直接连接
+      if (walletType === 'rabby') {
+        const rabbyConnector = ConnectorController.getConnector({
+          id: RABBY_WALLET_ID,
+          namespace: 'eip155',
+        })
+        if (rabbyConnector) {
+          ConnectorControllerUtil.connectExternal(rabbyConnector)
+        } else {
+          // 如果没有找到 Rabby connector，可能是用户未安装 Rabby 扩展
+          toast({
+            title: <Trans>Rabby wallet not found</Trans>,
+            description: <Trans>Please install Rabby wallet extension</Trans>,
+            status: TOAST_STATUS.ERROR,
+            typeIcon: 'icon-customize-avatar',
+            iconTheme: theme.black0,
+            autoClose: 3000,
+          })
+        }
+        return
+      }
+
       if (chainType === 'evm') {
-        evmConnect(walletType)
+        evmConnect(walletType as Exclude<WalletType, 'rabby'>)
       } else {
-        solanaConnect(walletType)
+        solanaConnect(walletType as Exclude<WalletType, 'rabby'>)
       }
     },
-    [evmConnect, solanaConnect],
+    [evmConnect, solanaConnect, toast, theme.black0],
   )
 
   // 获取按钮禁用状态
@@ -443,6 +483,14 @@ export default memo(function ChainConnect({ className, oldWalletAddress, onSucce
         },
         { id: 'evm-coinbase', name: 'Coinbase', icon: coinbaseIcon, walletType: 'coinbase', chainType: 'evm' },
         { id: 'evm-okx', name: 'OKX', icon: okxIcon, walletType: 'okx', chainType: 'evm' },
+        {
+          id: 'evm-rabby',
+          name: 'Rabby',
+          icon: rabbyIcon,
+          walletType: 'rabby',
+          chainType: 'evm',
+          hideOnMobile: true, // Rabby 只有桌面浏览器扩展版本
+        },
       ],
     },
     {

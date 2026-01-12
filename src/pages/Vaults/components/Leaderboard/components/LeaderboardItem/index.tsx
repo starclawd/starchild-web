@@ -4,7 +4,7 @@ import { StrategiesOverviewDataType } from 'api/strategy'
 import { Trans } from '@lingui/react/macro'
 import { formatPercent } from 'utils/format'
 import { isInvalidValue } from 'utils/calc'
-import Rank from '../Rank'
+import Rank, { RANK_TYPE } from '../Rank'
 
 const LeaderboardItemWrapper = styled.div`
   display: flex;
@@ -86,9 +86,6 @@ export default memo(function LeaderBoardItem({
   strategyData: StrategiesOverviewDataType
   rank: number
 }) {
-  const colorMap = useMemo(() => {
-    return ['#f90', '#888', '#AF3C1F']
-  }, [])
   const aprList = useMemo(() => {
     return [
       {
@@ -100,7 +97,7 @@ export default memo(function LeaderBoardItem({
   }, [strategyData])
   return (
     <LeaderboardItemWrapper className='leaderboard-item'>
-      <Rank isLeaderboard rank={rank} />
+      <Rank type={RANK_TYPE.LEADERBOARD} rank={rank} />
       <StrategyContent className='strategy-content'>
         <StrategyName className='strategy-name'>{strategyData.strategy_name}</StrategyName>
         <StrategyApr>

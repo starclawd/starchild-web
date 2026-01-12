@@ -151,6 +151,8 @@ export default memo(function TvfSection() {
   const { strategyInfo } = useStrategyInfo({ strategyId: strategyId || '' })
   const followStrategy = useFollowStrategy()
   const unfollowStrategy = useUnfollowStrategy()
+  const { fetchIsFollowed } = useIsFollowedStrategy({ strategyId: '' })
+  const { fetchStrategyInfo } = useStrategyInfo({ strategyId: '' })
   const toggleShareStrategyModal = useShareStrategyModalToggle()
   const [, setCurrentShareStrategyData] = useCurrentShareStrategyData()
   const tvf = useMemo(() => strategyInfo?.tvf || 0, [strategyInfo?.tvf])
@@ -168,12 +170,23 @@ export default memo(function TvfSection() {
       } else {
         await followStrategy(strategyId)
       }
+      await fetchIsFollowed(strategyId)
+      await fetchStrategyInfo(strategyId)
     } catch (err) {
       console.error('Follow strategy failed:', err)
     } finally {
       setIsLoading(false)
     }
-  }, [isLoading, strategyId, isFollowedStrategy, isLogin, unfollowStrategy, followStrategy])
+  }, [
+    isLoading,
+    strategyId,
+    isFollowedStrategy,
+    isLogin,
+    unfollowStrategy,
+    followStrategy,
+    fetchIsFollowed,
+    fetchStrategyInfo,
+  ])
   return (
     <TvfSectionWrapper>
       <TopContent>

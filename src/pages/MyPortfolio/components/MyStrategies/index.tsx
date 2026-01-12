@@ -344,7 +344,8 @@ export default memo(function MyStrategies() {
           (strategy) =>
             strategy.status === STRATEGY_STATUS.DRAFT ||
             strategy.status === STRATEGY_STATUS.DRAFT_READY ||
-            strategy.status === STRATEGY_STATUS.DEPLOYING,
+            strategy.status === STRATEGY_STATUS.DEPLOYING ||
+            strategy.status === STRATEGY_STATUS.PAPER_TRADING,
         )
       case STRATEGY_TAB_KEY.ARCHIVED:
         return strategies.filter(

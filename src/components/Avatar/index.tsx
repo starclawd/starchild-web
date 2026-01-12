@@ -54,6 +54,7 @@ const AVATAR_COLORS = {
 // 根容器样式
 const AvatarWrapper = styled.div<AvatarWrapperProps>`
   display: flex;
+  flex-shrink: 0;
   width: ${({ size }) => `${size}px`};
   height: ${({ size }) => `${size}px`};
   border-radius: 50%;
@@ -66,6 +67,7 @@ const AvatarImgWrapper = styled.div<AvatarWrapperProps>`
   height: ${({ size }) => `${size}px`};
   border-radius: 50%;
   overflow: hidden;
+  flex-shrink: 0;
 
   img {
     width: 100%;

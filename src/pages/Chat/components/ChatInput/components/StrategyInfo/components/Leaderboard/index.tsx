@@ -3,18 +3,21 @@ import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
 import { ROUTER } from 'pages/router'
 import LeaderboardItem from 'pages/Vaults/components/Leaderboard/components/LeaderboardItem'
-import { memo, useCallback, useMemo, useState } from 'react'
+import { memo, useCallback, useMemo } from 'react'
 import { useSetCurrentRouter } from 'store/application/hooks'
 import { useAllStrategiesOverview } from 'store/vaults/hooks'
-import styled from 'styled-components'
-import Pagination from '../Pagination'
+import styled, { css } from 'styled-components'
 import Pending from 'components/Pending'
+import { isInvalidValue } from 'utils/calc'
+import { formatPercent } from 'utils/format'
+import Rank, { RANK_TYPE } from 'pages/Vaults/components/Leaderboard/components/Rank'
+import { StrategiesOverviewDataType } from 'api/strategy'
 
 const LeaderboardWrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  justify-content: space-between;
   width: calc((100% - 12px) / 2);
   height: 100%;
   padding: 16px;
@@ -29,48 +32,33 @@ const LeaderboardWrapper = styled.div`
 `
 
 const Title = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  span:first-child {
-    font-size: 16px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 24px;
-    color: ${({ theme }) => theme.black0};
-  }
-  span:last-child {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 18px;
-    transition: all ${ANI_DURATION}s;
-    color: ${({ theme }) => theme.black200};
-    cursor: pointer;
-    .icon-arrow {
-      font-size: 18px;
-      transition: all ${ANI_DURATION}s;
-      color: ${({ theme }) => theme.black200};
-      transform: rotate(90deg);
-    }
-    &:hover {
-      color: ${({ theme }) => theme.black0};
-      .icon-arrow {
-        color: ${({ theme }) => theme.black0};
-      }
-    }
-  }
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+  color: ${({ theme }) => theme.black0};
 `
 
 const LeaderboardList = styled.div`
   display: flex;
+  flex-direction: column;
   flex-shrink: 0;
-  overflow: hidden;
-  width: 366px;
-  height: 88px;
+  width: 100%;
+  gap: 4px;
+`
+
+const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 16px;
+  padding-left: 22px;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 16px;
+  color: ${({ theme }) => theme.black300};
 `
 
 const PendingWrapper = styled.div`
@@ -81,28 +69,77 @@ const PendingWrapper = styled.div`
   height: 100%;
 `
 
-const ListWrapper = styled.div<{ $translateX: number }>`
+const ListWrapper = styled.div`
   display: flex;
-  width: auto;
-  height: 100%;
-  transform: translateX(${({ $translateX }) => $translateX}px);
-  transition: transform ${ANI_DURATION}s;
-  .leaderboard-item {
-    width: 366px;
-  }
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
 `
 
 const LeaderboardItemWrapper = styled.div`
-  width: 366px;
-  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 18px;
   cursor: pointer;
+  &:hover {
+    .strategy-name {
+      color: ${({ theme }) => theme.black0};
+    }
+  }
+`
+
+const LeftContent = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 7px;
+`
+
+const RightContent = styled.div<{ $isPositive: boolean; $invalidVaule: boolean }>`
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px;
+  ${({ $isPositive, theme }) =>
+    $isPositive &&
+    css`
+      color: ${$isPositive ? theme.green100 : theme.red100};
+    `}
+  ${({ $invalidVaule, theme }) =>
+    $invalidVaule &&
+    css`
+      color: ${theme.black300};
+    `}
+`
+
+const StrategyName = styled.div`
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px;
   transition: all ${ANI_DURATION}s;
+  color: ${({ theme }) => theme.black100};
+`
+
+const Footer = styled.div`
+  width: 100%;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px;
+  color: ${({ theme }) => theme.black200};
+  cursor: pointer;
+  text-align: right;
+  transition: all ${ANI_DURATION}s;
+  &:hover {
+    color: ${({ theme }) => theme.black0};
+  }
 `
 
 export default memo(function Leaderboard() {
   const setCurrentRouter = useSetCurrentRouter()
   const { allStrategies, isLoading } = useAllStrategiesOverview()
-  const [currentIndex, setCurrentIndex] = useState(0)
 
   const sortedStrategies = useMemo(() => {
     return allStrategies.slice(0, 3)
@@ -124,13 +161,7 @@ export default memo(function Leaderboard() {
   return (
     <LeaderboardWrapper>
       <Title>
-        <span>
-          <Trans>Leaderboard</Trans>
-        </span>
-        <span onClick={goVibePage}>
-          <Trans>View</Trans>
-          <IconBase className='icon-arrow' />
-        </span>
+        <Trans>Top Performing Strategies</Trans>
       </Title>
       <LeaderboardList>
         {isLoading ? (
@@ -138,16 +169,37 @@ export default memo(function Leaderboard() {
             <Pending />
           </PendingWrapper>
         ) : (
-          <ListWrapper $translateX={-currentIndex * 366}>
-            {sortedStrategies.map((strategy, index) => (
-              <LeaderboardItemWrapper onClick={goVaultDetailPage(strategy.strategy_id)} key={strategy.strategy_id}>
-                <LeaderboardItem strategyData={strategy} rank={index + 1} />
-              </LeaderboardItemWrapper>
-            ))}
-          </ListWrapper>
+          <>
+            <Header>
+              <span>
+                <Trans>Name</Trans>
+              </span>
+              <span>
+                <Trans>APR</Trans>
+              </span>
+            </Header>
+            <ListWrapper>
+              {sortedStrategies.map((strategy: StrategiesOverviewDataType, index: number) => (
+                <LeaderboardItemWrapper onClick={goVaultDetailPage(strategy.strategy_id)} key={strategy.strategy_id}>
+                  <LeftContent>
+                    <Rank type={RANK_TYPE.CHAT} rank={index + 1} />
+                    <StrategyName className='strategy-name'>{strategy.strategy_name}</StrategyName>
+                  </LeftContent>
+                  <RightContent
+                    $isPositive={Number(strategy.all_time_apr) > 0}
+                    $invalidVaule={isInvalidValue(strategy.all_time_apr)}
+                  >
+                    {!isInvalidValue(strategy.all_time_apr) ? formatPercent({ value: strategy.all_time_apr }) : '--'}
+                  </RightContent>
+                </LeaderboardItemWrapper>
+              ))}
+            </ListWrapper>
+          </>
         )}
       </LeaderboardList>
-      <Pagination currentIndex={currentIndex} setCurrentIndex={setCurrentIndex} total={sortedStrategies.length} />
+      <Footer onClick={goVibePage}>
+        <Trans>View more</Trans>
+      </Footer>
     </LeaderboardWrapper>
   )
 })

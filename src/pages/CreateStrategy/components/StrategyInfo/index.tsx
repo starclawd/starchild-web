@@ -12,7 +12,7 @@ import {
 import useParsedQueryString from 'hooks/useParsedQueryString'
 // import Restart from './components/Restart'
 import { useDeployment } from 'store/createstrategy/hooks/useDeployment'
-import { useUserInfo } from 'store/login/hooks'
+import { useIsLogin, useUserInfo } from 'store/login/hooks'
 import { STRATEGY_TAB_INDEX } from 'store/createstrategy/createstrategy'
 import StrategyName from './components/StrategyName'
 import ActionLayer from './components/ActionLayer'
@@ -45,6 +45,9 @@ const TopContent = styled.div<{ $isShowExpandPaperTrading: boolean }>`
   width: 100%;
   height: 260px;
   transition: all ${ANI_DURATION}s;
+  ${({ theme }) => theme.mediaMaxWidth.width1560`
+    height: 196px;
+  `}
   ${({ $isShowExpandPaperTrading }) =>
     $isShowExpandPaperTrading &&
     css`
@@ -59,9 +62,14 @@ const InnerContent = styled.div`
   flex-direction: column;
   flex-shrink: 0;
   width: 100%;
-  height: 224px;
+  height: 260px;
   padding: 40px;
   z-index: 2;
+  transition: all ${ANI_DURATION}s;
+  ${({ theme }) => theme.mediaMaxWidth.width1560`
+    height: 196px;
+    padding: 20px;
+  `}
 `
 
 const BottomContent = styled.div<{ $isShowExpandPaperTrading: boolean }>`
@@ -69,6 +77,9 @@ const BottomContent = styled.div<{ $isShowExpandPaperTrading: boolean }>`
   width: 100%;
   height: calc(100% - 260px);
   border-top: 1px solid ${({ theme }) => theme.black800};
+  ${({ theme }) => theme.mediaMaxWidth.width1440`
+    height: calc(100% - 196px);
+  `}
   ${({ $isShowExpandPaperTrading }) =>
     $isShowExpandPaperTrading &&
     css`
@@ -106,6 +117,7 @@ const TabContent = styled.div<{ $isActive: boolean }>`
 `
 
 export default memo(function StrategyInfo() {
+  const isLogin = useIsLogin()
   const [{ userInfoId }] = useUserInfo()
   const { strategyId } = useParsedQueryString()
   const { checkDeployStatus } = useDeployment(strategyId || '')
@@ -170,7 +182,7 @@ export default memo(function StrategyInfo() {
           <TabContent $isActive={currentStrategyTabIndex === STRATEGY_TAB_INDEX.PAPER_TRADING}>
             <PaperTrading />
           </TabContent>
-          {isShowGenerateCodeOperation && (
+          {isShowGenerateCodeOperation && isLogin && (
             <ActionLayer
               isLoading={isGeneratingCode}
               iconCls='icon-generate-code'
@@ -181,7 +193,7 @@ export default memo(function StrategyInfo() {
               clickCallback={() => handleGenerateCode(1)}
             />
           )}
-          {isShowPaperTradingOperation && (
+          {isShowPaperTradingOperation && isLogin && (
             <ActionLayer
               isLoading={isStartingPaperTrading}
               iconCls='icon-paper-trading'
@@ -190,7 +202,7 @@ export default memo(function StrategyInfo() {
               clickCallback={handleStartPaperTrading}
             />
           )}
-          {isShowLaunchOperation && (
+          {isShowLaunchOperation && isLogin && (
             <ActionLayer
               rightText={<Trans>View</Trans>}
               iconCls='icon-launch'

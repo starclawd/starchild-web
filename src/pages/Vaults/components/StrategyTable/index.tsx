@@ -6,6 +6,8 @@ import styled from 'styled-components'
 import Strategies from './components/Strategies'
 import { useSort, useSortableHeader, SortDirection } from 'components/TableSortableColumn'
 import { ANI_DURATION } from 'constants/index'
+import { IconBase } from 'components/Icons'
+import Tooltip from 'components/Tooltip'
 
 const StrategyTableWrapper = styled.div`
   display: flex;
@@ -59,17 +61,17 @@ const HeaderTable = styled.table`
   height: 38px;
   border-collapse: collapse;
   table-layout: fixed;
+  --name-column-width: 20%;
 
-  /* name 列响应式宽度 */
-  --name-column-width: 400px;
-
-  @media (max-width: 1440px) {
+  ${({ theme }) => theme.mediaMaxWidth.width1920`
     --name-column-width: 280px;
-  }
-
-  @media (max-width: 1280px) {
+  `}
+  ${({ theme }) => theme.mediaMaxWidth.width1440`
+    --name-column-width: 260px;
+  `}
+  ${({ theme }) => theme.mediaMaxWidth.width1280`
     --name-column-width: 240px;
-  }
+  `}
 `
 
 const HeaderRow = styled.tr`
@@ -106,24 +108,37 @@ const TableContent = styled.div`
   `}
 `
 
+const MaxDrawdown = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  .icon-circle-warning {
+    transition: all ${ANI_DURATION}s;
+    &:hover {
+      color: ${({ theme }) => theme.black0};
+    }
+  }
+`
+
+const TVF = styled(MaxDrawdown)``
+
 interface HeaderConfig {
   key: string
   title: ReactNode
   align?: 'left' | 'center' | 'right'
-  width: string
 }
 
 // 列宽配置 - header 和 body 共用
-// name 列使用 CSS 变量实现响应式，Snapshot 列固定 80px
+// name 列使用 CSS 变量实现响应式宽度
 export const COLUMN_WIDTHS = [
-  '4%', // #
-  'var(--name-column-width)', // name - 响应式宽度
-  'auto', // leader
-  '12%', // All time APR
-  '10%', // Age
-  '10%', // Max drawdown
-  '10%', // TVF
-  '10%', // Followers
+  '50px', // #
+  'var(--name-column-width)', // name - 响应式宽度，最小 280px
+  '200px', // leader
+  'auto', // All time APR - 自适应
+  'auto', // Age - 自适应
+  'auto', // Max drawdown - 自适应
+  'auto', // TVF - 自适应
+  'auto', // Followers - 自适应
   '80px', // Snapshot - 固定宽度
 ]
 
@@ -138,40 +153,37 @@ export default function StrategyTable() {
   }, [])
 
   const headers: HeaderConfig[] = [
-    { key: 'rank', title: '#', align: 'left', width: COLUMN_WIDTHS[0] },
-    { key: 'name', title: <Trans>Name</Trans>, align: 'left', width: COLUMN_WIDTHS[1] },
-    { key: 'leader', title: <Trans>Leader</Trans>, align: 'left', width: COLUMN_WIDTHS[2] },
-    {
-      key: 'allTimeApr',
-      title: createSortableHeader(<Trans>All time APR</Trans>, 'all_time_apr'),
-      align: 'left',
-      width: COLUMN_WIDTHS[3],
-    },
-    {
-      key: 'ageDays',
-      title: createSortableHeader(<Trans>Age(days)</Trans>, 'age_days'),
-      align: 'left',
-      width: COLUMN_WIDTHS[4],
-    },
+    { key: 'rank', title: '#', align: 'left' },
+    { key: 'name', title: <Trans>Name</Trans>, align: 'left' },
+    { key: 'leader', title: <Trans>Leader</Trans>, align: 'left' },
+    { key: 'allTimeApr', title: createSortableHeader(<Trans>All time APR</Trans>, 'all_time_apr'), align: 'left' },
+    { key: 'ageDays', title: createSortableHeader(<Trans>Age(days)</Trans>, 'age_days'), align: 'left' },
     {
       key: 'maxDrawdown',
-      title: createSortableHeader(<Trans>Max drawdown</Trans>, 'max_drawdown'),
+      title: createSortableHeader(
+        <MaxDrawdown onClick={(e) => e.stopPropagation()}>
+          <Tooltip placement='top' content={<Trans>The biggest drop from the peak. Lower means less risk.</Trans>}>
+            <Trans>Max drawdown</Trans>
+          </Tooltip>
+        </MaxDrawdown>,
+        'max_drawdown',
+      ),
       align: 'left',
-      width: COLUMN_WIDTHS[5],
     },
     {
       key: 'tvf',
-      title: createSortableHeader(<Trans>TVF</Trans>, 'tvf'),
+      title: createSortableHeader(
+        <TVF onClick={(e) => e.stopPropagation()}>
+          <Tooltip placement='top' content={<Trans>Total follower assets. Higher TVF means more interest.</Trans>}>
+            <Trans>TVF</Trans>
+          </Tooltip>
+        </TVF>,
+        'tvf',
+      ),
       align: 'left',
-      width: COLUMN_WIDTHS[6],
     },
-    {
-      key: 'followers',
-      title: createSortableHeader(<Trans>Followers</Trans>, 'followers'),
-      align: 'left',
-      width: COLUMN_WIDTHS[7],
-    },
-    { key: 'snapshot', title: <Trans>Snapshot</Trans>, align: 'right', width: COLUMN_WIDTHS[8] },
+    { key: 'followers', title: createSortableHeader(<Trans>Followers</Trans>, 'followers'), align: 'left' },
+    { key: 'snapshot', title: <Trans>Snapshot</Trans>, align: 'right' },
   ]
 
   return (

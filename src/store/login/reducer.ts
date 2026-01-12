@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { UserInfoData, AUTH_TOKEN_SESSION, LOGIN_STATUS } from './login.d'
+import { UserInfoData, AUTH_TOKEN_SESSION, LOGIN_STATUS, initialUserInfo } from './login.d'
 
 export interface LoginState {
   loginStatus: LOGIN_STATUS
@@ -13,33 +13,7 @@ const initialState: LoginState = {
   loginStatus: LOGIN_STATUS.LOGINING,
   authTokenSession: authTokenSession || '',
   isGetAuthToken: false,
-  userInfo: {
-    userInfoId: '',
-    aiChatKey: '',
-    evmAddress: '',
-    solanaAddress: '',
-    telegramUserId: '',
-    telegramUsername: '',
-    telegramAvatar: '',
-    telegramFirstName: '',
-    telegramLastName: '',
-    language: '',
-    inWhitelist: false,
-    burnAt: '',
-    email: '',
-    hasBindOrderly: false,
-    hasOrderlyPrivateKey: false,
-    hasVerifiedOrderly: false,
-    primaryLoginType: '',
-    walletType: '',
-    walletAddress: '',
-    secondaryWalletAddress: '',
-    secondaryWalletType: '',
-    userName: '',
-    userAvatar: '',
-    googleUserAvatar: '',
-    googleUserName: '',
-  },
+  userInfo: initialUserInfo,
 }
 
 export const loginSlice = createSlice({

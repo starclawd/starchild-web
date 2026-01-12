@@ -11,6 +11,7 @@ import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
 import { useIsLoadingChatStream } from 'store/createstrategy/hooks/useLoadingState'
+import { useIsLogin } from 'store/login/hooks'
 
 export const ContentItemWrapper = styled.div<{ role: ROLE_TYPE; $isEditStrategyContent?: boolean }>`
   display: flex;
@@ -203,6 +204,7 @@ export default memo(function ChatItem({
   data: ChatResponseContentDataType
   isLastChatResponseContent?: boolean
 }) {
+  const isLogin = useIsLogin()
   const responseContentRef = useRef<HTMLDivElement>(null)
   const { id, content, role, nextActions } = data
   const ContentItemWrapperRef = useRef<HTMLDivElement>(null)
@@ -274,7 +276,7 @@ export default memo(function ChatItem({
         {/* <DeepThink aiContentData={data} isTempAiContent={false} /> */}
         <Content ref={responseContentRef as any} role={role}>
           <Markdown>{content}</Markdown>
-          {actionData && (
+          {actionData && isLogin && (
             <NextActions>
               <span>{actionData.description}</span>
               <Action action={actionData} />

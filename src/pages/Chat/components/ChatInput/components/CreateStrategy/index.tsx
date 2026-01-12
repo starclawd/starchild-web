@@ -1,6 +1,6 @@
 import { ANI_DURATION } from 'constants/index'
 import ChatInput from 'pages/CreateStrategy/components/Chat/components/ChatInput'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 const CreateStrategyWrapper = styled.div`
   display: flex;
@@ -9,6 +9,11 @@ const CreateStrategyWrapper = styled.div`
   .chat-input-wrapper {
     padding: 0;
   }
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      width: 100%;
+    `}
 `
 
 export default function CreateStrategy() {

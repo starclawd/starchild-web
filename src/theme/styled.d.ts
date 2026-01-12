@@ -97,6 +97,7 @@ export interface Theme {
   brand100: Color
   brand200: Color
   brand300: Color
+  thinkingGradient: Color
 }
 
 declare module 'styled-components' {

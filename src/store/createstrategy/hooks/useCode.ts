@@ -12,7 +12,7 @@ import {
 } from '../reducer'
 import { useGetStrategyCodeQuery } from 'api/createStrategy'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import { useUserInfo } from 'store/login/hooks'
+import { useIsLogin, useUserInfo } from 'store/login/hooks'
 import { ParamFun } from 'types/global'
 import { useStrategyDetail } from './useStrategyDetail'
 import { useSendChatUserContent } from './useStream'
@@ -36,13 +36,14 @@ export function useGenerateStrategyCode() {
 
 export function useStrategyCode({ strategyId }: { strategyId: string }) {
   const dispatch = useDispatch()
+  const isLogin = useIsLogin()
   const [{ userInfoId }] = useUserInfo()
   const strategyCode = useSelector((state: RootState) => state.createstrategy.strategyCode)
   const isLoadingStrategyCode = useSelector((state: RootState) => state.createstrategy.isLoadingStrategyCode)
   const { data, isLoading, error, refetch } = useGetStrategyCodeQuery(
     { strategyId },
     {
-      skip: !strategyId || !userInfoId,
+      skip: !strategyId || !userInfoId || !isLogin,
       refetchOnMountOrArgChange: true,
     },
   )

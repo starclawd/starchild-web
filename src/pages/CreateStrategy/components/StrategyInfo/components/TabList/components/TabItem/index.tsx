@@ -10,6 +10,7 @@ import Loading from '../Loading'
 import { usePaperTradingPublic } from 'store/vaultsdetail/hooks/usePaperTradingPublic'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import StrategyStatus from 'pages/VaultDetail/components/VaultInfo/components/StrategyStatus'
+import { useIsLogin } from 'store/login/hooks'
 
 const TabItemWrapper = styled.div<{ $isActive: boolean; $disabled: boolean }>`
   position: relative;
@@ -50,6 +51,9 @@ const TabItemWrapper = styled.div<{ $isActive: boolean; $disabled: boolean }>`
     line-height: 28px;
     transition: all ${ANI_DURATION}s;
     color: ${({ theme }) => theme.black300};
+    .tab-item-title-text {
+      white-space: nowrap;
+    }
   }
   .tab-item-description {
     font-size: 14px;
@@ -114,6 +118,7 @@ export interface TabData {
 }
 
 export default memo(function TabItem({ tab }: { tab: TabData }) {
+  const isLogin = useIsLogin()
   const theme = useTheme()
   const { strategyId } = useParsedQueryString()
   const [loadingPercent, setLoadingPercent] = useState(0)
@@ -142,8 +147,8 @@ export default memo(function TabItem({ tab }: { tab: TabData }) {
           {icon}
           <span className='tab-item-text'>
             <span className='tab-item-title'>
-              {text}
-              {key === STRATEGY_TAB_INDEX.PAPER_TRADING && paperTradingPublicData && (
+              <span className='tab-item-title-text'>{text}</span>
+              {key === STRATEGY_TAB_INDEX.PAPER_TRADING && paperTradingPublicData && isLogin && (
                 <StrategyStatus status={paperTradingPublicData.status} />
               )}
             </span>
