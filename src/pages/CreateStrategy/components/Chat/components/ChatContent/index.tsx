@@ -310,14 +310,6 @@ export default memo(function ChatContent() {
     }
   }, [userInfoId, strategyId, isLoadingChatStream, preStrategyId, triggerGetStrategyChatContents])
 
-  useEffect(() => {
-    if (isLogout) {
-      setChatResponseContentList([])
-      setPrevContentLength(0) // 重置内容长度
-      setIsInitializing(false) // 重置初始化状态
-      setIsUserScrolling(false) // 重置用户滚动状态
-    }
-  }, [isLogout, setChatResponseContentList])
   return (
     <ChatContentWrapper className='chat-content-wrapper'>
       <ContentInner ref={contentInnerRef as any} className='scroll-style'>
