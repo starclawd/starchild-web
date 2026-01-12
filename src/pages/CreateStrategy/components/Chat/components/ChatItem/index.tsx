@@ -226,7 +226,7 @@ export default memo(function ChatItem({
     if (isShowPaperTradingOperationWithoutTab) {
       return nextActions.find((action) => action.action_type === ACTION_TYPE.START_PAPER_TRADING)
     }
-    // mainnet limited
+    // mainnet limit
     if (isShowLaunchOperationWithoutTab && !isPro) {
       return nextActions.find((action) => action.action_type === ACTION_TYPE.DEPLOY_LIVE)
     }

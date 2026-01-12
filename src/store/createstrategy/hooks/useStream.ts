@@ -23,6 +23,7 @@ import { useCurrentStrategyTabIndex, useIsCreateStrategy, useStrategyDetail } fr
 import { useCodeLoadingPercent, useIsGeneratingCode, useStrategyCode } from './useCode'
 import { useIsPausingPaperTrading, useIsStartingPaperTrading } from './usePaperTrading'
 import { usePaperTradingPublic } from 'store/vaultsdetail/hooks/usePaperTradingPublic'
+import { t } from '@lingui/core/macro'
 
 export function useCloseStream() {
   return useCallback(() => {
@@ -387,7 +388,7 @@ export function useSendChatUserContent() {
         setValue('')
         await getStreamData({
           strategyId: strategyId || '',
-          userValue: strategyId ? value : `Create Strategy: ${value}`,
+          userValue: strategyId ? value : `Create strategy: ${value}`,
         })
         setIsLoadingChatStream(false)
       } catch (error) {

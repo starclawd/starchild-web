@@ -225,7 +225,9 @@ export default memo(function MyStrategy() {
                 <StrategyItem key={strategy.strategy_id}>
                   <StrategyName>{strategy.strategy_name}</StrategyName>
                   <AprItem $emptyVaule={!strategy.all_time_apr}>
-                    <span>All-time APR:</span>
+                    <span>
+                      <Trans>All-time APR:</Trans>
+                    </span>
                     <span>{strategy.all_time_apr ? formatPercent({ value: strategy.all_time_apr }) : '--'}</span>
                   </AprItem>
                 </StrategyItem>

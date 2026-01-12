@@ -27,23 +27,17 @@ const StrategyTbody = styled.tbody`
     transition: background-color ${ANI_DURATION}s;
   }
 
-  ${({ theme }) =>
-    theme.isMobile
-      ? css`
-          &:active tr td {
-            background-color: ${theme.black900};
-          }
-        `
-      : css`
-          &:hover tr td {
-            background-color: ${theme.black800};
-            .vibe-wrapper {
-              span:last-child {
-                color: ${theme.black0};
-              }
-            }
-          }
-        `}
+  &:hover tr td {
+    background-color: ${({ theme }) => theme.black800};
+    .follow-button {
+      display: flex;
+    }
+    .vibe-wrapper {
+      span:last-child {
+        color: ${({ theme }) => theme.black0};
+      }
+    }
+  }
 `
 
 const DataRow = styled.tr`
@@ -184,11 +178,6 @@ const FollowWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  &:hover {
-    .follow-button {
-      display: flex;
-    }
-  }
 `
 
 const BoostIcon = styled.span`

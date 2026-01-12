@@ -61,7 +61,7 @@ export default function Language() {
             title: <Trans>Success</Trans>,
             description: <Trans>Language switched successfully</Trans>,
             status: TOAST_STATUS.SUCCESS,
-            typeIcon: 'icon-chat-complete',
+            typeIcon: 'icon-complete',
             iconTheme: theme.black0,
             autoClose: 3000,
           })
