@@ -76,8 +76,8 @@ const VaultsWalletConnect = memo(({ mode = WALLET_CONNECT_MODE.SHRINK }: VaultsW
 
   const handleDisconnect = useCallback(async () => {
     try {
-      setAuthToken('')
       await disconnect()
+      setAuthToken('')
       window.location.reload()
     } catch (error) {
       console.error('断开钱包失败:', error)

@@ -166,10 +166,7 @@ const DeepThinkContent = styled.div<{ $isShowRightContent: boolean; $shouldExpan
 `
 
 export default function Chat() {
-  const isLogout = useIsLogout()
   const [agentDetailData] = useAgentDetailData()
-  const [, setIsChatPageLoaded] = useIsChatPageLoaded()
-  const [hasLoadThreadsList] = useHasLoadThreadsList()
   const [isShowDeepThink] = useIsShowDeepThink()
   const [isShowAgentDetail] = useIsShowAgentDetail()
   const [showHistory, setShowHistory] = useShowHistory()
@@ -190,10 +187,6 @@ export default function Chat() {
   }, [agentId, agentDetailData.task_type])
 
   useEffect(() => {
-    setIsChatPageLoaded(hasLoadThreadsList || isLogout)
-  }, [hasLoadThreadsList, isLogout, setIsChatPageLoaded])
-
-  useEffect(() => {
     if (threadId) {
       setCurrentAiThreadId(threadId)
       setCurrentRouter(ROUTER.CHAT)
@@ -205,7 +198,7 @@ export default function Chat() {
       <InnerChatWrapper>
         <LeftContent />
         <ChatContent $showHistory={showHistory} className='right-content'>
-          {hasLoadThreadsList || isLogout ? <FileDrag /> : <Pending isNotButtonLoading />}
+          <FileDrag />
         </ChatContent>
         <Empty />
         <DeepThinkContent $shouldExpandRightSection={shouldExpandRightSection} $isShowRightContent={isShowRightContent}>

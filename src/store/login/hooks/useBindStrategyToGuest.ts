@@ -8,7 +8,7 @@ import { useGuestUser } from 'store/logincache/hooks'
  */
 export function useBindStrategyToGuest() {
   const [triggerBindStrategyToGuest] = useLazyBindStrategyToGuestQuery()
-  const [guestUser] = useGuestUser()
+  const [guestUser, , clearGuestUserData] = useGuestUser()
 
   /**
    * 绑定访客策略到登录用户
@@ -18,6 +18,7 @@ export function useBindStrategyToGuest() {
   const bindStrategyToGuest = useCallback(
     async (userInfoId: string) => {
       if (!guestUser) {
+        console.log('🔗 No guest user to bind')
         return null
       }
 
@@ -28,13 +29,20 @@ export function useBindStrategyToGuest() {
           guestApiKey: guestUser.account_api_key,
         })
 
+        console.log('🔗 bindStrategyToGuest result', result)
+
+        // 绑定成功后清除访客信息
+        if (result.data?.status === 'success') {
+          clearGuestUserData()
+        }
+
         return result
       } catch (error) {
         console.error('绑定访客信息失败:', error)
         throw error
       }
     },
-    [guestUser, triggerBindStrategyToGuest],
+    [guestUser, triggerBindStrategyToGuest, clearGuestUserData],
   )
 
   return bindStrategyToGuest

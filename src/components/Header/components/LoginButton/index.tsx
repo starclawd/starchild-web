@@ -129,8 +129,8 @@ export default function LoginButton() {
   const { disconnect } = useDisconnect()
   const toggleConnectWalletModal = useConnectWalletModalToggle()
   const logout = useCallback(async () => {
-    setAuthToken('')
     await disconnect()
+    setAuthToken('')
     window.location.reload()
   }, [setAuthToken, disconnect])
 
