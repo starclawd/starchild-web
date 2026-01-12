@@ -1,7 +1,7 @@
 import { IconBase } from 'components/Icons'
 import { memo, useMemo } from 'react'
 import styled from 'styled-components'
-import { STARCHILD_BOT, URL, X } from 'utils/url'
+import { URL, X } from 'utils/url'
 import { ANI_DURATION } from 'constants/index'
 
 const SocialWrapper = styled.div`
@@ -37,18 +37,13 @@ export default memo(function Social() {
     return [
       {
         key: 'telegram',
-        href: URL[STARCHILD_BOT],
+        href: '',
         icon: 'icon-telegram',
       },
       {
         key: 'x',
         href: URL[X],
         icon: 'icon-x',
-      },
-      {
-        key: 'discord',
-        href: '',
-        icon: 'icon-discord',
       },
     ]
   }, [])

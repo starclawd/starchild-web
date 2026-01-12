@@ -12,6 +12,7 @@ import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
 import { useIsLoadingChatStream } from 'store/createstrategy/hooks/useLoadingState'
 import { useIsLogin } from 'store/login/hooks'
+import { isPro } from 'utils/url'
 
 export const ContentItemWrapper = styled.div<{ role: ROLE_TYPE; $isEditStrategyContent?: boolean }>`
   display: flex;
@@ -225,7 +226,8 @@ export default memo(function ChatItem({
     if (isShowPaperTradingOperationWithoutTab) {
       return nextActions.find((action) => action.action_type === ACTION_TYPE.START_PAPER_TRADING)
     }
-    if (isShowLaunchOperationWithoutTab) {
+    // mainnet limited
+    if (isShowLaunchOperationWithoutTab && !isPro) {
       return nextActions.find((action) => action.action_type === ACTION_TYPE.DEPLOY_LIVE)
     }
   }, [

@@ -3,7 +3,7 @@ import { vm } from 'pages/helper'
 import { ANI_DURATION } from 'constants/index'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
-import { useIsLogout, useUserInfo } from 'store/login/hooks'
+import { useUserInfo } from 'store/login/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { useIsAnalyzeContent, useIsLoadingChatStream } from 'store/createstrategy/hooks/useLoadingState'
@@ -97,7 +97,6 @@ const ScrollDownArrow = styled(BorderAllSide1PxBox)<{ $show: boolean }>`
 `
 
 export default memo(function ChatContent() {
-  const isLogout = useIsLogout()
   const theme = useTheme()
   const [{ userInfoId }] = useUserInfo()
   const [isLoadingChatStream] = useIsLoadingChatStream()

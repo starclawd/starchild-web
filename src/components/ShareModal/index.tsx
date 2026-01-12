@@ -20,6 +20,7 @@ import html2canvas from 'html2canvas'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import Pending from 'components/Pending'
 import useCopyContent from 'hooks/useCopyContent'
+import { t } from '@lingui/core/macro'
 
 const ShareModalWrapper = styled.div`
   display: flex;
@@ -262,7 +263,7 @@ export default memo(function ShareModal() {
   const vibe = currentShareStrategyData?.vibe || ''
   const strategyName = currentShareStrategyData?.strategy_name
   const shareUrl = useMemo(() => {
-    return `${starchildDomain['frontendPageDomain']}/${ROUTER.VAULT_DETAIL}?strategyId=${currentShareStrategyData?.strategy_id}`
+    return `${starchildDomain['frontendPageDomain']}${ROUTER.VAULT_DETAIL}?strategyId=${currentShareStrategyData?.strategy_id}`
   }, [currentShareStrategyData?.strategy_id])
   const infoList = useMemo(() => {
     return [
@@ -403,13 +404,15 @@ export default memo(function ShareModal() {
 
   // 分享到 Telegram
   const handleShareToTelegram = useCallback(() => {
-    const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}`
+    const shareText = t`Vibe more, earn more on Starchild.`
+    const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`
     window.open(telegramUrl, '_blank')
   }, [shareUrl])
 
   // 分享到 X (Twitter)
   const handleShareToX = useCallback(() => {
-    const xUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}`
+    const shareText = t`Vibe more, earn more on Starchild.`
+    const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`
     window.open(xUrl, '_blank')
   }, [shareUrl])
 
@@ -464,7 +467,7 @@ export default memo(function ShareModal() {
               <CopyWrapper $isLoading={isCopying} onClick={handleCopyLink}>
                 {isCopying ? <Pending /> : <IconBase className='icon-copy' />}
                 <span>
-                  <Trans>Copy link</Trans>
+                  <Trans>Copy</Trans>
                 </span>
               </CopyWrapper>
             </FooterLeft>

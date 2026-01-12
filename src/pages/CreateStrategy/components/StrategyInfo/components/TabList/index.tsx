@@ -14,6 +14,7 @@ import { ANI_DURATION } from 'constants/index'
 import TabItem from './components/TabItem'
 import { usePaperTradingPublic } from 'store/vaultsdetail/hooks/usePaperTradingPublic'
 import { useIsLogin } from 'store/login/hooks'
+import { isPro } from 'utils/url'
 
 const TabListWrapper = styled.div<{ $isShowExpandPaperTrading: boolean }>`
   display: flex;
@@ -126,8 +127,10 @@ export default memo(function TabList() {
         text: <Trans>Launch</Trans>,
         icon: <IconBase className='icon-launch' />,
         isComplete: status === STRATEGY_STATUS.DEPLOYED && isLogin,
-        disabled: !paperTradingPublicData || !isLogin,
-        tooltipContent: <Trans>Comming soon</Trans>,
+        // mainnet limited
+        disabled: !paperTradingPublicData || !isLogin || isPro,
+        // mainnet limited
+        tooltipContent: isPro ? <Trans>Comming soon</Trans> : '',
         showTooltip: isLogin,
         description: '',
         intervalDuration: 0,

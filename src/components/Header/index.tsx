@@ -15,6 +15,7 @@ import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import LoginButton from './components/LoginButton'
 import Language from './components/Language'
 import Tooltip from 'components/Tooltip'
+import { isPro } from 'utils/url'
 
 const HeaderWrapper = styled.header<{
   $isFixMenu: boolean
@@ -99,7 +100,7 @@ const NavTabs = styled.div`
   gap: 20px;
 `
 
-const NavTab = styled.div<{ $active: boolean; $key: string }>`
+const NavTab = styled.div<{ $active: boolean; $key: string; $disabled: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -125,6 +126,11 @@ const NavTab = styled.div<{ $active: boolean; $key: string }>`
     $active &&
     css`
       color: ${theme.black0};
+    `}
+  ${({ $disabled, theme }) =>
+    $disabled &&
+    css`
+      cursor: not-allowed;
     `}
 `
 
@@ -284,8 +290,10 @@ export const Header = () => {
         text: <Trans>My</Trans>,
         icon: <IconBase className='icon-menu-my' />,
         value: ROUTER.MY_PORTFOLIO,
-        tooltip: <Trans>Coming soon</Trans>,
-        clickCallback: goOtherPage,
+        // mainnet limited
+        tooltip: isPro ? <Trans>Coming soon</Trans> : <Trans>My portfolio</Trans>,
+        // mainnet limited
+        clickCallback: isPro ? undefined : goOtherPage,
       },
     ]
   }, [goOtherPage])
@@ -352,7 +360,8 @@ export const Header = () => {
                   <NavTab
                     $key={key}
                     $active={isActive}
-                    onClick={() => clickCallback(value)}
+                    $disabled={!clickCallback}
+                    onClick={() => clickCallback?.(value)}
                     onMouseEnter={() => handleNavTabHover(key)}
                     onMouseLeave={() => (isInNavTabRef.current = false)}
                   >

@@ -5,26 +5,7 @@ import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import { ThemeProvider } from 'theme/ThemeProvider'
 import { Header } from 'components/Header'
-import {
-  ROUTER,
-  Mobile,
-  Chat,
-  MyVault,
-  Connect,
-  MyAgent,
-  AgentDetail,
-  DemoPage,
-  AgentRoutes,
-  // UseCases,
-  Documents,
-  Vaults,
-  VaultDetail,
-  MyStrategy,
-  CreateStrategy,
-  LiveChat,
-  Signals,
-  MyPortfolio,
-} from 'pages/router'
+import { ROUTER, Mobile, Chat, DemoPage, Vaults, VaultDetail, CreateStrategy, MyPortfolio } from 'pages/router'
 import {
   useCurrentRouter,
   useSetCurrentRouter,
@@ -54,7 +35,7 @@ import { useIsOpenFullScreen } from 'store/chat/hooks'
 import { trackEvent } from 'utils/common'
 import { useIsFixMenu } from 'store/headercache/hooks'
 import useWindowVisible from 'hooks/useWindowVisible'
-import { isLocalEnv } from 'utils/url'
+import { isLocalEnv, isPro } from 'utils/url'
 import { CreateAgentModal } from './MyAgent/components/CreateModal'
 import { ApplicationModal } from 'store/application/application'
 import { TgLogin } from 'components/Header/components/TgLogin'
@@ -75,7 +56,6 @@ import { STRATEGY_SIGNAL_SUB_ID, STRATEGY_SIGNAL_UNSUB_ID } from 'store/websocke
 import PromptModal from './CreateStrategy/components/Chat/components/PromptModal'
 import ShareModal from 'components/ShareModal'
 import { useGenerateGuestUser } from 'store/login/hooks/useGenerateGuestUser'
-import { useBindStrategyToGuest } from 'store/login/hooks/useBindStrategyToGuest'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -316,31 +296,11 @@ function App() {
                 <Suspense fallback={<RouteLoading />}>
                   <Routes>
                     <Route path={ROUTER.CHAT} element={<Chat />} />
-                    <Route path={ROUTER.SIGNALS} element={<Signals />} />
-                    <Route path={ROUTER.LIVECHAT} element={<LiveChat />} />
-                    <Route path='/agentmarket/*' element={<AgentRoutes />} />
-                    {/* Redirect /agenthub/* to /agentmarket/* */}
-                    <Route
-                      path='/agenthub/*'
-                      element={<Navigate to={pathname.replace('/agenthub', '/agentmarket')} replace />}
-                    />
-                    <Route path={ROUTER.MY_SIGNALS} element={<MyAgent />} />
-                    <Route
-                      path='/myagent'
-                      element={<Navigate to={pathname.replace('/myagent', '/myagents')} replace />}
-                    />
-                    <Route path={ROUTER.MY_VAULT} element={<MyVault />} />
-                    <Route path={ROUTER.CONNECT} element={<Connect />} />
-                    {/* <Route path={ROUTER.USE_CASES} element={<UseCases />} /> */}
-                    <Route path={ROUTER.DOCUMENTS} element={<Documents />} />
                     <Route path={ROUTER.VAULTS} element={<Vaults />} />
                     <Route path={ROUTER.VAULT_DETAIL} element={<VaultDetail />} />
-                    <Route path={ROUTER.BACK_TEST} element={<AgentDetail />} />
-                    <Route path={ROUTER.TASK_DETAIL} element={<AgentDetail />} />
-                    <Route path={ROUTER.AGENT_DETAIL} element={<AgentDetail />} />
                     <Route path={ROUTER.CREATE_STRATEGY} element={<CreateStrategy />} />
-                    <Route path={ROUTER.MY_STRATEGY} element={<MyStrategy />} />
-                    <Route path={ROUTER.MY_PORTFOLIO} element={<MyPortfolio />} />
+                    {/* mainnet limited */}
+                    {!isPro && <Route path={ROUTER.MY_PORTFOLIO} element={<MyPortfolio />} />}
                     {isLocalEnv && <Route path={ROUTER.DEMO} element={<DemoPage />} />}
                     <Route path='*' element={<Navigate to={ROUTER.CHAT} replace />} />
                   </Routes>

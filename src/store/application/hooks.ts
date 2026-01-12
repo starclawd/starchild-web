@@ -20,10 +20,13 @@ import { useNavigate } from 'react-router-dom'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useLazyGetCoinIdQuery } from 'api/coinmarket'
 import { useCandidateStatus } from 'store/home/hooks'
+import { isPro } from 'utils/url'
 
 export function useIsMobile(): boolean {
   const { width } = useWindowSize()
   const isMobile = !!(width && width < MEDIA_WIDTHS.width1024)
+  // mainnet limited
+  if (isPro) return false
   return isMobile
 }
 
