@@ -249,6 +249,7 @@ const StrategyItem = memo(({ record, rowIndex }: StrategyItemProps) => {
 
   // 计算派生数据
   const vibe = record.vibe
+  const vibeTitle = record.vibe_title || ''
   const rankIndex = rowIndex + 1
   const tvf = record.tvf || 0
   const followers = record.followers || 0
@@ -358,7 +359,7 @@ const StrategyItem = memo(({ record, rowIndex }: StrategyItemProps) => {
         <TagsCell />
         <TagsCell colSpan={columnCount - 1}>
           <VibeWrapper className='vibe-wrapper'>
-            <span>Just for test</span>
+            <span>{vibeTitle || '--'}</span>
             <Divider height={1} length={18} color={theme.black600} vertical paddingHorizontal={8} />
             <span>"{vibe || '--'}"</span>
           </VibeWrapper>

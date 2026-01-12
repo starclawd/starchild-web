@@ -159,9 +159,10 @@ export default memo(function VaultInfo() {
   const vaultId = useCurrentVaultId()
   const { strategyInfo } = useStrategyInfo({ strategyId: strategyId || null })
   const { paperTradingPublicData } = usePaperTradingPublic({ strategyId: strategyId || '' })
-  const [vibe, strategyName, userName, userAvatar] = useMemo(() => {
+  const [vibe, vibeTitle, strategyName, userName, userAvatar] = useMemo(() => {
     return [
       strategyInfo?.vibe || '',
+      strategyInfo?.vibe_title || '',
       strategyInfo?.strategy_name || '--',
       strategyInfo?.user_info?.user_name || '',
       strategyInfo?.user_info?.user_avatar || '',
@@ -216,7 +217,7 @@ export default memo(function VaultInfo() {
                 <StrategyStatus status={paperTradingPublicData?.status} />
               </RightStatuswrapper>
             </HeaderTop>
-            <VibeItem vibe={vibe} />
+            <VibeItem vibe={vibe} vibeTitle={vibeTitle || ''} />
           </VaultHeader>
 
           <TabsWrapper>

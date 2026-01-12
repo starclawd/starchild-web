@@ -121,6 +121,7 @@ export interface StrategyDetailDataType {
   created_at: number
   updated_at: number
   vibe: string | null
+  vibe_title: string | null
   signal: {
     id: string
     name: string

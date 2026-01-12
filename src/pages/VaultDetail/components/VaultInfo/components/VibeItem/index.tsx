@@ -23,10 +23,10 @@ const VibeWrapper = styled.div`
     }
   }
 `
-export default memo(function VibeItem({ vibe }: { vibe: string }) {
+export default memo(function VibeItem({ vibe, vibeTitle }: { vibe: string; vibeTitle: string }) {
   return (
     <VibeWrapper>
-      <span>Just for test</span>
+      <span>{vibeTitle || '--'}</span>
       <span>"{vibe || '--'}"</span>
     </VibeWrapper>
   )

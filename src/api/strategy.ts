@@ -237,6 +237,7 @@ export type StrategiesOverviewDataType = {
   status: STRATEGY_STATUS
   mode: string
   vibe: string | null
+  vibe_title: string | null
   s24h: { t: number; b: number }[]
   followers: number
   tvf: number

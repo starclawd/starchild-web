@@ -147,8 +147,8 @@ export default memo(function StrategyName({
   const [isTyping, setIsTyping] = useState(false)
   const prevNamePropRef = useRef(nameProp)
 
-  const vibe = useMemo(() => {
-    return strategyDetail?.vibe
+  const [vibe, vibeTitle] = useMemo(() => {
+    return [strategyDetail?.vibe, strategyDetail?.vibe_title]
   }, [strategyDetail])
 
   // 计算字符长度：中文算2个字符，英文算1个字符
@@ -315,7 +315,7 @@ export default memo(function StrategyName({
           )}
         </StrategyTitle>
         <StrategyDescription>
-          <VibeItem vibe={vibe || ''} />
+          <VibeItem vibe={vibe || ''} vibeTitle={vibeTitle || ''} />
         </StrategyDescription>
       </NameContent>
     </StrategyNameWrapper>
