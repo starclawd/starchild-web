@@ -228,7 +228,7 @@ msgstr "请先完成第1步策略定义。"
 #: src/pages/Vaults/components/StrategyTable/index.tsx:178
 #: src/components/ShareModal/index.tsx:281
 msgid "TVF"
-msgstr "跟投金额 (TVF)"
+msgstr "粉丝金额"
 
 #: src/pages/Home/components/HomeContent/components/AccessButton/index.tsx:27
 #~ msgid "Get access"
@@ -399,13 +399,9 @@ msgstr "我的基金代理人"
 msgid "Total trades"
 msgstr "总交易"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:200
-msgid "Search by vault address, name or leader..."
-msgstr "通过金库地址、名称或Leader搜索……"
-
 #: src/components/ErrorBoundary/index.tsx:122
 msgid "Oops! Something went wrong!"
-msgstr "糟糕！ 出了些问题"
+msgstr "糟糕！出了些问题"
 
 #: src/components/Header/components/MenuContent/components/MyAgent/index.tsx:235
 #: src/components/Header/components/MenuContent/components/Insights/index.tsx:175
@@ -418,7 +414,7 @@ msgstr "已上线"
 
 #: src/pages/Vaults/components/StrategyTable/index.tsx:158
 msgid "Leader"
-msgstr "领航者"
+msgstr "创建人"
 
 #: src/pages/MyAgent/components/MyAgentsOverview/components/EmptyOverview/index.tsx:194
 msgid "You haven't subscribed to any agents yet."
@@ -760,7 +756,7 @@ msgstr "没有数据"
 #: src/pages/MyPortfolio/components/MyStrategies/index.tsx:397
 #: src/pages/MyPortfolio/components/MyStrategies/components/VaultDetail/index.tsx:129
 msgid "All-time APR"
-msgstr "历史年化回报率"
+msgstr "年化回报率"
 
 #: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:208
 msgid "Pause Failed"
@@ -1149,7 +1145,7 @@ msgstr "安全性"
 #: src/pages/MyPortfolio/components/MyVaults/index.tsx:222
 #: src/components/ShareModal/index.tsx:272
 msgid "All time APR"
-msgstr "历史年化收益率"
+msgstr "年化收益率"
 
 #: src/pages/MyAgent/components/CreateModal/index.tsx:229
 msgid "Agent has been successfully updated"
@@ -1254,7 +1250,7 @@ msgstr "热门"
 
 #: src/components/ShareModal/index.tsx:448
 msgid "Vibe more, Earn more"
-msgstr "多共振，多收益"
+msgstr "Vibe more, Earn more"
 
 #: src/pages/VaultDetail/components/StrategyRadarChart/index.tsx:124
 msgid "Profit"
@@ -1283,7 +1279,7 @@ msgstr "杠杆"
 
 #: src/pages/Vaults/index.tsx:93
 msgid "Vibe more, earn more."
-msgstr "共振多收益。"
+msgstr "Vibe more, earn more."
 
 #: src/components/AgentShare/index.tsx:298
 #~ msgid "Copy Successful"
@@ -1702,7 +1698,7 @@ msgstr "运行"
 #: src/pages/Vaults/components/Leaderboard/components/LeaderboardItem/index.tsx:93
 #: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:229
 msgid "All-time APR:"
-msgstr "历史年化："
+msgstr "年化收益率："
 
 #: src/pages/Chat/components/AiThreadsList/index.tsx:305
 #: src/pages/Chat/components/AiThreadsList/components/ThreadItem/index.tsx:217
@@ -2071,7 +2067,7 @@ msgstr "有哪个交易所的多头头寸或空头头寸突然激增？"
 #: src/pages/MyPortfolio/components/MyVaults/index.tsx:257
 #: src/pages/MyPortfolio/components/MyStrategies/index.tsx:431
 msgid "Age(days)"
-msgstr "存续天数"
+msgstr "年龄(天)"
 
 #: src/components/AgentShare/index.tsx:543
 msgid "Stop staring at charts. Deploy agents instead."
@@ -2225,7 +2221,7 @@ msgstr "价格"
 
 #: src/pages/Vaults/components/StrategyTable/index.tsx:177
 msgid "Total follower assets. Higher TVF means more interest."
-msgstr "所有跟随者的总资产，TVF越高代表越受欢迎。"
+msgstr "所有关注者的总资产，TVF越高代表越受欢迎。"
 
 #: src/pages/UseCases/components/ChatContent/DeepThinkDetail/index.tsx:102
 #: src/pages/UseCases/components/ChatContent/DeepThink/index.tsx:220
@@ -2935,6 +2931,10 @@ msgstr "已转账"
 msgid "What major Web3 conferences or summits are happening next month?"
 msgstr "下个月有哪些重要的 Web3 会议或峰会？"
 
+#: src/pages/Vaults/components/StrategyTable/index.tsx:200
+msgid "Search by name or leader..."
+msgstr "通过名称或创建人搜索……"
+
 #: src/pages/VaultDetail/components/PaperTradingPerformance/components/TimeRangeSelector.tsx:25
 msgid "24H"
 msgstr "24小时"
@@ -3345,12 +3345,12 @@ msgstr "新手"
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Backtest/components/DataList/index.tsx:200
 #: src/pages/AgentDetail/components/Preview/components/DataList/index.tsx:165
 msgid "Max drawdown"
-msgstr "最大缩编"
+msgstr "最大回撤"
 
 #: src/pages/Vaults/components/StrategyTable/index.tsx:185
 #: src/components/ShareModal/index.tsx:286
 msgid "Followers"
-msgstr "跟随者"
+msgstr "关注"
 
 #: src/pages/AgentDetail/components/AgentDescription/index.tsx:330
 msgid "Expand details"

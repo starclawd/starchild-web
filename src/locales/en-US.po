@@ -458,10 +458,6 @@ msgstr "My fund agent"
 msgid "Total trades"
 msgstr "Total trades"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:200
-msgid "Search by vault address, name or leader..."
-msgstr "Search by vault address, name or leader..."
-
 #: src/pages/Insights/index.tsx:104
 #~ msgid "Live Chat"
 #~ msgstr "Live chat"
@@ -3303,6 +3299,10 @@ msgstr "Transferred"
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:163
 msgid "What major Web3 conferences or summits are happening next month?"
 msgstr "What major Web3 conferences or summits are happening next month?"
+
+#: src/pages/Vaults/components/StrategyTable/index.tsx:200
+msgid "Search by name or leader..."
+msgstr "Search by name or leader..."
 
 #: src/pages/VaultDetail/components/PaperTradingPerformance/components/TimeRangeSelector.tsx:25
 msgid "24H"

@@ -161,7 +161,7 @@ export default function StrategyTable() {
     {
       key: 'maxDrawdown',
       title: createSortableHeader(
-        <MaxDrawdown onClick={(e) => e.stopPropagation()}>
+        <MaxDrawdown>
           <Tooltip placement='top' content={<Trans>The biggest drop from the peak. Lower means less risk.</Trans>}>
             <Trans>Max drawdown</Trans>
           </Tooltip>
@@ -173,7 +173,7 @@ export default function StrategyTable() {
     {
       key: 'tvf',
       title: createSortableHeader(
-        <TVF onClick={(e) => e.stopPropagation()}>
+        <TVF>
           <Tooltip placement='top' content={<Trans>Total follower assets. Higher TVF means more interest.</Trans>}>
             <Trans>TVF</Trans>
           </Tooltip>
@@ -197,7 +197,7 @@ export default function StrategyTable() {
             <Input
               inputValue={searchValue}
               onChange={changeSearchValue}
-              placeholder={t`Search by vault address, name or leader...`}
+              placeholder={t`Search by name or leader...`}
               inputType={InputType.SEARCH}
             />
           </InputWrapper>
