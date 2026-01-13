@@ -159,7 +159,7 @@ const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
         observer.unobserve(currentRef)
       }
     }
-  }, [hasNextPage, isLoadingMore, loadMore])
+  }, [hasNextPage, isLoadingMore, loadMore, isLoadingAllStrategies])
 
   if (isLoadingAllStrategies) {
     return (

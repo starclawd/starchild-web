@@ -49,6 +49,7 @@ export const starchildDomainOrigin = {
   },
 }
 
+// 主要用于用户和登录相关的接口，后端是 go 代码库
 export const starchildDomain = new Proxy({} as Record<string, string>, {
   get: (_, prop: string) => {
     const search = window.location.search
@@ -85,6 +86,7 @@ export const chatDomainOrigin = {
   },
 }
 
+// 主要是策略相关 后端是 ai-agent 库
 export const chatDomain = new Proxy({} as Record<string, string>, {
   get: (_, prop: string) => {
     const search = window.location.search
@@ -196,7 +198,7 @@ export const liveTradingDomainOrigin = {
   },
   // 测试环境
   test: {
-    restfulDomain: 'https://tg-api-testnet-899f9ba9abd5.herokuapp.com/api/v1',
+    restfulDomain: 'https://ai-api-testnet.iamstarchild.com/api/v1',
   },
   // 主网
   pro: {

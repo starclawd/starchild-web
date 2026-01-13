@@ -39,7 +39,6 @@ import {
   coingeckoApi,
   openAiApi,
   orderlyApi,
-  liveTradingApi,
   backtestApi,
   hyperliquidApi,
 } from '../api/base'
@@ -166,7 +165,6 @@ const rootReducer = combineReducers({
   vaultdetailcache: vaultdetailcacheReducer,
   [baseApi.reducerPath]: baseApi.reducer,
   [chatApi.reducerPath]: chatApi.reducer,
-  [liveTradingApi.reducerPath]: liveTradingApi.reducer,
   [baseBinanceApi.reducerPath]: baseBinanceApi.reducer,
   [coinmarketApi.reducerPath]: coinmarketApi.reducer,
   [coingeckoApi.reducerPath]: coingeckoApi.reducer,
@@ -195,7 +193,6 @@ export const store = configureStore({
       coinmarketApi.middleware,
       coingeckoApi.middleware,
       openAiApi.middleware,
-      liveTradingApi.middleware,
       orderlyApi.middleware,
       backtestApi.middleware,
       hyperliquidApi.middleware,
@@ -231,7 +228,6 @@ export interface RootState {
   [baseApi.reducerPath]: ReturnType<typeof baseApi.reducer>
   [chatApi.reducerPath]: ReturnType<typeof chatApi.reducer>
   [baseBinanceApi.reducerPath]: ReturnType<typeof baseBinanceApi.reducer>
-  [liveTradingApi.reducerPath]: ReturnType<typeof liveTradingApi.reducer>
   [orderlyApi.reducerPath]: ReturnType<typeof orderlyApi.reducer>
   [backtestApi.reducerPath]: ReturnType<typeof backtestApi.reducer>
   [hyperliquidApi.reducerPath]: ReturnType<typeof hyperliquidApi.reducer>

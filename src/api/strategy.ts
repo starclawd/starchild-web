@@ -1,4 +1,4 @@
-import { liveTradingApi } from './baseLiveTrading'
+import { chatApi } from './baseChat'
 import { VaultPosition, VaultOpenOrder } from './vaults'
 import {
   calculateVaultPosition,
@@ -293,8 +293,7 @@ export interface UserBalanceHistoryResponse {
   strategies: UserBalanceHistoryStrategy[]
 }
 
-// Strategy API (使用 liveTradingApi)
-export const strategyApi = liveTradingApi.injectEndpoints({
+export const strategyApi = chatApi.injectEndpoints({
   endpoints: (builder) => ({
     // 获取策略持仓信息
     getStrategyPositions: builder.query<
@@ -307,7 +306,7 @@ export const strategyApi = liveTradingApi.injectEndpoints({
         const params: Record<string, string> = { strategy_id }
 
         return {
-          url: `/strategy/positions`,
+          url: `/api/v1/strategy/positions`,
           params,
           method: 'GET',
         }
@@ -332,7 +331,7 @@ export const strategyApi = liveTradingApi.injectEndpoints({
         const params: Record<string, string> = { strategy_id, period }
 
         return {
-          url: `/strategy/overview`,
+          url: `/api/v1/strategy/overview`,
           params,
           method: 'GET',
         }
@@ -352,7 +351,7 @@ export const strategyApi = liveTradingApi.injectEndpoints({
         const params: Record<string, string | number> = { strategy_id, page, page_size }
 
         return {
-          url: `/strategy/orders`,
+          url: `/api/v1/strategy/orders`,
           params,
           method: 'GET',
         }
@@ -379,7 +378,7 @@ export const strategyApi = liveTradingApi.injectEndpoints({
         const params: Record<string, string | number> = { strategy_id, page, page_size, status }
 
         return {
-          url: `/strategy/order-history`,
+          url: `/api/v1/strategy/order-history`,
           params,
           method: 'GET',
         }
@@ -409,7 +408,7 @@ export const strategyApi = liveTradingApi.injectEndpoints({
         params.strategy_id = strategy_id
 
         return {
-          url: `/strategy/balance-history`,
+          url: `/api/v1/strategy/balance-history`,
           method: 'GET',
           params,
         }
@@ -419,7 +418,7 @@ export const strategyApi = liveTradingApi.injectEndpoints({
     // 获取余额历史排行榜
     getBalanceHistoryLeaderboard: builder.query<BalanceHistoryLeaderboardResponse, void>({
       query: () => ({
-        url: '/strategy/balance/history/all?limit=10&history_limit=720',
+        url: '/api/v1/strategy/balance/history/all?limit=10&history_limit=720',
         method: 'GET',
       }),
     }),
@@ -427,21 +426,21 @@ export const strategyApi = liveTradingApi.injectEndpoints({
     // 获取所有策略概览
     getAllStrategiesOverview: builder.query<StrategiesOverviewResponse, void>({
       query: () => ({
-        url: '/strategy/overview/all',
+        url: '/api/v1/strategy/overview/all',
         method: 'GET',
       }),
     }),
     // 获取所有策略概览
     getAllFollowedStrategiesOverview: builder.query<StrategiesOverviewResponse, void>({
       query: () => ({
-        url: '/strategy/following',
+        url: '/api/v1/strategy/following',
         method: 'GET',
       }),
     }),
     // 获取所有策略概览
     getVaultsTotalUserData: builder.query<TotalUserData, { walletAddress: string }>({
       query: ({ walletAddress }) => ({
-        url: `/strategy/address/overall?wallet_address=${walletAddress}`,
+        url: `/api/v1/strategy/address/overall?wallet_address=${walletAddress}`,
         method: 'GET',
       }),
     }),
@@ -459,7 +458,7 @@ export const strategyApi = liveTradingApi.injectEndpoints({
         params.append('page', page.toString())
         params.append('size', size.toString())
         return {
-          url: `/strategy/signals?${params.toString()}`,
+          url: `/api/v1/strategy/signals?${params.toString()}`,
           method: 'GET',
         }
       },
@@ -475,7 +474,7 @@ export const strategyApi = liveTradingApi.injectEndpoints({
     >({
       query: ({ walletAddress, userId }) => {
         return {
-          url: `/strategy/deposit-address/record`,
+          url: `/api/v1/strategy/deposit-address/record`,
           method: 'POST',
           body: {
             user_id: userId,
@@ -487,7 +486,7 @@ export const strategyApi = liveTradingApi.injectEndpoints({
     // 获取所有策略概览
     getMyStrategies: builder.query<StrategiesOverviewResponse, void>({
       query: () => ({
-        url: '/strategy/strategies',
+        url: '/api/v1/strategy/strategies',
         method: 'GET',
       }),
     }),
@@ -505,7 +504,7 @@ export const strategyApi = liveTradingApi.injectEndpoints({
         if (start_ts) params.start_ts = start_ts
 
         return {
-          url: `/strategy/user/balance/history`,
+          url: `/api/v1/strategy/user/balance/history`,
           method: 'GET',
           params,
         }

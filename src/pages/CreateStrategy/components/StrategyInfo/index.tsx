@@ -77,7 +77,7 @@ const BottomContent = styled.div<{ $isShowExpandPaperTrading: boolean }>`
   width: 100%;
   height: calc(100% - 260px);
   border-top: 1px solid ${({ theme }) => theme.black800};
-  ${({ theme }) => theme.mediaMaxWidth.width1440`
+  ${({ theme }) => theme.mediaMaxWidth.width1560`
     height: calc(100% - 196px);
   `}
   ${({ $isShowExpandPaperTrading }) =>

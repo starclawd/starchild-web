@@ -73,6 +73,7 @@ const ArrowButton = styled(ButtonCommon)<{ $showRightText: boolean }>`
   line-height: 20px;
   padding: 0 12px;
   border-radius: 4px;
+  white-space: nowrap;
   color: ${({ theme }) => theme.black1000};
   .icon-arrow {
     transform: rotate(90deg);

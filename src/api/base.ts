@@ -10,9 +10,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { baseApi } from './baseStarchild'
 import { chatApi } from './baseChat'
-import { liveTradingApi } from './baseLiveTrading'
 import { hyperliquidDomain, orderlyDomain } from 'utils/url'
-export { baseApi, chatApi, liveTradingApi }
+export { baseApi, chatApi }
 
 /**
  * OpenAI API
