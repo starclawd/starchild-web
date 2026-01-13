@@ -52,8 +52,8 @@ export const ContentItem = styled.div<{ role: ROLE_TYPE }>`
           width: fit-content;
           padding: 16px;
           border-radius: 12px;
-          color: ${({ theme }) => theme.textL2};
-          background: ${({ theme }) => theme.bgT30};
+          color: ${({ theme }) => theme.black100};
+          background: ${({ theme }) => theme.black600};
         `
       : css`
           flex-direction: column;
@@ -87,7 +87,7 @@ export const Content = styled.div`
       font-size: 16px;
       font-weight: 400;
       line-height: 22px;
-      color: ${({ theme }) => theme.textL2};
+      color: ${({ theme }) => theme.black100};
       .markdown-wrapper {
         width: 100%;
       }
@@ -108,7 +108,7 @@ export const Content = styled.div`
         font-size: 0.16rem;
         font-weight: 400;
         line-height: 0.22rem;
-        color: ${theme.textL2};
+        color: ${theme.black100};
       `}
     `}
 `
@@ -130,7 +130,7 @@ export const ItemImgWrapper = styled.span`
     font-size: 11px;
     font-weight: 400;
     line-height: 16px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
   ${({ theme }) =>
     theme.isMobile &&

@@ -7,7 +7,7 @@ import { useIsLogin } from 'store/login/hooks'
 import { ANI_DURATION } from 'constants/index'
 import Tooltip from 'components/Tooltip'
 import { Trans } from '@lingui/react/macro'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 
 const SubscriberCountContainer = styled.div<{ $subscribed: boolean; $readOnly: boolean }>`
@@ -15,7 +15,7 @@ const SubscriberCountContainer = styled.div<{ $subscribed: boolean; $readOnly: b
   align-items: center;
   gap: 4px;
   font-size: 14px;
-  color: ${({ theme, $subscribed }) => ($subscribed ? theme.brand100 : theme.textL3)};
+  color: ${({ theme, $subscribed }) => ($subscribed ? theme.brand100 : theme.black200)};
   padding: 4px 8px;
   border-radius: 4px;
   cursor: ${({ $readOnly }) => ($readOnly ? 'default' : 'pointer')};
@@ -35,7 +35,7 @@ const SubscriberCountContainer = styled.div<{ $subscribed: boolean; $readOnly: b
           ${!$readOnly &&
           css`
             &:active {
-              background-color: ${theme.bgT30};
+              background-color: ${theme.black600};
             }
           `}
         `
@@ -43,7 +43,7 @@ const SubscriberCountContainer = styled.div<{ $subscribed: boolean; $readOnly: b
           ${!$readOnly &&
           css`
             &:hover {
-              background-color: ${theme.bgT30};
+              background-color: ${theme.black600};
             }
           `}
         `}
@@ -65,7 +65,7 @@ export default memo(function SubscriberCount({
   onClick,
 }: SubscriberCountProps) {
   const isLogin = useIsLogin()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
 
   const handleClick = (event: React.MouseEvent) => {
     event.stopPropagation()
@@ -75,7 +75,7 @@ export default memo(function SubscriberCount({
     }
 
     if (!isLogin) {
-      setCurrentRouter(`${ROUTER.HOME}?login=1`)
+      setCurrentRouter(ROUTER.CHAT)
       return
     }
 

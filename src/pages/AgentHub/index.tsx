@@ -21,8 +21,7 @@ import AgentMarketplaceCardView from './components/AgentMarketplaceCardOverview'
 import AgentMarketplaceCategoryCardView from './components/AgentMarketplaceCategoryCardView'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { ListViewSortingColumn, ListViewSortingOrder } from 'store/agenthub/agenthub'
-import AgentCardSection from './components/AgentCardSection'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 
 const AgentHubContainer = styled.div`
@@ -83,10 +82,9 @@ const Title = styled.h1`
   font-size: 36px;
   line-height: 44px;
   font-weight: 500;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   margin: 0;
   text-align: center;
-  text-transform: capitalize;
 `
 
 const ButtonGroupBarWrapper = styled.div`
@@ -110,7 +108,7 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
   const [viewMode, setViewMode] = useAgentHubViewMode()
   const queryParams = useParsedQueryString()
   const location = useLocation()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
 
   // 为不同showSearchBar值创建独立的状态实例
   const [instanceStates, setInstanceStates] = useState<

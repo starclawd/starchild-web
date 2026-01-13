@@ -4,12 +4,33 @@ import { vm } from 'pages/helper'
 import { useCallback, useMemo } from 'react'
 import { useIsMobile } from 'store/application/hooks'
 import styled, { css } from 'styled-components'
+import { useTheme } from 'store/themecache/hooks'
+
+const TimezoneWrapper = styled.div`
+  height: 44px;
+  border-radius: 4px;
+  border: 1px solid ${({ theme }) => theme.black600};
+  background: ${({ theme }) => theme.black700};
+  backdrop-filter: blur(8px);
+  .select-value-wrapper {
+    padding: 0 12px;
+    gap: 4px;
+    &.show {
+      .select-value {
+        color: ${({ theme }) => theme.black0};
+        i {
+          color: ${({ theme }) => theme.black0};
+        }
+      }
+    }
+  }
+`
 
 const SelectValue = styled.div`
   font-size: 14px;
   font-weight: 500;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -26,6 +47,7 @@ export default function Timezone({
   setTimezoneValue: (timezone: string) => void
 }) {
   const isMobile = useIsMobile()
+  const theme = useTheme()
   const chageTimezone = useCallback(
     (value: string) => {
       setTimezoneValue(value)
@@ -37,24 +59,38 @@ export default function Timezone({
       return {
         key: timezone,
         value: timezone,
+        isActive: timezoneValue === timezone,
         text: TIMEZONE_LABELS_TG[timezone as keyof typeof TIMEZONE_LABELS_TG],
         clickCallback: chageTimezone,
       }
     })
-  }, [chageTimezone])
+  }, [timezoneValue, chageTimezone])
   return (
-    <Select
-      usePortal
-      alignPopWidth={!isMobile}
-      placement='bottom-end'
-      offsetLeft={0}
-      offsetTop={2}
-      triggerMethod={TriggerMethod.CLICK}
-      dataList={timezoneList}
-      value={timezoneValue}
-      popStyle={isMobile ? { width: vm(335) } : {}}
-    >
-      <SelectValue>{TIMEZONE_LABELS_TG[timezoneValue as keyof typeof TIMEZONE_LABELS_TG]}</SelectValue>
-    </Select>
+    <TimezoneWrapper>
+      <Select
+        usePortal
+        useCircleSuccessIcon={false}
+        alignPopWidth={!isMobile}
+        placement='bottom-end'
+        offsetLeft={0}
+        offsetTop={2}
+        triggerMethod={TriggerMethod.CLICK}
+        dataList={timezoneList}
+        value={timezoneValue}
+        popItemHoverBg={theme.black600}
+        popItemStyle={{
+          borderRadius: '4px',
+        }}
+        popStyle={
+          isMobile
+            ? { width: vm(335) }
+            : {
+                background: theme.black800,
+              }
+        }
+      >
+        <SelectValue>{TIMEZONE_LABELS_TG[timezoneValue as keyof typeof TIMEZONE_LABELS_TG]}</SelectValue>
+      </Select>
+    </TimezoneWrapper>
   )
 }

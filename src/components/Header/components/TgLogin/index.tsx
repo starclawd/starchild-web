@@ -88,7 +88,7 @@ export const TgLogin = () => {
             description: data.error.data.message,
             status: TOAST_STATUS.ERROR,
             typeIcon: 'icon-customize-avatar',
-            iconTheme: theme.ruby50,
+            iconTheme: theme.black0,
           })
         } else {
           const data = await triggerGetUserInfo()
@@ -99,7 +99,7 @@ export const TgLogin = () => {
               description: result.telegramUserName || '',
               status: TOAST_STATUS.SUCCESS,
               typeIcon: 'icon-customize-avatar',
-              iconTheme: theme.textL1,
+              iconTheme: theme.black0,
             })
           }
         }
@@ -163,7 +163,6 @@ export const TgLogin = () => {
     window.addEventListener('message', handleMessage)
 
     return () => {
-      console.log('🔇 TgLogin: 停止监听 message 事件')
       window.removeEventListener('message', handleMessage)
     }
   }, [authToken, handleLogin, handleBindTelegram])

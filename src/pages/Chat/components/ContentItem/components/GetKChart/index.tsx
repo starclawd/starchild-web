@@ -24,13 +24,13 @@ const GetKChartWrapper = styled(ButtonCommon)`
   font-weight: 400;
   line-height: 20px;
   border-radius: 32px;
-  color: ${({ theme }) => theme.textL1};
-  background-color: ${({ theme }) => theme.bgT20};
+  color: ${({ theme }) => theme.black0};
+  background-color: ${({ theme }) => theme.black800};
   cursor: pointer;
   transition: all ${ANI_DURATION}s;
   .icon-backtest {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   ${({ theme }) =>
     theme.isMobile &&

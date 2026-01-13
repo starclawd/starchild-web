@@ -11,6 +11,7 @@ export interface ApplicationState {
   isShowMobileMenu: boolean
   isPopoverOpen: boolean
   bindWalletModalAddress: string | null
+  deployStrategyId: string | null
 }
 
 const initialState: ApplicationState = {
@@ -23,6 +24,7 @@ const initialState: ApplicationState = {
   isShowMobileMenu: false,
   isPopoverOpen: false,
   bindWalletModalAddress: null,
+  deployStrategyId: null,
 }
 
 export const applicationSlice = createSlice({
@@ -56,6 +58,9 @@ export const applicationSlice = createSlice({
     setBindWalletModalAddress(state, action: PayloadAction<string | null>) {
       state.bindWalletModalAddress = action.payload
     },
+    setDeployStrategyId(state, action: PayloadAction<string | null>) {
+      state.deployStrategyId = action.payload
+    },
   },
 })
 
@@ -69,6 +74,7 @@ export const {
   setIsShowMobileMenu,
   setIsPopoverOpen,
   setBindWalletModalAddress,
+  setDeployStrategyId,
 } = applicationSlice.actions
 
 export default applicationSlice.reducer

@@ -10,7 +10,7 @@ import AgentCardList from '../AgentCardList'
 import { AgentInfo, AgentCategory } from 'store/agenthub/agenthub'
 import { AGENT_CATEGORIES } from 'constants/agentHub'
 import { IconBase } from 'components/Icons'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useSetCurrentRouter } from 'store/application/hooks'
 import { ANI_DURATION } from 'constants/index'
 
 const SectionWrapper = styled.div`
@@ -43,9 +43,8 @@ const SectionTitle = styled.h2`
   font-size: 26px;
   line-height: 34px;
   font-weight: 400;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   margin: 0;
-  text-transform: capitalize;
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -59,7 +58,7 @@ const SectionDescription = styled.p`
   font-size: 13px;
   line-height: 20px;
   font-weight: 400;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   margin: 0;
 
   ${({ theme }) =>
@@ -82,20 +81,20 @@ const ViewMoreButton = styled(BaseButton)`
   font-weight: 400;
   width: fit-content;
   height: 40px;
-  color: ${({ theme }) => theme.textL2};
-  background-color: ${({ theme }) => theme.bgT10};
+  color: ${({ theme }) => theme.black100};
+  background-color: ${({ theme }) => theme.black900};
   border-radius: 8px;
   padding: 10px;
   gap: 4px;
   transition: background-color ${ANI_DURATION}s;
 
   &:hover {
-    background: ${({ theme }) => theme.bgT20};
+    background: ${({ theme }) => theme.black800};
   }
 
   > i {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
 
   ${({ theme }) =>
@@ -139,7 +138,7 @@ export default memo(function AgentCardSection({
   runAgentCard,
   skeletonType = 'default',
 }: AgentCardSectionProps) {
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
 
   // 根据category获取对应的routeHash
   const getRouteHashByCategory = useCallback((category: string): string => {

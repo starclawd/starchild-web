@@ -6,7 +6,7 @@ import { TokenCardProps } from 'store/agenthub/agenthub'
 import { useCurrentTokenInfo } from 'store/agenthub/hooks'
 import { formatNumber, formatPercent } from 'utils/format'
 import { AGENT_CATEGORIES, AGENT_HUB_TYPE, ANI_DURATION } from 'constants/index'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import LazyImage from 'components/LazyImage'
 
@@ -17,11 +17,11 @@ const CardWrapper = styled(BorderAllSide1PxBox)`
   gap: 16px;
   padding: 16px;
   transition: all ${ANI_DURATION}s ease;
-  border-color: ${({ theme }) => theme.bgT30};
+  border-color: ${({ theme }) => theme.black600};
   border-radius: 16px;
 
   &:hover {
-    background: ${({ theme }) => theme.bgT20};
+    background: ${({ theme }) => theme.black800};
   }
 
   ${({ theme }) =>
@@ -66,7 +66,7 @@ const TokenSymbol = styled.h3`
   font-size: 18px;
   line-height: 26px;
   font-weight: 400;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   margin: 0;
 
   ${({ theme }) =>
@@ -79,7 +79,7 @@ const TokenSymbol = styled.h3`
 
 const TokenFullName = styled.p`
   font-size: 14px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   margin: 0;
 
   ${({ theme }) =>
@@ -92,7 +92,7 @@ const TokenFullName = styled.p`
 
 const TokenDescription = styled.p`
   font-size: 14px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   margin: 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -125,7 +125,7 @@ const PriceInfo = styled.div`
 const Price = styled.span`
   font-size: 18px;
   font-weight: 400;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -150,7 +150,7 @@ const PriceChange = styled.span<{ $isPositive: boolean }>`
 
 export default memo(function TokenCard({ tokenInfo, enableClick }: TokenCardProps) {
   const [, setCurrentTokenInfo] = useCurrentTokenInfo()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
 
   const onClick = () => {
     // Set current token info and navigate to token-deep-dive page

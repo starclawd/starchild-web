@@ -13,7 +13,7 @@ import { vm } from 'pages/helper'
 const DemoContainer = styled.div`
   padding: 20px;
   background: ${({ theme }) => theme.bgL1};
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   min-height: 100vh;
 `
 
@@ -21,25 +21,25 @@ const DemoSection = styled.div`
   margin-bottom: 40px;
 
   h2 {
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin-bottom: 20px;
     font-size: 24px;
   }
 
   h3 {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     margin-bottom: 15px;
     font-size: 18px;
   }
 
   h4 {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     margin-bottom: 10px;
     font-size: 16px;
   }
 
   p {
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     margin-bottom: 15px;
     line-height: 1.6;
   }
@@ -60,12 +60,12 @@ const DemoRow = styled.div`
 
     .label {
       font-weight: 600;
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
       margin-bottom: 5px;
     }
 
     .description {
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
       font-size: 14px;
       margin-bottom: 10px;
     }
@@ -80,7 +80,7 @@ const DemoRow = styled.div`
 
 const CodeBlock = styled.pre`
   background: ${({ theme }) => theme.bgL2};
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   padding: 15px;
   border-radius: 8px;
   overflow-x: auto;
@@ -160,7 +160,7 @@ const IconWrapper = styled.div<{ $showHover?: boolean }>`
   border-radius: 50%;
   font-size: 18px;
   transition: all ${ANI_DURATION}s;
-  color: ${({ theme }) => theme.textDark54};
+  color: ${({ theme }) => theme.black200};
   ${({ theme, $showHover }) =>
     theme.isMobile
       ? css`
@@ -173,7 +173,7 @@ const IconWrapper = styled.div<{ $showHover?: boolean }>`
           ${$showHover &&
           css`
             &:hover {
-              background-color: ${({ theme }) => theme.bgT20};
+              background-color: ${({ theme }) => theme.black800};
             }
           `}
         `}
@@ -215,7 +215,7 @@ const ActionLog = styled.div`
   }
 
   .empty-log {
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     font-size: 14px;
   }
 `
@@ -328,7 +328,7 @@ const AgentActionsDemo = () => {
           <div className='demo-preview'>
             <TopRight>
               {/* 未读计数由父组件控制，不是 AgentActions 的功能 */}
-              <TriggerTimes $borderRadius={44} $borderColor={theme.bgT20}>
+              <TriggerTimes $borderRadius={44} $borderColor={theme.black800}>
                 3
               </TriggerTimes>
               <Popover

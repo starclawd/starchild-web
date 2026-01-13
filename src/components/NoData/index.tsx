@@ -3,6 +3,7 @@ import { css } from 'styled-components'
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import noDataImg from 'assets/chat/no-data.png'
+import { IconBase } from 'components/Icons'
 
 const NoDataWrapper = styled.div`
   display: flex;
@@ -12,16 +13,17 @@ const NoDataWrapper = styled.div`
   width: 100%;
   height: fit-content;
   min-height: 170px;
-  gap: 16px;
+  gap: 8px;
   border-radius: 36px;
-  img {
-    width: 64px;
+  .icon-no-data {
+    font-size: 32px;
+    color: ${({ theme }) => theme.black400};
   }
   span {
     font-size: 12px;
     font-weight: 400;
     line-height: 18px;
-    color: ${({ theme }) => theme.text10};
+    color: ${({ theme }) => theme.black400};
   }
   ${({ theme }) =>
     theme.isMobile &&
@@ -44,7 +46,7 @@ const NoDataWrapper = styled.div`
 export default function NoData({ text }: { text?: React.ReactNode }) {
   return (
     <NoDataWrapper className='no-data-wrapper'>
-      <img src={noDataImg} alt='no-data' />
+      <IconBase className='icon-no-data' />
       <span>{text || <Trans>No results found.</Trans>}</span>
     </NoDataWrapper>
   )

@@ -15,13 +15,13 @@ const Header = styled.div`
   h2 {
     font-size: 24px;
     font-weight: 600;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin: 0 0 8px 0;
   }
 
   p {
     font-size: 14px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     margin: 0;
   }
 `
@@ -37,7 +37,7 @@ const IconItem = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 20px 16px;
-  border: 1px solid ${({ theme }) => theme.lineDark8};
+  border: 1px solid ${({ theme }) => theme.black800};
   border-radius: 8px;
   background: ${({ theme }) => theme.bgL2};
   transition: all 0.2s ease;
@@ -52,19 +52,19 @@ const IconItem = styled.div`
 
 const IconDisplay = styled.i`
   font-size: 32px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   margin-bottom: 12px;
 `
 
 const IconName = styled.div`
   font-size: 12px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   text-align: center;
   word-break: break-all;
 `
 
 const IconCount = styled.div`
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   font-size: 14px;
   margin-top: 16px;
   margin-bottom: 16px;
@@ -241,8 +241,8 @@ function IconsDemo() {
             title: '复制成功',
             description: `已复制 ${className} 到剪贴板`,
             status: TOAST_STATUS.SUCCESS,
-            typeIcon: 'icon-chat-copy',
-            iconTheme: theme.jade10,
+            typeIcon: 'icon-copy',
+            iconTheme: theme.black0,
             autoClose: 2000,
           })
         })
@@ -252,13 +252,13 @@ function IconsDemo() {
             title: '复制失败',
             description: '无法复制到剪贴板，请手动复制',
             status: TOAST_STATUS.ERROR,
-            typeIcon: 'icon-chat-close',
-            iconTheme: theme.ruby50,
+            typeIcon: 'icon-close',
+            iconTheme: theme.black0,
             autoClose: 3000,
           })
         })
     },
-    [toast, theme.jade10, theme.ruby50],
+    [toast, theme.black0],
   )
 
   return (

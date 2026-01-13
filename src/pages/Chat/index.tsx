@@ -20,8 +20,10 @@ import AgentDetail from './components/AgentDetail'
 import { AGENT_TYPE } from 'store/agentdetail/agentdetail'
 import { useAgentDetailData } from 'store/agentdetail/hooks'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
+import Social from './components/Social'
+import PixelCanvas from './components/PixelCanvas'
 
 // 扩展window对象类型
 declare global {
@@ -38,12 +40,13 @@ const ChatWrapper = styled.div<{
   justify-content: space-between;
   width: 100%;
   height: 100%;
-  ${({ theme, $showHistory }) => theme.mediaMinWidth.minWidth1024`
-    #aiScrollContent,
-    #aiInputOutWrapper,
-    #recommendationsWrapper {
+  ${({ theme, $showHistory }) => theme.mediaMinWidth.width1024`
+    #chatScrollContent,
+    #chatInputOutWrapper,
+    #recommendationsWrapper,
+    #createStrategyWrapper {
       width: 100%;
-      max-width: 778px;
+      max-width: 800px;
       min-width: 0;
       flex-shrink: 1;
       transition: max-width 0.2s;
@@ -57,23 +60,33 @@ const ChatWrapper = styled.div<{
       `
     }
   `}
-  ${({ theme }) => theme.mediaMinWidth.minWidth1280`
-    #aiScrollContent,
-    #aiInputOutWrapper,
-    #recommendationsWrapper {
+  ${({ theme }) => theme.mediaMinWidth.width1280`
+    #chatScrollContent,
+    #chatInputOutWrapper,
+    #recommendationsWrapper,
+    #createStrategyWrapper {
       width: 100%;
-      max-width: 778px;
+      max-width: 800px;
       min-width: 0;
       flex-shrink: 1;
     }
   `}
-  ${({ theme }) => theme.mediaMinWidth.minWidth1920`
-    #aiScrollContent,
-    #aiInputOutWrapper,
-    #recommendationsWrapper {
-      width: 780px;
+  ${({ theme }) => theme.mediaMinWidth.width1920`
+    #chatScrollContent,
+    #chatInputOutWrapper,
+    #recommendationsWrapper,
+    #createStrategyWrapper {
+      width: 800px;
     }
   `}
+`
+
+const InnerChatWrapper = styled.div`
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  z-index: 2;
 `
 
 const BackTestWrapper = styled.div`
@@ -114,7 +127,7 @@ const Empty = styled.div`
   visibility: hidden;
   width: 0;
   height: 100%;
-  ${({ theme }) => theme.mediaMinWidth.minWidth1280`
+  ${({ theme }) => theme.mediaMinWidth.width1280`
     display: none;
   `}
 `
@@ -137,7 +150,7 @@ const DeepThinkContent = styled.div<{ $isShowRightContent: boolean; $shouldExpan
       transform: translateX(-100%);
     `}
   `}
-  ${({ theme, $isShowRightContent, $shouldExpandRightSection }) => theme.mediaMinWidth.minWidth1280`
+  ${({ theme, $isShowRightContent, $shouldExpandRightSection }) => theme.mediaMinWidth.width1280`
     position: unset;
     transform: unset;
     transition: width ${ANI_DURATION}s;
@@ -153,10 +166,7 @@ const DeepThinkContent = styled.div<{ $isShowRightContent: boolean; $shouldExpan
 `
 
 export default function Chat() {
-  const isLogout = useIsLogout()
   const [agentDetailData] = useAgentDetailData()
-  const [, setIsChatPageLoaded] = useIsChatPageLoaded()
-  const [hasLoadThreadsList] = useHasLoadThreadsList()
   const [isShowDeepThink] = useIsShowDeepThink()
   const [isShowAgentDetail] = useIsShowAgentDetail()
   const [showHistory, setShowHistory] = useShowHistory()
@@ -166,7 +176,7 @@ export default function Chat() {
   const [{ agentId }] = useCurrentAiContentDeepThinkData()
   const { threadId } = useParsedQueryString()
   const [, setCurrentAiThreadId] = useCurrentAiThreadId()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
 
   const isShowRightContent = useMemo(() => {
     return isShowDeepThink || isShowAgentDetail
@@ -177,10 +187,6 @@ export default function Chat() {
   }, [agentId, agentDetailData.task_type])
 
   useEffect(() => {
-    setIsChatPageLoaded(hasLoadThreadsList || isLogout)
-  }, [hasLoadThreadsList, isLogout, setIsChatPageLoaded])
-
-  useEffect(() => {
     if (threadId) {
       setCurrentAiThreadId(threadId)
       setCurrentRouter(ROUTER.CHAT)
@@ -189,20 +195,24 @@ export default function Chat() {
 
   return (
     <ChatWrapper $showHistory={showHistory}>
-      <LeftContent />
-      <ChatContent $showHistory={showHistory} className='right-content'>
-        {hasLoadThreadsList || isLogout ? <FileDrag /> : <Pending isFetching />}
-      </ChatContent>
-      <Empty />
-      <DeepThinkContent $shouldExpandRightSection={shouldExpandRightSection} $isShowRightContent={isShowRightContent}>
-        {isShowDeepThink &&
-          (agentId && !isShowDeepThinkSources ? <AgentDetail agentId={agentId} /> : <DeepThinkDetail />)}
-      </DeepThinkContent>
-      {isOpenFullScreen && currentFullScreenBacktestData && (
-        <BackTestWrapper>
-          {/* <Content isLoading={false} showFullScreen={true} backtestData={currentFullScreenBacktestData} /> */}
-        </BackTestWrapper>
-      )}
+      <InnerChatWrapper>
+        <LeftContent />
+        <ChatContent $showHistory={showHistory} className='right-content'>
+          <FileDrag />
+        </ChatContent>
+        <Empty />
+        <DeepThinkContent $shouldExpandRightSection={shouldExpandRightSection} $isShowRightContent={isShowRightContent}>
+          {isShowDeepThink &&
+            (agentId && !isShowDeepThinkSources ? <AgentDetail agentId={agentId} /> : <DeepThinkDetail />)}
+        </DeepThinkContent>
+        {isOpenFullScreen && currentFullScreenBacktestData && (
+          <BackTestWrapper>
+            {/* <Content isLoading={false} showFullScreen={true} backtestData={currentFullScreenBacktestData} /> */}
+          </BackTestWrapper>
+        )}
+        <Social />
+      </InnerChatWrapper>
+      <PixelCanvas />
     </ChatWrapper>
   )
 }

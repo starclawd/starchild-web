@@ -38,7 +38,26 @@ export function useWalletBind() {
           oldWalletAddress,
         })
 
-        return result
+        // 检查 API 返回结果
+        if (result.error) {
+          // 处理 API 错误
+          const errorData = result.error as any
+          const errorMessage = errorData?.data?.message || errorData?.message || 'Failed to bind wallet'
+          const errorCode = errorData?.data?.code
+
+          console.error('钱包绑定 API 返回错误:', {
+            code: errorCode,
+            message: errorMessage,
+            fullError: errorData,
+          })
+
+          throw new Error(errorMessage)
+        }
+
+        // API 调用成功，返回数据
+        if (result.data) {
+          return result.data
+        }
       } catch (error) {
         console.error('钱包绑定失败:', error)
         throw error

@@ -83,17 +83,16 @@ const Title = styled.h1`
   font-size: 36px;
   line-height: 44px;
   font-weight: 500;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   margin: 0;
   text-align: center;
-  text-transform: capitalize;
 `
 
 const Description = styled.p`
   font-size: 13px;
   line-height: 20px;
   font-weight: 400;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   margin: 0;
   text-align: center;
 

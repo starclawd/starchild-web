@@ -16,12 +16,12 @@ const StyledButton = styled(ButtonCommon)<{
   align-items: center;
   gap: 6px;
   width: ${({ $width }) => $width || '100%'};
-  color: ${({ theme, $isSubscribed }) => ($isSubscribed ? theme.textL2 : theme.textL1)};
-  background: ${({ theme, $isSubscribed }) => ($isSubscribed ? theme.bgT30 : theme.brand200)};
+  color: ${({ theme, $isSubscribed }) => ($isSubscribed ? theme.black100 : theme.black0)};
+  background: ${({ theme, $isSubscribed }) => ($isSubscribed ? theme.black600 : theme.brand200)};
 
   .pending-wrapper {
     .icon-loading {
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
     }
   }
 
@@ -117,7 +117,7 @@ export default memo(function SubscribeButton({
       $size={size}
       $width={width}
       onClick={handleClick}
-      className={className}
+      className={`${className} subscribe-button`}
       $disabled={disabled}
     >
       {pending ? (

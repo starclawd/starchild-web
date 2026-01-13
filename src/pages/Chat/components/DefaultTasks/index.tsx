@@ -28,13 +28,13 @@ const TitleWrapper = styled.div`
     font-size: 20px;
     font-weight: 500;
     line-height: 28px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   span:last-child {
     font-size: 14px;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
   ${({ theme }) =>
     theme.isMobile &&
@@ -75,7 +75,7 @@ const TaskItem = styled(BorderAllSide1PxBox)`
   font-weight: 400;
   line-height: 18px;
   transition: color ${ANI_DURATION}s;
-  color: ${({ theme }) => theme.textL4};
+  color: ${({ theme }) => theme.black300};
   ${({ theme }) =>
     theme.isMobile
       ? css`
@@ -86,7 +86,7 @@ const TaskItem = styled(BorderAllSide1PxBox)`
         `
       : css`
           &:hover {
-            color: ${({ theme }) => theme.textL2};
+            color: ${({ theme }) => theme.black100};
           }
           cursor: pointer;
         `}
@@ -101,7 +101,7 @@ const IconWrapper = styled(BorderAllSide1PxBox)`
   .icon-chat-back {
     transform: rotate(180deg);
     font-size: 14px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
   ${({ theme }) =>
     theme.isMobile &&
@@ -168,13 +168,13 @@ export default memo(function DefaultTasks() {
           return (
             <TaskItem
               key={key}
-              $borderColor={theme.bgT30}
+              $borderColor={theme.black600}
               $borderRadius={16}
               $borderStyle='dashed'
               onClick={sendContent(content)}
             >
               <span>{content}</span>
-              <IconWrapper $borderColor={theme.bgT30} $borderRadius={12}>
+              <IconWrapper $borderColor={theme.black600} $borderRadius={12}>
                 <IconBase className='icon-chat-back' />
               </IconWrapper>
             </TaskItem>

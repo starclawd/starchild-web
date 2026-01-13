@@ -59,7 +59,7 @@ const Header = styled.div`
   font-size: 0.2rem;
   font-weight: 500;
   line-height: 0.28rem;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 `
 
 export default function MobileChat() {
@@ -117,7 +117,7 @@ export default function MobileChat() {
         setIsRefreshing={setIsPullDownRefreshing}
       >
       </PullUpRefresh> */}
-        <ContentWrapper>{hasLoadThreadsList || isLogout ? <Chat /> : <Pending isFetching />}</ContentWrapper>
+        <ContentWrapper>{hasLoadThreadsList || isLogout ? <Chat /> : <Pending isNotButtonLoading />}</ContentWrapper>
       </PullDownRefresh>
       <BottomSheet
         hideDragHandle

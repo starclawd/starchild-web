@@ -42,7 +42,7 @@ const ThreadItemWrapper = styled.div<{ $isCurrentThread: boolean; $isLoading: bo
       font-size: 16px;
       font-weight: 500;
       line-height: 24px;
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -52,7 +52,7 @@ const ThreadItemWrapper = styled.div<{ $isCurrentThread: boolean; $isLoading: bo
       font-weight: 400;
       line-height: 18px;
       white-space: nowrap;
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
     }
   }
   ${({ theme, $isCurrentThread, $isLoading, $isOpenDeleteThread }) =>
@@ -88,7 +88,7 @@ const ThreadItemWrapper = styled.div<{ $isCurrentThread: boolean; $isLoading: bo
             border-radius: 50%;
             .icon-chat-unselected {
               font-size: 0.18rem;
-              color: ${theme.text10};
+              color: ${theme.black600};
             }
             .icon-chat-complete {
               font-size: 0.18rem;
@@ -109,22 +109,22 @@ const ThreadItemWrapper = styled.div<{ $isCurrentThread: boolean; $isLoading: bo
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            border: 1px solid ${theme.bgT30};
+            border: 1px solid ${theme.black600};
             cursor: pointer;
             transition: all ${ANI_DURATION}s;
-            .icon-chat-rubbish {
+            .icon-delete {
               font-size: 18px;
               color: ${theme.ruby50};
             }
             &:hover {
               border: 1px solid transparent;
-              background-color: ${theme.bgT30};
+              background-color: ${theme.black600};
             }
           }
           ${!$isCurrentThread &&
           css`
             &:hover {
-              border: 1px solid ${theme.bgT30};
+              border: 1px solid ${theme.black600};
               .content-wrapper {
                 width: calc(100% - 48px);
               }
@@ -218,13 +218,13 @@ export default function ThreadItem({
             description: (
               <span>
                 <Trans>
-                  <span style={{ color: theme.textL1 }}>1</span> conversations were successfully deleted.
+                  <span style={{ color: theme.black0 }}>1</span> conversations were successfully deleted.
                 </Trans>
               </span>
             ),
             status: TOAST_STATUS.SUCCESS,
-            typeIcon: 'icon-chat-rubbish',
-            iconTheme: theme.ruby50,
+            typeIcon: 'icon-delete',
+            iconTheme: theme.black0,
           })
         }
         setCurrentDeleteThreadId('')
@@ -264,7 +264,7 @@ export default function ThreadItem({
       </span>
       {!isMobile && !isCurrentThread && (
         <span className='select-wrapper' onClick={(e) => deleteThread(threadId, e)}>
-          {isLoading ? <Pending text='' /> : <IconBase className='icon-chat-rubbish' />}
+          {isLoading ? <Pending text='' /> : <IconBase className='icon-delete' />}
         </span>
       )}
       {isOpenDeleteThread && (

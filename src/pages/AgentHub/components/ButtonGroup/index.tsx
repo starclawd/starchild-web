@@ -79,8 +79,8 @@ const GroupButton = styled(BaseButton)<{ $active: boolean }>`
   padding: 6px 12px;
   border-radius: 8px;
   border: none;
-  background: ${({ theme, $active }) => ($active ? theme.bgT30 : theme.bgT10)};
-  color: ${({ theme, $active }) => ($active ? theme.textL1 : theme.textL3)};
+  background: ${({ theme, $active }) => ($active ? theme.black600 : theme.black900)};
+  color: ${({ theme, $active }) => ($active ? theme.black0 : theme.black200)};
   font-size: 13px;
   line-height: 20px;
   font-weight: 500;
@@ -89,8 +89,8 @@ const GroupButton = styled(BaseButton)<{ $active: boolean }>`
   white-space: nowrap;
 
   &:hover {
-    color: ${({ theme }) => theme.textL1};
-    background: ${({ theme }) => theme.bgT30};
+    color: ${({ theme }) => theme.black0};
+    background: ${({ theme }) => theme.black600};
     opacity: ${({ $active }) => ($active ? 1 : 0.6)};
   }
 

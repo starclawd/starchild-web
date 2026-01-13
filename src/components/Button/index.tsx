@@ -50,15 +50,16 @@ export const BaseButton = styled.span<{
 
 export const ButtonCommon = styled(BaseButton)<{ $pending?: boolean; $disabled?: boolean }>`
   width: 100%;
-  height: 60px;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 24px;
+  height: 40px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px;
   padding: 8px;
   transition: all ${ANI_DURATION}s;
-  color: ${({ theme }) => theme.textL1};
-  border-radius: 60px;
-  background: ${({ theme }) => theme.brand200};
+  color: ${({ theme }) => theme.black1000};
+  border-radius: 4px;
+  background: ${({ theme }) => theme.brand100};
   ${({ theme, $disabled, $pending }) =>
     theme.isMobile
       ? css`
@@ -81,24 +82,34 @@ export const ButtonCommon = styled(BaseButton)<{ $pending?: boolean; $disabled?:
   ${({ theme, $pending, $disabled }) =>
     ($pending || $disabled) &&
     css`
-      color: ${theme.textL3};
+      color: ${theme.black100};
       cursor: not-allowed;
-      background: ${theme.bgT20};
+      background: ${theme.black600};
     `}
 `
 
 export const ButtonBorder = styled(BaseButton)<{ $pending?: boolean; $disabled?: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
   width: 100%;
-  height: 60px;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 24px;
-  padding: 8px;
+  height: 40px;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  padding: 0 12px;
   transition: all ${ANI_DURATION}s;
-  color: ${({ theme }) => theme.textL1};
-  border-radius: 60px;
+  color: ${({ theme }) => theme.black200};
+  border-radius: 4px;
   background: transparent;
-  border: 1px solid ${({ theme }) => theme.bgT30};
+  border: 1px solid ${({ theme }) => theme.black800};
+  i {
+    font-size: 18px;
+    transition: all ${ANI_DURATION}s;
+    color: ${({ theme }) => theme.black200};
+  }
   ${({ theme, $disabled, $pending }) =>
     theme.isMobile
       ? css`
@@ -114,10 +125,20 @@ export const ButtonBorder = styled(BaseButton)<{ $pending?: boolean; $disabled?:
           !$pending &&
           css`
             &:hover {
-              opacity: 0.7;
+              color: ${({ theme }) => theme.black0};
+              border-color: ${({ theme }) => theme.black400};
+              i {
+                color: ${({ theme }) => theme.black0};
+              }
             }
           `}
         `}
+  ${({ theme, $pending, $disabled }) =>
+    ($pending || $disabled) &&
+    css`
+      cursor: not-allowed;
+      opacity: 0.7;
+    `}
 `
 
 export const HomeButton = styled(BaseButton)`
@@ -161,7 +182,7 @@ const StyledIconButton = styled(ButtonCommon)<{
   align-items: center;
   width: fit-content;
   background: transparent;
-  color: ${({ theme, $color }) => ($color ? $color : theme.textL3)};
+  color: ${({ theme, $color }) => ($color ? $color : theme.black200)};
 
   /* Size variations - 目前都使用 medium 尺寸 */
   ${({ $size = 'medium' }) => {
@@ -216,12 +237,12 @@ const StyledIconButton = styled(ButtonCommon)<{
 
   .pending-wrapper {
     .icon-loading {
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
     }
   }
 
   &:hover {
-    background: ${({ theme }) => theme.bgT30};
+    background: ${({ theme }) => theme.black600};
     opacity: 1;
   }
 
@@ -277,6 +298,7 @@ export const IconButton = memo<IconButtonProps>(
   ({ icon, size = 'medium', color, pending, onClick, disabled, ...restProps }) => {
     return (
       <StyledIconButton
+        className='styled-icon-button'
         as='button'
         $size={size}
         $color={color}

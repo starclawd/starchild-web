@@ -21,19 +21,19 @@ const Header = styled.div`
   justify-content: space-between;
   padding: ${vm(16)} ${vm(20)};
   background: ${({ theme }) => theme.bgL2};
-  border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
+  border-bottom: 1px solid ${({ theme }) => theme.black800};
   flex-shrink: 0;
 
   h1 {
     font-size: 0.2rem;
     font-weight: 600;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin: 0;
   }
 
   .subtitle {
     font-size: 0.12rem;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     margin-top: ${vm(4)};
   }
 `
@@ -41,7 +41,7 @@ const Header = styled.div`
 const TabBar = styled.div`
   display: flex;
   background: ${({ theme }) => theme.bgL2};
-  border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
+  border-bottom: 1px solid ${({ theme }) => theme.black800};
   flex-shrink: 0;
   overflow-x: auto;
 
@@ -55,7 +55,7 @@ const TabItem = styled.div<{ $active: boolean }>`
   padding: ${vm(12)} ${vm(20)};
   font-size: 0.14rem;
   font-weight: 500;
-  color: ${({ theme, $active }) => ($active ? theme.brand100 : theme.textL2)};
+  color: ${({ theme, $active }) => ($active ? theme.brand100 : theme.black100)};
   background: ${({ theme, $active }) => ($active ? `${theme.brand100}15` : 'transparent')};
   border-bottom: ${vm(2)} solid ${({ theme, $active }) => ($active ? theme.brand100 : 'transparent')};
   cursor: pointer;
@@ -112,13 +112,13 @@ const WelcomeScreen = styled.div`
   .welcome-title {
     font-size: 0.24rem;
     font-weight: 600;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin-bottom: ${vm(12)};
   }
 
   .welcome-desc {
     font-size: 0.16rem;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     line-height: 1.6;
     margin-bottom: ${vm(30)};
   }
@@ -132,7 +132,7 @@ const WelcomeScreen = styled.div`
       align-items: center;
       margin-bottom: ${vm(15)};
       font-size: 0.14rem;
-      color: ${({ theme }) => theme.textL2};
+      color: ${({ theme }) => theme.black100};
 
       .feature-icon {
         margin-right: ${vm(12)};
@@ -167,8 +167,8 @@ const WelcomeScreen = styled.div`
 const BackButton = styled.button`
   padding: ${vm(8)} ${vm(12)};
   background: transparent;
-  color: ${({ theme }) => theme.textL2};
-  border: 1px solid ${({ theme }) => theme.lineDark8};
+  color: ${({ theme }) => theme.black100};
+  border: 1px solid ${({ theme }) => theme.black800};
   border-radius: ${vm(6)};
   font-size: 0.12rem;
   cursor: pointer;

@@ -10,42 +10,47 @@ import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import {
   useAccountManegeModalToggle,
-  useCurrentRouter,
   useIsMobile,
   useIsShowMobileMenu,
   usePreferenceModalToggle,
+  useConnectWalletModalToggle,
+  useSetCurrentRouter,
 } from 'store/application/hooks'
 import { useWindowSize } from 'hooks/useWindowSize'
 import { MOBILE_DESIGN_WIDTH } from 'constants/index'
 import { ROUTER } from 'pages/router'
+import { useDisconnect } from '@reown/appkit/react'
+import { ANI_DURATION } from 'constants/index'
 
 const AvatarWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   font-size: 12px;
   font-weight: 500;
   line-height: 16px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   cursor: pointer;
-  .select-border-wrapper {
-    padding: 0;
-    border: none;
+  .select-wrapper {
+    height: 32px;
+  }
+  .select-value-wrapper {
+    justify-content: center;
   }
   .avatar-img {
     flex-shrink: 0;
-    width: 40px;
-    height: 40px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     object-fit: cover;
   }
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      width: ${vm(40)};
-      height: ${vm(40)};
+      width: ${vm(32)};
+      height: ${vm(32)};
       font-size: 0.12rem;
       line-height: 0.16rem;
     `}
@@ -55,18 +60,16 @@ const LoginWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  border: 1px dashed ${({ theme }) => theme.brand200};
-  .icon-user-login {
+  width: 32px;
+  height: 32px;
+  .icon-menu-login {
     font-size: 32px;
-    color: ${({ theme }) => theme.brand200};
+    color: ${({ theme }) => theme.brand100};
   }
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      .icon-user-login {
+      .icon-menu-login {
         font-size: 0.32rem;
       }
     `}
@@ -75,14 +78,22 @@ const LoginWrapper = styled.div`
 const Customise = styled.div`
   display: flex;
   align-items: center;
-  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 8px;
   gap: 6px;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 20px;
-  color: ${({ theme }) => theme.textL2};
+  transition: all ${ANI_DURATION}s;
+  color: ${({ theme }) => theme.black100};
   i {
+    transition: all ${ANI_DURATION}s;
     font-size: 18px;
+    color: ${({ theme }) => theme.black100};
+  }
+  &:hover {
+    color: ${({ theme }) => theme.black0};
+    i {
+      color: ${({ theme }) => theme.black0};
+    }
   }
   ${({ theme }) =>
     theme.isMobile &&
@@ -99,6 +110,9 @@ const Preference = styled(Customise)``
 
 const Logout = styled(Customise)`
   color: ${({ theme }) => theme.red100};
+  i {
+    color: ${({ theme }) => theme.red100};
+  }
 `
 
 export default function LoginButton() {
@@ -107,22 +121,26 @@ export default function LoginButton() {
   const isMobile = useIsMobile()
   const { width } = useWindowSize()
   const [, setAuthToken] = useAuthToken()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const [, setIsShowMobileMenu] = useIsShowMobileMenu()
   const togglePreferenceModal = usePreferenceModalToggle()
   const toggleAccountManegeModal = useAccountManegeModalToggle()
   const [{ userName, userAvatar }] = useUserInfo()
-  const logout = useCallback(() => {
+  const { disconnect } = useDisconnect()
+  const toggleConnectWalletModal = useConnectWalletModalToggle()
+  const logout = useCallback(async () => {
+    await disconnect()
     setAuthToken('')
-    window.location.href = '/'
-  }, [setAuthToken])
+    window.location.reload()
+  }, [setAuthToken, disconnect])
+
   const selectList = useMemo(() => {
     return [
       {
         key: 'Account',
         text: (
           <Preference>
-            <IconBase className='icon-customize-avatar' />
+            <IconBase className='icon-account' />
             <Trans>Account</Trans>
           </Preference>
         ),
@@ -160,9 +178,9 @@ export default function LoginButton() {
     ]
   }, [logout, setIsShowMobileMenu, toggleAccountManegeModal, togglePreferenceModal])
 
-  const goHomePage = useCallback(() => {
-    setCurrentRouter(`${ROUTER.HOME}?login=1`)
-  }, [setCurrentRouter])
+  const handleLogin = useCallback(() => {
+    toggleConnectWalletModal()
+  }, [toggleConnectWalletModal])
   return (
     <AvatarWrapper>
       {isLogin ? (
@@ -174,26 +192,26 @@ export default function LoginButton() {
           triggerMethod={TriggerMethod.CLICK}
           placement='top-end'
           value=''
-          dataList={selectList}
-          popItemHoverBg={theme.bgT20}
-          borderWrapperBg='transparent'
-          popStyle={{
-            width: isMobile ? vm(160) : '160px',
-            boxShadow: 'none',
+          popItemStyle={{
+            padding: '0',
           }}
+          popItemTextStyle={{
+            width: '100%',
+          }}
+          dataList={selectList}
         >
           {userAvatar ? (
             <img className='avatar-img' src={userAvatar} alt='avatar' />
           ) : (
             <Avatar
               name={userName || ''}
-              size={isMobile ? (40 / MOBILE_DESIGN_WIDTH) * (width || MOBILE_DESIGN_WIDTH) : 40}
+              size={isMobile ? (24 / MOBILE_DESIGN_WIDTH) * (width || MOBILE_DESIGN_WIDTH) : 24}
             />
           )}
         </Select>
       ) : (
-        <LoginWrapper onClick={goHomePage}>
-          <IconBase className='icon-user-login' />
+        <LoginWrapper onClick={handleLogin}>
+          <IconBase className='icon-menu-login' />
         </LoginWrapper>
       )}
     </AvatarWrapper>

@@ -75,12 +75,12 @@ const IconWrapper = styled.div`
   .icon-chat-delete {
     font-size: 24px;
     transition: all ${ANI_DURATION}s;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
   &:hover {
-    background-color: ${({ theme }) => theme.bgT20};
+    background-color: ${({ theme }) => theme.black800};
     .icon-chat-delete {
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
     }
   }
 `
@@ -135,7 +135,7 @@ export default function DeepThinkDetail() {
   return (
     <DeepThinkInnerContent className='deep-think-inner-content'>
       <TabWrapper>
-        <MoveTabList tabIndex={tabIndex} tabList={tabList} />
+        <MoveTabList tabKey={tabIndex} tabList={tabList} />
         {!isMobile && (
           <IconWrapper onClick={() => setIsShowDeepThink(false)}>
             <IconBase className='icon-chat-delete' />

@@ -24,6 +24,7 @@ export default function Tooltip({
   widthAuto = true,
   ignoreTooltipConfig = false,
   showTooltipWrapper = true,
+  disablePointerEvents = false,
   ...rest
 }: Omit<TooltipContentProps, 'show'>) {
   const isMobile = useIsMobile()
@@ -44,6 +45,7 @@ export default function Tooltip({
         widthAuto={widthAuto}
         placement={placement}
         emptyContent={!content}
+        disablePointerEvents={disablePointerEvents}
         content={
           <ContentWrapper onClick={childClick} style={{ ...contentStyle }}>
             {content}
@@ -65,6 +67,7 @@ export default function Tooltip({
       widthAuto={widthAuto}
       placement={placement}
       emptyContent={!content}
+      disablePointerEvents={disablePointerEvents}
       content={
         <ContentWrapper
           $canOperator={canOperator}

@@ -18,6 +18,8 @@ export interface ParsedQueryDataType {
   // Agent Hub 视图模式参数
   viewMode?: string
   threadId?: string
+  // Vault详情页的strategyId参数
+  strategyId?: string
 }
 
 export function parsedQueryString(search?: string): ParsedQueryDataType {

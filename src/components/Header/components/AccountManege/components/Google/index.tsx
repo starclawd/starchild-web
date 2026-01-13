@@ -1,5 +1,4 @@
 import styled, { css } from 'styled-components'
-import Icon from '../Icon'
 import { useBindGoogle, useGetUserInfo, useUserInfo } from 'store/login/hooks'
 import { useCallback, useState } from 'react'
 import { googleOneTapLogin } from 'utils/googleAuth'
@@ -8,16 +7,27 @@ import { useGoogleLoginErrorHandler } from 'hooks/useGoogleLoginErrorHandler'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { Trans } from '@lingui/react/macro'
 import { useTheme } from 'store/themecache/hooks'
+import { IconBase } from 'components/Icons'
+import { ANI_DURATION } from 'constants/index'
 
 const GoogleWrapper = styled.div`
   display: flex;
+  .icon-menu-chat {
+    cursor: pointer;
+    font-size: 18px;
+    transition: all ${ANI_DURATION}s;
+    color: ${({ theme }) => theme.black200};
+    &:hover {
+      color: ${({ theme }) => theme.black0};
+    }
+  }
 `
 
 const Email = styled.span`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -47,7 +57,7 @@ export default function Google() {
             description: data.error.data.message,
             status: TOAST_STATUS.ERROR,
             typeIcon: 'icon-customize-avatar',
-            iconTheme: theme.ruby50,
+            iconTheme: theme.black0,
           })
         } else {
           await triggerGetUserInfo()
@@ -56,7 +66,7 @@ export default function Google() {
             description: data.data.email || '',
             status: TOAST_STATUS.SUCCESS,
             typeIcon: 'icon-customize-avatar',
-            iconTheme: theme.textL1,
+            iconTheme: theme.black0,
           })
         }
       })
@@ -74,7 +84,7 @@ export default function Google() {
         isLoading ? (
           <Pending />
         ) : (
-          <Icon iconName='icon-chat-upload' onClick={handleGoogleBind} />
+          <IconBase className='icon-menu-chat' onClick={handleGoogleBind} />
         )
       ) : (
         <Email>{email}</Email>

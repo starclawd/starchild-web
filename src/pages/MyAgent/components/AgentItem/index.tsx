@@ -7,7 +7,7 @@ import AgentOperator from '../AgentOperator'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import AgentStatus from 'pages/AgentDetail/components/AgentStatus'
 import { useBacktestData, useGetBacktestData } from 'store/agentdetail/hooks'
-import { useCurrentRouter, useIsMobile, useIsShowMobileMenu } from 'store/application/hooks'
+import { useIsMobile, useIsShowMobileMenu, useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import { useTimezone } from 'store/timezonecache/hooks'
 import { ANI_DURATION } from 'constants/index'
@@ -22,7 +22,7 @@ const AgentItemWrapper = styled.div<{ $isSelected: boolean }>`
   padding: 8px;
   border-radius: 8px;
   transition: all ${ANI_DURATION}s;
-  background-color: ${({ theme }) => theme.black700};
+  background-color: ${({ theme }) => theme.black600};
   ${({ theme }) =>
     theme.isMobile
       ? css`
@@ -60,7 +60,7 @@ const Title = styled.span`
   font-size: 13px;
   font-weight: 500;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -73,7 +73,7 @@ const Time = styled.span`
   font-size: 11px;
   font-weight: 400;
   line-height: 16px;
-  color: ${({ theme }) => theme.textL4};
+  color: ${({ theme }) => theme.black300};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -90,7 +90,7 @@ export default function AgentItem({
   fromPage?: 'myagents' | 'insights'
 }) {
   const [timezone] = useTimezone()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const isMobile = useIsMobile()
   const [, setBacktestData] = useBacktestData()
   const [, setIsShowMobileMenu] = useIsShowMobileMenu()

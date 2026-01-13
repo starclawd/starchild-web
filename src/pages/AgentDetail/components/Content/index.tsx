@@ -14,7 +14,7 @@ import {
   useIsGeneratingCode,
   useIsRunningBacktestAgent,
 } from 'store/agentdetail/hooks'
-import AiInput from 'pages/Chat/components/AiInput'
+import AiInput from 'pages/Chat/components/ChatInput'
 
 const AgentDetailContentWrapper = styled.div`
   display: flex;
@@ -115,7 +115,7 @@ export default function AgentDetailContent({
   return (
     <AgentDetailContentWrapper>
       {isLoading ? (
-        <Pending isFetching />
+        <Pending isNotButtonLoading />
       ) : (
         <>
           <Left $shouldExpandRightSection={shouldExpandRightSection}>
@@ -134,7 +134,7 @@ export default function AgentDetailContent({
             </LeftContent>
           </Left>
           <Right $shouldExpandRightSection={shouldExpandRightSection}>
-            {/* <Title $borderColor={theme.lineDark8}>
+            {/* <Title $borderColor={theme.black800}>
               <IconBase className='icon-task-detail' />
               <Trans>Agent details</Trans>
             </Title> */}

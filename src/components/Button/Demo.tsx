@@ -7,23 +7,23 @@ import Pending from 'components/Pending'
 const DemoContainer = styled.div`
   padding: 20px;
   background: ${({ theme }) => theme.bgL1};
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   min-height: 100vh;
 
   h2 {
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin-bottom: 20px;
     font-size: 24px;
   }
 
   h3 {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     margin-bottom: 15px;
     font-size: 18px;
   }
 
   p {
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     margin-bottom: 15px;
     line-height: 1.6;
   }
@@ -33,19 +33,19 @@ const DemoSection = styled.div`
   margin-bottom: 40px;
 
   h2 {
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin-bottom: 20px;
     font-size: 24px;
   }
 
   h3 {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     margin-bottom: 15px;
     font-size: 18px;
   }
 
   p {
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     margin-bottom: 15px;
     line-height: 1.6;
   }
@@ -69,12 +69,12 @@ const DemoRow = styled.div`
 
     .label {
       font-weight: 600;
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
       margin-bottom: 5px;
     }
 
     .description {
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
       font-size: 14px;
     }
   }
@@ -107,14 +107,14 @@ const CustomButton = styled(BaseButton)<{
       case 'primary':
         return `
           background: ${theme.brand100};
-          color: ${theme.textDark98};
+          color: ${theme.black0};
           &:hover { background: ${theme.brand100}; }
         `
       case 'secondary':
         return `
-          background: ${theme.textL3};
-          color: ${theme.textDark98};
-          &:hover { background: ${theme.textL2}; }
+          background: ${theme.black200};
+          color: ${theme.black0};
+          &:hover { background: ${theme.black100}; }
         `
       case 'success':
         return `
@@ -137,8 +137,8 @@ const CustomButton = styled(BaseButton)<{
       default:
         return `
           background: ${theme.bgL2};
-          color: ${theme.textL1};
-          border: 1px solid ${theme.lineDark8};
+          color: ${theme.black0};
+          border: 1px solid ${theme.black800};
           &:hover { background: ${theme.bgL1}; }
         `
     }
@@ -151,7 +151,7 @@ const CustomButton = styled(BaseButton)<{
 
 const SizeButton = styled(BaseButton)<{ size?: 'small' | 'medium' | 'large' }>`
   background: ${({ theme }) => theme.brand100};
-  color: ${({ theme }) => theme.textDark98};
+  color: ${({ theme }) => theme.black0};
   border: none;
   border-radius: 6px;
   cursor: pointer;
@@ -220,7 +220,7 @@ const LoadingButton = styled(CustomButton)`
 
 const CodeBlock = styled.pre`
   background: ${({ theme }) => theme.bgL2};
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   padding: 15px;
   border-radius: 8px;
   overflow-x: auto;
@@ -232,7 +232,7 @@ const CodeBlock = styled.pre`
 
 const PropsTable = styled.div`
   background: ${({ theme }) => theme.bgL2};
-  border: 1px solid ${({ theme }) => theme.lineDark8};
+  border: 1px solid ${({ theme }) => theme.black800};
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 20px;
@@ -243,10 +243,10 @@ const PropsTableHeader = styled.div`
   grid-template-columns: 1fr 1fr 1fr 2fr;
   gap: 15px;
   font-weight: 600;
-  border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
+  border-bottom: 1px solid ${({ theme }) => theme.black800};
   padding-bottom: 10px;
   margin-bottom: 15px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 `
 
 const PropsTableRow = styled.div`
@@ -255,7 +255,7 @@ const PropsTableRow = styled.div`
   gap: 15px;
   align-items: center;
   padding: 8px 0;
-  border-bottom: 1px solid ${({ theme }) => theme.lineDark8}10;
+  border-bottom: 1px solid ${({ theme }) => theme.black800}10;
 
   &:last-child {
     border-bottom: none;
@@ -268,13 +268,13 @@ const PropsTableCell = styled.div<{ type?: 'prop' | 'type' | 'default' | 'desc' 
   color: ${({ theme, type }) => {
     switch (type) {
       case 'prop':
-        return theme.textL1
+        return theme.black0
       case 'type':
         return theme.brand100
       case 'default':
-        return theme.textL3
+        return theme.black200
       default:
-        return theme.textL2
+        return theme.black100
     }
   }};
 `
@@ -513,7 +513,7 @@ const ButtonDemo = () => {
         >
           <IconButton icon='icon-chat-share' onClick={() => alert('分享')} />
           <IconButton icon='icon-chat-stop-play' onClick={() => alert('停止/播放')} />
-          <IconButton icon='icon-chat-rubbish' color='#ff4444' onClick={() => alert('删除')} />
+          <IconButton icon='icon-delete' color='#ff4444' onClick={() => alert('删除')} />
           <IconButton icon='icon-chat-upload' color='#44ff44' onClick={() => alert('添加')} />
           <IconButton icon='icon-chat-share' pending onClick={() => console.log('加载中...')} />
         </div>
@@ -555,7 +555,7 @@ const ButtonDemo = () => {
           {`// 基本用法
 <IconButton icon='icon-chat-share' onClick={() => alert('分享')} />
 <IconButton icon='icon-chat-stop-play' onClick={() => alert('停止/播放')} />
-<IconButton icon='icon-chat-rubbish' color='#ff4444' onClick={() => alert('删除')} />
+<IconButton icon='icon-delete' color='#ff4444' onClick={() => alert('删除')} />
 
 // 不同尺寸
 <IconButton icon='icon-chat-share' size='small' onClick={() => alert('小尺寸')} />
@@ -773,7 +773,7 @@ const ButtonDemo = () => {
           <PropsTableRow>
             <PropsTableCell type='prop'>color</PropsTableCell>
             <PropsTableCell type='type'>string</PropsTableCell>
-            <PropsTableCell type='default'>theme.textL3</PropsTableCell>
+            <PropsTableCell type='default'>theme.black200</PropsTableCell>
             <PropsTableCell type='desc'>图标颜色</PropsTableCell>
           </PropsTableRow>
 

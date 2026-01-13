@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
-import { useCurrentRouter, useIsMobile, useIsShowMobileMenu } from 'store/application/hooks'
+import { useIsMobile, useIsShowMobileMenu, useSetCurrentRouter } from 'store/application/hooks'
 import {
   useGetSystemSignalAgents,
   useSystemSignalAgents,
@@ -20,7 +20,7 @@ import NoData from 'components/NoData'
 const InsightsWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: auto;
   height: 100%;
   gap: 8px;
   outline: none;
@@ -44,8 +44,8 @@ const Overview = styled(ButtonCommon)`
   border-radius: ${vm(6)};
   font-size: 0.13rem;
   line-height: 0.2rem;
-  color: ${({ theme }) => theme.textL2};
-  background: ${({ theme }) => theme.bgT10};
+  color: ${({ theme }) => theme.black100};
+  background: ${({ theme }) => theme.black900};
 `
 
 const InsightList = styled.div`
@@ -63,7 +63,7 @@ const InsightList = styled.div`
 
 export default function Insights() {
   const isMobile = useIsMobile()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const [, setIsShowMobileMenu] = useIsShowMobileMenu()
   const { agentId: insightId } = useParsedQueryString()
   const [systemSignalList] = useSystemSignalAgents()
@@ -162,7 +162,7 @@ export default function Insights() {
   const showOverview = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
       e.stopPropagation()
-      setCurrentRouter(ROUTER.INSIGHTS)
+      setCurrentRouter(ROUTER.SIGNALS)
       setIsShowMobileMenu(false)
     },
     [setCurrentRouter, setIsShowMobileMenu],
@@ -170,11 +170,6 @@ export default function Insights() {
 
   return (
     <InsightsWrapper ref={wrapperRef} tabIndex={0} onClick={handleWrapperClick}>
-      {isMobile && (
-        <Overview onClick={showOverview}>
-          <Trans>Overview</Trans>
-        </Overview>
-      )}
       <InsightList className={isMobile ? '' : 'scroll-style'} ref={isMobile ? undefined : scrollRef}>
         {sortInsights.length > 0 ? (
           sortInsights.map((item) => {

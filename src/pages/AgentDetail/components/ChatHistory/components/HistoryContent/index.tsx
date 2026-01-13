@@ -68,7 +68,7 @@ const Title = styled.div`
     font-size: 26px;
     font-weight: 500;
     line-height: 34px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     em {
       font-style: normal;
     }
@@ -85,7 +85,7 @@ const UpdateTime = styled.div`
   font-size: 13px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -98,7 +98,7 @@ const Content = styled.div`
   font-size: 16px;
   font-weight: 400;
   line-height: 26px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -114,10 +114,10 @@ const CopyWrapper = styled.div`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
-  .icon-chat-copy {
+  color: ${({ theme }) => theme.black200};
+  .icon-copy {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
   ${({ theme }) =>
     theme.isMobile
@@ -125,7 +125,7 @@ const CopyWrapper = styled.div`
           gap: ${vm(4)};
           font-size: 0.14rem;
           line-height: 0.2rem;
-          .icon-chat-copy {
+          .icon-copy {
             font-size: 0.18rem;
           }
         `
@@ -155,7 +155,7 @@ export default function ChatHistoryContent({ list }: { list: any[] }) {
           const messageContent = splitContent.slice(1).join('\n\n')
           const formatTime = dayjs.tz(updateTime, timezone).format('YYYY-MM-DD HH:mm:ss')
           return (
-            <ChatHistoryItem key={index} $borderColor={theme.lineDark8}>
+            <ChatHistoryItem key={index} $borderColor={theme.black800}>
               <ContentWrapper
                 ref={(el) => {
                   contentRefs.current[index] = el
@@ -172,7 +172,7 @@ export default function ChatHistoryContent({ list }: { list: any[] }) {
                 </Content>
               </ContentWrapper>
               <CopyWrapper onClick={() => handleCopy(index)}>
-                <IconBase className='icon-chat-copy' />
+                <IconBase className='icon-copy' />
                 <Trans>Copy</Trans>
               </CopyWrapper>
               <AgentTriggerItemFeedback triggerHistory={item} />

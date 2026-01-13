@@ -6,21 +6,20 @@ import { useWindowSize } from 'hooks/useWindowSize'
 import { MEDIA_WIDTHS } from 'theme/styled'
 import { useCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
-import { useActiveTab } from 'store/insights/hooks'
-import { INSIGHTS_ACTIVE_TAB } from 'store/insights/insights'
 
 export function useIsFixMenu(): [boolean, (newIsFixMenu: boolean) => void] {
   const dispatch = useDispatch()
   const { width } = useWindowSize()
-  const [currentRouter] = useCurrentRouter()
-  const [activeTab] = useActiveTab()
+  const currentRouter = useCurrentRouter()
   const isFixMenu = useSelector((state: RootState) => state.headercache.isFixMenu)
   const dontUseFixMenu =
-    !!(width && width < MEDIA_WIDTHS.minWidth1440) ||
+    !!(width && width < MEDIA_WIDTHS.width1440) ||
     currentRouter.includes(ROUTER.USE_CASES) ||
-    currentRouter.includes('agentmarket') ||
     currentRouter.includes('documents') ||
-    (currentRouter.includes(ROUTER.INSIGHTS) && activeTab === INSIGHTS_ACTIVE_TAB.LIVECHAT)
+    currentRouter.includes(ROUTER.VAULTS) ||
+    currentRouter.includes(ROUTER.VAULT_DETAIL) ||
+    currentRouter.includes(ROUTER.AGENT_DETAIL) ||
+    currentRouter.includes(ROUTER.CREATE_STRATEGY)
   const setIsFixMenu = useCallback(
     (newIsFixMenu: boolean) => {
       dispatch(updateIsFixMenu(newIsFixMenu))
@@ -28,7 +27,7 @@ export function useIsFixMenu(): [boolean, (newIsFixMenu: boolean) => void] {
     [dispatch],
   )
 
-  return [isFixMenu && !dontUseFixMenu, setIsFixMenu]
+  return [false, setIsFixMenu]
 }
 
 export function useCurrentActiveNavKey(): [string, (newCurrentActiveNavKey: string) => void] {

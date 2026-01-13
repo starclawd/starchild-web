@@ -31,14 +31,14 @@ const BottomWrapper = styled.div`
   width: 100%;
   margin-top: 20px;
   padding-top: 20px;
-  border-top: 1px solid ${({ theme }) => theme.lineDark6};
+  border-top: 1px solid ${({ theme }) => theme.black800};
 `
 
 const TableWrapper = styled.div`
   display: flex;
   margin-top: 20px;
   padding-top: 20px;
-  border-top: 1px solid ${({ theme }) => theme.lineDark6};
+  border-top: 1px solid ${({ theme }) => theme.black800};
 `
 
 export default function BackTest({ backtestData }: { backtestData: BacktestDataType }) {
@@ -71,7 +71,7 @@ export default function BackTest({ backtestData }: { backtestData: BacktestDataT
     }
   }, [])
   return (
-    <BackTestWrapper ref={backTestWrapperRef as any} $borderRadius={24} $borderColor={theme.bgT30}>
+    <BackTestWrapper ref={backTestWrapperRef as any} $borderRadius={24} $borderColor={theme.black600}>
       <CryptoChart
         symbol={propSymbol}
         ref={cryptoChartRef as any}

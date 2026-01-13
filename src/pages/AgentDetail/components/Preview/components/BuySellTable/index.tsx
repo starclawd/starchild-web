@@ -12,26 +12,26 @@ import { toFix } from 'utils/calc'
 const BuySellTableWrapper = styled.div`
   display: flex;
   .header-container {
-    display: flex;
-    align-items: center;
     height: 40px;
-    border-radius: 8px;
-    background-color: ${({ theme }) => theme.bgT20};
     th {
       &:first-child {
         padding-left: 12px;
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
       }
       &:last-child {
         text-align: left;
         padding-right: 12px;
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
       }
     }
   }
-  .table-scroll-container {
+  .table-body {
     /* padding: 0 12px; */
     .table-row {
       height: 40px;
-      border-bottom: 1px solid ${({ theme }) => theme.lineDark6};
+      border-bottom: 1px solid ${({ theme }) => theme.black800};
       td {
         &:first-child {
           padding-left: 12px;
@@ -49,7 +49,7 @@ const BuySellTableWrapper = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      .table-scroll-container {
+      .table-body {
         .table-row {
           height: 32px;
         }
@@ -116,6 +116,7 @@ export default function BuySellTable({ backtestData }: { backtestData: BacktestD
     <BuySellTableWrapper>
       <Table
         showPagination
+        showPageSizeSelector={false}
         pageIndex={pageIndex}
         totalSize={detailsList.length}
         pageSize={10}

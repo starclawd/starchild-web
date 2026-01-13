@@ -46,7 +46,7 @@ const ErrorDisplay = styled.pre`
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
   font-size: 13px;
   line-height: 1.6;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   white-space: pre-wrap;
   word-wrap: break-word;
   margin: 0;
@@ -102,7 +102,7 @@ export default function BacktestView({
   if (isRunningBacktestAgent) {
     return (
       <BacktestViewWrapper>
-        <Pending isFetching />
+        <Pending isNotButtonLoading />
       </BacktestViewWrapper>
     )
   }

@@ -41,8 +41,8 @@ export function useShareActions({ data, onShare, onShareLink, onClose }: UseShar
       title: 'Error',
       description: 'Agent not found',
       status: TOAST_STATUS.ERROR,
-      typeIcon: 'icon-chat-close',
-      iconTheme: theme.ruby50,
+      typeIcon: 'icon-close',
+      iconTheme: theme.black0,
     })
   }, [toast, theme])
 
@@ -83,7 +83,7 @@ export function useShareActions({ data, onShare, onShareLink, onClose }: UseShar
     return [
       {
         type: ActionType.SHARE_LINK,
-        icon: 'icon-chat-copy',
+        icon: 'icon-copy',
         label: 'Copy link',
         onClick: handleShareLink,
         visible: true,

@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 import Modal from 'components/Modal'
 import BottomSheet from 'components/BottomSheet'
-import { useCreateAgentModalToggle, useCurrentRouter, useIsMobile, useModalOpen } from 'store/application/hooks'
+import { useCreateAgentModalToggle, useIsMobile, useModalOpen, useSetCurrentRouter } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
 import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import { Trans } from '@lingui/react/macro'
@@ -49,7 +49,7 @@ const Header = styled.div`
   font-size: 20px;
   font-weight: 500;
   line-height: 28px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -68,7 +68,7 @@ const ContentItem = styled.div`
     height: 120px !important;
     max-height: 120px !important;
     border-radius: 12px;
-    border: 1px solid ${({ theme }) => theme.bgT30};
+    border: 1px solid ${({ theme }) => theme.black800};
     background-color: ${({ theme }) => theme.black700};
     backdrop-filter: blur(8px);
     padding: 12px 16px;
@@ -109,7 +109,7 @@ const ContentTitle = styled.div`
   font-size: 13px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   .icon-required {
     font-size: 8px;
     color: ${({ theme }) => theme.autumn50};
@@ -174,8 +174,8 @@ const ButtonLoading = styled(ButtonBorder)`
   justify-content: center;
   gap: 8px;
   width: 100%;
-  color: ${({ theme }) => theme.textL1};
-  background: ${({ theme }) => theme.bgT20};
+  color: ${({ theme }) => theme.black0};
+  background: ${({ theme }) => theme.black800};
   cursor: not-allowed;
 
   .icon-loading {
@@ -203,7 +203,7 @@ export function CreateAgentModal() {
   const { agentId } = useParsedQueryString()
   const sendAiContent = useSendAiContent()
   const addNewThread = useAddNewThread()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const [currentEditAgentData, setCurrentEditAgentData] = useCurrentEditAgentData()
   const toggleCreateAgentModal = useCreateAgentModalToggle()
   const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)
@@ -245,7 +245,7 @@ export function CreateAgentModal() {
             title: t`Edit failed`,
             description: t`Failed to update Agent, please try again later`,
             status: TOAST_STATUS.ERROR,
-            typeIcon: 'icon-chat-close',
+            typeIcon: 'icon-close',
             iconTheme: '#EF4444',
           })
         }
@@ -255,7 +255,7 @@ export function CreateAgentModal() {
           title: t`Edit failed`,
           description: t`Failed to update Agent, please try again later`,
           status: TOAST_STATUS.ERROR,
-          typeIcon: 'icon-chat-close',
+          typeIcon: 'icon-close',
           iconTheme: '#EF4444',
         })
       }

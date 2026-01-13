@@ -53,7 +53,7 @@ const IconWrapper = styled.div<{ $showHover?: boolean }>`
   border-radius: 50%;
   font-size: 18px;
   transition: all ${ANI_DURATION}s;
-  color: ${({ theme }) => theme.textDark54};
+  color: ${({ theme }) => theme.black200};
   ${({ theme, $showHover }) =>
     theme.isMobile
       ? css`
@@ -66,7 +66,7 @@ const IconWrapper = styled.div<{ $showHover?: boolean }>`
           ${$showHover &&
           css`
             &:hover {
-              background-color: ${({ theme }) => theme.bgT20};
+              background-color: ${({ theme }) => theme.black800};
             }
           `}
         `}
@@ -180,20 +180,24 @@ function AgentOperator({
       e.stopPropagation()
       const newValue = !isShowTaskOperator
       setIsShowTaskOperator(newValue)
-      setIsPopoverOpen(newValue)
+      if (isMobile) {
+        setIsShowMobileMenu(false)
+      }
     },
-    [isShowTaskOperator, setIsPopoverOpen],
+    [isShowTaskOperator, isMobile, setIsShowMobileMenu],
   )
 
   const closeTaskOperator = useCallback(() => {
     setIsShowTaskOperator(false)
-    setIsPopoverOpen(false)
-  }, [setIsPopoverOpen])
+    if (isMobile) {
+      setIsShowMobileMenu(false)
+    }
+  }, [isMobile, setIsShowMobileMenu])
 
   return (
     <TopRight onClick={showTaskOperator} className='top-right'>
       {unreadCount > 0 && showTriggerTimes && (
-        <TriggerTimes $borderRadius={44} $borderColor={theme.bgT20}>
+        <TriggerTimes $borderRadius={44} $borderColor={theme.black800}>
           {unreadCount}
         </TriggerTimes>
       )}

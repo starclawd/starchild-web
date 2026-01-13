@@ -38,7 +38,7 @@ const ThinkItem = styled.div`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   .markdown-wrapper {
     font-size: 14px;
   }
@@ -46,7 +46,7 @@ const ThinkItem = styled.div`
     margin-top: 2px;
     flex-shrink: 0;
     font-size: 18px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   ${({ theme }) =>
     theme.isMobile &&
@@ -122,7 +122,7 @@ const ButtonStatus = styled.span<{ $status: WORKFLOW_STATUS }>`
   padding: 0 8px;
   margin-left: 4px;
   border-radius: 4px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   vertical-align: top;
   transform: translateY(2px);
   font-size: 12px;
@@ -151,7 +151,7 @@ const ButtonStatus = styled.span<{ $status: WORKFLOW_STATUS }>`
   ${({ $status }) =>
     $status === WORKFLOW_STATUS.COMPLETED &&
     css`
-      background: ${({ theme }) => theme.text20};
+      background: ${({ theme }) => theme.black500};
     `}
 `
 

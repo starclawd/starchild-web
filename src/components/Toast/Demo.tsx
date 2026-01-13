@@ -8,7 +8,7 @@ import { useIsMobile } from 'store/application/hooks'
 const DemoContainer = styled.div`
   padding: 20px;
   background: ${({ theme }) => theme.bgL1};
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   min-height: 100vh;
   position: relative;
 
@@ -20,7 +20,7 @@ const DemoContainer = styled.div`
     `}
 
   h2 {
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin-bottom: 20px;
     font-size: 24px;
 
@@ -33,7 +33,7 @@ const DemoContainer = styled.div`
   }
 
   h3 {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     margin-bottom: 15px;
     font-size: 18px;
 
@@ -46,7 +46,7 @@ const DemoContainer = styled.div`
   }
 
   p {
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     margin-bottom: 15px;
     line-height: 1.6;
     font-size: 14px;
@@ -70,7 +70,7 @@ const DemoSection = styled.div`
     `}
 
   h2 {
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin-bottom: 20px;
     font-size: 24px;
 
@@ -83,7 +83,7 @@ const DemoSection = styled.div`
   }
 
   h3 {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     margin-bottom: 15px;
     font-size: 18px;
 
@@ -96,7 +96,7 @@ const DemoSection = styled.div`
   }
 
   p {
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     margin-bottom: 15px;
     line-height: 1.6;
     font-size: 14px;
@@ -141,7 +141,7 @@ const ToastButton = styled.button<{ $variant?: 'success' | 'error' | 'warning' |
         case 'loading':
           return theme.brand100
         default:
-          return theme.lineDark8
+          return theme.black800
       }
     }};
   background: ${({ theme, $variant }) => {
@@ -173,7 +173,7 @@ const ToastButton = styled.button<{ $variant?: 'success' | 'error' | 'warning' |
       case 'loading':
         return theme.brand100
       default:
-        return theme.textL1
+        return theme.black0
     }
   }};
   border-radius: 8px;
@@ -240,11 +240,11 @@ const StatusBar = styled.div`
     }
 
     .label {
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
     }
 
     .value {
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
       font-weight: 500;
       font-family: monospace;
     }
@@ -268,8 +268,8 @@ const ControlsArea = styled.div`
 const ControlButton = styled.button<{ $active?: boolean }>`
   padding: 8px 16px;
   background: ${({ theme, $active }) => ($active ? theme.brand100 : theme.bgL1)};
-  color: ${({ theme, $active }) => ($active ? 'white' : theme.textL1)};
-  border: 1px solid ${({ theme, $active }) => ($active ? theme.brand100 : theme.lineDark8)};
+  color: ${({ theme, $active }) => ($active ? 'white' : theme.black0)};
+  border: 1px solid ${({ theme, $active }) => ($active ? theme.brand100 : theme.black800)};
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -322,7 +322,7 @@ const CustomInputArea = styled.div`
       margin-bottom: 8px;
       font-size: 14px;
       font-weight: 500;
-      color: ${({ theme }) => theme.textL2};
+      color: ${({ theme }) => theme.black100};
 
       ${({ theme }) =>
         theme.isMobile &&
@@ -338,9 +338,9 @@ const CustomInputArea = styled.div`
       width: 100%;
       padding: 10px 12px;
       background: ${({ theme }) => theme.bgL1};
-      border: 1px solid ${({ theme }) => theme.lineDark8};
+      border: 1px solid ${({ theme }) => theme.black800};
       border-radius: 6px;
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
       font-size: 14px;
 
       ${({ theme }) =>
@@ -373,7 +373,7 @@ const CustomInputArea = styled.div`
 
 const CodeBlock = styled.pre`
   background: ${({ theme }) => theme.bgL2};
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   border-radius: 8px;
   padding: 15px;
   margin: 15px 0;
@@ -410,15 +410,15 @@ const ToastDemo = () => {
       description: '您的操作已成功完成',
       status: TOAST_STATUS.SUCCESS,
       typeIcon: 'icon-chat-complete',
-      iconTheme: theme.jade10,
+      iconTheme: theme.black0,
       variant: 'success' as const,
     },
     {
       title: '操作失败',
       description: '操作执行失败，请稍后重试',
       status: TOAST_STATUS.ERROR,
-      typeIcon: 'icon-chat-close',
-      iconTheme: theme.ruby50,
+      typeIcon: 'icon-close',
+      iconTheme: theme.black0,
       variant: 'error' as const,
     },
     {
@@ -426,7 +426,7 @@ const ToastDemo = () => {
       description: '请注意检查您的输入信息',
       status: TOAST_STATUS.ERROR,
       typeIcon: 'icon-chat-warning',
-      iconTheme: theme.brand100,
+      iconTheme: theme.black0,
       variant: 'warning' as const,
     },
     {
@@ -434,7 +434,7 @@ const ToastDemo = () => {
       description: '这是一条普通的信息提示',
       status: TOAST_STATUS.SUCCESS,
       typeIcon: 'icon-chat-notification',
-      iconTheme: theme.brand100,
+      iconTheme: theme.black0,
       variant: 'info' as const,
     },
     {
@@ -442,7 +442,7 @@ const ToastDemo = () => {
       description: '正在处理您的请求，请稍候...',
       status: TOAST_STATUS.LOADING,
       typeIcon: 'icon-chat-loading',
-      iconTheme: theme.brand100,
+      iconTheme: theme.black0,
       variant: 'loading' as const,
     },
   ]
@@ -470,7 +470,7 @@ const ToastDemo = () => {
       description: customDescription,
       status: TOAST_STATUS.SUCCESS,
       typeIcon: customIcon,
-      iconTheme: theme.brand100,
+      iconTheme: theme.black0,
       autoClose: customDuration,
     })
     setToastCount((count) => count + 1)
@@ -484,7 +484,7 @@ const ToastDemo = () => {
         '这是一个很长的描述内容，用来演示当描述文本过长时Toast组件如何处理文本溢出和换行，以及整体的布局效果是否良好。在实际使用中，建议控制文本长度以确保最佳的用户体验。',
       status: TOAST_STATUS.SUCCESS,
       typeIcon: 'icon-chat-notification',
-      iconTheme: theme.brand100,
+      iconTheme: theme.black0,
       autoClose: 5000,
     })
     setToastCount((count) => count + 1)
@@ -558,7 +558,7 @@ const ToastDemo = () => {
                 description: '这个Toast将显示10秒钟',
                 status: TOAST_STATUS.SUCCESS,
                 typeIcon: 'icon-chat-notification',
-                iconTheme: theme.brand100,
+                iconTheme: theme.black0,
                 autoClose: 10000,
               })
               setToastCount((count) => count + 1)
@@ -576,7 +576,7 @@ const ToastDemo = () => {
                   : '这个Toast针对桌面端进行了优化，在右上角显示',
                 status: TOAST_STATUS.SUCCESS,
                 typeIcon: 'icon-chat-notification',
-                iconTheme: theme.brand100,
+                iconTheme: theme.black0,
                 autoClose: 4000,
               })
               setToastCount((count) => count + 1)
@@ -616,7 +616,7 @@ const ToastDemo = () => {
             <select value={customIcon} onChange={(e) => setCustomIcon(e.target.value)}>
               <option value='icon-chat-notification'>icon-chat-notification</option>
               <option value='icon-chat-complete'>icon-chat-complete</option>
-              <option value='icon-chat-close'>icon-chat-close</option>
+              <option value='icon-close'>icon-close</option>
               <option value='icon-chat-warning'>icon-chat-warning</option>
               <option value='icon-chat-loading'>icon-chat-loading</option>
             </select>
@@ -708,7 +708,7 @@ const Component = () => {
       title: '操作失败',
       description: '操作执行失败，请稍后重试',
       status: TOAST_STATUS.ERROR,
-      typeIcon: 'icon-chat-close',
+      typeIcon: 'icon-close',
       iconTheme: '#ff4d4f',
       autoClose: 3000
     })
@@ -799,7 +799,7 @@ const Component = () => {
             style={{
               fontSize: isMobile ? vm(14) : 16,
               marginBottom: isMobile ? vm(8) : 12,
-              color: theme.textL2,
+              color: theme.black100,
             }}
           >
             TOAST_STATUS 枚举

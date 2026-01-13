@@ -18,7 +18,7 @@ export enum TOAST_TYPE {
 }
 
 export const StyledToastContent = styled(ToastContainer)`
-  top: 88px;
+  top: 20px;
   right: 20px;
   .starchild-toast {
     width: auto;
@@ -47,9 +47,10 @@ const ToastContentWrapper = styled.div`
   min-height: 58px;
   border-radius: 12px;
   padding: 12px;
-  background-color: ${({ theme }) => theme.black700};
-  border: 1px solid ${({ theme }) => theme.bgT20};
-  box-shadow: 0px 4px 4px 0px ${({ theme }) => theme.systemShadow};
+  border-radius: 8px;
+  background: ${({ theme }) => theme.black600};
+  /* Toast */
+  box-shadow: 0 4px 4px 0 var(--system-shadow, rgba(0, 0, 0, 0.3));
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -97,14 +98,14 @@ const Content = styled.div`
     font-size: 14px;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   .description {
     width: 100%;
     font-size: 12px;
     font-weight: 400;
     line-height: 18px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
     /* overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap; */
@@ -137,10 +138,10 @@ const StatusWrapper = styled.div`
     color: ${({ theme }) => theme.brand100};
     animation: ${rotate} 1s linear infinite;
   }
-  .icon-chat-complete {
+  .icon-circle-success {
     color: ${({ theme }) => theme.jade10};
   }
-  .icon-chat-close {
+  .icon-circle-error {
     color: ${({ theme }) => theme.ruby50};
   }
   ${({ theme }) =>
@@ -161,13 +162,14 @@ function ToastContent({
     status: TOAST_STATUS
     typeIcon: string
     iconTheme: string
+    iconStyle?: React.CSSProperties
   }
 }) {
-  const { title, description, status, typeIcon, iconTheme } = data
+  const { title, description, status, typeIcon, iconTheme, iconStyle } = data
   return (
     <ToastContentWrapper>
       <TypeWrapper>
-        <IconBase className={typeIcon} style={{ color: iconTheme }} />
+        <IconBase className={typeIcon} style={{ color: iconTheme, ...(iconStyle || {}) }} />
       </TypeWrapper>
       <Content>
         <span className='title'>{title}</span>
@@ -177,9 +179,9 @@ function ToastContent({
         {status === TOAST_STATUS.LOADING ? (
           <IconBase className='icon-loading' />
         ) : status === TOAST_STATUS.SUCCESS ? (
-          <IconBase className='icon-chat-complete' />
+          <IconBase className='icon-circle-success' />
         ) : (
-          <IconBase className='icon-chat-close' />
+          <IconBase className='icon-close' />
         )}
       </StatusWrapper>
     </ToastContentWrapper>
@@ -195,6 +197,7 @@ export default function useToast() {
       status,
       typeIcon,
       iconTheme,
+      iconStyle,
       autoClose = 3000,
     }: {
       title: ReactNode
@@ -203,6 +206,7 @@ export default function useToast() {
       typeIcon: string
       iconTheme: string
       autoClose?: number
+      iconStyle?: React.CSSProperties
     }): Id => {
       return toast(ToastContent, {
         data: {
@@ -211,6 +215,7 @@ export default function useToast() {
           status,
           typeIcon,
           iconTheme,
+          iconStyle,
         },
         position: isMobile ? 'top-center' : 'top-right',
         autoClose,

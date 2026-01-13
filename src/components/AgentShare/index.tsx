@@ -84,7 +84,7 @@ const Title = styled.div`
   font-weight: 400;
   line-height: 28px;
   .markdown-wrapper {
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   ${({ theme }) =>
     theme.isMobile &&
@@ -99,7 +99,7 @@ const Description = styled.div`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -120,7 +120,7 @@ const SubCount = styled.div`
     font-size: 14px;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     .icon-subscription {
       font-size: 19px;
     }
@@ -132,7 +132,7 @@ const SubCount = styled.div`
     font-size: 12px;
     font-weight: 400;
     line-height: 18px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     img {
       width: 18px;
       height: 18px;
@@ -153,7 +153,7 @@ const ChatTitle = styled.div`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 `
 
 const ChatList = styled.div`
@@ -167,7 +167,7 @@ const ChatItem = styled.div`
   flex-direction: column;
   padding: 12px;
   border-radius: 12px;
-  background-color: ${({ theme }) => theme.bgT20};
+  background-color: ${({ theme }) => theme.black800};
 `
 
 const UpdateTime = styled.div`
@@ -175,7 +175,7 @@ const UpdateTime = styled.div`
   font-size: 12px;
   font-weight: 400;
   line-height: 18px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
 `
 
 const ItemTitle = styled.div`
@@ -185,7 +185,7 @@ const ItemTitle = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
   ${({ theme }) =>
     theme.isMobile &&
@@ -202,7 +202,7 @@ const Content = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     display: -webkit-box;
     -webkit-line-clamp: 5;
     -webkit-box-orient: vertical;
@@ -245,7 +245,7 @@ const ShareText = styled.div`
     line-height: 32px;
     letter-spacing: 0.72px;
     font-family: 'PowerGrotesk';
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   .share-text-content {
     display: flex;
@@ -253,7 +253,7 @@ const ShareText = styled.div`
     font-size: 14px;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
   ${({ theme }) =>
     theme.isMobile &&
@@ -295,8 +295,8 @@ export function useCopyText() {
             title: <Trans>Copied</Trans>,
             description: shareUrl,
             status: TOAST_STATUS.SUCCESS,
-            typeIcon: 'icon-chat-copy',
-            iconTheme: theme.jade10,
+            typeIcon: 'icon-copy',
+            iconTheme: theme.black0,
             autoClose: 2000,
           })
           setIsCopyLoading(false)
@@ -313,8 +313,8 @@ export function useCopyText() {
             title: <Trans>Copied</Trans>,
             description: shareUrl,
             status: TOAST_STATUS.SUCCESS,
-            typeIcon: 'icon-chat-copy',
-            iconTheme: theme.jade10,
+            typeIcon: 'icon-copy',
+            iconTheme: theme.black0,
             autoClose: 2000,
           })
         } catch (err) {
@@ -324,7 +324,7 @@ export function useCopyText() {
         setIsCopyLoading(false)
       }
     },
-    [toast, theme.jade10],
+    [toast, theme.black0],
   )
 }
 
@@ -355,8 +355,8 @@ export function useCopyImgAndText() {
             title: <Trans>Copied</Trans>,
             description: shareUrl,
             status: TOAST_STATUS.SUCCESS,
-            typeIcon: 'icon-chat-copy',
-            iconTheme: theme.jade10,
+            typeIcon: 'icon-copy',
+            iconTheme: theme.black0,
             autoClose: 2000,
           })
           setIsCopyLoading(false)
@@ -365,7 +365,7 @@ export function useCopyImgAndText() {
         setIsCopyLoading(false)
       }
     },
-    [toast, theme.jade10],
+    [toast, theme.black0],
   )
   if (isTelegramWebApp()) {
     return useCallback(
@@ -388,8 +388,8 @@ export function useCopyImgAndText() {
             title: <Trans>Copied</Trans>,
             description: shareUrl,
             status: TOAST_STATUS.SUCCESS,
-            typeIcon: 'icon-chat-copy',
-            iconTheme: theme.jade10,
+            typeIcon: 'icon-copy',
+            iconTheme: theme.black0,
             autoClose: 2000,
           })
         } catch (err) {
@@ -398,7 +398,7 @@ export function useCopyImgAndText() {
         document.body.removeChild(textarea)
         setIsCopyLoading(false)
       },
-      [theme.jade10, toast],
+      [theme.black0, toast],
     )
   }
   return useCallback(

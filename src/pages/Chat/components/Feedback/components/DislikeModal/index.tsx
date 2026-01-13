@@ -49,7 +49,7 @@ const Header = styled.div`
   font-size: 20px;
   font-weight: 500;
   line-height: 28px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -85,7 +85,7 @@ const TextContent = styled.div`
   font-weight: 400;
   line-height: 20px;
   text-align: center;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -105,13 +105,13 @@ const OtherTextContent = styled.div`
     font-weight: 500;
     line-height: 24px;
     text-align: center;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   span:last-child {
     font-size: 12px;
     font-weight: 400;
     line-height: 18px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     text-align: center;
   }
   ${({ theme }) =>
@@ -122,14 +122,14 @@ const OtherTextContent = styled.div`
         font-size: 0.16rem;
         font-weight: 500;
         line-height: 0.24rem;
-        color: ${theme.textL1};
+        color: ${theme.black0};
         text-align: center;
       }
       span:last-child {
         font-size: 0.12rem;
         font-weight: 400;
         line-height: 0.18rem;
-        color: ${theme.textL3};
+        color: ${theme.black200};
         text-align: center;
       }
     `}
@@ -146,13 +146,13 @@ const InputWrapper = styled(BorderAllSide1PxBox)`
     font-size: 14px;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     background-color: transparent;
     &::placeholder {
       font-size: 14px;
       font-weight: 400;
       line-height: 20px;
-      color: ${({ theme }) => theme.textL4};
+      color: ${({ theme }) => theme.black300};
     }
   }
   ${({ theme }) =>
@@ -165,7 +165,7 @@ const InputWrapper = styled(BorderAllSide1PxBox)`
         font-size: 0.14rem;
         font-weight: 400;
         line-height: 0.2rem;
-        color: ${({ theme }) => theme.textL1};
+        color: ${({ theme }) => theme.black0};
         background-color: transparent;
         &::placeholder {
           font-size: 0.14rem;
@@ -198,11 +198,11 @@ const FeedBackItem = styled(BorderAllSide1PxBox)<{ $isOtherFeedback: boolean }>`
   height: 62px;
   transition: all ${ANI_DURATION}s;
   background-color: ${({ theme }) => theme.black700};
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   border-radius: 12px;
   i {
     font-size: 20px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
   span {
     font-size: 12px;
@@ -222,7 +222,7 @@ const FeedBackItem = styled(BorderAllSide1PxBox)<{ $isOtherFeedback: boolean }>`
           background-color: ${theme.black600};
           i {
             font-size: 0.2rem;
-            color: ${theme.textL2};
+            color: ${theme.black100};
           }
         `
       : css`
@@ -237,7 +237,7 @@ const FeedBackItem = styled(BorderAllSide1PxBox)<{ $isOtherFeedback: boolean }>`
     css`
       background-color: transparent;
       &:hover {
-        background-color: ${theme.bgT20};
+        background-color: ${theme.black800};
       }
     `}
 `
@@ -369,7 +369,7 @@ export default memo(function DislikeModal({
             ),
             status: TOAST_STATUS.SUCCESS,
             typeIcon: 'icon-feedback',
-            iconTheme: theme.textL2,
+            iconTheme: theme.black0,
           })
           setCurrentDislikeReason('')
           setIsDislikeLoading(false)
@@ -385,7 +385,7 @@ export default memo(function DislikeModal({
       isDislikeLoading,
       currentAiThreadId,
       isShowDislikeModal,
-      theme.textL2,
+      theme.black0,
       toast,
       setIsShowDislikeModal,
       triggerChatFeedback,
@@ -420,7 +420,7 @@ export default memo(function DislikeModal({
               </Trans>
             </span>
           </OtherTextContent>
-          <InputWrapper $borderRadius={12} $borderColor={theme.bgT30}>
+          <InputWrapper $borderRadius={12} $borderColor={theme.black600}>
             <InputArea value={value} placeholder={t`Please enter your feedback`} setValue={setValue} />
           </InputWrapper>
         </Content>
@@ -441,7 +441,7 @@ export default memo(function DislikeModal({
                 <FeedBackItem
                   key={key}
                   $borderRadius={12}
-                  $borderColor={theme.bgT30}
+                  $borderColor={theme.black600}
                   $hideBorder={!isOtherFeedback}
                   $isOtherFeedback={isOtherFeedback}
                   onClick={!isOtherFeedback ? confirmInputDislikeContent(value) : changeOtherStatus}

@@ -4,7 +4,7 @@ import { vm } from 'pages/helper'
 import styled, { css } from 'styled-components'
 import { rotate } from 'styles/animationStyled'
 
-const PendingWrapper = styled.div<{ $isFetching: boolean }>`
+const PendingWrapper = styled.div<{ $isNotButtonLoading: boolean }>`
   display: flex;
   align-items: center;
   gap: 4px;
@@ -33,8 +33,8 @@ const PendingWrapper = styled.div<{ $isFetching: boolean }>`
         line-height: 0.18rem;
       }
     `}
-  ${({ $isFetching, theme }) =>
-    $isFetching &&
+  ${({ $isNotButtonLoading, theme }) =>
+    $isNotButtonLoading &&
     css`
       justify-content: center;
       width: 100%;
@@ -54,14 +54,15 @@ const PendingWrapper = styled.div<{ $isFetching: boolean }>`
 export default function Pending({
   text = '',
   iconStyle,
-  isFetching = false,
+  isNotButtonLoading = false,
 }: {
   text?: string
   iconStyle?: React.CSSProperties
-  isFetching?: boolean
+  // 按钮false，大容器组件 true
+  isNotButtonLoading?: boolean
 }) {
   return (
-    <PendingWrapper className='pending-wrapper' $isFetching={isFetching}>
+    <PendingWrapper className='pending-wrapper' $isNotButtonLoading={isNotButtonLoading}>
       <IconBase className='icon-loading' style={iconStyle} />
       {text && <span>{text}</span>}
     </PendingWrapper>

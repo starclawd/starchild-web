@@ -28,6 +28,13 @@ export enum STREAM_DATA_TYPE {
   TRIGGER_HISTORY = 'trigger_history',
   THINKING_DETAIL = 'thinking_detail',
   TOOL_RESULT_DETAIL = 'tool_result_detail',
+
+  // create strategy
+  CONNECTED = 'connected',
+  ACTION_CALL = 'action_call',
+  THINKING = 'thinking',
+  ACTION_COMPLETE = 'action_complete',
+  NEXT_ACTION = 'next_action',
 }
 
 export enum ROLE_TYPE {

@@ -4,10 +4,9 @@ import { Trans } from '@lingui/react/macro'
 import noDataImg from 'assets/chat/no-data.png'
 import discoverAgentsBg from 'assets/myagent/my-agent-discover-agents-bg.png'
 import { vm } from 'pages/helper'
-import { useCurrentRouter, useIsMobile } from 'store/application/hooks'
+import { useSetCurrentRouter, useIsMobile } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import Divider from 'components/Divider'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { useAgentsRecommendList, useFetchAgentsRecommendList } from 'store/myagent/hooks'
 import AgentCardList from 'pages/AgentHub/components/AgentCardList'
 import AgentCardGallery from 'pages/Mobile/MobileMyAgent/components/AgentCardGallery'
@@ -61,7 +60,7 @@ const Title = styled.div`
   font-size: 20px;
   font-weight: 500;
   line-height: 28px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   text-align: center;
 
   ${({ theme }) =>
@@ -76,7 +75,7 @@ const Subtitle = styled.div`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   text-align: center;
 
   ${({ theme }) =>
@@ -104,7 +103,7 @@ const SectionTitle = styled.div`
   font-size: 18px;
   font-weight: 500;
   line-height: 26px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -132,7 +131,7 @@ const DiscoverButton = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 12px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   user-select: none;
 
   > span {
@@ -153,7 +152,7 @@ const DiscoverButton = styled.div`
 
   .icon-chat-back {
     font-size: 24px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     transform: rotate(180deg);
   }
 
@@ -178,7 +177,7 @@ const DiscoverButton = styled.div`
 `
 
 function EmptyOverview() {
-  const [, setRouter] = useCurrentRouter()
+  const setRouter = useSetCurrentRouter()
   const { isLoading } = useFetchAgentsRecommendList()
   const [agentsRecommendList] = useAgentsRecommendList()
   const isMobile = useIsMobile()

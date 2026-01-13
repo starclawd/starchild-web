@@ -89,3 +89,31 @@ const tgOriginConfig = {
 export const tgLoginConfig = isLocalEnv ? tgOriginConfig.dev : isPro ? tgOriginConfig.pro : tgOriginConfig.test
 
 export const AUTH_TOKEN_SESSION = 'authTokenSession'
+
+export const initialUserInfo: UserInfoData = {
+  userInfoId: '',
+  aiChatKey: '',
+  evmAddress: '',
+  solanaAddress: '',
+  telegramUserId: '',
+  telegramUsername: '',
+  telegramAvatar: '',
+  telegramFirstName: '',
+  telegramLastName: '',
+  language: '',
+  inWhitelist: false,
+  burnAt: '',
+  email: '',
+  hasBindOrderly: false,
+  hasOrderlyPrivateKey: false,
+  hasVerifiedOrderly: false,
+  primaryLoginType: '',
+  walletType: '',
+  walletAddress: '',
+  secondaryWalletAddress: '',
+  secondaryWalletType: '',
+  userName: '',
+  userAvatar: '',
+  googleUserAvatar: '',
+  googleUserName: '',
+}

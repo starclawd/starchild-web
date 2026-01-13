@@ -32,7 +32,7 @@ const NavContent = styled.div`
   width: 100%;
   height: 100%;
   gap: 12px;
-  border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
+  border-bottom: 1px solid ${({ theme }) => theme.black800};
 `
 
 const IconWrapper = styled.div`
@@ -44,7 +44,7 @@ const IconWrapper = styled.div`
 
   i {
     font-size: 24px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
 `
 
@@ -52,12 +52,11 @@ const Title = styled.div`
   font-size: 16px;
   font-weight: 500;
   line-height: 24px;
-  color: ${({ theme }) => theme.textL1};
-  text-transform: capitalize;
+  color: ${({ theme }) => theme.black0};
 `
 
 export default memo(function AgentTopNavigationBar() {
-  const [currentRouter] = useCurrentRouter()
+  const currentRouter = useCurrentRouter()
   const isMobile = useIsMobile()
   const { t } = useLingui()
 

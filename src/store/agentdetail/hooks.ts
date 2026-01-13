@@ -74,7 +74,7 @@ export function useGetAgentDetail() {
   const toast = useToast()
   const theme = useTheme()
   // 使用 useMemo 稳定 theme 色值引用
-  const iconTheme = useMemo(() => theme.textL2, [theme.textL2])
+  const iconTheme = useMemo(() => theme.black100, [theme.black100])
   const { t } = useLingui()
 
   const agentNotFound = useCallback(() => {

@@ -7,23 +7,23 @@ import { IconBase } from 'components/Icons'
 const DemoContainer = styled.div`
   padding: ${vm(20)};
   background: ${({ theme }) => theme.bgL1};
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   min-height: 100vh;
 
   h2 {
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin-bottom: ${vm(20)};
     font-size: 0.24rem;
   }
 
   h3 {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     margin-bottom: ${vm(15)};
     font-size: 0.18rem;
   }
 
   p {
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     margin-bottom: ${vm(15)};
     line-height: 1.6;
     font-size: 0.14rem;
@@ -34,19 +34,19 @@ const DemoSection = styled.div`
   margin-bottom: ${vm(40)};
 
   h2 {
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin-bottom: ${vm(20)};
     font-size: 0.24rem;
   }
 
   h3 {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     margin-bottom: ${vm(15)};
     font-size: 0.18rem;
   }
 
   p {
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     margin-bottom: ${vm(15)};
     line-height: 1.6;
     font-size: 0.14rem;
@@ -55,7 +55,7 @@ const DemoSection = styled.div`
 
 const DemoArea = styled.div`
   background: ${({ theme }) => theme.bgL0};
-  border: 1px solid ${({ theme }) => theme.lineDark8};
+  border: 1px solid ${({ theme }) => theme.black800};
   border-radius: ${vm(8)};
   margin-bottom: ${vm(20)};
   overflow: hidden;
@@ -71,7 +71,7 @@ const DemoItem = styled.div`
 
 const DemoLabel = styled.div`
   font-size: 0.14rem;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   margin-bottom: ${vm(8)};
   font-weight: 500;
 `
@@ -86,8 +86,8 @@ const ControlsArea = styled.div`
 const ControlButton = styled.button<{ $active?: boolean }>`
   padding: ${vm(8)} ${vm(16)};
   background: ${({ theme, $active }) => ($active ? theme.brand100 : theme.bgL1)};
-  color: ${({ theme, $active }) => ($active ? 'white' : theme.textL1)};
-  border: 1px solid ${({ theme, $active }) => ($active ? theme.brand100 : theme.lineDark8)};
+  color: ${({ theme, $active }) => ($active ? 'white' : theme.black0)};
+  border: 1px solid ${({ theme, $active }) => ($active ? theme.brand100 : theme.black800)};
   border-radius: ${vm(6)};
   cursor: pointer;
   transition: all 0.2s ease;
@@ -129,11 +129,11 @@ const StatusBar = styled.div`
     }
 
     .label {
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
     }
 
     .value {
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
       font-weight: 500;
       font-family: monospace;
     }
@@ -147,14 +147,14 @@ const RightActionButton = styled.button`
   width: ${vm(32)};
   height: ${vm(32)};
   background: transparent;
-  border: 1px solid ${({ theme }) => theme.lineDark8};
+  border: 1px solid ${({ theme }) => theme.black800};
   border-radius: ${vm(6)};
   cursor: pointer;
   transition: all 0.2s ease;
 
   .icon {
     font-size: 0.18rem;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
 
   &:hover {
@@ -436,7 +436,7 @@ const MobileHeaderDemo = () => {
               <strong>字体</strong>：16px/500 - 清晰易读的标题字体
             </li>
             <li>
-              <strong>颜色</strong>：theme.textDark98 - 主题色彩适配
+              <strong>颜色</strong>：theme.black0 - 主题色彩适配
             </li>
             <li>
               <strong>布局</strong>：flex + absolute 定位 - 响应式布局

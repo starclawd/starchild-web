@@ -12,6 +12,58 @@ import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
+export const CommonModalContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 480px;
+  max-height: calc(100vh - 40px);
+  background: ${({ theme }) => theme.black900};
+  border-radius: 8px;
+  position: relative;
+`
+
+export const CommonModalHeader = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 16px 0 8px;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+  color: ${({ theme }) => theme.black0};
+`
+
+export const CommonModalContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  padding: 20px;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(12)};
+      padding: ${vm(20)} 0;
+    `}
+`
+
+export const CommonModalFooter = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 8px;
+  padding: 8px 20px 20px;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      gap: ${vm(8)};
+      padding: ${vm(8)} 0 ${vm(20)};
+    `}
+`
+
 /**
  * 弹窗遮罩层样式组件
  * 支持自定义z-index、背景色、动画等
@@ -27,7 +79,7 @@ const StyledDialogOverlay = styled(DialogOverlay)<{
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.8);
 
     /* 开启动画效果 */
     ${({ $openAnimation, theme }) =>
@@ -104,29 +156,27 @@ const CloseWrapper = styled.div`
   align-items: center;
   justify-content: center;
   position: absolute;
-  width: 28px;
-  height: 28px;
-  top: 20px;
-  right: 20px;
+  top: 16px;
+  right: 12px;
   z-index: 10;
-  .icon-chat-close {
-    font-size: 28px;
-    color: ${({ theme }) => theme.textL4};
+  .icon-close {
+    font-size: 18px;
+    color: ${({ theme }) => theme.black0};
     transition: color ${ANI_DURATION}s;
 
     &:hover {
-      color: ${({ theme }) => theme.textL2};
+      opacity: 0.7;
     }
   }
   ${({ theme }) =>
     theme.isMobile
       ? css`
-          width: ${vm(28)};
-          height: ${vm(28)};
-          top: ${vm(20)};
-          right: ${vm(20)};
-          .icon-chat-close {
-            font-size: 0.28rem;
+          width: ${vm(18)};
+          height: ${vm(18)};
+          top: ${vm(16)};
+          right: ${vm(12)};
+          .icon-close {
+            font-size: 0.18rem;
           }
         `
       : css`
@@ -150,6 +200,8 @@ interface ModalProps {
   zIndex?: number // z-index层级
   openAnimation?: boolean // 是否开启动画
   onClick?: MouseEventHandler<HTMLElement> // 点击事件处理
+  closeWrapperStyle?: CSSProperties // 关闭按钮样式
+  closeIconStyle?: CSSProperties // 关闭按钮图标样式
 }
 
 export { CloseWrapper }
@@ -171,6 +223,8 @@ export default memo(function Modal({
   contentStyle,
   openTouchMove,
   cancelOverflow,
+  closeWrapperStyle,
+  closeIconStyle,
 }: ModalProps) {
   // 判断是否为移动端
   const isMobile = useIsMobile() && !forceWeb
@@ -225,8 +279,8 @@ export default memo(function Modal({
         $cancelOverflow={cancelOverflow ? 'true' : 'false'}
       >
         {!hideClose && (
-          <CloseWrapper>
-            <IconBase onClick={onDismiss} className='icon-chat-close' />
+          <CloseWrapper style={closeWrapperStyle}>
+            <IconBase onClick={onDismiss} className='icon-close' style={closeIconStyle} />
           </CloseWrapper>
         )}
         {children}

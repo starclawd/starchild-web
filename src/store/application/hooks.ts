@@ -14,15 +14,19 @@ import {
   updateOpenModal,
   setIsPopoverOpen,
   setBindWalletModalAddress,
+  setDeployStrategyId,
 } from './reducer'
 import { useNavigate } from 'react-router-dom'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useLazyGetCoinIdQuery } from 'api/coinmarket'
 import { useCandidateStatus } from 'store/home/hooks'
+import { isPro } from 'utils/url'
 
 export function useIsMobile(): boolean {
   const { width } = useWindowSize()
-  const isMobile = !!(width && width < MEDIA_WIDTHS.minWidth1024)
+  const isMobile = !!(width && width < MEDIA_WIDTHS.width1024)
+  // mainnet limited
+  if (isPro) return false
   return isMobile
 }
 
@@ -52,6 +56,26 @@ export function useAddQuestionModalToggle(): () => void {
   return useToggleModal(ApplicationModal.ADD_QUESTION_MODAL)
 }
 
+export function useEditStrategyInfoModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.EDIT_STRATEGY_INFO_MODAL)
+}
+
+export function useDelistStrategyModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.DELIST_STRATEGY_MODAL)
+}
+
+export function usePauseStrategyModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.PAUSE_STRATEGY_MODAL)
+}
+
+export function useDeleteStrategyModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.DELETE_STRATEGY_MODAL)
+}
+
+export function usePromptModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.PROMPT_MODAL)
+}
+
 export function useWalletAddressModalToggle(): () => void {
   return useToggleModal(ApplicationModal.WALLET_ADDRESS_MODAL)
 }
@@ -67,16 +91,16 @@ export function usePreferenceModalToggle(): () => void {
   return useToggleModal(ApplicationModal.PREFERENCE_MODAL)
 }
 
+export function useShareStrategyModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.SHARE_STRATEGY_MODAL)
+}
+
 export function useCreateAgentModalToggle(): () => void {
   return useToggleModal(ApplicationModal.CREATE_AGENT_MODAL)
 }
 
 export function useDeleteMyAgentModalToggle(): () => void {
   return useToggleModal(ApplicationModal.DELETE_MY_AGENT_MODAL)
-}
-
-export function useSocialLoginModalToggle(): () => void {
-  return useToggleModal(ApplicationModal.SOCIAL_LOGIN_MODAL)
 }
 
 export function useQrCodeModalToggle(): () => void {
@@ -86,6 +110,18 @@ export function useQrCodeModalToggle(): () => void {
 // 绑定钱包弹窗状态管理
 export function useBindWalletModalToggle(): () => void {
   return useToggleModal(ApplicationModal.BIND_WALLET_MODAL)
+}
+
+export function useDepositAndWithdrawModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.DEPOSIT_AND_WITHDRAW_MODAL)
+}
+
+export function useConnectWalletModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.CONNECT_WALLET_MODAL)
+}
+
+export function useSwitchChainModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.SWITCH_CHAIN_MODAL)
 }
 
 // 获取绑定钱包地址数据
@@ -154,12 +190,23 @@ export function useGetRouteByPathname() {
   }, [])
 }
 
-export function useCurrentRouter(needPush = true): [string, (router: string) => void] {
+/**
+ * 获取当前路由状态（只读）
+ * 适用于只需要读取路由状态的场景，避免不必要的重新渲染
+ */
+export function useCurrentRouter(): string {
+  return useSelector((state: RootState) => state.application.currentRouter)
+}
+
+/**
+ * 获取设置路由的方法
+ * @param needPush 是否需要推送到浏览器历史记录
+ */
+export function useSetCurrentRouter(needPush = true): (router: string) => void {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const getRouteByPathname = useGetRouteByPathname()
   const { openAllPermissions, testChartImg } = useParsedQueryString()
-  const currentRouter = useSelector((state: RootState) => state.application.currentRouter)
   const setRouter = useCallback(
     (router: string) => {
       const route = getRouteByPathname(router)
@@ -177,7 +224,7 @@ export function useCurrentRouter(needPush = true): [string, (router: string) => 
     },
     [needPush, openAllPermissions, testChartImg, navigate, dispatch, getRouteByPathname],
   )
-  return [currentRouter, setRouter]
+  return setRouter
 }
 
 export function useGetCoinId() {
@@ -260,4 +307,38 @@ export function useIsPopoverOpen(): [boolean, (isOpen: boolean) => void] {
     [dispatch],
   )
   return [isPopoverOpen, setPopoverOpen]
+}
+
+export function useDeployStrategyId(): string | null {
+  return useSelector((state: RootState) => state.application.deployStrategyId)
+}
+
+export function useSetDeployStrategyId(): (strategyId: string | null) => void {
+  const dispatch = useDispatch()
+  return useCallback(
+    (strategyId: string | null) => {
+      dispatch(setDeployStrategyId(strategyId))
+    },
+    [dispatch],
+  )
+}
+
+export function useDeployModalToggle(): (strategyId?: string) => void {
+  const open = useModalOpen(ApplicationModal.DEPLOY_MODAL)
+  const dispatch = useDispatch()
+  const setStrategyId = useSetDeployStrategyId()
+  return useCallback(
+    (strategyId?: string) => {
+      if (open) {
+        // 如果已经打开，则关闭并清理 strategyId
+        setStrategyId(null)
+        dispatch(updateOpenModal(null))
+      } else {
+        // 如果没打开，则设置 strategyId 并打开
+        setStrategyId(strategyId || null)
+        dispatch(updateOpenModal(ApplicationModal.DEPLOY_MODAL))
+      }
+    },
+    [dispatch, setStrategyId, open],
+  )
 }

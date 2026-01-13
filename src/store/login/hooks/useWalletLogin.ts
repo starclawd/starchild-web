@@ -1,7 +1,8 @@
 import { useCallback } from 'react'
 import { useLazyWalletLoginQuery } from 'api/user'
 import { useAuthToken } from 'store/logincache/hooks'
-import { useIsGetAuthToken } from '../hooks'
+import { useIsGetAuthToken, useUserInfo } from '../hooks'
+import { initialUserInfo } from '../login'
 
 /**
  * 钱包登录参数接口
@@ -21,6 +22,7 @@ export function useWalletLogin() {
   const [triggerWalletLogin] = useLazyWalletLoginQuery()
   const [, setAuthToken] = useAuthToken()
   const [, setIsGetAuthToken] = useIsGetAuthToken()
+  const [, setUserInfo] = useUserInfo()
 
   /**
    * 统一钱包登录函数
@@ -45,6 +47,7 @@ export function useWalletLogin() {
         })
         if (data.isSuccess) {
           const result = data.data
+          setUserInfo(initialUserInfo)
           setAuthToken(result.token as string)
         }
         setIsGetAuthToken(false)
@@ -55,7 +58,7 @@ export function useWalletLogin() {
         throw error
       }
     },
-    [triggerWalletLogin, setAuthToken, setIsGetAuthToken],
+    [setUserInfo, triggerWalletLogin, setAuthToken, setIsGetAuthToken],
   )
 
   return {

@@ -31,15 +31,7 @@ import Input, { InputType } from 'components/Input'
 import { useOnClickOutside } from 'hooks/useOnClickOutside'
 import usePrevious from 'hooks/usePrevious'
 import { nanoid } from '@reduxjs/toolkit'
-import {
-  SelectWrapper,
-  PopoverContainer,
-  PopoverList,
-  PopoverItem,
-  ReferenceElement,
-  SelectBorderWrapper,
-  InputWrapper,
-} from './styles.ts'
+import { SelectWrapper, PopoverContainer, PopoverList, PopoverItem, ReferenceElement, InputWrapper } from './styles.ts'
 import { CommonFun } from 'types/global'
 import NoData from 'components/NoData'
 import { t } from '@lingui/core/macro'
@@ -100,7 +92,6 @@ export interface PopoverProps {
   popItemHoverBg?: string // 选项悬浮背景色
   activeIconColor?: string // 选中图标颜色
   hideScrollbar?: boolean // 是否隐藏滚动条
-  borderWrapperBg?: string // 选择器边框背景色
   iconExpandStyle?: CSSProperties // 展开图标样式
   disableDisappearAni?: boolean // 是否禁用消失动画
   offsetLeft?: number // 左偏移
@@ -113,6 +104,7 @@ export interface PopoverProps {
   onHide?: CommonFun<any> // 隐藏回调
   toggleShowCallback?: Dispatch<SetStateAction<boolean>> | CommonFun<any> // 切换显示回调
   useOutShow?: boolean // 是否使用外部显示状态
+  useCircleSuccessIcon?: boolean // 是否使用圆形成功图标
 }
 
 export default memo(function Select({
@@ -121,6 +113,7 @@ export default memo(function Select({
   disabled = false,
   triggerMethod = TriggerMethod.HOVER,
   children,
+  useCircleSuccessIcon = true,
   hideExpand = false,
   placement = 'auto',
   usePortal = false,
@@ -138,7 +131,6 @@ export default memo(function Select({
   popItemHoverBg = '',
   activeIconColor = '',
   hideScrollbar = false,
-  borderWrapperBg = '',
   popItemTextStyle = {},
   customize,
   customizeNode,
@@ -407,13 +399,11 @@ export default memo(function Select({
             changeShow(!isShow)
           }
         }}
-        className='select-value-wrapper'
+        className={`select-value-wrapper ${isShow && !begainToHide ? 'show' : ''}`}
         ref={setReferenceElement as any}
       >
-        <SelectBorderWrapper className='select-border-wrapper' $borderWrapperBg={borderWrapperBg}>
-          {children}
-          {!hideExpand && <IconBase style={{ ...iconExpandStyle }} className='icon-chat-expand' />}
-        </SelectBorderWrapper>
+        {children}
+        {!hideExpand && <IconBase style={{ ...iconExpandStyle }} className='icon-expand' />}
       </ReferenceElement>
 
       {/* 弹出内容包装器 */}
@@ -482,7 +472,9 @@ export default memo(function Select({
                         <span style={popItemTextStyle} className='select-text'>
                           {text}
                         </span>
-                        {isActive && <IconBase className='icon-chat-complete' />}
+                        {isActive && (
+                          <IconBase className={useCircleSuccessIcon ? 'icon-circle-success' : 'icon-complete'} />
+                        )}
                       </PopoverItem>
                     )
                   })}

@@ -3,32 +3,40 @@ import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { ROUTER } from 'pages/router'
 import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
-import { useCurrentRouter, useIsPopoverOpen } from 'store/application/hooks'
+import { useCurrentRouter, useSetCurrentRouter, useIsPopoverOpen } from 'store/application/hooks'
 import { IconBase } from 'components/Icons'
 import { useUserInfo, useIsLogin } from 'store/login/hooks'
 import { ANI_DURATION } from 'constants/index'
 import logoImg from 'assets/png/logo.png'
 import MenuContent from './components/MenuContent'
-import { useAddNewThread, useGetThreadsList } from 'store/chat/hooks'
+import { useAddNewThread, useChatTabIndex, useGetThreadsList } from 'store/chat/hooks'
 import { useIsFixMenu } from 'store/headercache/hooks'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import LoginButton from './components/LoginButton'
 import Language from './components/Language'
 import Tooltip from 'components/Tooltip'
+import { isPro } from 'utils/url'
 
-const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverNavTabs: boolean; $isPopoverOpen: boolean }>`
+const HeaderWrapper = styled.header<{
+  $isFixMenu: boolean
+  $isHoverNavTabs: boolean
+  $isPopoverOpen: boolean
+  $isShowMenu: boolean
+}>`
   position: relative;
   display: flex;
-  width: 80px;
+  width: 60px;
   height: 100%;
   flex-shrink: 0;
   z-index: 101;
-  background-color: ${({ theme }) => theme.black800};
-  ${({ $isHoverNavTabs }) =>
-    $isHoverNavTabs &&
+  border-right: 1px solid ${({ theme }) => theme.black800};
+  background-color: ${({ theme }) => theme.black1000};
+  ${({ $isHoverNavTabs, $isPopoverOpen }) =>
+    ($isHoverNavTabs || $isPopoverOpen) &&
     css`
       .menu-content {
         transform: translateX(0);
+        visibility: visible;
       }
     `}
   ${({ $isFixMenu }) =>
@@ -36,13 +44,7 @@ const HeaderWrapper = styled.header<{ $isFixMenu: boolean; $isHoverNavTabs: bool
     css`
       .menu-content {
         transform: translateX(0);
-      }
-    `}
-  ${({ $isPopoverOpen }) =>
-    $isPopoverOpen &&
-    css`
-      .menu-content {
-        transform: translateX(0);
+        visibility: visible;
       }
     `}
 `
@@ -53,12 +55,11 @@ const Menu = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  gap: 40px;
-  padding: 20px 0;
+  gap: 20px;
+  padding: 12px 0;
   width: 100%;
   height: 100%;
   z-index: 2;
-  background-color: ${({ theme }) => theme.black800};
   margin-right: 0 !important;
   padding-right: 0 !important;
 `
@@ -67,43 +68,27 @@ const TopSection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+`
+
+const CenterSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   flex-grow: 1;
-  gap: 40px;
-  .popover-wrapper {
-    height: auto;
-  }
+  width: 100%;
 `
 
 const LogoWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
+  width: 36px;
+  height: 36px;
   cursor: pointer;
   img {
-    width: 100%;
-    height: 100%;
-  }
-`
-
-const NewThreads = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  background-color: ${({ theme }) => theme.text10};
-  cursor: pointer;
-  transition: all ${ANI_DURATION}s;
-  .icon-chat-upload {
-    font-size: 24px;
-    color: ${({ theme }) => theme.textDark54};
-  }
-  &:hover {
-    opacity: 0.7;
+    width: 28px;
+    height: 28px;
   }
 `
 
@@ -111,10 +96,11 @@ const NavTabs = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
   gap: 20px;
 `
 
-const NavTab = styled.div<{ $active: boolean; $key: string }>`
+const NavTab = styled.div<{ $active: boolean; $key: string; $disabled: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -123,23 +109,28 @@ const NavTab = styled.div<{ $active: boolean; $key: string }>`
   font-size: 12px;
   font-weight: 500;
   line-height: 16px;
+  border-radius: 4px;
   transition: all ${ANI_DURATION}s;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   cursor: pointer;
-  text-transform: capitalize;
   text-align: center;
   &:hover {
     .icon-wrapper {
-      background-color: ${({ theme }) => theme.bgT20};
+      background-color: ${({ theme }) => theme.black700};
       i {
-        color: ${({ theme }) => theme.textL1};
+        color: ${({ theme }) => theme.black0};
       }
     }
   }
   ${({ $active, theme }) =>
     $active &&
     css`
-      color: ${theme.textL1};
+      color: ${theme.black0};
+    `}
+  ${({ $disabled, theme }) =>
+    $disabled &&
+    css`
+      cursor: not-allowed;
     `}
 `
 
@@ -147,57 +138,57 @@ const IconWrapper = styled.div<{ $active?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
   background-color: transparent;
   i {
     font-size: 24px;
-    color: ${({ theme }) => theme.textL3};
-    transition: all ${ANI_DURATION}s;
+    color: ${({ theme }) => theme.black0};
   }
   transition: all ${ANI_DURATION}s;
   ${({ $active, theme }) =>
     $active &&
     css`
-      background-color: ${theme.bgT20};
-      i {
-        color: ${theme.textL1};
-      }
+      background-color: ${theme.black700};
     `}
 `
 
 const BottomSection = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 8px;
 `
 
 export const Header = () => {
   const [{ userInfoId }] = useUserInfo()
   const addNewThread = useAddNewThread()
+  const [, setChatTabIndex] = useChatTabIndex()
   const [isFixMenu] = useIsFixMenu()
   const isInNavTabRef = useRef(false)
   const scrollRef = useScrollbarClass<HTMLDivElement>()
   const triggerGetAiBotChatThreads = useGetThreadsList()
-  const [currentRouter, setCurrentRouter] = useCurrentRouter()
+  const currentRouter = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const [currentHoverMenuKey, setCurrentHoverMenuKey] = useState<string>(currentRouter)
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
   const [isHoverNavTabs, setIsHoverNavTabs] = useState(false)
   const [isPopoverOpen] = useIsPopoverOpen()
-  const goToMyAgent = useCallback(() => {
-    setCurrentRouter(ROUTER.MY_AGENTS)
-  }, [setCurrentRouter])
+
+  const isShowMenu = useMemo(() => {
+    return isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT)
+  }, [currentHoverMenuKey])
 
   const goOtherPage = useCallback(
     (value: string) => {
       if (value === ROUTER.CHAT) {
         addNewThread()
       }
+      setChatTabIndex(0)
       if (isMatchCurrentRouter(currentRouter, value)) return
       setCurrentRouter(value)
     },
-    [currentRouter, addNewThread, setCurrentRouter],
+    [currentRouter, setChatTabIndex, addNewThread, setCurrentRouter],
   )
 
   const handleNavTabHover = useCallback(
@@ -273,41 +264,38 @@ export const Header = () => {
     }, 2000)
   }, [currentRouter, isFixMenu])
   // const isInsightsPage = useMemo(() => {
-  //   return isMatchCurrentRouter(currentRouter, ROUTER.INSIGHTS)
+  //   return isMatchCurrentRouter(currentRouter, ROUTER.SIGNALS)
   // }, [currentRouter])
 
   const menuList = useMemo(() => {
     return [
       {
         key: ROUTER.CHAT,
-        text: <Trans>Chat</Trans>,
-        icon: <IconBase className='icon-chat-robot' />,
+        text: <Trans>Home</Trans>,
+        icon: <IconBase className='icon-menu-chat' />,
         value: ROUTER.CHAT,
+        tooltip: <Trans>Create strategy</Trans>,
         clickCallback: goOtherPage,
       },
       {
-        key: ROUTER.AGENT_HUB,
-        text: <Trans>Marketplace</Trans>,
-        icon: <IconBase className='icon-agent' />,
-        value: ROUTER.AGENT_HUB,
+        key: ROUTER.VAULTS,
+        text: <Trans>Vibe trading</Trans>,
+        icon: <IconBase className='icon-menu-vibe' />,
+        value: ROUTER.VAULTS,
+        tooltip: <Trans>Leaderboard</Trans>,
         clickCallback: goOtherPage,
       },
       {
-        key: ROUTER.INSIGHTS,
-        text: <Trans>Insights</Trans>,
-        icon: <IconBase className='icon-insights' />,
-        value: ROUTER.INSIGHTS,
-        clickCallback: goOtherPage,
-      },
-      {
-        key: ROUTER.MY_AGENTS,
-        text: <Trans>My Agents</Trans>,
-        icon: <IconBase className='icon-task' />,
-        value: ROUTER.MY_AGENTS,
-        clickCallback: goToMyAgent,
+        key: ROUTER.MY_PORTFOLIO,
+        text: <Trans>My</Trans>,
+        icon: <IconBase className='icon-menu-my' />,
+        value: ROUTER.MY_PORTFOLIO,
+        tooltip: <Trans>Coming soon</Trans>,
+        // mainnet limited
+        clickCallback: isPro ? undefined : goOtherPage,
       },
     ]
-  }, [goOtherPage, goToMyAgent])
+  }, [goOtherPage])
 
   const getThreadsList = useCallback(async () => {
     try {
@@ -319,14 +307,8 @@ export const Header = () => {
   }, [triggerGetAiBotChatThreads, userInfoId])
 
   const goHomePage = useCallback(() => {
-    setCurrentRouter(ROUTER.HOME)
+    setCurrentRouter(ROUTER.CHAT)
   }, [setCurrentRouter])
-
-  // useEffect(() => {
-  //   if (isLogin && insightsList.length === 0 && !isInsightsPage) {
-  //     triggerGetAllInsights({ pageIndex: 1 })
-  //   }
-  // }, [isLogin, insightsList.length, isInsightsPage, triggerGetAllInsights])
 
   // 清理定时器
   useEffect(() => {
@@ -336,10 +318,6 @@ export const Header = () => {
       }
     }
   }, [])
-
-  useEffect(() => {
-    getThreadsList()
-  }, [getThreadsList])
 
   useEffect(() => {
     setCurrentHoverMenuKey(currentRouter)
@@ -358,54 +336,48 @@ export const Header = () => {
       setCurrentHoverMenuKey(currentRouter)
     }
   }, [isFixMenu, currentRouter])
-
   return (
-    <HeaderWrapper $isFixMenu={isFixMenu} $isHoverNavTabs={isHoverNavTabs} $isPopoverOpen={isPopoverOpen}>
+    <HeaderWrapper
+      $isShowMenu={isShowMenu}
+      $isFixMenu={isFixMenu}
+      $isHoverNavTabs={isHoverNavTabs}
+      $isPopoverOpen={isPopoverOpen}
+    >
       <Menu ref={scrollRef} className='scroll-style'>
         <TopSection>
           <LogoWrapper onClick={goHomePage}>
             <img src={logoImg} alt='' />
           </LogoWrapper>
-          <Tooltip placement='right' content={<Trans>New Chat</Trans>}>
-            <NewThreads onClick={() => goOtherPage(ROUTER.CHAT)}>
-              <IconBase className='icon-chat-upload' />
-            </NewThreads>
-          </Tooltip>
+        </TopSection>
+        <CenterSection>
           <NavTabs onMouseEnter={() => setIsHoverNavTabs(true)} onMouseLeave={handleNavTabsLeave}>
             {menuList.map((tab) => {
-              const { key, text, value, clickCallback, icon } = tab
+              const { key, value, clickCallback, icon, tooltip } = tab
               const isActive = isMatchFatherRouter(currentRouter, value) || isMatchCurrentRouter(currentRouter, value)
               return (
-                <NavTab
-                  key={key}
-                  $key={key}
-                  $active={isActive}
-                  onClick={() => clickCallback(value)}
-                  onMouseEnter={() => handleNavTabHover(key)}
-                  onMouseLeave={() => (isInNavTabRef.current = false)}
-                >
-                  <IconWrapper $active={isActive} className='icon-wrapper'>
-                    {icon}
-                  </IconWrapper>
-                  <span>{text}</span>
-                </NavTab>
+                <Tooltip key={key} placement='right' content={tooltip}>
+                  <NavTab
+                    $key={key}
+                    $active={isActive}
+                    $disabled={!clickCallback}
+                    onClick={() => clickCallback?.(value)}
+                    onMouseEnter={() => handleNavTabHover(key)}
+                    onMouseLeave={() => (isInNavTabRef.current = false)}
+                  >
+                    <IconWrapper $active={isActive} className='icon-wrapper'>
+                      {icon}
+                    </IconWrapper>
+                  </NavTab>
+                </Tooltip>
               )
             })}
           </NavTabs>
-        </TopSection>
+        </CenterSection>
         <BottomSection>
           <Language />
           <LoginButton />
         </BottomSection>
       </Menu>
-      {/* agent marketplace不展示二级菜单 */}
-      {!isMatchCurrentRouter(currentHoverMenuKey, ROUTER.AGENT_HUB) && (
-        <MenuContent
-          currentHoverMenuKey={currentHoverMenuKey}
-          onMouseEnter={handleMenuContentHover}
-          onMouseLeave={handleMenuContentLeave}
-        />
-      )}
     </HeaderWrapper>
   )
 }

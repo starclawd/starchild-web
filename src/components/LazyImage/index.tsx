@@ -6,7 +6,7 @@ import styled, { css } from 'styled-components'
 const PlaceholderContainer = styled.div<{ $width?: string | number; $height?: string | number }>`
   width: ${({ $width }) => (typeof $width === 'number' ? `${$width}px` : $width || '100%')};
   height: ${({ $height }) => (typeof $height === 'number' ? `${$height}px` : $height || '100%')};
-  background: ${({ theme }) => theme.bgT10};
+  background: ${({ theme }) => theme.black900};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -46,7 +46,7 @@ const SkeletonAnimation = styled.div`
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, ${({ theme }) => theme.bgT20}, transparent);
+  background: linear-gradient(90deg, transparent, ${({ theme }) => theme.black800}, transparent);
   animation: skeleton-loading 1.5s infinite;
 
   @keyframes skeleton-loading {

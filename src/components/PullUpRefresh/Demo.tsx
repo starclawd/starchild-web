@@ -6,25 +6,25 @@ import { vm } from 'pages/helper'
 const DemoContainer = styled.div`
   padding: 40px;
   background: ${({ theme }) => theme.bgL1};
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   min-height: 100vh;
   max-width: 1200px;
   margin: 0 auto;
 
   h2 {
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin-bottom: 24px;
     font-size: 32px;
   }
 
   h3 {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     margin-bottom: 16px;
     font-size: 24px;
   }
 
   p {
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     margin-bottom: 16px;
     line-height: 1.6;
     font-size: 16px;
@@ -58,19 +58,19 @@ const DemoSection = styled.div`
   margin-bottom: 48px;
 
   h2 {
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin-bottom: 24px;
     font-size: 32px;
   }
 
   h3 {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     margin-bottom: 16px;
     font-size: 24px;
   }
 
   p {
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     margin-bottom: 16px;
     line-height: 1.6;
     font-size: 16px;
@@ -101,7 +101,7 @@ const DemoSection = styled.div`
 const DemoArea = styled.div`
   height: 500px;
   background: ${({ theme }) => theme.bgL0};
-  border: 1px solid ${({ theme }) => theme.lineDark8};
+  border: 1px solid ${({ theme }) => theme.black800};
   border-radius: 12px;
   margin-bottom: 24px;
   overflow: hidden;
@@ -120,7 +120,7 @@ const ListItem = styled.div<{ $index: number }>`
   background: ${({ theme }) => theme.bgL1};
   border-radius: 12px;
   margin: 12px 20px;
-  border: 1px solid ${({ theme }) => theme.lineDark8};
+  border: 1px solid ${({ theme }) => theme.black800};
   position: relative;
 
   &::before {
@@ -147,18 +147,18 @@ const ListItem = styled.div<{ $index: number }>`
   .item-title {
     font-weight: 600;
     font-size: 18px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
 
   .item-id {
     font-size: 14px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
     font-family: monospace;
   }
 
   .item-content {
     font-size: 16px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     line-height: 1.5;
     margin-bottom: 12px;
   }
@@ -171,7 +171,7 @@ const ListItem = styled.div<{ $index: number }>`
 
   .item-time {
     font-size: 14px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
   }
 
   .item-type {
@@ -179,7 +179,7 @@ const ListItem = styled.div<{ $index: number }>`
     background: ${({ theme }) => theme.bgL2};
     border-radius: 16px;
     font-size: 12px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
 
   ${({ theme }) =>
@@ -240,11 +240,11 @@ const StatusBar = styled.div`
     }
 
     .label {
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
     }
 
     .value {
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
       font-weight: 500;
       font-family: monospace;
     }
@@ -281,8 +281,8 @@ const ControlsArea = styled.div`
 const ControlButton = styled.button<{ $active?: boolean }>`
   padding: 12px 20px;
   background: ${({ theme, $active }) => ($active ? theme.brand100 : theme.bgL1)};
-  color: ${({ theme, $active }) => ($active ? 'white' : theme.textL1)};
-  border: 1px solid ${({ theme, $active }) => ($active ? theme.brand100 : theme.lineDark8)};
+  color: ${({ theme, $active }) => ($active ? 'white' : theme.black0)};
+  border: 1px solid ${({ theme, $active }) => ($active ? theme.brand100 : theme.black800)};
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -339,13 +339,13 @@ const FeatureCard = styled.div`
   .feature-title {
     font-weight: 600;
     font-size: 18px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin-bottom: 12px;
   }
 
   .feature-desc {
     font-size: 16px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     line-height: 1.5;
   }
 

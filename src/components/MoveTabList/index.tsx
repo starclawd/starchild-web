@@ -1,5 +1,5 @@
 import { vm } from 'pages/helper'
-import { useMemo, useRef, useEffect, useState } from 'react'
+import { useMemo, useRef, useEffect, useState, useCallback } from 'react'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
 import { ANI_DURATION } from 'constants/index'
@@ -11,27 +11,30 @@ export enum MoveType {
   BG = 'bg',
 }
 
-const MoveTabListWrapper = styled(BorderAllSide1PxBox)<{ $forceWebStyle?: boolean; $moveType?: MoveType }>`
+const MoveTabListWrapper = styled(BorderAllSide1PxBox)<{
+  $forceWebStyle?: boolean
+  $moveType?: MoveType
+  $gap?: number
+}>`
   display: flex;
   align-items: center;
   flex-shrink: 0;
-  width: 100%;
+  width: fit-content;
   height: 44px;
   padding: 4px;
-  gap: 4px;
+  gap: ${({ $gap }) => $gap}px;
   position: relative;
-  ${({ theme, $forceWebStyle }) =>
+  ${({ theme, $forceWebStyle, $gap }) =>
     theme.isMobile &&
     !$forceWebStyle &&
     css`
-      height: ${vm(36)};
       padding: ${vm(4)};
-      gap: ${vm(8)};
     `}
-  ${({ $moveType }) =>
+  ${({ $moveType, $gap }) =>
     $moveType === MoveType.LINE &&
     css`
       padding: 0;
+      gap: ${`${$gap}px`};
     `}
 `
 
@@ -41,6 +44,7 @@ const ActiveIndicator = styled.div.attrs<{
   $forceWebStyle?: boolean
   $moveType?: MoveType
   $borderRadius?: number
+  $background?: string
 }>(({ $translateX, $width, $borderRadius, theme, $forceWebStyle }) => ({
   style: {
     transform: `translateX(${$translateX})`,
@@ -53,12 +57,13 @@ const ActiveIndicator = styled.div.attrs<{
   $forceWebStyle?: boolean
   $moveType?: MoveType
   $borderRadius?: number
+  $background?: string
 }>`
   position: absolute;
   top: 3px;
   left: 4px;
-  height: 36px;
-  background: ${({ theme }) => theme.brand200};
+  height: 100%;
+  background: ${({ theme, $background }) => $background || theme.brand200};
   transition:
     transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -68,16 +73,15 @@ const ActiveIndicator = styled.div.attrs<{
     !$forceWebStyle &&
     css`
       top: ${vm(3)};
-      height: ${vm(28)};
     `}
-  ${({ $moveType, theme }) =>
+  ${({ $moveType, theme, $forceWebStyle, $background }) =>
     $moveType === MoveType.LINE &&
     css`
       top: 0;
       left: 0;
       border-radius: 0 !important;
       background: transparent;
-      border-bottom: 1px solid ${theme.textL1};
+      border-bottom: 1px solid ${$background || theme.brand100};
     `}
 `
 
@@ -87,30 +91,35 @@ const TabItem = styled.div<{
   $forceWebStyle?: boolean
   $moveType?: MoveType
   $borderRadius?: number
+  $gap?: number
 }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: ${({ $tabCount }) => `calc((100% - ${4 * ($tabCount - 1)}px) / ${$tabCount})`};
+  gap: 4px;
+  width: ${({ $tabCount, $gap = 4 }) => `calc((100% - ${$gap * ($tabCount - 1)}px) / ${$tabCount})`};
   flex-shrink: 0;
-  height: 36px;
-  font-size: 16px;
+  font-size: 13px;
+  font-style: normal;
   font-weight: 400;
-  line-height: 22px;
+  line-height: 20px;
   border-radius: ${({ $borderRadius }) => $borderRadius || 8}px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   background: transparent;
   position: relative;
   z-index: 1;
   transition: all ${ANI_DURATION}s;
-  ${({ theme, $forceWebStyle, $tabCount, $borderRadius }) =>
+  i {
+    font-size: 18px;
+    color: ${({ theme }) => theme.black200};
+  }
+  ${({ theme, $forceWebStyle, $tabCount, $borderRadius, $gap = 4 }) =>
     theme.isMobile && !$forceWebStyle
       ? css`
-          height: ${vm(28)};
           font-size: 0.13rem;
           line-height: 0.2rem;
           border-radius: ${vm($borderRadius || 6)};
-          width: ${`calc((100% - ${8 * ($tabCount - 1)}px) / ${$tabCount})`};
+          width: ${`calc((100% - ${$gap * ($tabCount - 1)}px) / ${$tabCount})`};
         `
       : css`
           cursor: pointer;
@@ -118,28 +127,40 @@ const TabItem = styled.div<{
   ${({ $moveType, $isActive, theme }) =>
     $moveType === MoveType.LINE &&
     css`
-      color: ${$isActive ? theme.textL1 : theme.textL4};
+      width: fit-content;
+      padding: 0 16px;
+      color: ${$isActive ? theme.black0 : theme.black200};
+      i {
+        color: ${$isActive ? theme.black0 : theme.black200};
+      }
     `}
 `
 
 export default function MoveTabList({
-  tabIndex,
+  className,
+  tabKey,
+  gap = 4,
   tabList,
   moveType = MoveType.BG,
   borderRadius,
   itemBorderRadius,
   forceWebStyle = false,
+  activeIndicatorBackground,
 }: {
-  tabIndex: number
+  className?: string
+  gap?: number
+  tabKey: number | string
   moveType?: MoveType
   borderRadius?: number
   itemBorderRadius?: number
   tabList: {
-    key: number
+    key: number | string
     text: React.ReactNode
+    icon?: React.ReactNode
     clickCallback: () => void
   }[]
   forceWebStyle?: boolean
+  activeIndicatorBackground?: string
 }) {
   const theme = useTheme()
   const isMobile = useIsMobile()
@@ -148,8 +169,12 @@ export default function MoveTabList({
   const [tabDimensions, setTabDimensions] = useState<{ width: number; left: number }[]>([])
   const [wrapperWidth, setWrapperWidth] = useState<number>(0)
 
+  const currentTabIndex = useMemo(() => {
+    return tabList.findIndex((item) => item.key === tabKey) || 0
+  }, [tabList, tabKey])
+
   // 测量TabItem的实际宽度和位置
-  const measureTabs = () => {
+  const measureTabs = useCallback(() => {
     const dimensions = tabRefs.current.map((ref, index) => {
       if (ref) {
         // 使用 offsetLeft 获取相对于定位父元素的偏移量
@@ -157,9 +182,10 @@ export default function MoveTabList({
         const offsetLeft = ref.offsetLeft
         const width = ref.offsetWidth
 
-        // 由于 ActiveIndicator 的初始位置是 left: 4px
-        // 我们需要计算相对于这个起始位置的偏移量
-        const translateOffset = offsetLeft - 4
+        // 根据 moveType 决定 ActiveIndicator 的起始位置
+        // LINE 模式下 left: 0px, BG 模式下 left: 4px
+        const indicatorInitialLeft = moveType === MoveType.LINE ? 0 : 4
+        const translateOffset = offsetLeft - indicatorInitialLeft
 
         return {
           width,
@@ -169,7 +195,7 @@ export default function MoveTabList({
       return { width: 0, left: 0 }
     })
     setTabDimensions(dimensions)
-  }
+  }, [moveType])
 
   // 测量包装器的宽度
   const measureWrapperWidth = () => {
@@ -199,7 +225,7 @@ export default function MoveTabList({
 
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
-  }, [tabList])
+  }, [tabList, measureTabs])
 
   // 使用 ResizeObserver 监听包装器宽度变化
   useEffect(() => {
@@ -223,23 +249,22 @@ export default function MoveTabList({
     return () => {
       resizeObserver.disconnect()
     }
-  }, [wrapperWidth])
+  }, [wrapperWidth, measureTabs])
 
   // 当tabIndex改变时也重新测量（确保获取最新的尺寸）
   useEffect(() => {
     requestAnimationFrame(() => {
       measureTabs()
     })
-  }, [tabIndex])
+  }, [currentTabIndex, measureTabs])
 
   // 计算背景指示器的位置和宽度
   const { translateX, indicatorWidth } = useMemo(() => {
-    const currentTab = tabDimensions[tabIndex]
+    const currentTab = tabDimensions[currentTabIndex]
 
     if (!currentTab) {
       // 如果还没有测量到尺寸，使用默认的百分比计算
-      const tabCount = tabList.length
-      const translateDistance = `calc(${100 * tabIndex}%)`
+      const translateDistance = `${100 * currentTabIndex}%`
       return {
         translateX: translateDistance,
         indicatorWidth: 0,
@@ -249,15 +274,16 @@ export default function MoveTabList({
       translateX: `${currentTab.left}px`,
       indicatorWidth: currentTab.width,
     }
-  }, [tabIndex, tabDimensions, tabList.length])
+  }, [currentTabIndex, tabDimensions])
 
   return (
     <MoveTabListWrapper
       ref={wrapperRef}
       $moveType={moveType}
-      className='tab-list-wrapper'
+      className={`tab-list-wrapper ${className ? className : ''}`}
+      $gap={gap}
       $borderRadius={moveType === MoveType.LINE ? 0 : borderRadius || (isMobile ? 8 : 12)}
-      $borderColor={moveType === MoveType.LINE ? 'transparent' : theme.bgT30}
+      $borderColor={moveType === MoveType.LINE ? 'transparent' : theme.black600}
       $forceWebStyle={forceWebStyle}
     >
       {tabList.length > 1 && (
@@ -268,15 +294,17 @@ export default function MoveTabList({
           $moveType={moveType}
           $borderRadius={itemBorderRadius}
           $forceWebStyle={forceWebStyle}
+          $background={activeIndicatorBackground}
         />
       )}
       {tabList.map((item, index) => {
-        const { key, text, clickCallback } = item
-        const isActive = tabIndex === key
+        const { key, text, icon, clickCallback } = item
+        const isActive = tabKey === key
         return (
           <TabItem
             $borderRadius={itemBorderRadius}
             $moveType={moveType}
+            $gap={gap}
             key={key}
             ref={(el) => {
               if (el) {
@@ -289,6 +317,7 @@ export default function MoveTabList({
             $isActive={isActive}
             onClick={clickCallback}
           >
+            {icon}
             {text}
           </TabItem>
         )

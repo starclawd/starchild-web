@@ -13,7 +13,7 @@ import { ANI_DURATION } from 'constants/index'
 import BacktestView from '../BacktestView'
 import AgentShare, { useCopyText } from 'components/AgentShare'
 import Pending from 'components/Pending'
-import { useCurrentRouter, useGetTokenImg, useIsMobile } from 'store/application/hooks'
+import { useSetCurrentRouter, useGetTokenImg, useIsMobile } from 'store/application/hooks'
 import ImgLoad from 'components/ImgLoad'
 import Popover from 'components/Popover'
 import ShareActionDropdown from 'components/AgentActions/components/ShareActionDropdown'
@@ -30,11 +30,9 @@ const CardWrapper = styled.div`
   display: flex;
   flex-direction: column;
   padding: 20px;
-  width: 800px;
-  margin: 0 auto;
   background: ${({ theme }) => theme.black900};
   border-radius: 24px;
-  border: 1px solid ${({ theme }) => theme.bgT30};
+  border: 1px solid ${({ theme }) => theme.black800};
   transition: all ${ANI_DURATION}s ease;
   gap: 24px;
   cursor: pointer;
@@ -74,11 +72,11 @@ const UserInfo = styled.div`
 `
 
 const UserName = styled.div`
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
 `
 
 const TriggerTime = styled.div`
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 `
 
 const ShareButton = styled.button`
@@ -88,7 +86,7 @@ const ShareButton = styled.button`
   gap: 4px;
   background: transparent;
   border-radius: 8px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   font-size: 14px;
   font-weight: 400;
   cursor: pointer;
@@ -99,8 +97,8 @@ const ShareButton = styled.button`
   }
 
   &:hover {
-    background: ${({ theme }) => theme.bgT20};
-    color: ${({ theme }) => theme.textL1};
+    background: ${({ theme }) => theme.black800};
+    color: ${({ theme }) => theme.black0};
   }
 
   ${({ theme }) =>
@@ -109,7 +107,7 @@ const ShareButton = styled.button`
       gap: ${vm(6)};
 
       .icon-chat-share {
-        color: ${({ theme }) => theme.textL3};
+        color: ${({ theme }) => theme.black200};
         font-size: 0.18rem;
       }
 
@@ -141,7 +139,7 @@ const TitleSection = styled.div`
       font-size: 13px;
       font-weight: 500;
       line-height: 20px;
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
     }
   }
 
@@ -169,7 +167,7 @@ const Title = styled.div`
   font-size: 13px;
   line-height: 20px;
   font-weight: 500;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -183,7 +181,7 @@ const AlertTitle = styled.div`
   font-size: 26px;
   font-weight: 500;
   line-height: 34px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -196,7 +194,7 @@ const AlertTitle = styled.div`
 function AgentOverviewCard({ data, fromPage = 'myagents' }: AgentOverviewCardProps) {
   const [timezone] = useTimezone()
   const isMobile = useIsMobile()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const [showSharePopover, setShowSharePopover] = useState(false)
   const isBacktestTask = data.task_type === AGENT_TYPE.BACKTEST_TASK
   const symbol = useMemo(() => {

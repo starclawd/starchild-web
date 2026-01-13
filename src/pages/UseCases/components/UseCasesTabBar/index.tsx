@@ -28,7 +28,7 @@ const TabListWrapper = styled.div`
   padding: 0 4px;
   width: fit-content;
   height: 48px;
-  border: 1px solid ${({ theme }) => theme.bgT30};
+  border: 1px solid ${({ theme }) => theme.black800};
   border-radius: 12px;
 `
 
@@ -48,11 +48,11 @@ const TabItem = styled.div<{ $active: boolean }>`
   gap: 4px;
   flex-shrink: 0;
 
-  background-color: ${({ $active, theme }) => ($active ? theme.bgT30 : 'transparent')};
-  color: ${({ theme }) => theme.textL1};
+  background-color: ${({ $active, theme }) => ($active ? theme.black600 : 'transparent')};
+  color: ${({ theme }) => theme.black0};
 
   &:hover {
-    background-color: ${({ $active, theme }) => ($active ? theme.bgT30 : theme.bgT20)};
+    background-color: ${({ $active, theme }) => ($active ? theme.black600 : theme.black800)};
   }
 
   i {
@@ -86,7 +86,7 @@ const MobileSelectButton = styled.div`
   transition: all ${ANI_DURATION}s ease;
 
   &:hover {
-    background-color: ${({ theme }) => theme.bgT20};
+    background-color: ${({ theme }) => theme.black800};
   }
 `
 
@@ -96,7 +96,7 @@ const MobileSelectContent = styled.div`
   align-items: center;
   gap: 8px;
   flex: 1;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 
   i {
     font-size: 0.18rem;
@@ -118,7 +118,7 @@ const SelectOptionContent = styled.div`
   align-items: center;
   gap: 8px;
   width: 100%;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
 
   i {
     font-size: 0.18rem;
@@ -192,9 +192,8 @@ function UseCasesTabBar() {
           usePortal={true}
           placement='bottom-start'
           alignPopWidth={true}
-          activeIconColor={theme.textL2}
+          activeIconColor={theme.black100}
           hideScrollbar={true}
-          borderWrapperBg='transparent'
           onShow={onShowDropdown}
         >
           <MobileSelectButton>

@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components'
 import { AGENT_CATEGORIES, DISCOVER_AGENTS, AGENT_HUB_TYPE } from 'constants/agentHub'
 import { ROUTER } from 'pages/router'
 import { type AgentCategory } from 'store/agenthub/agenthub'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useCurrentRouter, useSetCurrentRouter } from 'store/application/hooks'
 import { ANI_DURATION } from 'constants/index'
 import { isMatchCurrentRouter } from 'utils'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -31,29 +31,29 @@ const Item = styled.div<{ $isActive: boolean }>`
   transition: background-color ${ANI_DURATION}s;
 
   &:hover {
-    background-color: ${({ theme }) => theme.bgT20};
+    background-color: ${({ theme }) => theme.black800};
   }
 
   i {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
   span {
     font-size: 14px;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL2};
-    text-transform: capitalize;
+    color: ${({ theme }) => theme.black100};
   }
   ${({ $isActive, theme }) =>
     $isActive &&
     css`
-      background-color: ${theme.bgT20};
+      background-color: ${theme.black800};
     `}
 `
 
 export default function AgentHub() {
-  const [currentRouter, setCurrentRouter] = useCurrentRouter()
+  const currentRouter = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const { from } = useParsedQueryString()
   const { t } = useLingui()
 

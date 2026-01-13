@@ -18,8 +18,7 @@ const MobileHeaderWrapper = styled.div`
     font-style: normal;
     font-weight: 500;
     line-height: 24px;
-    text-transform: capitalize;
-    color: ${({ theme }) => theme.textDark98};
+    color: ${({ theme }) => theme.black0};
   }
 `
 
@@ -32,7 +31,7 @@ const MenuWrapper = styled.div`
   height: 100%;
   .icon-chat-back {
     font-size: 0.24rem;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
 `
 

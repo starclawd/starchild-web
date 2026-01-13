@@ -72,7 +72,7 @@ const Content = styled.div`
     font-weight: 700;
     line-height: 34px;
     text-align: center;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   ${({ theme }) =>
     theme.isMobile
@@ -92,7 +92,7 @@ const Content = styled.div`
             font-weight: 500;
             line-height: 0.24rem;
             text-align: center;
-            color: ${theme.textL3};
+            color: ${theme.black200};
             margin-bottom: ${vm(8)};
           }
         `

@@ -30,21 +30,26 @@ export const starchildDomainOrigin = {
   // 本地测试
   development: {
     restfulDomain: '/starchildTestnet',
+    frontendPageDomain: 'https://testnet.iamstarchild.com',
   },
   // 本地主网
   localPro: {
     restfulDomain: '/starchildMainnet',
+    frontendPageDomain: 'https://iamstarchild.com',
   },
   // 测试环境
   test: {
     restfulDomain: 'https://api-testnet.iamstarchild.com/v1',
+    frontendPageDomain: 'https://testnet.iamstarchild.com',
   },
   // 主网
   pro: {
     restfulDomain: 'https://api-mainnet.iamstarchild.com/v1',
+    frontendPageDomain: 'https://iamstarchild.com',
   },
 }
 
+// 主要用于用户和登录相关的接口，后端是 go 代码库
 export const starchildDomain = new Proxy({} as Record<string, string>, {
   get: (_, prop: string) => {
     const search = window.location.search
@@ -81,6 +86,7 @@ export const chatDomainOrigin = {
   },
 }
 
+// 主要是策略相关 后端是 ai-agent 库
 export const chatDomain = new Proxy({} as Record<string, string>, {
   get: (_, prop: string) => {
     const search = window.location.search
@@ -141,6 +147,158 @@ export const webSocketDomain = new Proxy({} as Record<string, string>, {
     }
 
     return webSocketDomainOrigin[environmentType][prop as keyof (typeof webSocketDomainOrigin)[typeof environmentType]]
+  },
+})
+
+export const orderlyDomainOrigin = {
+  // 本地测试
+  development: {
+    restfulDomain: '/orderlyTestnet',
+  },
+  // 本地主网
+  localPro: {
+    restfulDomain: '/orderlyMainnet',
+  },
+  // 测试环境
+  test: {
+    restfulDomain: 'https://testnet-api-sv.orderly.org',
+  },
+  // 主网
+  pro: {
+    restfulDomain: 'https://api-sv.orderly.org',
+  },
+}
+
+export const orderlyDomain = new Proxy({} as Record<string, string>, {
+  get: (_, prop: string) => {
+    const search = window.location.search
+    let environmentType: keyof typeof orderlyDomainOrigin = 'development'
+    const { openAllPermissions } = parsedQueryString(search)
+
+    if (isLocalEnv) {
+      environmentType = openAllPermissions === OPEN_ALL_PERMISSIONS.MAIN_NET ? 'localPro' : 'development'
+    } else if (isTestEnv) {
+      environmentType = 'test'
+    } else if (isPro) {
+      environmentType = 'pro'
+    }
+
+    return orderlyDomainOrigin[environmentType][prop as keyof (typeof orderlyDomainOrigin)[typeof environmentType]]
+  },
+})
+
+export const liveTradingDomainOrigin = {
+  // 本地测试
+  development: {
+    restfulDomain: '/liveTradingTestnet',
+  },
+  // 本地主网
+  localPro: {
+    restfulDomain: '/liveTradingMainnet',
+  },
+  // 测试环境
+  test: {
+    restfulDomain: 'https://ai-api-testnet.iamstarchild.com/api/v1',
+  },
+  // 主网
+  pro: {
+    restfulDomain: 'https://live-trading-api-d1c577e70373.herokuapp.com/api/v1',
+  },
+}
+
+export const liveTradingDomain = new Proxy({} as Record<string, string>, {
+  get: (_, prop: string) => {
+    const search = window.location.search
+    let environmentType: keyof typeof liveTradingDomainOrigin = 'development'
+    const { openAllPermissions } = parsedQueryString(search)
+
+    if (isLocalEnv) {
+      environmentType = openAllPermissions === OPEN_ALL_PERMISSIONS.MAIN_NET ? 'localPro' : 'development'
+    } else if (isTestEnv) {
+      environmentType = 'test'
+    } else if (isPro) {
+      environmentType = 'pro'
+    }
+
+    return liveTradingDomainOrigin[environmentType][
+      prop as keyof (typeof liveTradingDomainOrigin)[typeof environmentType]
+    ]
+  },
+})
+
+export const hyperliquidDomainOrigin = {
+  // 本地测试
+  development: {
+    restfulDomain: 'hyperliquidTestnet',
+  },
+  // 本地主网
+  localPro: {
+    restfulDomain: 'hyperliquidMainnet',
+  },
+  // 测试环境
+  test: {
+    restfulDomain: 'https://api-ui.hyperliquid-testnet.xyz',
+  },
+  // 主网
+  pro: {
+    restfulDomain: 'https://api.hyperliquid.xyz',
+  },
+}
+
+export const hyperliquidDomain = new Proxy({} as Record<string, string>, {
+  get: (_, prop: string) => {
+    const search = window.location.search
+    let environmentType: keyof typeof hyperliquidDomainOrigin = 'development'
+    const { openAllPermissions } = parsedQueryString(search)
+
+    if (isLocalEnv) {
+      environmentType = openAllPermissions === OPEN_ALL_PERMISSIONS.MAIN_NET ? 'localPro' : 'development'
+    } else if (isTestEnv) {
+      environmentType = 'test'
+    } else if (isPro) {
+      environmentType = 'pro'
+    }
+
+    return hyperliquidDomainOrigin[environmentType][
+      prop as keyof (typeof hyperliquidDomainOrigin)[typeof environmentType]
+    ]
+  },
+})
+
+export const hyperliquidChainIdOrigin = {
+  // 本地测试
+  development: {
+    chainId: 'Testnet',
+  },
+  // 本地主网
+  localPro: {
+    chainId: 'Mainnet',
+  },
+  // 测试环境
+  test: {
+    chainId: 'Testnet',
+  },
+  // 主网
+  pro: {
+    chainId: 'Mainnet',
+  },
+}
+
+export const hyperliquidChainId = new Proxy({} as Record<string, string>, {
+  get: (_, prop: string) => {
+    const search = window.location.search
+    let environmentType: keyof typeof hyperliquidChainIdOrigin = 'development'
+    const { openAllPermissions } = parsedQueryString(search)
+    if (isLocalEnv) {
+      environmentType = openAllPermissions === OPEN_ALL_PERMISSIONS.MAIN_NET ? 'localPro' : 'development'
+    } else if (isTestEnv) {
+      environmentType = 'test'
+    } else if (isPro) {
+      environmentType = 'pro'
+    }
+    return hyperliquidChainIdOrigin[environmentType][
+      prop as keyof (typeof hyperliquidChainIdOrigin)[typeof environmentType]
+    ]
   },
 })
 

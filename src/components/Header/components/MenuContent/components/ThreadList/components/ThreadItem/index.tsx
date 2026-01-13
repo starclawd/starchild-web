@@ -1,6 +1,6 @@
 import { ReactNode, useCallback, useMemo } from 'react'
 import { styled, css } from 'styled-components'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useSetCurrentRouter } from 'store/application/hooks'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
 import { useCurrentAiThreadId } from 'store/chatcache/hooks'
@@ -21,7 +21,7 @@ const ThreadItemWrapper = styled.div<{ $isActive: boolean; $isTgThread: boolean 
   background-color: transparent;
   transition: all ${ANI_DURATION}s;
   cursor: pointer;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   .pending-wrapper {
     width: auto;
     .icon-loading {
@@ -42,7 +42,7 @@ const ThreadItemWrapper = styled.div<{ $isActive: boolean; $isTgThread: boolean 
   ${({ $isActive, theme }) =>
     $isActive &&
     css`
-      color: ${theme.textL1};
+      color: ${theme.black0};
     `}
   ${({ theme }) =>
     theme.isMobile
@@ -54,6 +54,8 @@ const ThreadItemWrapper = styled.div<{ $isActive: boolean; $isTgThread: boolean 
         `
       : css`
           &:hover {
+            border-radius: 4px;
+            background-color: ${({ theme }) => theme.black800};
             .operator-icon {
               display: flex;
             }
@@ -103,7 +105,7 @@ export default function ThreadItem({
   mobileMenuCallback?: () => void
 }) {
   const [isLoadingData] = useIsLoadingData()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const [isRenderingData] = useIsRenderingData()
   const [, setCurrentAiThreadId] = useCurrentAiThreadId()
   const [currentLoadingThreadId] = useCurrentLoadingThreadId()

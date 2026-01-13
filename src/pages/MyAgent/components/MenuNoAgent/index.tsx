@@ -4,7 +4,7 @@ import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
 import { ROUTER } from 'pages/router'
 import { useCallback } from 'react'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useSetCurrentRouter } from 'store/application/hooks'
 import { useIsMenuNoAgentOpen } from 'store/myagentcache/hooks'
 import styled, { css } from 'styled-components'
 
@@ -15,14 +15,14 @@ const MenuNoAgentWrapper = styled.div`
   gap: 8px;
   padding: 12px;
   border-radius: 12px;
-  background-color: ${({ theme }) => theme.bgT20};
+  background-color: ${({ theme }) => theme.black800};
   margin-top: 12px;
-  .icon-chat-close {
+  .icon-close {
     position: absolute;
     top: 12px;
     right: 12px;
     font-size: 18px;
-    color: ${({ theme }) => theme.text20};
+    color: ${({ theme }) => theme.black500};
     cursor: pointer;
   }
   ${({ theme }) =>
@@ -32,7 +32,7 @@ const MenuNoAgentWrapper = styled.div`
       gap: ${vm(8)};
       padding: ${vm(12)};
       border-radius: ${vm(12)};
-      .icon-chat-close {
+      .icon-close {
         font-size: 0.18rem;
         top: ${vm(12)};
         right: ${vm(12)};
@@ -80,8 +80,8 @@ const ButtonChat = styled(ButtonCommon)`
   line-height: 18px;
   padding: 0 12px;
   border-radius: 6px;
-  color: ${({ theme }) => theme.textL3};
-  background-color: ${({ theme }) => theme.bgT20};
+  color: ${({ theme }) => theme.black200};
+  background-color: ${({ theme }) => theme.black800};
   .icon-chat-back {
     font-size: 14px;
     transform: rotate(180deg);
@@ -101,7 +101,7 @@ const ButtonChat = styled(ButtonCommon)`
 `
 
 export default function MenuNoAgent() {
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const [isMenuNoAgentOpen, updateIsMenuNoAgentOpen] = useIsMenuNoAgentOpen()
   const goChatPage = useCallback(() => {
     setCurrentRouter(ROUTER.CHAT)
@@ -116,7 +116,7 @@ export default function MenuNoAgent() {
   if (!isMenuNoAgentOpen) return null
   return (
     <MenuNoAgentWrapper>
-      <IconBase onClick={closeMenuNoAgent} className='icon-chat-close' />
+      <IconBase onClick={closeMenuNoAgent} className='icon-close' />
       <Title>
         <Trans>Did you know?</Trans>
       </Title>

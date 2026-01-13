@@ -7,10 +7,9 @@ import chatReducer from './chat/reducer'
 import chatcacheReducer from './chatcache/reducer'
 import loginReducer from './login/reducer'
 import applicationReducer from './application/reducer'
-import portfolioReducer from './portfolio/reducer'
+import myvaultReducer from './myvault/reducer'
 import logincacheReducer from './logincache/reducer'
 import insightscacheReducer from './insightscache/reducer'
-import portfoliocacheReducer from './portfoliocache/reducer'
 import insightsReducer from './insights/reducer'
 import shortcutsReducer from './shortcuts/reducer'
 import timezonecacheReducer from './timezonecache/reducer'
@@ -25,7 +24,24 @@ import homecacheReducer from './homecache/reducer'
 import agenthubcacheReducer from './agenthubcache/reducer'
 import perferenceReducer from './perference/reducer'
 import usecasesReducer from './usecases/reducer'
-import { baseApi, chatApi, baseBinanceApi, coinmarketApi, coingeckoApi, openAiApi } from '../api/base'
+import vaultsReducer from './vaults/reducer'
+import vaultsdetailReducer from './vaultsdetail/reducer'
+import createstrategyReducer from './createstrategy/reducer'
+import mystrategyReducer from './mystrategy/reducer'
+import mystrategycacheReducer from './mystrategycache/reducer'
+import createstrategycacheReducer from './createstrategycache/reducer'
+import vaultdetailcacheReducer from './vaultsdetailcache/reducer'
+import {
+  baseApi,
+  chatApi,
+  baseBinanceApi,
+  coinmarketApi,
+  coingeckoApi,
+  openAiApi,
+  orderlyApi,
+  backtestApi,
+  hyperliquidApi,
+} from '../api/base'
 
 // Redux Persist
 import { persistStore, persistReducer, createMigrate } from 'redux-persist'
@@ -36,7 +52,7 @@ import { StateReconciler } from 'redux-persist/es/types'
 const REDUCER_VERSIONS: Record<string, string> = {
   languagecache: '0.0.1',
   themecache: '0.0.1',
-  chatcache: '0.0.1',
+  chatcache: '0.0.2',
   logincache: '0.0.1',
   insightscache: '0.0.4',
   portfoliocache: '0.0.1',
@@ -46,6 +62,9 @@ const REDUCER_VERSIONS: Record<string, string> = {
   myagentcache: '0.0.2',
   homecache: '0.0.1',
   agenthubcache: '0.0.1',
+  mystrategycache: '0.0.2',
+  createstrategycache: '0.0.1',
+  vaultdetailcache: '0.0.1',
 }
 
 // 需要持久化的reducer配置
@@ -65,6 +84,9 @@ const persistConfig = {
     'myagentcache',
     'homecache',
     'agenthubcache',
+    'mystrategycache',
+    'createstrategycache',
+    'vaultdetailcache',
   ], // 持久化language和theme
   // blacklist: [], // 可选：不持久化的reducer列表
   version: 1, // 根持久化版本，不同于各个reducer的版本
@@ -117,10 +139,9 @@ const rootReducer = combineReducers({
   chatcache: chatcacheReducer,
   login: loginReducer,
   application: applicationReducer,
-  portfolio: portfolioReducer,
+  myvault: myvaultReducer,
   logincache: logincacheReducer,
   insightscache: insightscacheReducer,
-  portfoliocache: portfoliocacheReducer,
   timezonecache: timezonecacheReducer,
   insights: insightsReducer,
   shortcuts: shortcutsReducer,
@@ -135,12 +156,22 @@ const rootReducer = combineReducers({
   perference: perferenceReducer,
   agenthubcache: agenthubcacheReducer,
   usecases: usecasesReducer,
+  vaults: vaultsReducer,
+  vaultsdetail: vaultsdetailReducer,
+  createstrategy: createstrategyReducer,
+  mystrategy: mystrategyReducer,
+  mystrategycache: mystrategycacheReducer,
+  createstrategycache: createstrategycacheReducer,
+  vaultdetailcache: vaultdetailcacheReducer,
   [baseApi.reducerPath]: baseApi.reducer,
   [chatApi.reducerPath]: chatApi.reducer,
   [baseBinanceApi.reducerPath]: baseBinanceApi.reducer,
   [coinmarketApi.reducerPath]: coinmarketApi.reducer,
   [coingeckoApi.reducerPath]: coingeckoApi.reducer,
   [openAiApi.reducerPath]: openAiApi.reducer,
+  [orderlyApi.reducerPath]: orderlyApi.reducer,
+  [backtestApi.reducerPath]: backtestApi.reducer,
+  [hyperliquidApi.reducerPath]: hyperliquidApi.reducer,
 })
 
 // 定义根reducer的类型
@@ -162,6 +193,9 @@ export const store = configureStore({
       coinmarketApi.middleware,
       coingeckoApi.middleware,
       openAiApi.middleware,
+      orderlyApi.middleware,
+      backtestApi.middleware,
+      hyperliquidApi.middleware,
     ),
 })
 
@@ -182,10 +216,9 @@ export interface RootState {
   chatcache: ReturnType<typeof chatcacheReducer>
   login: ReturnType<typeof loginReducer>
   application: ReturnType<typeof applicationReducer>
-  portfolio: ReturnType<typeof portfolioReducer>
+  myvault: ReturnType<typeof myvaultReducer>
   logincache: ReturnType<typeof logincacheReducer>
   insightscache: ReturnType<typeof insightscacheReducer>
-  portfoliocache: ReturnType<typeof portfoliocacheReducer>
   insights: ReturnType<typeof insightsReducer>
   timezonecache: ReturnType<typeof timezonecacheReducer>
   shortcuts: ReturnType<typeof shortcutsReducer>
@@ -195,6 +228,9 @@ export interface RootState {
   [baseApi.reducerPath]: ReturnType<typeof baseApi.reducer>
   [chatApi.reducerPath]: ReturnType<typeof chatApi.reducer>
   [baseBinanceApi.reducerPath]: ReturnType<typeof baseBinanceApi.reducer>
+  [orderlyApi.reducerPath]: ReturnType<typeof orderlyApi.reducer>
+  [backtestApi.reducerPath]: ReturnType<typeof backtestApi.reducer>
+  [hyperliquidApi.reducerPath]: ReturnType<typeof hyperliquidApi.reducer>
   headercache: ReturnType<typeof headercacheReducer>
   myagent: ReturnType<typeof myagentReducer>
   myagentcache: ReturnType<typeof myagentcacheReducer>
@@ -203,6 +239,13 @@ export interface RootState {
   perference: ReturnType<typeof perferenceReducer>
   agenthubcache: ReturnType<typeof agenthubcacheReducer>
   usecases: ReturnType<typeof usecasesReducer>
+  vaults: ReturnType<typeof vaultsReducer>
+  vaultsdetail: ReturnType<typeof vaultsdetailReducer>
+  createstrategy: ReturnType<typeof createstrategyReducer>
+  mystrategy: ReturnType<typeof mystrategyReducer>
+  mystrategycache: ReturnType<typeof mystrategycacheReducer>
+  createstrategycache: ReturnType<typeof createstrategycacheReducer>
+  vaultdetailcache: ReturnType<typeof vaultdetailcacheReducer>
   _persist?: PersistPartial
 }
 

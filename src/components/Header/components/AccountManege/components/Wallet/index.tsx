@@ -1,14 +1,26 @@
 import styled, { css } from 'styled-components'
-import Icon from '../Icon'
 import { useCallback } from 'react'
 import { useOpenBindWalletModal } from 'store/application/hooks'
 import { useUserInfo } from 'store/login/hooks'
+import { useDisconnect } from '@reown/appkit/react'
+import { IconBase } from 'components/Icons'
+import { ANI_DURATION } from 'constants/index'
 
 const WalletWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   gap: 8px;
+  .icon-menu-chat,
+  .icon-edit {
+    cursor: pointer;
+    font-size: 18px;
+    transition: all ${ANI_DURATION}s;
+    color: ${({ theme }) => theme.black200};
+    &:hover {
+      color: ${({ theme }) => theme.black0};
+    }
+  }
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -31,7 +43,7 @@ const Address = styled.span`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -44,7 +56,7 @@ const ChainLabel = styled.span`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -67,6 +79,7 @@ const AddressWithLabel = styled.div`
 export default function Wallet() {
   const openBindWalletModal = useOpenBindWalletModal()
   const [{ walletAddress, secondaryWalletAddress }] = useUserInfo()
+  const { disconnect } = useDisconnect()
 
   const formatAddress = useCallback((address: string): string => {
     if (!address || address.length < 10) return address
@@ -77,15 +90,21 @@ export default function Wallet() {
     return address.startsWith('0x') ? 'EVM' : 'SOLANA'
   }, [])
 
-  const handleWalletBind = useCallback(() => {
+  const disconnectWallet = useCallback(async () => {
+    await disconnect()
+  }, [disconnect])
+
+  const handleWalletBind = useCallback(async () => {
+    await disconnectWallet()
     openBindWalletModal()
-  }, [openBindWalletModal])
+  }, [openBindWalletModal, disconnectWallet])
 
   const handleEditWallet = useCallback(
-    (address: string) => {
+    async (address: string) => {
+      await disconnectWallet()
       openBindWalletModal(address)
     },
-    [openBindWalletModal],
+    [openBindWalletModal, disconnectWallet],
   )
 
   // 过滤掉空字符串的地址
@@ -93,15 +112,6 @@ export default function Wallet() {
     (address) => address && address.trim() !== '',
   )
   const addressCount = addresses.length
-
-  // 如果没有地址，显示绑定按钮
-  if (addressCount === 0) {
-    return (
-      <WalletWrapper>
-        <Icon iconName='icon-chat-upload' onClick={handleWalletBind} />
-      </WalletWrapper>
-    )
-  }
 
   // 如果只有一个地址
   if (addressCount === 1) {
@@ -112,8 +122,6 @@ export default function Wallet() {
             <Address>{formatAddress(addresses[0])}</Address>
             <ChainLabel>({getChainLabel(addresses[0])})</ChainLabel>
           </AddressWithLabel>
-          <Icon iconName='icon-edit' onClick={() => handleEditWallet(addresses[0])} />
-          <Icon iconName='icon-chat-upload' onClick={handleWalletBind} />
         </WalletItem>
       </WalletWrapper>
     )
@@ -128,7 +136,6 @@ export default function Wallet() {
             <Address>{formatAddress(address)}</Address>
             <ChainLabel>({getChainLabel(address)})</ChainLabel>
           </AddressWithLabel>
-          <Icon iconName='icon-edit' onClick={() => handleEditWallet(address)} />
         </WalletItem>
       ))}
     </WalletWrapper>

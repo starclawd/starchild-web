@@ -126,7 +126,7 @@ const StyledInput = styled.input`
   letter-spacing: 0.6px;
   padding-bottom: 12px;
   background: transparent;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   border-bottom: 2px solid ${({ theme }) => theme.brand100};
   ${({ theme }) =>
     theme.isMobile &&
@@ -152,7 +152,7 @@ const ActionButton = styled.div<{ $isHovered?: boolean }>`
 
   .icon-chat-back {
     font-size: 20px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     transform: rotate(90deg);
   }
   ${({ theme }) =>

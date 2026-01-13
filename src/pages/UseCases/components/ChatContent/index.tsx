@@ -44,7 +44,7 @@ const DeepThinkContent = styled.div<{ $isShowRightContent: boolean; $shouldExpan
       transform: translateX(-100%);
     `}
   `}
-  ${({ theme, $isShowRightContent, $shouldExpandRightSection }) => theme.mediaMinWidth.minWidth1280`
+  ${({ theme, $isShowRightContent, $shouldExpandRightSection }) => theme.mediaMinWidth.width1280`
     position: unset;
     transform: unset;
     transition: width ${ANI_DURATION}s;
@@ -83,7 +83,7 @@ const Header = styled.div`
   font-size: 0.2rem;
   font-weight: 500;
   line-height: 0.28rem;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 `
 
 export default function ChatContent() {

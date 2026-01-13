@@ -48,7 +48,7 @@ const Header = styled.div`
   font-size: 20px;
   font-weight: 500;
   line-height: 28px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -69,7 +69,7 @@ const Content = styled.div`
     font-size: 13px;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
   ${({ theme }) =>
     theme.isMobile &&
@@ -102,10 +102,10 @@ const InputWrapper = styled(BorderAllSide1PxBox)<{ $isFocused: boolean }>`
     font-size: 16px;
     font-weight: 400;
     line-height: 24px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     background-color: transparent;
     &::placeholder {
-      color: ${({ theme }) => theme.textL4};
+      color: ${({ theme }) => theme.black300};
     }
   }
   ${({ theme }) =>
@@ -182,7 +182,7 @@ export default memo(function AddQuestionModal({
         description: <span>{value}</span>,
         status: TOAST_STATUS.SUCCESS,
         typeIcon: 'icon-chat-upload',
-        iconTheme: theme.textL2,
+        iconTheme: theme.black0,
       })
       toggleAddQuestionModal()
     }
@@ -227,7 +227,7 @@ export default memo(function AddQuestionModal({
           <span>
             <Trans>Question</Trans>
           </span>
-          <InputWrapper $borderRadius={24} $borderColor={theme.text10} $isFocused={isFocused}>
+          <InputWrapper $borderRadius={24} $borderColor={theme.black600} $isFocused={isFocused}>
             <InputArea
               id='addQuestionInput'
               value={value}

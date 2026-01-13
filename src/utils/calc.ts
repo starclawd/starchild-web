@@ -2,7 +2,6 @@
  * 统一计算方法封装
  */
 import BigNumber from 'bignumber.js'
-import { formatNumber } from './format'
 export type NumberType = string | BigNumber | number
 
 /**
@@ -181,4 +180,7 @@ export function isLte(num1: NumberType, num2: NumberType): boolean {
   num1 = new BigNumber(num1)
   num2 = new BigNumber(num2)
   return num1.lte(num2)
+}
+export function isInvalidValue(val: unknown): val is null | undefined {
+  return val === null || val === undefined || (typeof val === 'number' && isNaN(val))
 }

@@ -23,6 +23,7 @@ import {
 import Preview from '../Preview'
 import { useIsShowDeepThink } from 'store/chat/hooks'
 import { useIsMobile } from 'store/application/hooks'
+import { extractExecutableCode } from 'utils/extractExecutableCode'
 
 const CodeWrapper = styled.div`
   display: flex;
@@ -38,17 +39,23 @@ const MobileMoveTabList = styled.div`
   gap: 20px;
   padding-top: 12px;
   .tab-list-wrapper {
-    flex: 1;
+    flex-grow: 1;
+    height: 36px;
+    border-radius: 8px;
+    padding: 2px;
     .move-tab-item {
-      border-radius: 8px;
-      &:not(.active) {
-        &:hover {
-          background-color: ${({ theme }) => theme.bgT20};
-        }
-      }
+      height: 32px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 20px;
     }
     .active-indicator {
-      border-radius: 8px;
+      top: 1px;
+      left: 3px;
+      height: 32px;
+      border-radius: 6px !important;
     }
   }
   ${({ theme }) =>
@@ -84,8 +91,8 @@ const Title = styled.div`
   line-height: 18px;
   margin-top: 8px;
   border-radius: 6px;
-  color: ${({ theme }) => theme.textL4};
-  background-color: ${({ theme }) => theme.bgT20};
+  color: ${({ theme }) => theme.black300};
+  background-color: ${({ theme }) => theme.black800};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -102,11 +109,11 @@ const CopyWrapper = styled.div`
   font-weight: 400;
   line-height: 20px;
   transition: all ${ANI_DURATION}s;
-  color: ${({ theme }) => theme.textL3};
-  .icon-chat-copy {
+  color: ${({ theme }) => theme.black200};
+  .icon-copy {
     font-size: 18px;
     transition: all ${ANI_DURATION}s;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
   ${({ theme }) =>
     theme.isMobile
@@ -114,16 +121,16 @@ const CopyWrapper = styled.div`
           gap: ${vm(4)};
           font-size: 0.14rem;
           line-height: 0.2rem;
-          .icon-chat-copy {
+          .icon-copy {
             font-size: 0.18rem;
           }
         `
       : css`
           cursor: pointer;
           &:hover {
-            color: ${({ theme }) => theme.textL1};
-            .icon-chat-copy {
-              color: ${({ theme }) => theme.textL1};
+            color: ${({ theme }) => theme.black0};
+            .icon-copy {
+              color: ${({ theme }) => theme.black0};
             }
           }
         `}
@@ -171,12 +178,12 @@ const IconWrapper = styled.div`
   .icon-chat-delete {
     font-size: 24px;
     transition: all ${ANI_DURATION}s;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
   &:hover {
-    background-color: ${({ theme }) => theme.bgT20};
+    background-color: ${({ theme }) => theme.black800};
     .icon-chat-delete {
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
     }
   }
 `
@@ -277,41 +284,6 @@ export default memo(function Code({
     ]
   }, [task_type, isCodeTaskType, changeTabIndex])
 
-  // 从 markdown 代码块中提取纯代码内容，或处理转义的换行符
-  const extractExecutableCode = useCallback((codeContent: string) => {
-    if (!codeContent || typeof codeContent !== 'string') return ''
-
-    // 首先检查是否是 markdown 代码块格式
-    const codeBlockRegex = /```[\w]*\n?([\s\S]*?)```/g
-    const matches = codeContent.match(codeBlockRegex)
-
-    if (matches && matches.length > 0) {
-      // 提取第一个代码块的内容
-      const firstMatch = matches[0]
-      // 去掉开头的```language和结尾的```
-      const cleanCode = firstMatch
-        .replace(/^```[\w]*\n?/, '') // 去掉开头的```和语言标识
-        .replace(/```$/, '') // 去掉结尾的```
-        .trim()
-      return cleanCode
-    }
-
-    // 如果不是 markdown 格式，检查是否包含转义的换行符
-    if (codeContent.includes('\\n')) {
-      // 将转义的换行符转换为实际的换行符
-      return codeContent
-        .replace(/\\n/g, '\n') // 转义的换行符
-        .replace(/\\t/g, '\t') // 转义的制表符
-        .replace(/\\r/g, '\r') // 转义的回车符
-        .replace(/\\"/g, '"') // 转义的双引号
-        .replace(/\\'/g, "'") // 转义的单引号
-        .replace(/\\\\/g, '\\') // 转义的反斜杠
-    }
-
-    // 其他情况直接返回原内容
-    return codeContent
-  }, [])
-
   const { copyWithCustomProcessor } = useCopyContent({
     mode: 'custom',
     customProcessor: extractExecutableCode,
@@ -319,7 +291,7 @@ export default memo(function Code({
 
   const codeContent = useMemo(() => {
     return extractExecutableCode(code)
-  }, [code, extractExecutableCode])
+  }, [code])
 
   // 自动滚动到底部
   const scrollToBottom = useCallback(() => {
@@ -481,7 +453,7 @@ export default memo(function Code({
   return (
     <CodeWrapper>
       <MobileMoveTabList>
-        <MoveTabList tabIndex={tabIndex} tabList={tabList} />
+        <MoveTabList tabKey={tabIndex} tabList={tabList} />
         {!isMobile && isFromChat && !isFromUseCases && (
           <IconWrapper onClick={closeDeepThink}>
             <IconBase className='icon-chat-delete' />
@@ -505,7 +477,7 @@ export default memo(function Code({
           <Title>
             <Trans>The code is generated by AI, executed inside a container.</Trans>
             <CopyWrapper onClick={handleCopyCode}>
-              <IconBase className='icon-chat-copy' />
+              <IconBase className='icon-copy' />
               <Trans>Copy</Trans>
             </CopyWrapper>
           </Title>

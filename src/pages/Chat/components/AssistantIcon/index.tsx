@@ -19,7 +19,7 @@ const AssistantIconWrapper = styled.div`
     font-size: 12px;
     font-weight: 500;
     line-height: 18px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
   ${({ theme }) =>
     theme.isMobile &&

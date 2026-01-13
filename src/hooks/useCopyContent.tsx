@@ -29,13 +29,13 @@ export default function useCopyContent(options: UseCopyContentOptions = {}) {
         title: <Trans>Copied</Trans>,
         description,
         status: TOAST_STATUS.SUCCESS,
-        typeIcon: 'icon-chat-copy',
-        iconTheme: theme.jade10,
+        typeIcon: 'icon-copy',
+        iconTheme: theme.black0,
       })
 
       return textContent
     },
-    [toast, theme.jade10, maxDescriptionLength],
+    [toast, theme.black0, maxDescriptionLength],
   )
 
   const copyRawContent = useCallback(
@@ -49,13 +49,13 @@ export default function useCopyContent(options: UseCopyContentOptions = {}) {
         title: <Trans>Copied</Trans>,
         description,
         status: TOAST_STATUS.SUCCESS,
-        typeIcon: 'icon-chat-copy',
-        iconTheme: theme.jade10,
+        typeIcon: 'icon-copy',
+        iconTheme: theme.black0,
       })
 
       return content
     },
-    [toast, theme.jade10, maxDescriptionLength],
+    [toast, theme.black0, maxDescriptionLength],
   )
 
   const copyWithCustomProcessor = useCallback(
@@ -76,13 +76,13 @@ export default function useCopyContent(options: UseCopyContentOptions = {}) {
         title: <Trans>Copied</Trans>,
         description,
         status: TOAST_STATUS.SUCCESS,
-        typeIcon: 'icon-chat-copy',
-        iconTheme: theme.textL1,
+        typeIcon: 'icon-copy',
+        iconTheme: theme.black0,
       })
 
       return processedContent
     },
-    [customProcessor, toast, theme.textL1, maxDescriptionLength],
+    [customProcessor, toast, theme.black0, maxDescriptionLength],
   )
 
   const copyContent = useCallback(

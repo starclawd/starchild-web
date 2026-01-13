@@ -27,7 +27,7 @@ interface FeedbackContainerProps {
 const FeedbackContainer = styled.div<FeedbackContainerProps>`
   display: flex;
   align-items: center;
-  border: 1px solid ${({ theme }) => theme.bgT30};
+  border: 1px solid ${({ theme }) => theme.black800};
   border-radius: 6px;
   overflow: hidden;
   transition: all ${ANI_DURATION}s;
@@ -53,7 +53,7 @@ const FeedbackButton = styled.div<FeedbackButtonProps>`
   justify-content: center;
   gap: 4px;
   padding: 8px 16px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
@@ -65,7 +65,7 @@ const FeedbackButton = styled.div<FeedbackButtonProps>`
 
   i {
     font-size: 18px;
-    color: ${({ theme }) => theme.text20};
+    color: ${({ theme }) => theme.black500};
     transition: all ${ANI_DURATION}s;
   }
 
@@ -87,7 +87,7 @@ const FeedbackButton = styled.div<FeedbackButtonProps>`
   ${({ theme, $isSelected, $type }) =>
     $isSelected &&
     css`
-      background: ${theme.bgT20};
+      background: ${theme.black800};
       color: ${$type === 'like' ? theme.brand100 : theme.yellow200};
 
       i {
@@ -102,7 +102,7 @@ const FeedbackButton = styled.div<FeedbackButtonProps>`
     !$isSelected &&
     css`
       &:hover {
-        background: ${theme.bgT20};
+        background: ${theme.black800};
       }
     `}
 
@@ -113,13 +113,13 @@ const FeedbackButton = styled.div<FeedbackButtonProps>`
     !$isSelected &&
     css`
       &:active {
-        background: ${theme.bgT20};
+        background: ${theme.black800};
       }
     `}
 `
 
 const CountText = styled.span`
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 `
 
 const Feedback = memo(function Feedback({

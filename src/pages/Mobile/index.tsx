@@ -12,13 +12,13 @@ import {
   MobileChat,
   ROUTER,
   MobileAgentHub,
-  Home,
-  MobileMyAgent,
-  MobileUseCases,
+  MobileMySignals,
+  // MobileUseCases,
   MobileDocuments,
   MobileAgentKolRadar,
   MobileAgentTokenDeepDive,
   MobileInsights,
+  MobileLiveChat,
 } from 'pages/router'
 import useJsBridge from 'hooks/useJsBridge'
 import { useAuthToken } from 'store/logincache/hooks'
@@ -97,9 +97,9 @@ export default function Mobile() {
   return (
     <MobileWrapper>
       <Routes>
-        <Route path={ROUTER.HOME} element={<Home />} />
         <Route path={ROUTER.CHAT} element={<MobileChat />} />
-        <Route path={ROUTER.INSIGHTS} element={<MobileInsights />} />
+        <Route path={ROUTER.SIGNALS} element={<MobileInsights />} />
+        <Route path={ROUTER.LIVECHAT} element={<MobileLiveChat />} />
         <Route path={ROUTER.BACK_TEST} element={<MobileAgentDetail />} />
         <Route path={ROUTER.TASK_DETAIL} element={<MobileAgentDetail />} />
         <Route path={ROUTER.AGENT_DETAIL} element={<MobileAgentDetail />} />
@@ -107,12 +107,12 @@ export default function Mobile() {
         <Route path={ROUTER.AGENT_HUB} element={<MobileAgentHub />} />
         <Route path={ROUTER.AGENT_HUB_KOL} element={<MobileAgentKolRadar />} />
         <Route path={ROUTER.AGENT_HUB_DEEP_DIVE} element={<MobileAgentTokenDeepDive />} />
-        <Route path={ROUTER.MY_AGENTS} element={<MobileMyAgent />} />
-        <Route path={ROUTER.USE_CASES} element={<MobileUseCases />} />
+        <Route path={ROUTER.MY_SIGNALS} element={<MobileMySignals />} />
+        {/* <Route path={ROUTER.USE_CASES} element={<MobileUseCases />} /> */}
         <Route path={ROUTER.DOCUMENTS} element={<MobileDocuments />} />
         {/* Redirect /agenthub/* to /agentmarket/* */}
         <Route path='/agenthub/*' element={<Navigate to={pathname.replace('/agenthub', '/agentmarket')} replace />} />
-        <Route path='*' element={<Navigate to={isLogin ? ROUTER.AGENT_HUB : ROUTER.HOME} replace />} />
+        <Route path='*' element={<Navigate to={ROUTER.CHAT} replace />} />
       </Routes>
       <MobileMenu />
     </MobileWrapper>

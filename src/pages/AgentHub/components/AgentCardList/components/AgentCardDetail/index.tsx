@@ -18,7 +18,7 @@ import { SkeletonText, SkeletonMultilineText } from 'components/Skeleton'
 import { useIsAgentSubscribed, useIsSelfAgent } from 'store/agenthub/hooks'
 import { useIsMobile } from 'store/application/hooks'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import SubscribeButton from 'pages/AgentHub/components/AgentCardList/components/SubscribeButton'
 import { useLazyGetAgentDetailQuery } from 'api/chat'
@@ -132,7 +132,7 @@ const Header = styled.div<{ $showBackgroundImage?: boolean }>`
 const CreatorName = styled.div`
   font-size: 14px;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   display: flex;
   gap: 8px;
 
@@ -147,7 +147,7 @@ const CreatorName = styled.div`
 const CreatorPrefix = styled.span`
   font-size: 12px;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL4};
+  color: ${({ theme }) => theme.black300};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -202,7 +202,7 @@ const StatItem = styled.div`
 
 const StatLabel = styled.div`
   font-size: 14px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -215,7 +215,7 @@ const StatValue = styled.div`
   font-size: 18px;
   line-height: 26px;
   font-weight: 500;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   display: flex;
   align-items: center;
 
@@ -250,7 +250,7 @@ const Title = styled.h2`
   line-height: 34px;
   font-weight: 400;
   margin: 0;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -263,7 +263,7 @@ const Title = styled.h2`
 const Description = styled.p`
   font-size: 14px;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -306,7 +306,7 @@ const SectionTitle = styled.p`
   font-size: 14px;
   line-height: 20px;
   font-weight: 400;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   margin-bottom: 12px;
 
   ${({ theme }) =>
@@ -334,7 +334,7 @@ const ChatsContainer = styled.div`
 
 const ChatItem = styled.div<{ $isSingle?: boolean }>`
   flex: ${({ $isSingle }) => ($isSingle ? '0 0 100%' : '0 0 480px')};
-  background: ${({ theme }) => theme.bgT20};
+  background: ${({ theme }) => theme.black800};
   border-radius: 12px;
   padding: 16px;
 
@@ -357,7 +357,7 @@ const ChatItem = styled.div<{ $isSingle?: boolean }>`
 const ChatDate = styled.div`
   font-size: 12px;
   line-height: 18px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   margin-bottom: 8px;
 
   ${({ theme }) =>
@@ -375,7 +375,7 @@ const ButtonDetail = styled(ButtonBorder)<{ $isSubscribed: boolean }>`
   gap: 6px;
   width: 100%;
   height: 60px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   .icon-task-detail {
     font-size: 24px;
   }
@@ -405,13 +405,13 @@ const IconButtonShare = styled.div`
   height: 60px;
   border-radius: 50%;
   cursor: pointer;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   .icon-chat-share {
     font-size: 24px;
   }
 
   &:hover {
-    background: ${({ theme }) => theme.bgT20};
+    background: ${({ theme }) => theme.black800};
   }
 `
 
@@ -463,7 +463,7 @@ export default memo(function AgentCardDetail({
   const [isCopyLoading, setIsCopyLoading] = useState(false)
   const copyImgAndText = useCopyImgAndText()
   const isSubscribed = useIsAgentSubscribed(agentId)
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const [triggerGetAgentDetail] = useLazyGetAgentDetailQuery()
   const [recentChats, setRecentChats] = useState<{ error?: string; message?: string; triggerTime?: number }[]>([])
   const [isLoadingAgentDetail, setIsLoadingAgentDetail] = useState(false)

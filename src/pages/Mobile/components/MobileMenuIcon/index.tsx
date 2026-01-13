@@ -9,7 +9,7 @@ const MobileMenuWrapper = styled.div`
   height: 100%;
   .icon-mobile-menu {
     font-size: 0.24rem;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
 `
 

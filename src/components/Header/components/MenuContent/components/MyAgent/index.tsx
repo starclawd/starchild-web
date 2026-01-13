@@ -1,23 +1,29 @@
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import AgentItem from 'pages/MyAgent/components/AgentItem'
-import { useCreateAgentModalToggle, useCurrentRouter, useIsMobile, useIsShowMobileMenu } from 'store/application/hooks'
+import {
+  useCreateAgentModalToggle,
+  useIsMobile,
+  useIsShowMobileMenu,
+  useSetCurrentRouter,
+} from 'store/application/hooks'
 import { useSubscribedAgents, useCurrentEditAgentData } from 'store/myagent/hooks'
 import styled, { css } from 'styled-components'
 import { useEffect, useRef, useCallback, useMemo } from 'react'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
-import MenuNoAgent from 'pages/MyAgent/components/MenuNoAgent'
 import { ButtonCommon } from 'components/Button'
 import { ROUTER } from 'pages/router'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import useSubErrorInfo from 'hooks/useSubErrorInfo'
+import NoData from 'components/NoData'
 
 const MyAgentWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: auto;
+  width: 100%;
   height: 100%;
   gap: 8px;
   outline: none;
@@ -41,8 +47,8 @@ const Overview = styled(ButtonCommon)`
   border-radius: ${vm(6)};
   font-size: 0.13rem;
   line-height: 0.2rem;
-  color: ${({ theme }) => theme.textL2};
-  background: ${({ theme }) => theme.bgT10};
+  color: ${({ theme }) => theme.black100};
+  background: ${({ theme }) => theme.black900};
 `
 
 const CreateAgent = styled.div`
@@ -58,12 +64,12 @@ const CreateAgent = styled.div`
   font-size: 13px;
   font-weight: 500;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
-  border: 1px dashed ${({ theme }) => theme.bgT20};
+  color: ${({ theme }) => theme.black200};
+  border: 1px dashed ${({ theme }) => theme.black800};
   transition: all ${ANI_DURATION}s;
   .icon-chat-upload {
     font-size: 18px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
   }
   ${({ theme }) =>
     theme.isMobile
@@ -81,7 +87,7 @@ const CreateAgent = styled.div`
       : css`
           cursor: pointer;
           &:hover {
-            background-color: ${({ theme }) => theme.bgT20};
+            background-color: ${({ theme }) => theme.black800};
           }
         `}
 `
@@ -101,7 +107,7 @@ const AgentList = styled.div`
 
 export default function MyAgent() {
   const isMobile = useIsMobile()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const toggleCreateAgentModal = useCreateAgentModalToggle()
   const [subscribedAgents] = useSubscribedAgents()
   const [, setIsShowMobileMenu] = useIsShowMobileMenu()
@@ -219,33 +225,36 @@ export default function MyAgent() {
     [subErrorInfo, setCurrentEditAgentData, toggleCreateAgentModal, isMobile, setIsShowMobileMenu],
   )
 
-  const showOverview = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      e.stopPropagation()
-      setCurrentRouter(ROUTER.MY_AGENTS)
-      setIsShowMobileMenu(false)
-    },
-    [setCurrentRouter, setIsShowMobileMenu],
-  )
+  // const showOverview = useCallback(
+  //   (e: React.MouseEvent<HTMLDivElement>) => {
+  //     e.stopPropagation()
+  //     setCurrentRouter(ROUTER.MY_AGENTS)
+  //     setIsShowMobileMenu(false)
+  //   },
+  //   [setCurrentRouter, setIsShowMobileMenu],
+  // )
 
   return (
     <MyAgentWrapper ref={wrapperRef} tabIndex={0} onClick={handleWrapperClick}>
-      {isMobile && (
+      {/* {isMobile && (
         <Overview onClick={showOverview}>
           <Trans>Overview</Trans>
         </Overview>
+      )} */}
+      {!isMobile && (
+        <CreateAgent onClick={showAgentModal}>
+          <IconBase className='icon-chat-upload' />
+          <Trans>Create Agent</Trans>
+        </CreateAgent>
       )}
-      <CreateAgent onClick={showAgentModal}>
-        <IconBase className='icon-chat-upload' />
-        <Trans>Create Agent</Trans>
-      </CreateAgent>
       <AgentList className={isMobile ? '' : 'scroll-style'} ref={isMobile ? undefined : scrollRef}>
         {sortSubscribedAgents.length > 0 ? (
           sortSubscribedAgents.map((item) => {
             return <AgentItem key={item.id} data={item} fromPage='myagents' />
           })
         ) : (
-          <MenuNoAgent />
+          <NoData />
+          // <MenuNoAgent />
         )}
       </AgentList>
     </MyAgentWrapper>

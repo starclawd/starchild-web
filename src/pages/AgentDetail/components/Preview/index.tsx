@@ -51,7 +51,7 @@ const Title = styled.div`
   font-weight: 400;
   line-height: 0.22rem;
   margin-bottom: ${vm(12)};
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 `
 
 const ErrorDisplay = styled.pre`
@@ -60,7 +60,7 @@ const ErrorDisplay = styled.pre`
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
   font-size: 13px;
   line-height: 1.6;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   white-space: pre-wrap;
   word-wrap: break-word;
   margin: 0;
@@ -154,7 +154,7 @@ export default function Preview({
   if (isRunningBacktestAgent || isGeneratingCode) {
     return (
       <PreviewWrapper className='scroll-style' ref={previewWrapperRef as any}>
-        <Pending isFetching />
+        <Pending isNotButtonLoading />
       </PreviewWrapper>
     )
   }

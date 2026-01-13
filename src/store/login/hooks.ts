@@ -15,6 +15,7 @@ import {
 } from 'api/user'
 import { useUpdateLanguageFromAPI } from 'store/language/hooks'
 import { useLazyChangeNicknameQuery } from 'api/perference'
+import { useBindStrategyToGuest } from './hooks/useBindStrategyToGuest'
 
 export function useIsLogin() {
   const [loginStatus] = useLoginStatus()
@@ -78,6 +79,7 @@ export function useGetUserInfo(): () => Promise<any> {
   const [, setUserInfo] = useUserInfo()
   const [triggerGetUserInfo] = useLazyGetUserInfoQuery()
   const updateLanguageFromAPI = useUpdateLanguageFromAPI()
+  const bindStrategyToGuest = useBindStrategyToGuest()
 
   return useCallback(async () => {
     try {
@@ -89,12 +91,13 @@ export function useGetUserInfo(): () => Promise<any> {
 
         // 更新用户语言
         updateLanguageFromAPI(language)
+        bindStrategyToGuest(rest.userInfoId)
       }
       return data
     } catch (error) {
       return error
     }
-  }, [triggerGetUserInfo, setUserInfo, updateLanguageFromAPI])
+  }, [triggerGetUserInfo, setUserInfo, updateLanguageFromAPI, bindStrategyToGuest])
 }
 
 export function useUserInfo(): [UserInfoData, (userInfo: UserInfoData) => void] {

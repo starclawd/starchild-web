@@ -69,7 +69,7 @@ const PullUpArea = styled.div<{ $showPullUpArea: boolean }>`
   font-size: 12px;
   line-height: 16px;
   flex-shrink: 0;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   visibility: ${({ $showPullUpArea }) => ($showPullUpArea ? 'visible' : 'hidden')};
   ${({ theme }) =>
     theme.isMobile &&
@@ -106,6 +106,8 @@ interface PullUpRefreshProps {
   wheelThreshold?: number
   /** 是否还有更多数据可以加载 */
   hasLoadMore?: boolean
+  /** 内容容器的自定义类名 */
+  contentClassName?: string
 }
 
 /**
@@ -123,6 +125,7 @@ export default memo(function PullUpRefresh({
   extraHeight = 0,
   setIsRefreshing,
   childrenWrapperClassName,
+  contentClassName,
   enableWheel = true,
   wheelThreshold = 50,
   hasLoadMore = false,
@@ -469,7 +472,11 @@ export default memo(function PullUpRefresh({
       onTouchEnd={onTouchEnd}
       className='pull-up-refresh'
     >
-      <ContentWrapper className='pull-up-content scroll-style' onScroll={handleScroll} ref={contentWrapperEl as any}>
+      <ContentWrapper
+        className={`pull-up-content scroll-style ${contentClassName ? contentClassName : ''}`}
+        onScroll={handleScroll}
+        ref={contentWrapperEl as any}
+      >
         <ChildrenWrapper
           className={`pull-up-children ${childrenWrapperClassName ? childrenWrapperClassName : ''}`}
           ref={childrenWrapperEl as any}
@@ -478,7 +485,7 @@ export default memo(function PullUpRefresh({
         </ChildrenWrapper>
         {hasLoadMore && (
           <PullUpArea ref={pullUpAreaEl as any} $showPullUpArea={showPullUpArea}>
-            {isRefreshing ? !isInitLoading && <Pending isFetching={!isMobile} /> : null}
+            {isRefreshing ? !isInitLoading && <Pending isNotButtonLoading={!isMobile} /> : null}
           </PullUpArea>
         )}
       </ContentWrapper>

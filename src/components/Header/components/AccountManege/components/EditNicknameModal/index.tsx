@@ -1,5 +1,10 @@
 import styled, { css } from 'styled-components'
-import Modal from 'components/Modal'
+import Modal, {
+  CommonModalContent,
+  CommonModalContentWrapper,
+  CommonModalFooter,
+  CommonModalHeader,
+} from 'components/Modal'
 import { useIsMobile, useModalOpen, useAccountManegeModalToggle } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
 import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
@@ -16,17 +21,6 @@ import { useChangeNickname, useGetUserInfo } from 'store/login/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useTheme } from 'store/themecache/hooks'
 
-const AccountManegeWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 580px;
-  max-height: calc(100vh - 40px);
-  border-radius: 24px;
-  padding: 0 20px;
-  background: ${({ theme }) => theme.black800};
-  backdrop-filter: blur(8px);
-`
-
 const AccountManegeMobileWrapper = styled(ModalSafeAreaWrapper)`
   display: flex;
   flex-direction: column;
@@ -35,37 +29,8 @@ const AccountManegeMobileWrapper = styled(ModalSafeAreaWrapper)`
   background: transparent;
 `
 
-const Header = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 20px 20px 8px;
-  font-size: 20px;
-  font-weight: 500;
-  line-height: 28px;
-  color: ${({ theme }) => theme.textL1};
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      padding: ${vm(20)} ${vm(20)} ${vm(8)};
-      font-size: 0.2rem;
-      line-height: 0.28rem;
-    `}
-`
-
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  padding: 20px 0;
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      padding: ${vm(12)};
-    `}
+const Content = styled(CommonModalContent)`
+  gap: 0;
 `
 
 const Nickname = styled.div<{ $currentNicknameLength: number }>`
@@ -73,7 +38,7 @@ const Nickname = styled.div<{ $currentNicknameLength: number }>`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 8px 16px;
+  padding: 8px 0;
   > span:first-child {
     display: flex;
     align-items: center;
@@ -81,7 +46,7 @@ const Nickname = styled.div<{ $currentNicknameLength: number }>`
     font-size: 13px;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     .icon-flower {
       font-size: 8px;
       color: ${({ theme }) => theme.autumn50};
@@ -91,19 +56,19 @@ const Nickname = styled.div<{ $currentNicknameLength: number }>`
     font-size: 13px;
     font-weight: 400;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
     ${({ $currentNicknameLength }) =>
       $currentNicknameLength > 0 &&
       css`
         span {
-          color: ${({ theme }) => theme.textL1};
+          color: ${({ theme }) => theme.black0};
         }
       `}
   }
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      padding: ${vm(8)} ${vm(16)};
+      padding: ${vm(8)} 0;
       > span:first-child {
         gap: ${vm(4)};
         font-size: 0.13rem;
@@ -123,15 +88,7 @@ const NicknameInput = styled.div`
   display: flex;
   align-items: center;
   .input-wrapper {
-    border-radius: 12px;
-    border: 1px solid ${({ theme }) => theme.bgT30};
     background-color: ${({ theme }) => theme.black700};
-    &:hover {
-      border-color: ${({ theme }) => theme.textL4};
-    }
-    input {
-      padding: 0 16px;
-    }
   }
   ${({ theme }) =>
     theme.isMobile &&
@@ -145,22 +102,9 @@ const NicknameInput = styled.div`
     `}
 `
 
-const ButtonWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-  gap: 8px;
-  padding: 8px 0 20px;
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(8)};
-      padding: ${vm(8)} ${vm(20)} ${vm(20)};
-    `}
-`
-
 const ButtonCancel = styled(ButtonBorder)`
   width: 50%;
+  border: 1px solid ${({ theme }) => theme.black600};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -228,7 +172,7 @@ export function EditNicknameModal() {
         description: nickname,
         status: TOAST_STATUS.SUCCESS,
         typeIcon: 'icon-customize-avatar',
-        iconTheme: theme.textL1,
+        iconTheme: theme.black0,
       })
       if (editNicknameModalOpen) {
         toggleAccountManegeModal()
@@ -251,9 +195,9 @@ export function EditNicknameModal() {
   const renderContent = () => {
     return (
       <>
-        <Header>
+        <CommonModalHeader>
           <Trans>Change Nickname</Trans>
-        </Header>
+        </CommonModalHeader>
         <Content>
           <Nickname $currentNicknameLength={currentNicknameLength}>
             <span>
@@ -274,14 +218,14 @@ export function EditNicknameModal() {
             />
           </NicknameInput>
         </Content>
-        <ButtonWrapper>
+        <CommonModalFooter>
           <ButtonCancel onClick={toggleAccountManegeModal}>
             <Trans>Cancel</Trans>
           </ButtonCancel>
           <ButtonConfirm $disabled={isLoading || !nickname.trim()} onClick={handleConfirm}>
             {isLoading ? <Pending /> : <Trans>Confirm</Trans>}
           </ButtonConfirm>
-        </ButtonWrapper>
+        </CommonModalFooter>
       </>
     )
   }
@@ -299,7 +243,7 @@ export function EditNicknameModal() {
     </BottomSheet>
   ) : (
     <Modal useDismiss isOpen={editNicknameModalOpen} onDismiss={toggleAccountManegeModal}>
-      <AccountManegeWrapper>{renderContent()}</AccountManegeWrapper>
+      <CommonModalContentWrapper>{renderContent()}</CommonModalContentWrapper>
     </Modal>
   )
 }

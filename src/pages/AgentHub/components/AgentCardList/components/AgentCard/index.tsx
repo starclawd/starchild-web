@@ -25,7 +25,7 @@ const CardWrapper = styled(BorderAllSide1PxBox)`
   transition: all ${ANI_DURATION}s ease;
 
   &:hover {
-    background: ${({ theme }) => theme.bgT20};
+    background: ${({ theme }) => theme.black800};
   }
 
   ${({ theme }) =>
@@ -124,16 +124,16 @@ export default memo(function AgentCard({
           </Trans>
         ),
         status: TOAST_STATUS.SUCCESS,
-        typeIcon: 'icon-chat-rubbish',
-        iconTheme: theme.jade10,
+        typeIcon: 'icon-delete',
+        iconTheme: theme.black0,
       })
     } else {
       toast({
         title: <Trans>Failed to toggle subscription</Trans>,
         description: '',
         status: TOAST_STATUS.ERROR,
-        typeIcon: 'icon-chat-rubbish',
-        iconTheme: theme.ruby50,
+        typeIcon: 'icon-delete',
+        iconTheme: theme.black0,
       })
     }
   }

@@ -39,7 +39,7 @@ const CurrentTime = styled.div`
   font-size: 12px;
   font-weight: 400;
   line-height: 18px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -56,7 +56,7 @@ const Title = styled.div`
   font-size: 12px;
   font-weight: 500;
   line-height: 18px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   img {
     width: 24px;
     height: 24px;
@@ -108,8 +108,8 @@ const UserContent = styled.div`
   max-width: 80%;
   padding: 12px 16px;
   border-radius: 12px;
-  color: ${({ theme }) => theme.textL2};
-  background: ${({ theme }) => theme.bgT30};
+  color: ${({ theme }) => theme.black100};
+  background: ${({ theme }) => theme.black600};
   ${({ theme, role }) =>
     theme.isMobile &&
     css`
@@ -158,7 +158,7 @@ const AssistantContent = styled.div<{ $isChatDetail?: boolean }>`
   max-width: 100%;
   padding-left: 30px;
   border-radius: 12px;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   word-break: break-word;
   ${({ $isChatDetail }) =>
     !$isChatDetail &&

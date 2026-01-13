@@ -51,14 +51,14 @@ const Title = styled.div`
   font-size: 16px;
   font-weight: 500;
   line-height: 24px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 `
 
 const Time = styled.div`
   font-size: 12px;
   font-weight: 400;
   line-height: 18px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 `
 
 const BottomContent = styled.div`
@@ -72,7 +72,7 @@ const DetailsText = styled.span<{ $isExpanded: boolean }>`
   font-size: 13px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   flex: 1;
   transition: all ${ANI_DURATION}s ease-in-out;
   overflow: hidden;
@@ -90,7 +90,7 @@ const DetailsText = styled.span<{ $isExpanded: boolean }>`
 
 const ExpandIcon = styled(IconBase)<{ $isExpanded: boolean }>`
   font-size: 14px;
-  color: ${({ theme }) => theme.textL4};
+  color: ${({ theme }) => theme.black300};
   transition: transform ${ANI_DURATION}s ease-in-out;
   flex-shrink: 0;
   margin-top: 3px;
@@ -106,7 +106,7 @@ const Line = styled.div`
   width: 100%;
   height: 1px;
   flex-shrink: 0;
-  background-color: ${({ theme }) => theme.lineDark8};
+  background-color: ${({ theme }) => theme.black800};
   &:last-child {
     display: none;
   }

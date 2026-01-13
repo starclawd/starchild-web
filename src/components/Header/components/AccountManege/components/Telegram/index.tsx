@@ -1,19 +1,29 @@
 import styled, { css } from 'styled-components'
-import Icon from '../Icon'
 import { useUserInfo } from 'store/login/hooks'
 import { useCallback } from 'react'
 import { openTelegramLoginWindow } from 'store/login/utils'
 import { useCurrentRouter } from 'store/application/hooks'
+import { IconBase } from 'components/Icons'
+import { ANI_DURATION } from 'constants/index'
 
 const TelegramWrapper = styled.div`
   display: flex;
+  .icon-menu-chat {
+    cursor: pointer;
+    font-size: 18px;
+    transition: all ${ANI_DURATION}s;
+    color: ${({ theme }) => theme.black200};
+    &:hover {
+      color: ${({ theme }) => theme.black0};
+    }
+  }
 `
 
 const TgName = styled.span`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -23,7 +33,7 @@ const TgName = styled.span`
 `
 
 export default function Telegram() {
-  const [currentRouter] = useCurrentRouter()
+  const currentRouter = useCurrentRouter()
   const [{ telegramUserId, telegramUsername }] = useUserInfo()
   const handleTelegramBind = useCallback(() => {
     try {
@@ -38,7 +48,7 @@ export default function Telegram() {
   return (
     <TelegramWrapper onClick={handleTelegramBind}>
       {!telegramUserId ? (
-        <Icon iconName='icon-chat-upload' />
+        <IconBase className='icon-menu-chat' />
       ) : (
         <TgName>
           @{telegramUsername}({telegramUserId})

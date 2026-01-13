@@ -68,8 +68,8 @@ export function useActionHandlers({
       title: 'Error',
       description: 'Agent not found',
       status: TOAST_STATUS.ERROR,
-      typeIcon: 'icon-chat-close',
-      iconTheme: theme.ruby50,
+      typeIcon: 'icon-close',
+      iconTheme: theme.black0,
     })
   }, [toast, theme])
 
@@ -146,7 +146,7 @@ export function useActionHandlers({
     if (actions.includes(ActionType.DELETE) && isSelfAgent) {
       configs.push({
         type: ActionType.DELETE,
-        icon: 'icon-chat-rubbish',
+        icon: 'icon-delete',
         label: 'Delete',
         color: mode === 'dropdown' ? theme.red100 : theme.ruby50,
         onClick: handleDelete,

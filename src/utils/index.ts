@@ -1,4 +1,4 @@
-import { Chain, CHAIN_INFO } from 'constants/chainInfo'
+import { Chain, CHAIN_INFO, SupportedChain } from 'constants/chainInfo'
 
 export function isMatchCurrentRouter(currentRouter: string, matchRouter: string) {
   try {
@@ -38,7 +38,10 @@ export const getFileType = (fileType: string) => {
 }
 
 export function getExplorerLink(chain: Chain, hash: string): string {
-  const prefix = CHAIN_INFO[chain].explorer
+  const prefix = CHAIN_INFO[chain as SupportedChain]?.explorer
+  if (!prefix) {
+    throw new Error(`Chain ${chain} is not supported`)
+  }
   return `${prefix}/tx/${hash}`
 }
 
@@ -53,4 +56,10 @@ export function formatAddress(address: string): string {
 
 export function getChainLabel(address: string): string {
   return address.startsWith('0x') ? 'EVM' : 'SOLANA'
+}
+
+export function addUrlParam(key: string, value: string) {
+  const url = new URL(window.location.href)
+  url.searchParams.set(key, value)
+  window.history.replaceState({}, '', url.toString())
 }

@@ -5,23 +5,23 @@ import Modal, { CloseWrapper } from './index'
 const DemoContainer = styled.div`
   padding: 20px;
   background: ${({ theme }) => theme.bgL1};
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   min-height: 100vh;
 
   h2 {
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin-bottom: 20px;
     font-size: 24px;
   }
 
   h3 {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     margin-bottom: 15px;
     font-size: 18px;
   }
 
   p {
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     margin-bottom: 15px;
     line-height: 1.6;
   }
@@ -31,19 +31,19 @@ const DemoSection = styled.div`
   margin-bottom: 40px;
 
   h2 {
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin-bottom: 20px;
     font-size: 24px;
   }
 
   h3 {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     margin-bottom: 15px;
     font-size: 18px;
   }
 
   p {
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     margin-bottom: 15px;
     line-height: 1.6;
   }
@@ -59,7 +59,7 @@ const ButtonGrid = styled.div`
 const DemoButton = styled.button`
   padding: 12px 24px;
   background: ${({ theme }) => theme.brand100};
-  color: ${({ theme }) => theme.textDark98};
+  color: ${({ theme }) => theme.black0};
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -78,10 +78,10 @@ const DemoButton = styled.button`
 `
 
 const SecondaryButton = styled(DemoButton)`
-  background: ${({ theme }) => theme.textL3};
+  background: ${({ theme }) => theme.black200};
 
   &:hover {
-    background: ${({ theme }) => theme.textL2};
+    background: ${({ theme }) => theme.black100};
   }
 `
 
@@ -102,13 +102,13 @@ const ModalContent = styled.div`
   position: relative;
 
   h3 {
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin-bottom: 15px;
     font-size: 20px;
   }
 
   p {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     margin-bottom: 20px;
     line-height: 1.5;
   }
@@ -147,13 +147,13 @@ const MobileModalContent = styled.div`
   overflow-y: auto;
 
   h3 {
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin-bottom: 15px;
     font-size: 18px;
   }
 
   p {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     margin-bottom: 15px;
     line-height: 1.5;
   }
@@ -166,7 +166,7 @@ const FormModalContent = styled(ModalContent)`
     label {
       display: block;
       margin-bottom: 5px;
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
       font-weight: 500;
     }
 
@@ -175,9 +175,9 @@ const FormModalContent = styled(ModalContent)`
       width: 100%;
       padding: 10px;
       background: ${({ theme }) => theme.bgL2};
-      border: 1px solid ${({ theme }) => theme.lineDark8};
+      border: 1px solid ${({ theme }) => theme.black800};
       border-radius: 6px;
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
 
       &:focus {
         outline: none;
@@ -204,11 +204,11 @@ const StatusDisplay = styled.div`
     margin-bottom: 8px;
 
     .label {
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
     }
 
     .value {
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
       font-weight: 500;
       font-family: monospace;
     }
@@ -217,7 +217,7 @@ const StatusDisplay = styled.div`
 
 const CodeBlock = styled.pre`
   background: ${({ theme }) => theme.bgL2};
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   padding: 15px;
   border-radius: 8px;
   overflow-x: auto;
@@ -229,7 +229,7 @@ const CodeBlock = styled.pre`
 
 const PropsTable = styled.div`
   background: ${({ theme }) => theme.bgL2};
-  border: 1px solid ${({ theme }) => theme.lineDark8};
+  border: 1px solid ${({ theme }) => theme.black800};
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 20px;
@@ -240,10 +240,10 @@ const PropsTableHeader = styled.div`
   grid-template-columns: 1fr 1fr 1fr 2fr;
   gap: 15px;
   font-weight: 600;
-  border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
+  border-bottom: 1px solid ${({ theme }) => theme.black800};
   padding-bottom: 10px;
   margin-bottom: 15px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 `
 
 const PropsTableRow = styled.div`
@@ -252,7 +252,7 @@ const PropsTableRow = styled.div`
   gap: 15px;
   align-items: center;
   padding: 8px 0;
-  border-bottom: 1px solid ${({ theme }) => theme.lineDark8}10;
+  border-bottom: 1px solid ${({ theme }) => theme.black800}10;
 
   &:last-child {
     border-bottom: none;
@@ -265,13 +265,13 @@ const PropsTableCell = styled.div<{ type?: 'prop' | 'type' | 'default' | 'desc' 
   color: ${({ theme, type }) => {
     switch (type) {
       case 'prop':
-        return theme.textL1
+        return theme.black0
       case 'type':
         return theme.brand100
       case 'default':
-        return theme.textL3
+        return theme.black200
       default:
-        return theme.textL2
+        return theme.black100
     }
   }};
 `

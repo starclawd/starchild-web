@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from 'react'
+import { ReactNode, useEffect, useMemo } from 'react'
 import { ThemeProvider as StyledThemeProvider } from 'styled-components'
 import { getTheme } from 'theme'
 import { useActiveLocale } from 'hooks/useActiveLocale'
@@ -14,11 +14,16 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const isMobile = useIsMobile()
   const local = useActiveLocale()
   const [mode] = useThemeManager()
-  const theme = {
-    ...getTheme(mode),
-    local,
-    isMobile,
-  }
+
+  // 缓存theme对象，避免频繁重新创建导致所有使用useTheme的组件重渲染
+  const theme = useMemo(
+    () => ({
+      ...getTheme(mode),
+      local,
+      isMobile,
+    }),
+    [mode, local, isMobile],
+  )
 
   // 设置HTML data-theme属性，可用于CSS选择器
   useEffect(() => {

@@ -3,20 +3,22 @@ import { ANI_DURATION } from 'constants/index'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { ReactNode, useMemo } from 'react'
 import styled, { css } from 'styled-components'
+import Select, { DataType, TriggerMethod } from 'components/Select'
 
-// 表格容器
+// 最外层容器
 const TableContainer = styled.div`
   width: 100%;
-  overflow: hidden;
   flex: 1;
   display: flex;
   flex-direction: column;
   max-height: 100%;
 `
 
-// 表格内容容器
+// 表格滚动容器
 const TableScrollContainer = styled.div`
   flex: 1;
+  overflow: auto;
+  min-height: 0; /* 确保可以缩小 */
 `
 
 // 表格样式
@@ -24,20 +26,20 @@ const StyledTable = styled.table`
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  overflow: hidden;
+  min-width: max-content; /* 确保表格至少有内容所需的宽度 */
 `
 
-// 表头容器
-const HeaderContainer = styled.div`
-  width: 100%;
+// 表头样式 - 使用sticky定位保持固定
+const TableHeader = styled.thead`
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background-color: ${({ theme }) => theme.black800}; /* 确保表头有背景色 */
 `
-
-// 表头样式
-const TableHeader = styled.thead``
 
 // 表头行样式
-const TableHeaderRow = styled.tr<{ headerHeight?: number }>`
-  height: ${(props) => props.headerHeight ?? 18}px;
+const TableHeaderRow = styled.tr<{ $headerHeight?: number }>`
+  height: ${(props) => props.$headerHeight ?? 18}px;
 `
 
 // 表头单元格样式
@@ -45,7 +47,7 @@ const TableHeaderCell = styled.th<{ $align?: 'left' | 'center' | 'right'; $isFir
   font-weight: 500;
   text-align: ${(props) => props.$align || 'left'};
   white-space: nowrap;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   padding: 0;
   margin: 0;
   font-size: 12px;
@@ -79,20 +81,20 @@ const HeaderBodyGapRow = styled.tr<{ gap?: number }>`
 `
 
 // 表体样式
-const TableBody = styled.tbody<{ rowGap?: number }>`
+const TableBody = styled.tbody<{ $rowGap?: number }>`
   /* 设置行间距 */
   & > tr:not(:last-child) {
-    margin-bottom: ${(props) => props.rowGap ?? 20}px;
+    margin-bottom: ${(props) => props.$rowGap ?? 20}px;
 
     & > td {
-      padding-bottom: ${(props) => props.rowGap ?? 20}px;
+      padding-bottom: ${(props) => props.$rowGap ?? 20}px;
     }
   }
 `
 
 // 表体行样式
-const TableRow = styled.tr<{ rowHeight?: number }>`
-  height: ${(props) => props.rowHeight ?? 44}px;
+const TableRow = styled.tr<{ $rowHeight?: number }>`
+  height: ${(props) => props.$rowHeight ?? 44}px;
 
   &:last-child {
     border-bottom: none;
@@ -100,12 +102,12 @@ const TableRow = styled.tr<{ rowHeight?: number }>`
   td {
     transition: all ${ANI_DURATION}s;
     &:first-child {
-      border-top-left-radius: 8px;
-      border-bottom-left-radius: 8px;
+      border-top-left-radius: 5px;
+      border-bottom-left-radius: 5px;
     }
     &:last-child {
-      border-top-right-radius: 8px;
-      border-bottom-right-radius: 8px;
+      border-top-right-radius: 5px;
+      border-bottom-right-radius: 5px;
     }
   }
   ${({ theme }) =>
@@ -113,14 +115,14 @@ const TableRow = styled.tr<{ rowHeight?: number }>`
       ? css`
           &:active {
             td {
-              background-color: ${({ theme }) => theme.bgT10};
+              background-color: ${({ theme }) => theme.black900};
             }
           }
         `
       : css`
           &:hover {
             td {
-              background-color: ${({ theme }) => theme.bgT10};
+              background-color: ${({ theme }) => theme.black800};
             }
           }
         `}
@@ -129,7 +131,7 @@ const TableRow = styled.tr<{ rowHeight?: number }>`
 // 表体单元格样式
 const TableCell = styled.td<{ $align?: 'left' | 'center' | 'right'; $isFirst?: boolean; $isLast?: boolean }>`
   text-align: ${(props) => props.$align || 'left'};
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   padding: 0;
   margin: 0;
   vertical-align: middle;
@@ -169,10 +171,55 @@ const EmptyCell = styled.td`
 // 翻页器容器
 const PaginationContainer = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
-  padding: 8px 0;
+  padding: 8px 12px;
   gap: 8px;
+`
+
+// 翻页器左侧容器
+const PaginationLeft = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`
+
+// 翻页器右侧容器
+const PaginationRight = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`
+
+// Rows per page 标签
+const RowsPerPageLabel = styled.span`
+  font-size: 12px;
+  color: ${({ theme }) => theme.black200};
+  white-space: nowrap;
+`
+
+// 自定义 Select 样式
+const PageSizeSelect = styled.div`
+  .select-wrapper {
+    height: 24px;
+  }
+  .select-border-wrapper {
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .icon-chat-expand-down {
+    color: ${({ theme }) => theme.black200};
+  }
+`
+
+// 选中的页面大小文本
+const PageSizeText = styled.span`
+  font-size: 12px;
+  color: ${({ theme }) => theme.black200};
+  font-weight: 500;
 `
 
 // 翻页按钮
@@ -185,9 +232,9 @@ const PaginationButton = styled.button<{ $disabled?: boolean }>`
   transition: all 0.2s;
   cursor: ${({ $disabled }) => ($disabled ? 'not-allowed' : 'pointer')};
   background-color: transparent;
-  .icon-chat-expand {
+  .icon-expand {
     font-size: 14px;
-    color: ${({ theme, $disabled }) => ($disabled ? theme.textL4 : theme.textDark54)};
+    color: ${({ theme, $disabled }) => ($disabled ? theme.black300 : theme.black200)};
   }
 `
 
@@ -200,7 +247,7 @@ const PageButton = styled.button<{ $isActive?: boolean }>`
   height: 24px;
   padding: 0 8px;
   background: ${({ theme, $isActive }) => ($isActive ? theme.brand100 : 'transparent')};
-  color: ${({ theme, $isActive }) => ($isActive ? theme.textDark98 : theme.textDark80)};
+  color: ${({ theme, $isActive }) => ($isActive ? theme.black0 : theme.black100)};
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s;
@@ -216,7 +263,7 @@ const Ellipsis = styled.span`
   justify-content: center;
   min-width: 32px;
   height: 32px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   font-size: 12px;
 `
 
@@ -239,11 +286,14 @@ export interface TableProps<T> {
   rowHeight?: number // 表体行高，默认44px
   rowGap?: number // 行间距，默认20px
   headerBodyGap?: number // 表头和表体之间的间距，默认20px
-  showPagination?: boolean // 是否显示翻页器
+  showPagination?: boolean // 是否显示翻页器，仅在总页数大于1时显示
+  showPageSizeSelector?: boolean // 是否显示每页条数选择器，默认true，仅在有多页时生效
   pageIndex?: number // 当前页码
   totalSize?: number // 总数据条数
   pageSize?: number // 每页条数，默认10
   onPageChange?: (page: number) => void // 翻页回调
+  onPageSizeChange?: (pageSize: number) => void // 每页条数变化回调
+  onRowClick?: (record: T, index: number) => void // 行点击回调
 }
 
 // 表格组件
@@ -257,10 +307,13 @@ function Table<T extends Record<string, any>>({
   rowGap,
   headerBodyGap,
   showPagination = false,
+  showPageSizeSelector = true,
   pageIndex = 1,
   totalSize = 0,
   pageSize = 10,
   onPageChange,
+  onPageSizeChange,
+  onRowClick,
 }: TableProps<T>) {
   const scrollRef = useScrollbarClass<HTMLDivElement>()
   // 为最后一列设置右对齐
@@ -342,6 +395,37 @@ function Table<T extends Record<string, any>>({
     }
   }
 
+  // 页面大小选项
+  const pageSizeOptions: DataType[] = useMemo(
+    () => [
+      {
+        text: '10',
+        value: 10,
+        isActive: false,
+        clickCallback: (value: number) => {
+          onPageSizeChange?.(value)
+        },
+      },
+      {
+        text: '20',
+        value: 20,
+        isActive: false,
+        clickCallback: (value: number) => {
+          onPageSizeChange?.(value)
+        },
+      },
+      {
+        text: '50',
+        value: 50,
+        isActive: false,
+        clickCallback: (value: number) => {
+          onPageSizeChange?.(value)
+        },
+      },
+    ],
+    [onPageSizeChange],
+  )
+
   // 创建colgroup元素
   const renderColGroup = () => (
     <colgroup>
@@ -353,11 +437,11 @@ function Table<T extends Record<string, any>>({
 
   return (
     <TableContainer className={className}>
-      <HeaderContainer className='header-container'>
+      <TableScrollContainer ref={scrollRef} className='table-scroll-container scroll-style'>
         <StyledTable>
           {renderColGroup()}
-          <TableHeader>
-            <TableHeaderRow headerHeight={headerHeight}>
+          <TableHeader className='table-header'>
+            <TableHeaderRow $headerHeight={headerHeight} className='header-container'>
               {processedColumns.map((column, colIndex) => (
                 <TableHeaderCell
                   key={column.key}
@@ -369,20 +453,20 @@ function Table<T extends Record<string, any>>({
                 </TableHeaderCell>
               ))}
             </TableHeaderRow>
+            {/* 表头和表体之间的间距行 */}
+            {headerBodyGap !== 0 && <HeaderBodyGapRow gap={headerBodyGap} />}
           </TableHeader>
-        </StyledTable>
-      </HeaderContainer>
 
-      {/* 表头和表体之间的间距 */}
-      {headerBodyGap !== 0 && <div style={{ height: headerBodyGap ?? 20 }} />}
-
-      <TableScrollContainer ref={scrollRef} className='table-scroll-container scroll-style'>
-        <StyledTable>
-          {renderColGroup()}
-          <TableBody className='table-body' rowGap={rowGap}>
+          <TableBody className='table-body' $rowGap={rowGap}>
             {data.length > 0 ? (
               data.map((record, rowIndex) => (
-                <TableRow className='table-row' key={rowIndex} rowHeight={rowHeight}>
+                <TableRow
+                  className='table-row'
+                  key={rowIndex}
+                  $rowHeight={rowHeight}
+                  onClick={() => onRowClick?.(record, rowIndex)}
+                  style={{ cursor: onRowClick ? 'pointer' : 'default' }}
+                >
                   {processedColumns.map((column, colIndex) => (
                     <TableCell
                       className='table-cell'
@@ -397,7 +481,7 @@ function Table<T extends Record<string, any>>({
                 </TableRow>
               ))
             ) : (
-              <TableRow rowHeight={rowHeight}>
+              <TableRow $rowHeight={rowHeight}>
                 <TableCell colSpan={processedColumns.length} $align='center'>
                   {emptyText}
                 </TableCell>
@@ -409,26 +493,52 @@ function Table<T extends Record<string, any>>({
 
       {/* 翻页器 */}
       {showPagination && totalPages > 1 && (
-        <PaginationContainer className='table-pagination'>
-          <PaginationButton $disabled={!canPrevious} disabled={!canPrevious} onClick={handlePrevious}>
-            <IconBase className='icon-chat-expand' style={{ transform: 'rotate(180deg)' }} />
-          </PaginationButton>
+        <PaginationContainer
+          className='table-pagination'
+          style={{ justifyContent: showPageSizeSelector ? 'space-between' : 'flex-end' }}
+        >
+          {/* 左侧：Rows per page */}
+          {showPageSizeSelector && (
+            <PaginationLeft>
+              <RowsPerPageLabel>Rows per page</RowsPerPageLabel>
+              <PageSizeSelect>
+                <Select
+                  value={pageSize}
+                  dataList={pageSizeOptions}
+                  triggerMethod={TriggerMethod.CLICK}
+                  placement='top-start'
+                  usePortal={true}
+                  popStyle={{ width: '48px', borderRadius: '4px' }}
+                  popItemStyle={{ borderRadius: '4px' }}
+                >
+                  <PageSizeText>{pageSize}</PageSizeText>
+                </Select>
+              </PageSizeSelect>
+            </PaginationLeft>
+          )}
 
-          {generatePageNumbers.map((page, index) => {
-            if (page === 'ellipsis') {
-              return <Ellipsis key={`ellipsis-${index}`}>···</Ellipsis>
-            }
+          {/* 右侧：页码导航 */}
+          <PaginationRight>
+            <PaginationButton $disabled={!canPrevious} disabled={!canPrevious} onClick={handlePrevious}>
+              <IconBase className='icon-expand' style={{ transform: 'rotate(90deg)' }} />
+            </PaginationButton>
 
-            return (
-              <PageButton key={page} $isActive={page === pageIndex} onClick={() => handlePageClick(page)}>
-                {page}
-              </PageButton>
-            )
-          })}
+            {generatePageNumbers.map((page, index) => {
+              if (page === 'ellipsis') {
+                return <Ellipsis key={`ellipsis-${index}`}>···</Ellipsis>
+              }
 
-          <PaginationButton $disabled={!canNext} disabled={!canNext} onClick={handleNext}>
-            <IconBase className='icon-chat-expand' />
-          </PaginationButton>
+              return (
+                <PageButton key={page} $isActive={page === pageIndex} onClick={() => handlePageClick(page)}>
+                  {page}
+                </PageButton>
+              )
+            })}
+
+            <PaginationButton $disabled={!canNext} disabled={!canNext} onClick={handleNext}>
+              <IconBase className='icon-expand' style={{ transform: 'rotate(-90deg)' }} />
+            </PaginationButton>
+          </PaginationRight>
         </PaginationContainer>
       )}
     </TableContainer>

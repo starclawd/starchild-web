@@ -1,0 +1,716 @@
+[
+  { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
+  {
+    "inputs": [{ "internalType": "address", "name": "target", "type": "address" }],
+    "name": "AddressEmptyCode",
+    "type": "error"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "account", "type": "address" }],
+    "name": "AddressInsufficientBalance",
+    "type": "error"
+  },
+  {
+    "inputs": [{ "internalType": "bytes32", "name": "brokerHash", "type": "bytes32" }],
+    "name": "BrokerNotAllowed",
+    "type": "error"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "implementation", "type": "address" }],
+    "name": "ERC1967InvalidImplementation",
+    "type": "error"
+  },
+  { "inputs": [], "name": "ERC1967NonPayable", "type": "error" },
+  { "inputs": [], "name": "EnforcedPause", "type": "error" },
+  { "inputs": [], "name": "ExpectedPause", "type": "error" },
+  { "inputs": [], "name": "FailedInnerCall", "type": "error" },
+  {
+    "inputs": [{ "internalType": "address", "name": "token", "type": "address" }],
+    "name": "InvalidClaimToken",
+    "type": "error"
+  },
+  { "inputs": [], "name": "InvalidCrossChainManager", "type": "error" },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "amount", "type": "uint256" }],
+    "name": "InvalidDepositAmount",
+    "type": "error"
+  },
+  {
+    "inputs": [{ "internalType": "enum PayloadType", "name": "payloadType", "type": "uint8" }],
+    "name": "InvalidDepositType",
+    "type": "error"
+  },
+  { "inputs": [], "name": "InvalidInitialization", "type": "error" },
+  { "inputs": [], "name": "InvalidOwnerOrAdmin", "type": "error" },
+  {
+    "inputs": [{ "internalType": "enum PayloadType", "name": "payloadType", "type": "uint8" }],
+    "name": "InvalidPayloadType",
+    "type": "error"
+  },
+  { "inputs": [], "name": "InvalidRoleType", "type": "error" },
+  { "inputs": [], "name": "InvalidStrategy", "type": "error" },
+  {
+    "inputs": [{ "internalType": "enum PayloadType", "name": "payloadType", "type": "uint8" }],
+    "name": "InvalidWithdrawType",
+    "type": "error"
+  },
+  {
+    "inputs": [{ "internalType": "bytes32", "name": "strategyProviderId", "type": "bytes32" }],
+    "name": "NotAllowedStrategyProvider",
+    "type": "error"
+  },
+  { "inputs": [], "name": "NotEnoughCCFee", "type": "error" },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "amount", "type": "uint256" }],
+    "name": "NotEnoughUnclaimedAssets",
+    "type": "error"
+  },
+  { "inputs": [], "name": "NotInitializing", "type": "error" },
+  {
+    "inputs": [{ "internalType": "address", "name": "owner", "type": "address" }],
+    "name": "OwnableInvalidOwner",
+    "type": "error"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "account", "type": "address" }],
+    "name": "OwnableUnauthorizedAccount",
+    "type": "error"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "token", "type": "address" }],
+    "name": "TokenNotAllowed",
+    "type": "error"
+  },
+  { "inputs": [], "name": "UUPSUnauthorizedCallContext", "type": "error" },
+  {
+    "inputs": [{ "internalType": "bytes32", "name": "slot", "type": "bytes32" }],
+    "name": "UUPSUnsupportedProxiableUUID",
+    "type": "error"
+  },
+  { "inputs": [], "name": "VaultClosed", "type": "error" },
+  { "inputs": [], "name": "ZeroAmount", "type": "error" },
+  {
+    "anonymous": false,
+    "inputs": [{ "indexed": false, "internalType": "address", "name": "admin", "type": "address" }],
+    "name": "AdminSet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": false, "internalType": "bytes32", "name": "brokerHash", "type": "bytes32" },
+      { "indexed": false, "internalType": "bool", "name": "isAllowed", "type": "bool" }
+    ],
+    "name": "AllowedBrokerSet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": false, "internalType": "address", "name": "strategy", "type": "address" },
+      { "indexed": false, "internalType": "bool", "name": "isAllowed", "type": "bool" }
+    ],
+    "name": "AllowedStrategySet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": false, "internalType": "address", "name": "token", "type": "address" },
+      { "indexed": false, "internalType": "bool", "name": "isAllowed", "type": "bool" }
+    ],
+    "name": "AllowedTokenSet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": false, "internalType": "uint256", "name": "periodId", "type": "uint256" },
+      { "indexed": false, "internalType": "bytes32", "name": "vaultId", "type": "bytes32" },
+      { "indexed": false, "internalType": "address", "name": "sender", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" }
+    ],
+    "name": "DepositFromStrategy",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": false, "internalType": "uint256", "name": "periodId", "type": "uint256" },
+      { "indexed": false, "internalType": "bytes32", "name": "vaultId", "type": "bytes32" },
+      { "indexed": false, "internalType": "address", "name": "receiver", "type": "address" },
+      { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" },
+      { "indexed": false, "internalType": "uint64", "name": "dexNonce", "type": "uint64" }
+    ],
+    "name": "DepositToStrategy",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [{ "indexed": false, "internalType": "uint64", "name": "version", "type": "uint64" }],
+    "name": "Initialized",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": false, "internalType": "enum PayloadType", "name": "payloadType", "type": "uint8" },
+      {
+        "components": [
+          { "internalType": "enum VaultType", "name": "vaultType", "type": "uint8" },
+          { "internalType": "address", "name": "sender", "type": "address" },
+          { "internalType": "address", "name": "receiver", "type": "address" },
+          { "internalType": "uint256", "name": "chainNonce", "type": "uint256" },
+          { "internalType": "uint256", "name": "amount", "type": "uint256" },
+          { "internalType": "bytes32", "name": "vaultId", "type": "bytes32" },
+          { "internalType": "bytes32", "name": "accountId", "type": "bytes32" },
+          { "internalType": "bytes32", "name": "strategyProviderId", "type": "bytes32" },
+          { "internalType": "bytes32", "name": "tokenHash", "type": "bytes32" },
+          { "internalType": "bytes32", "name": "brokerHash", "type": "bytes32" }
+        ],
+        "indexed": false,
+        "internalType": "struct OperationData",
+        "name": "operationData",
+        "type": "tuple"
+      }
+    ],
+    "name": "OperationExecuted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "address", "name": "previousOwner", "type": "address" },
+      { "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" }
+    ],
+    "name": "OwnershipTransferStarted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": true, "internalType": "address", "name": "previousOwner", "type": "address" },
+      { "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [{ "indexed": false, "internalType": "address", "name": "account", "type": "address" }],
+    "name": "Paused",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": false, "internalType": "uint256", "name": "periodId", "type": "uint256" },
+      { "indexed": false, "internalType": "bytes32", "name": "vaultId", "type": "bytes32" },
+      {
+        "components": [
+          { "internalType": "bytes32", "name": "requestId", "type": "bytes32" },
+          { "internalType": "bytes32", "name": "accountId", "type": "bytes32" },
+          { "internalType": "bytes32", "name": "strategyProviderId", "type": "bytes32" },
+          { "internalType": "uint256", "name": "assets", "type": "uint256" }
+        ],
+        "indexed": false,
+        "internalType": "struct ClaimInfo[]",
+        "name": "claimInfos",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "UnClaimedUpdated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [{ "indexed": false, "internalType": "address", "name": "account", "type": "address" }],
+    "name": "Unpaused",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [{ "indexed": true, "internalType": "address", "name": "implementation", "type": "address" }],
+    "name": "Upgraded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      { "indexed": false, "internalType": "enum RoleType", "name": "", "type": "uint8" },
+      { "indexed": false, "internalType": "bytes32", "name": "id", "type": "bytes32" },
+      { "indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256" },
+      { "indexed": false, "internalType": "bytes32[]", "name": "requests", "type": "bytes32[]" }
+    ],
+    "name": "UserClaimed",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [{ "indexed": false, "internalType": "enum VaultState", "name": "state", "type": "uint8" }],
+    "name": "VaultStateChanged",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "UPGRADE_INTERFACE_VERSION",
+    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  { "inputs": [], "name": "acceptOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+  {
+    "inputs": [],
+    "name": "chainNonce",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "enum RoleType", "name": "roleType", "type": "uint8" },
+          { "internalType": "address", "name": "token", "type": "address" },
+          { "internalType": "bytes32", "name": "brokerHash", "type": "bytes32" }
+        ],
+        "internalType": "struct ClaimParams",
+        "name": "claimParams",
+        "type": "tuple"
+      }
+    ],
+    "name": "claimWithFee",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "name": "crossChainFee",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "crossChainManager",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "enum PayloadType", "name": "payloadType", "type": "uint8" },
+          { "internalType": "address", "name": "receiver", "type": "address" },
+          { "internalType": "address", "name": "token", "type": "address" },
+          { "internalType": "uint256", "name": "amount", "type": "uint256" },
+          { "internalType": "bytes32", "name": "brokerHash", "type": "bytes32" }
+        ],
+        "internalType": "struct DepositParams",
+        "name": "depositParams",
+        "type": "tuple"
+      }
+    ],
+    "name": "deposit",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "periodId", "type": "uint256" },
+      { "internalType": "bytes32", "name": "broker", "type": "bytes32" },
+      { "internalType": "address", "name": "token", "type": "address" },
+      { "internalType": "uint256", "name": "amount", "type": "uint256" }
+    ],
+    "name": "depositFromStrategy",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "periodId", "type": "uint256" },
+      { "internalType": "address", "name": "receiver", "type": "address" },
+      { "internalType": "bytes32", "name": "broker", "type": "bytes32" },
+      { "internalType": "uint256", "name": "amount", "type": "uint256" }
+    ],
+    "name": "depositToStrategy",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "dexVault",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  { "inputs": [], "name": "emergencyPause", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+  { "inputs": [], "name": "emergencyUnpause", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+  {
+    "inputs": [{ "internalType": "bytes32", "name": "userId", "type": "bytes32" }],
+    "name": "getUserClaimedInfo",
+    "outputs": [
+      {
+        "components": [
+          { "internalType": "uint256", "name": "unClaimedAssets", "type": "uint256" },
+          { "internalType": "bytes32[]", "name": "requestIds", "type": "bytes32[]" }
+        ],
+        "internalType": "struct UserClaimedInfo",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "_dexVault", "type": "address" },
+      { "internalType": "address", "name": "owner", "type": "address" },
+      { "internalType": "address", "name": "token", "type": "address" },
+      { "internalType": "uint256", "name": "_minDepositForLp", "type": "uint256" },
+      { "internalType": "uint256", "name": "_minDepositForSp", "type": "uint256" }
+    ],
+    "name": "initialize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "isAllowedAdmin",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "name": "isAllowedBroker",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "isAllowedStrategy",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "name": "isAllowedStrategyProvider",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "isAllowedToken",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "ledgerEid",
+    "outputs": [{ "internalType": "uint32", "name": "", "type": "uint32" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "name": "lpWhitelist",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "lpWhitelistEnabled",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "lpWhitelistEndTime",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "minDepositForLp",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "minDepositForSp",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "paused",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "pendingOwner",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "proxiableUUID",
+    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "enum PayloadType", "name": "payloadType", "type": "uint8" },
+      { "internalType": "address", "name": "receiver", "type": "address" },
+      { "internalType": "uint256", "name": "amount", "type": "uint256" }
+    ],
+    "name": "quoteOperation",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  { "inputs": [], "name": "renounceOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "admin", "type": "address" },
+      { "internalType": "bool", "name": "isAllowed", "type": "bool" }
+    ],
+    "name": "setAdmin",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "bytes32", "name": "brokerHash", "type": "bytes32" },
+      { "internalType": "bool", "name": "isAllowed", "type": "bool" }
+    ],
+    "name": "setAllowedBroker",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "strategy", "type": "address" },
+      { "internalType": "bool", "name": "isAllowed", "type": "bool" }
+    ],
+    "name": "setAllowedStrategy",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "bytes32", "name": "spId", "type": "bytes32" },
+      { "internalType": "bool", "name": "knob", "type": "bool" }
+    ],
+    "name": "setAllowedStrategyProvider",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "token", "type": "address" },
+      { "internalType": "bool", "name": "isAllowed", "type": "bool" }
+    ],
+    "name": "setAllowedToken",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "_crossChainManager", "type": "address" }],
+    "name": "setCrossChainManager",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint32", "name": "eid", "type": "uint32" }],
+    "name": "setLedgerEid",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "bool", "name": "_enabled", "type": "bool" },
+      { "internalType": "uint256", "name": "_endTime", "type": "uint256" }
+    ],
+    "name": "setLpWhitelistConfig",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "amount", "type": "uint256" }],
+    "name": "setMinDepositForLP",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "amount", "type": "uint256" }],
+    "name": "setMinDepositForSP",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "_dexVault", "type": "address" }],
+    "name": "setOrderlyDexVault",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "token", "type": "address" },
+      { "internalType": "bytes32", "name": "hash", "type": "bytes32" }
+    ],
+    "name": "setTokenHashToAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "enum VaultState", "name": "_vaultState", "type": "uint8" }],
+    "name": "setVaultState",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
+    "name": "tokenHashToAddress",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [{ "internalType": "address", "name": "newOwner", "type": "address" }],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address[]", "name": "_users", "type": "address[]" },
+      { "internalType": "bool", "name": "_isWhitelisted", "type": "bool" }
+    ],
+    "name": "updateLpWhitelist",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "periodId", "type": "uint256" },
+      { "internalType": "uint256", "name": "ccFee", "type": "uint256" },
+      { "internalType": "bytes32", "name": "broker", "type": "bytes32" },
+      {
+        "components": [
+          { "internalType": "bytes32", "name": "requestId", "type": "bytes32" },
+          { "internalType": "bytes32", "name": "accountId", "type": "bytes32" },
+          { "internalType": "bytes32", "name": "strategyProviderId", "type": "bytes32" },
+          { "internalType": "uint256", "name": "assets", "type": "uint256" }
+        ],
+        "internalType": "struct ClaimInfo[]",
+        "name": "userClaimInfos",
+        "type": "tuple[]"
+      }
+    ],
+    "name": "updateUnClaimed",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "newImplementation", "type": "address" },
+      { "internalType": "bytes", "name": "data", "type": "bytes" }
+    ],
+    "name": "upgradeToAndCall",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "bytes32", "name": "", "type": "bytes32" },
+      { "internalType": "bytes32", "name": "", "type": "bytes32" }
+    ],
+    "name": "userClaimedById",
+    "outputs": [{ "internalType": "uint256", "name": "unClaimedAssets", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "vaultState",
+    "outputs": [{ "internalType": "enum VaultState", "name": "", "type": "uint8" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          { "internalType": "enum PayloadType", "name": "payloadType", "type": "uint8" },
+          { "internalType": "address", "name": "token", "type": "address" },
+          { "internalType": "uint256", "name": "amount", "type": "uint256" },
+          { "internalType": "bytes32", "name": "brokerHash", "type": "bytes32" }
+        ],
+        "internalType": "struct WithdrawParams",
+        "name": "withdrawParams",
+        "type": "tuple"
+      }
+    ],
+    "name": "withdraw",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address payable", "name": "to", "type": "address" },
+      { "internalType": "uint256", "name": "amount", "type": "uint256" }
+    ],
+    "name": "withdrawNativeToken",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  { "stateMutability": "payable", "type": "receive" }
+]

@@ -237,7 +237,9 @@ const CryptoChart = function CryptoChart({
             backtestData={backtestData}
           />
         )}
-        <ChartContainer ref={chartContainerRef}>{chartData.length === 0 && <Pending />}</ChartContainer>
+        <ChartContainer ref={chartContainerRef}>
+          {chartData.length === 0 && <Pending isNotButtonLoading />}
+        </ChartContainer>
       </ChartContentWrapper>
     </ChartWrapper>
   )

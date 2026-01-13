@@ -55,7 +55,7 @@ const TitleText = styled.h2`
   font-size: 18px;
   line-height: 26px;
   font-weight: 400;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 
   ${({ theme }) =>
     theme.isMobile &&
@@ -69,7 +69,7 @@ const DescriptionText = styled.p<{ $isExpanded: boolean; $maxHeight?: number }>`
   margin: 0;
   font-size: 14px;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 
   ${({ theme, $isExpanded, $maxHeight }) =>
     theme.isMobile &&

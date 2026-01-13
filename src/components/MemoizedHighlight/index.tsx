@@ -9,7 +9,7 @@ hljs.registerLanguage('python', python)
 
 const MemoizedHighlightWrapper = styled.div`
   height: fit-content;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   /* 确保代码块可以正确换行和显示 */
   pre {
     display: flex;
@@ -34,7 +34,7 @@ const MemoizedHighlightWrapper = styled.div`
 
   .hljs {
     background: transparent !important;
-    color: ${({ theme }) => theme.textL2} !important;
+    color: ${({ theme }) => theme.black100} !important;
   }
 
   ${({ theme }) =>
@@ -91,7 +91,7 @@ export default memo(
     }, [children, className, isResizing])
 
     return (
-      <MemoizedHighlightWrapper>
+      <MemoizedHighlightWrapper className='memoized-highlight-wrapper'>
         {isResizing ? (
           // 在窗口大小变化时显示简化版本，避免卡死
           <pre>
@@ -99,7 +99,7 @@ export default memo(
           </pre>
         ) : (
           <pre>
-            <code ref={codeRef} className={className}>
+            <code ref={codeRef} className={`${className} scroll-style`}>
               {/* 内容通过 useEffect 中的 textContent 安全设置 */}
             </code>
           </pre>

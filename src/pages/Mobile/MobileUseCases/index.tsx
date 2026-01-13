@@ -41,7 +41,7 @@ const Description = styled.p`
   font-weight: 400;
   line-height: 0.2rem;
   margin-bottom: ${vm(20)};
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 `
 
 const CloseDemo = styled.div`
@@ -56,7 +56,7 @@ const LeftTitleContent = styled.div`
   font-size: 0.16rem;
   font-weight: 500;
   line-height: 0.24rem;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   padding-left: ${vm(12)};
 `
 

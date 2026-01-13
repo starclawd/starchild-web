@@ -62,12 +62,12 @@ const NotificationButton = styled.button<{ $isExiting?: boolean }>`
   top: 24px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1000;
+  z-index: 99;
   width: fit-content;
 
   background-color: ${({ theme }) => theme.black800};
   border-radius: 8px;
-  border: 1px solid ${({ theme }) => theme.bgT20};
+  border: 1px solid ${({ theme }) => theme.black800};
   box-shadow: 0 4px 4px ${({ theme }) => theme.systemShadow};
 
   color: ${({ theme }) => theme.brand100};
@@ -82,7 +82,7 @@ const NotificationButton = styled.button<{ $isExiting?: boolean }>`
   animation: ${({ $isExiting }) => ($isExiting ? slideOutToTop : slideInFromCenter)} 0.3s ease-out;
 
   &:hover {
-    background-color: ${({ theme }) => theme.bgT20};
+    background-color: ${({ theme }) => theme.black800};
   }
 
   ${({ theme }) =>
@@ -178,7 +178,7 @@ function SystemSignalOverview() {
   if (isLoading) {
     return (
       <SignalsPageWrapper>
-        <Pending isFetching={isLoading} />
+        <Pending isNotButtonLoading />
       </SignalsPageWrapper>
     )
   }

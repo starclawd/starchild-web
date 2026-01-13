@@ -23,9 +23,9 @@ const TextArea = styled.textarea`
   z-index: 1;
   height: 24px;
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 400;
   line-height: 24px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   background: transparent;
   transition: all ${ANI_DURATION}s;
   &:disabled {
@@ -35,7 +35,7 @@ const TextArea = styled.textarea`
     font-size: 16px;
     font-weight: 500;
     line-height: 24px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
   }
   ${({ theme }) =>
     theme.isMobile &&

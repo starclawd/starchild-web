@@ -21,7 +21,7 @@ const RowContainer = styled.div`
   transition: background-color ${ANI_DURATION}s ease;
 
   &:hover {
-    background-color: ${({ theme }) => theme.bgT20};
+    background-color: ${({ theme }) => theme.black800};
   }
 
   &:last-child {
@@ -50,7 +50,7 @@ const AgentTitle = styled.div`
   flex: 1;
   font-size: 16px;
   line-height: 24px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   padding-right: 16px;
 
   ${({ theme }) =>
@@ -140,16 +140,16 @@ export default memo(function AgentTableRow({ agent }: AgentTableRowProps) {
           </Trans>
         ),
         status: TOAST_STATUS.SUCCESS,
-        typeIcon: 'icon-chat-rubbish',
-        iconTheme: theme.jade10,
+        typeIcon: 'icon-delete',
+        iconTheme: theme.black0,
       })
     } else {
       toast({
         title: <Trans>Failed to toggle subscription</Trans>,
         description: '',
         status: TOAST_STATUS.ERROR,
-        typeIcon: 'icon-chat-rubbish',
-        iconTheme: theme.ruby50,
+        typeIcon: 'icon-delete',
+        iconTheme: theme.black0,
       })
     }
   }

@@ -1,11 +1,10 @@
 import styled, { css } from 'styled-components'
-import AiContent from '../AiContent'
-import AiInput from '../AiInput'
+import ChatContent from '../ChatContent'
+import ChatInput from '../ChatInput'
 import { memo, useCallback, useState } from 'react'
 import { useAiResponseContentList, useFileList, useTempAiContentData } from 'store/chat/hooks'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
-import ShortcutsList from '../DefalutUi/components/ShortcutsList'
 import { useIsMobile } from 'store/application/hooks'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
@@ -91,8 +90,8 @@ export default memo(function FileDrag() {
           <Trans>Drop img here to add it to the conversation</Trans>
         </DropPrompt>
       )}
-      <AiContent />
-      <AiInput />
+      <ChatContent />
+      <ChatInput />
       {/* {isShowDefaultUi && !isMobile && <ShortcutsList />} */}
     </FileDragWrapper>
   )

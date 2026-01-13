@@ -1,0 +1,14 @@
+# Project Rules
+
+## Package Manager
+
+- Always use `yarn` instead of `npm` for installing packages.
+- Use `yarn add <package>` for dependencies and `yarn add -D <package>` for dev dependencies.
+- Never use `npm install` or `npx` commands.
+
+## File Modification Restrictions
+
+- Do NOT modify any files outside the `src/` directory unless explicitly instructed by the user.
+- Configuration files (e.g., `vite.config.ts`, `tsconfig.json`, `package.json`) should only be changed when the user specifically requests it.
+
+- /searchGit 表示查询 git 状态，执行 git status 命令

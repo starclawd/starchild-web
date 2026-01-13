@@ -40,7 +40,7 @@ const Header = styled.div`
   font-size: 20px;
   font-weight: 500;
   line-height: 28px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -68,7 +68,7 @@ const Description = styled.div`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -147,8 +147,8 @@ export default function DeleteMyAgentModal() {
           title: <Trans>Agent deleted</Trans>,
           description: <Trans>The agent has been successfully deleted.</Trans>,
           status: TOAST_STATUS.SUCCESS,
-          typeIcon: 'icon-chat-rubbish',
-          iconTheme: theme.ruby50,
+          typeIcon: 'icon-delete',
+          iconTheme: theme.black0,
         })
         toggleDeleteAgentModal()
       } else {
@@ -156,8 +156,8 @@ export default function DeleteMyAgentModal() {
           title: <Trans>Failed to Delete Agent</Trans>,
           description: '',
           status: TOAST_STATUS.ERROR,
-          typeIcon: 'icon-chat-rubbish',
-          iconTheme: theme.ruby50,
+          typeIcon: 'icon-delete',
+          iconTheme: theme.black0,
         })
       }
     } catch (error) {
@@ -166,8 +166,8 @@ export default function DeleteMyAgentModal() {
         title: <Trans>Failed to delete agent</Trans>,
         description: '',
         status: TOAST_STATUS.ERROR,
-        typeIcon: 'icon-chat-rubbish',
-        iconTheme: theme.ruby50,
+        typeIcon: 'icon-delete',
+        iconTheme: theme.black0,
       })
     } finally {
       setIsDeleting(false)

@@ -22,7 +22,7 @@ const DataListWrapper = styled.div`
       gap: 0;
       padding: ${vm(8)};
       border-radius: ${vm(12)};
-      background-color: ${({ theme }) => theme.bgT20};
+      background-color: ${({ theme }) => theme.black800};
       position: relative;
 
       /* 中间竖线分割 */
@@ -33,7 +33,7 @@ const DataListWrapper = styled.div`
         top: ${vm(8)};
         bottom: ${vm(8)};
         width: 1px;
-        background-color: ${({ theme }) => theme.bgT20};
+        background-color: ${({ theme }) => theme.black800};
         transform: translateX(-50%);
       }
     `}
@@ -63,7 +63,7 @@ const ItemWrapper = styled.div<{ $isFromUseCases?: boolean }>`
   height: 58px;
   padding: 8px 12px;
   border-radius: 12px;
-  background-color: ${({ theme }) => theme.bgT20};
+  background-color: ${({ theme }) => theme.black800};
   .title {
     display: flex;
     align-items: center;
@@ -72,26 +72,26 @@ const ItemWrapper = styled.div<{ $isFromUseCases?: boolean }>`
     font-size: 12px;
     font-weight: 400;
     line-height: 18px;
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     .icon-warn {
       transform: rotate(180deg);
       font-size: 14px;
-      color: ${({ theme }) => theme.textL4};
+      color: ${({ theme }) => theme.black300};
     }
   }
   .value {
     font-size: 14px;
     font-weight: 500;
     line-height: 20px;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
   }
-  ${({ theme }) => theme.mediaMinWidth.minWidth1024`
+  ${({ theme }) => theme.mediaMinWidth.width1024`
     width: calc((100% - 8px) / 3);
   `}
-  ${({ theme }) => theme.mediaMinWidth.minWidth1280`
+  ${({ theme }) => theme.mediaMinWidth.width1280`
     width: calc((100% - 12px) / 4);
   `}
-  ${({ theme }) => theme.mediaMinWidth.minWidth1680`
+  ${({ theme }) => theme.mediaMinWidth.width1680`
     width: calc((100% - 20px) / 6);
   `}
  

@@ -24,7 +24,7 @@ const SkeletonBase = styled.div<{
   $borderRadius?: string
 }>`
   position: relative;
-  background-color: ${({ theme }) => theme.text10};
+  background-color: ${({ theme }) => theme.black600};
   border-radius: ${({ $borderRadius }) => $borderRadius || '4px'};
   display: inline-block;
   width: ${({ $width }) => $width || '100%'};
@@ -39,7 +39,7 @@ const SkeletonBase = styled.div<{
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(90deg, transparent 0%, ${({ theme }) => theme.text20} 50%, transparent 100%);
+    background: linear-gradient(90deg, transparent 0%, ${({ theme }) => theme.black500} 50%, transparent 100%);
     animation: ${shimmer} ${ANIMATION_DURATION} ${ANIMATION_TIMING} infinite;
   }
 

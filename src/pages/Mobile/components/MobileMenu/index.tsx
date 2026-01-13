@@ -8,7 +8,7 @@ import logoImg from 'assets/png/logo.png'
 import { vm } from 'pages/helper'
 import { ROUTER } from 'pages/router'
 import { useCallback, useState, useRef, useMemo, useEffect } from 'react'
-import { useCurrentRouter, useIsShowMobileMenu } from 'store/application/hooks'
+import { useCurrentRouter, useIsShowMobileMenu, useSetCurrentRouter } from 'store/application/hooks'
 import { useAddNewThread, useGetThreadsList } from 'store/chat/hooks'
 import { useCurrentActiveNavKey } from 'store/headercache/hooks'
 import styled, { css } from 'styled-components'
@@ -84,7 +84,7 @@ const Header = styled.div`
   }
   .icon-chat-delete {
     font-size: 0.24rem;
-    color: ${({ theme }) => theme.textDark54};
+    color: ${({ theme }) => theme.black200};
   }
 `
 
@@ -119,7 +119,7 @@ const NewChat = styled.div`
   font-size: 0.14rem;
   font-weight: 400;
   line-height: 0.2rem;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   .icon-chat-new {
     font-size: 0.18rem;
   }
@@ -139,7 +139,7 @@ const Features = styled.div`
   padding: ${vm(8)};
   font-size: 0.14rem;
   line-height: 0.2rem;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 `
 
 const NavList = styled.div`
@@ -168,14 +168,14 @@ const NavTitle = styled.div<{ $active: boolean; $keyActive: boolean; $isSticky: 
   background-color: transparent;
   .icon-chat-expand-down {
     font-size: 0.14rem;
-    color: ${({ theme }) => theme.textDark54};
+    color: ${({ theme }) => theme.black200};
     transform: rotate(0);
     transition: transform ${ANI_DURATION}s;
   }
   ${({ $active }) =>
     $active &&
     css`
-      background-color: ${({ theme }) => theme.bgT20};
+      background-color: ${({ theme }) => theme.black800};
     `}
   ${({ $keyActive }) =>
     $keyActive &&
@@ -185,7 +185,7 @@ const NavTitle = styled.div<{ $active: boolean; $keyActive: boolean; $isSticky: 
       z-index: 10;
       .icon-chat-expand-down {
         transform: rotate(180deg);
-        color: ${({ theme }) => theme.textL2};
+        color: ${({ theme }) => theme.black100};
       }
     `}
   ${({ $isSticky }) =>
@@ -208,7 +208,7 @@ const SubList = styled.div<{ $key: string; $active: boolean }>`
   ${({ $active, $key }) =>
     $active &&
     css`
-      max-height: ${$key === ROUTER.MY_AGENTS || $key === ROUTER.INSIGHTS ? vm(31200) : vm(304)};
+      max-height: ${$key === ROUTER.MY_SIGNALS || $key === ROUTER.SIGNALS ? vm(31200) : vm(304)};
       padding: ${vm(8)} 0 ${vm(8)} ${vm(24)};
     `}
 `
@@ -221,13 +221,13 @@ const SubItem = styled.div<{ $active: boolean }>`
   font-size: 0.13rem;
   font-weight: 400;
   line-height: 0.2rem;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   padding: ${vm(8)};
   border-radius: ${vm(8)};
   ${({ $active }) =>
     $active &&
     css`
-      background-color: ${({ theme }) => theme.bgT10};
+      background-color: ${({ theme }) => theme.black900};
     `}
 `
 
@@ -238,7 +238,7 @@ const LeftWrapper = styled.div<{ $key: string }>`
   font-size: 0.14rem;
   font-weight: 400;
   line-height: 0.2rem;
-  color: ${({ theme }) => theme.textL2};
+  color: ${({ theme }) => theme.black100};
   i {
     font-size: 0.18rem;
   }
@@ -257,7 +257,8 @@ export default function MobileMenu() {
   const [isDragging, setIsDragging] = useState(false)
   const [dragOffset, setDragOffset] = useState(0)
   const addNewThread = useAddNewThread()
-  const [currentRouter, setCurrentRouter] = useCurrentRouter()
+  const currentRouter = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const startX = useRef(0)
   const currentX = useRef(0)
   const triggerGetAiBotChatThreads = useGetThreadsList()
@@ -288,42 +289,49 @@ export default function MobileMenu() {
     [currentActiveNavKey, setCurrentActiveNavKey],
   )
 
-  const agentMarketplaceClick = useCallback(() => {
-    setCurrentRouter(ROUTER.AGENT_HUB)
-    setIsShowMobileMenu(false)
-  }, [setCurrentRouter, setIsShowMobileMenu])
-
   const navList = useMemo(() => {
     return [
+      // {
+      //   key: ROUTER.VAULTS,
+      //   title: <Trans>Vibe trading</Trans>,
+      //   icon: 'icon-vibe-trading',
+      //   value: ROUTER.VAULTS,
+      //   clickCallback: changeCurrentActiveNavKey(ROUTER.VAULTS),
+      //   hasSubList: false,
+      //   subList: [],
+      // },
+      // {
+      //   key: ROUTER.SIGNALS,
+      //   title: <Trans>Insights</Trans>,
+      //   icon: 'icon-insights',
+      //   value: ROUTER.SIGNALS,
+      //   clickCallback: changeCurrentActiveNavKey(ROUTER.SIGNALS),
+      //   hasSubList: true,
+      //   subList: [
+      //     { key: ROUTER.AGENT_HUB, title: <Trans>Agent marketplace</Trans>, value: ROUTER.AGENT_HUB },
+      //     { key: ROUTER.SIGNALS, title: <Trans>Signals</Trans>, value: ROUTER.SIGNALS },
+      //     { key: ROUTER.LIVECHAT, title: <Trans>Live chat</Trans>, value: ROUTER.LIVECHAT },
+      //   ],
+      // },
       {
-        key: ROUTER.AGENT_HUB,
-        title: <Trans>Agent Marketplace</Trans>,
-        icon: 'icon-agent',
-        value: ROUTER.AGENT_HUB,
-        clickCallback: agentMarketplaceClick,
+        key: ROUTER.MY_SIGNALS,
+        title: <Trans>My</Trans>,
+        icon: 'icon-customize-avatar',
+        value: ROUTER.MY_SIGNALS,
+        clickCallback: () => {
+          changeCurrentActiveNavKey(ROUTER.MY_SIGNALS)
+          setCurrentRouter(ROUTER.MY_SIGNALS)
+          setIsShowMobileMenu(false)
+        },
         hasSubList: false,
-        subList: [],
-      },
-      {
-        key: ROUTER.INSIGHTS,
-        title: <Trans>Insights</Trans>,
-        icon: 'icon-insights',
-        value: ROUTER.INSIGHTS,
-        clickCallback: changeCurrentActiveNavKey(ROUTER.INSIGHTS),
-        hasSubList: true,
-        subList: [],
-      },
-      {
-        key: ROUTER.MY_AGENTS,
-        title: <Trans>My Agents</Trans>,
-        icon: 'icon-task',
-        value: ROUTER.MY_AGENTS,
-        clickCallback: changeCurrentActiveNavKey(ROUTER.MY_AGENTS),
-        hasSubList: true,
-        subList: [],
+        subList: [
+          // { key: ROUTER.MY_AGENTS, title: <Trans>My agents</Trans>, value: ROUTER.MY_AGENTS },
+          // { key: ROUTER.MY_FUND_AGENT, title: <Trans>My strategy</Trans>, value: ROUTER.MY_FUND_AGENT },
+          // { key: ROUTER.PORTFOLIO, title: <Trans>My vault</Trans>, value: ROUTER.PORTFOLIO },
+        ],
       },
     ]
-  }, [agentMarketplaceClick, changeCurrentActiveNavKey])
+  }, [changeCurrentActiveNavKey, setCurrentRouter, setIsShowMobileMenu])
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     startX.current = e.touches[0].clientX
@@ -377,9 +385,8 @@ export default function MobileMenu() {
   }, [setIsShowMobileMenu])
 
   const goHomePage = useCallback(() => {
-    setCurrentRouter(ROUTER.HOME)
     setIsShowMobileMenu(false)
-  }, [setCurrentRouter, setIsShowMobileMenu])
+  }, [setIsShowMobileMenu])
 
   const getThreadsList = useCallback(async () => {
     try {
@@ -478,7 +485,7 @@ export default function MobileMenu() {
               <Trans>New Chat</Trans>
             </span>
           </NewChat>
-          <NavWrapper>
+          {/* <NavWrapper>
             <Features>
               <Trans>Features</Trans>
             </Features>
@@ -518,15 +525,13 @@ export default function MobileMenu() {
                             </SubItem>
                           )
                         })}
-                        {currentActiveNavKey === ROUTER.MY_AGENTS && <MyAgent />}
-                        {currentActiveNavKey === ROUTER.INSIGHTS && <Insights />}
                       </SubList>
                     )}
                   </NavItem>
                 )
               })}
             </NavList>
-          </NavWrapper>
+          </NavWrapper> */}
           <ThreadList isMobileMenu mobileMenuCallback={closeMenu} />
         </Content>
         <Footer>

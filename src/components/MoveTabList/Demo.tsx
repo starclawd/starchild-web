@@ -5,23 +5,23 @@ import MoveTabList, { MoveType } from './index'
 const DemoContainer = styled.div`
   padding: 20px;
   background: ${({ theme }) => theme.bgL1};
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   min-height: 100vh;
 
   h2 {
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin-bottom: 20px;
     font-size: 24px;
   }
 
   h3 {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     margin-bottom: 15px;
     font-size: 18px;
   }
 
   p {
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     margin-bottom: 15px;
     line-height: 1.6;
   }
@@ -31,19 +31,19 @@ const DemoSection = styled.div`
   margin-bottom: 40px;
 
   h2 {
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     margin-bottom: 20px;
     font-size: 24px;
   }
 
   h3 {
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
     margin-bottom: 15px;
     font-size: 18px;
   }
 
   p {
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     margin-bottom: 15px;
     line-height: 1.6;
   }
@@ -72,11 +72,11 @@ const DemoRow = styled.div`
 
     .label {
       font-weight: 600;
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
     }
 
     .description {
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
       font-size: 14px;
     }
 
@@ -84,7 +84,7 @@ const DemoRow = styled.div`
       display: flex;
       gap: 15px;
       font-size: 12px;
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
       font-family: monospace;
     }
   }
@@ -94,7 +94,7 @@ const ContentDisplay = styled.div`
   margin-top: 20px;
   padding: 20px;
   background: ${({ theme }) => theme.bgL0};
-  border: 1px solid ${({ theme }) => theme.lineDark8};
+  border: 1px solid ${({ theme }) => theme.black800};
   border-radius: 8px;
   min-height: 100px;
   display: flex;
@@ -102,7 +102,7 @@ const ContentDisplay = styled.div`
   justify-content: center;
 
   .content-text {
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     font-size: 16px;
     text-align: center;
   }
@@ -125,12 +125,12 @@ const TabDemo = styled.div`
 
   .demo-label {
     font-weight: 600;
-    color: ${({ theme }) => theme.textL1};
+    color: ${({ theme }) => theme.black0};
     font-size: 14px;
   }
 
   .demo-description {
-    color: ${({ theme }) => theme.textL3};
+    color: ${({ theme }) => theme.black200};
     font-size: 12px;
   }
 `
@@ -147,11 +147,11 @@ const StatusDisplay = styled.div`
     margin-bottom: 8px;
 
     .label {
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
     }
 
     .value {
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
       font-weight: 500;
       font-family: monospace;
     }
@@ -160,7 +160,7 @@ const StatusDisplay = styled.div`
 
 const CodeBlock = styled.pre`
   background: ${({ theme }) => theme.bgL2};
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   padding: 15px;
   border-radius: 8px;
   overflow-x: auto;
@@ -172,7 +172,7 @@ const CodeBlock = styled.pre`
 
 const PropsTable = styled.div`
   background: ${({ theme }) => theme.bgL2};
-  border: 1px solid ${({ theme }) => theme.lineDark8};
+  border: 1px solid ${({ theme }) => theme.black800};
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 20px;
@@ -183,10 +183,10 @@ const PropsTableHeader = styled.div`
   grid-template-columns: 1fr 1fr 1fr 2fr;
   gap: 15px;
   font-weight: 600;
-  border-bottom: 1px solid ${({ theme }) => theme.lineDark8};
+  border-bottom: 1px solid ${({ theme }) => theme.black800};
   padding-bottom: 10px;
   margin-bottom: 15px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 `
 
 const PropsTableRow = styled.div`
@@ -195,7 +195,7 @@ const PropsTableRow = styled.div`
   gap: 15px;
   align-items: center;
   padding: 8px 0;
-  border-bottom: 1px solid ${({ theme }) => theme.lineDark8}10;
+  border-bottom: 1px solid ${({ theme }) => theme.black800}10;
 
   &:last-child {
     border-bottom: none;
@@ -208,13 +208,13 @@ const PropsTableCell = styled.div<{ type?: 'prop' | 'type' | 'default' | 'desc' 
   color: ${({ theme, type }) => {
     switch (type) {
       case 'prop':
-        return theme.textL1
+        return theme.black0
       case 'type':
         return theme.brand100
       case 'default':
-        return theme.textL3
+        return theme.black200
       default:
-        return theme.textL2
+        return theme.black100
     }
   }};
 `
@@ -227,6 +227,7 @@ const MoveTabListDemo = () => {
   const [forceWebTabIndex, setForceWebTabIndex] = useState(0)
   const [lineTabIndex, setLineTabIndex] = useState(0)
   const [borderRadiusTabIndex, setBorderRadiusTabIndex] = useState(0)
+  const [gapTabIndex, setGapTabIndex] = useState(0)
 
   const [clickStats, setClickStats] = useState({
     totalClicks: 0,
@@ -406,6 +407,34 @@ const MoveTabListDemo = () => {
     },
   ]
 
+  // gap 间距选项卡
+  const gapTabList = [
+    {
+      key: 0,
+      text: 'Tab 1',
+      clickCallback: () => {
+        setGapTabIndex(0)
+        handleTabClick('gap', 'Tab 1')
+      },
+    },
+    {
+      key: 1,
+      text: 'Tab 2',
+      clickCallback: () => {
+        setGapTabIndex(1)
+        handleTabClick('gap', 'Tab 2')
+      },
+    },
+    {
+      key: 2,
+      text: 'Tab 3',
+      clickCallback: () => {
+        setGapTabIndex(2)
+        handleTabClick('gap', 'Tab 3')
+      },
+    },
+  ]
+
   const getContentForTab = (index: number) => {
     const contents = [
       {
@@ -466,7 +495,7 @@ const MoveTabListDemo = () => {
 
         <DemoRow>
           <div className='tab-container'>
-            <MoveTabList tabIndex={twoTabIndex} tabList={twoTabList} />
+            <MoveTabList tabKey={twoTabIndex} tabList={twoTabList} />
           </div>
           <div className='demo-info'>
             <div>
@@ -497,7 +526,7 @@ const tabList = [
 ]
 
 <MoveTabList
-  tabIndex={tabIndex}
+  tabKey={tabIndex}
   tabList={tabList}
 />`}
         </CodeBlock>
@@ -509,7 +538,7 @@ const tabList = [
 
         <DemoRow>
           <div className='tab-container'>
-            <MoveTabList tabIndex={threeTabIndex} tabList={threeTabList} />
+            <MoveTabList tabKey={threeTabIndex} tabList={threeTabList} />
           </div>
           <div className='demo-info'>
             <div>
@@ -543,7 +572,7 @@ const tabList = [
 ]
 
 <MoveTabList
-  tabIndex={tabIndex}
+  tabKey={tabIndex}
   tabList={threeTabList}
 />`}
         </CodeBlock>
@@ -558,7 +587,7 @@ const tabList = [
             <div className='demo-label'>开关式标签</div>
             <div className='demo-description'>类似开关的二选项</div>
             <MoveTabList
-              tabIndex={twoTabIndex}
+              tabKey={twoTabIndex}
               tabList={[
                 { key: 0, text: '开启', clickCallback: () => setTwoTabIndex(0) },
                 { key: 1, text: '关闭', clickCallback: () => setTwoTabIndex(1) },
@@ -570,7 +599,7 @@ const tabList = [
             <div className='demo-label'>模式切换</div>
             <div className='demo-description'>不同模式之间切换</div>
             <MoveTabList
-              tabIndex={threeTabIndex}
+              tabKey={threeTabIndex}
               tabList={[
                 { key: 0, text: '列表', clickCallback: () => setThreeTabIndex(0) },
                 { key: 1, text: '网格', clickCallback: () => setThreeTabIndex(1) },
@@ -583,7 +612,7 @@ const tabList = [
             <div className='demo-label'>时间范围</div>
             <div className='demo-description'>时间筛选选项</div>
             <MoveTabList
-              tabIndex={threeTabIndex}
+              tabKey={threeTabIndex}
               tabList={[
                 { key: 0, text: '今天', clickCallback: () => setThreeTabIndex(0) },
                 { key: 1, text: '本周', clickCallback: () => setThreeTabIndex(1) },
@@ -596,7 +625,7 @@ const tabList = [
             <div className='demo-label'>状态筛选</div>
             <div className='demo-description'>不同状态过滤</div>
             <MoveTabList
-              tabIndex={twoTabIndex}
+              tabKey={twoTabIndex}
               tabList={[
                 { key: 0, text: '全部', clickCallback: () => setTwoTabIndex(0) },
                 { key: 1, text: '活跃', clickCallback: () => setTwoTabIndex(1) },
@@ -612,7 +641,7 @@ const tabList = [
 
         <DemoRow>
           <div className='tab-container'>
-            <MoveTabList tabIndex={contentTabIndex} tabList={contentTabList} />
+            <MoveTabList tabKey={contentTabIndex} tabList={contentTabList} />
           </div>
           <ContentDisplay>
             <div className='content-text'>
@@ -654,7 +683,7 @@ const tabList = [
 const currentContent = getContentForTab(contentTabIndex)
 
 <MoveTabList
-  tabIndex={contentTabIndex}
+  tabKey={contentTabIndex}
   tabList={contentTabList}
 />
 
@@ -670,7 +699,7 @@ const currentContent = getContentForTab(contentTabIndex)
 
         <DemoRow>
           <div className='tab-container'>
-            <MoveTabList tabIndex={dynamicTabIndex} tabList={dynamicTabList} />
+            <MoveTabList tabKey={dynamicTabIndex} tabList={dynamicTabList} />
           </div>
 
           <div style={{ display: 'flex', gap: '10px', marginTop: '15px' }}>
@@ -730,7 +759,7 @@ const tabList = tabs.map(tab => ({
 }))
 
 <MoveTabList
-  tabIndex={tabIndex}
+  tabKey={tabIndex}
   tabList={tabList}
 />`}
         </CodeBlock>
@@ -745,7 +774,7 @@ const tabList = tabs.map(tab => ({
             <div className='demo-label'>背景模式 (默认)</div>
             <div className='demo-description'>使用背景色作为选中指示器</div>
             <MoveTabList
-              tabIndex={twoTabIndex}
+              tabKey={twoTabIndex}
               tabList={[
                 { key: 0, text: '选项A', clickCallback: () => setTwoTabIndex(0) },
                 { key: 1, text: '选项B', clickCallback: () => setTwoTabIndex(1) },
@@ -757,7 +786,7 @@ const tabList = tabs.map(tab => ({
           <TabDemo>
             <div className='demo-label'>线条模式</div>
             <div className='demo-description'>使用底部线条作为选中指示器</div>
-            <MoveTabList tabIndex={lineTabIndex} tabList={lineTabList} moveType={MoveType.LINE} />
+            <MoveTabList tabKey={lineTabIndex} tabList={lineTabList} moveType={MoveType.LINE} />
           </TabDemo>
         </TabGrid>
 
@@ -771,7 +800,7 @@ const tabList = tabs.map(tab => ({
 
 // 线条模式
 <MoveTabList
-  tabIndex={tabIndex}
+  tabKey={tabIndex}
   tabList={tabList}
   moveType={MoveType.LINE}
 />`}
@@ -786,26 +815,26 @@ const tabList = tabs.map(tab => ({
           <TabDemo>
             <div className='demo-label'>默认圆角</div>
             <div className='demo-description'>使用默认的圆角设置</div>
-            <MoveTabList tabIndex={borderRadiusTabIndex} tabList={borderRadiusTabList} />
+            <MoveTabList tabKey={borderRadiusTabIndex} tabList={borderRadiusTabList} />
           </TabDemo>
 
           <TabDemo>
             <div className='demo-label'>大圆角容器</div>
             <div className='demo-description'>设置较大的容器圆角</div>
-            <MoveTabList tabIndex={borderRadiusTabIndex} tabList={borderRadiusTabList} borderRadius={20} />
+            <MoveTabList tabKey={borderRadiusTabIndex} tabList={borderRadiusTabList} borderRadius={20} />
           </TabDemo>
 
           <TabDemo>
             <div className='demo-label'>小圆角标签项</div>
             <div className='demo-description'>设置较小的标签项圆角</div>
-            <MoveTabList tabIndex={borderRadiusTabIndex} tabList={borderRadiusTabList} itemBorderRadius={4} />
+            <MoveTabList tabKey={borderRadiusTabIndex} tabList={borderRadiusTabList} itemBorderRadius={4} />
           </TabDemo>
 
           <TabDemo>
             <div className='demo-label'>自定义组合</div>
             <div className='demo-description'>容器圆角16px，标签项圆角12px</div>
             <MoveTabList
-              tabIndex={borderRadiusTabIndex}
+              tabKey={borderRadiusTabIndex}
               tabList={borderRadiusTabList}
               borderRadius={16}
               itemBorderRadius={12}
@@ -839,12 +868,72 @@ const tabList = tabs.map(tab => ({
       </DemoSection>
 
       <DemoSection>
+        <h3>自定义间距 (gap)</h3>
+        <p>可以自定义标签项之间的间距大小</p>
+
+        <TabGrid>
+          <TabDemo>
+            <div className='demo-label'>默认间距 (gap=4)</div>
+            <div className='demo-description'>使用默认的 4px 间距</div>
+            <MoveTabList tabKey={gapTabIndex} tabList={gapTabList} />
+          </TabDemo>
+
+          <TabDemo>
+            <div className='demo-label'>无间距 (gap=0)</div>
+            <div className='demo-description'>标签项之间无间距</div>
+            <MoveTabList tabKey={gapTabIndex} tabList={gapTabList} gap={0} />
+          </TabDemo>
+
+          <TabDemo>
+            <div className='demo-label'>大间距 (gap=8)</div>
+            <div className='demo-description'>标签项之间 8px 间距</div>
+            <MoveTabList tabKey={gapTabIndex} tabList={gapTabList} gap={8} />
+          </TabDemo>
+
+          <TabDemo>
+            <div className='demo-label'>超大间距 (gap=16)</div>
+            <div className='demo-description'>标签项之间 16px 间距</div>
+            <MoveTabList tabKey={gapTabIndex} tabList={gapTabList} gap={16} />
+          </TabDemo>
+        </TabGrid>
+
+        <CodeBlock>
+          {`// 默认间距 (4px)
+<MoveTabList
+  tabKey={tabIndex}
+  tabList={tabList}
+/>
+
+// 无间距
+<MoveTabList
+  tabKey={tabIndex}
+  tabList={tabList}
+  gap={0}
+/>
+
+// 大间距
+<MoveTabList
+  tabKey={tabIndex}
+  tabList={tabList}
+  gap={8}
+/>
+
+// 超大间距
+<MoveTabList
+  tabKey={tabIndex}
+  tabList={tabList}
+  gap={16}
+/>`}
+        </CodeBlock>
+      </DemoSection>
+
+      <DemoSection>
         <h3>强制Web样式</h3>
         <p>在移动端强制使用桌面端样式</p>
 
         <DemoRow>
           <div className='tab-container'>
-            <MoveTabList tabIndex={forceWebTabIndex} tabList={forceWebTabList} forceWebStyle />
+            <MoveTabList tabKey={forceWebTabIndex} tabList={forceWebTabList} forceWebStyle />
           </div>
           <div className='demo-info'>
             <div>
@@ -860,7 +949,7 @@ const tabList = tabs.map(tab => ({
 
         <CodeBlock>
           {`<MoveTabList
-  tabIndex={tabIndex}
+  tabKey={tabIndex}
   tabList={tabList}
   forceWebStyle={true} // 强制使用桌面端样式
 />`}
@@ -913,7 +1002,7 @@ const tabList = tabs.map(tab => ({
           </PropsTableHeader>
 
           <PropsTableRow>
-            <PropsTableCell type='prop'>tabIndex</PropsTableCell>
+            <PropsTableCell type='prop'>tabKey</PropsTableCell>
             <PropsTableCell type='type'>number</PropsTableCell>
             <PropsTableCell type='default'>-</PropsTableCell>
             <PropsTableCell type='desc'>当前激活的标签页索引（必填）</PropsTableCell>
@@ -924,6 +1013,13 @@ const tabList = tabs.map(tab => ({
             <PropsTableCell type='type'>TabItem[]</PropsTableCell>
             <PropsTableCell type='default'>-</PropsTableCell>
             <PropsTableCell type='desc'>标签页列表配置（必填）</PropsTableCell>
+          </PropsTableRow>
+
+          <PropsTableRow>
+            <PropsTableCell type='prop'>gap</PropsTableCell>
+            <PropsTableCell type='type'>number</PropsTableCell>
+            <PropsTableCell type='default'>4</PropsTableCell>
+            <PropsTableCell type='desc'>标签项之间的间距（像素）</PropsTableCell>
           </PropsTableRow>
 
           <PropsTableRow>
@@ -980,8 +1076,9 @@ const tabList = tabs.map(tab => ({
           <h3>完整接口定义</h3>
           <CodeBlock>
             {`interface MoveTabListProps {
-  tabIndex: number;                       // 必填：当前激活的标签页索引
+  tabKey: number;                       // 必填：当前激活的项的 key
   tabList: TabItem[];                     // 必填：标签页配置列表
+  gap?: number;                           // 可选：标签项间距，默认4px
   moveType?: MoveType;                    // 可选：指示器类型，默认 MoveType.BG
   borderRadius?: number;                  // 可选：容器圆角，默认移动端8px，桌面端12px
   itemBorderRadius?: number;              // 可选：标签项圆角，默认移动端6px，桌面端8px
@@ -1066,7 +1163,7 @@ function TabComponent() {
   
   return (
     <MoveTabList
-      tabIndex={activeTab}
+      tabKey={activeTab}
       tabList={tabList}
     />
   )
@@ -1074,14 +1171,14 @@ function TabComponent() {
 
 // 线条模式
 <MoveTabList
-  tabIndex={activeTab}
+  tabKey={activeTab}
   tabList={tabList}
   moveType={MoveType.LINE}
 />
 
 // 自定义圆角
 <MoveTabList
-  tabIndex={activeTab}
+  tabKey={activeTab}
   tabList={tabList}
   borderRadius={20}
   itemBorderRadius={12}
@@ -1089,14 +1186,14 @@ function TabComponent() {
 
 // 强制桌面端样式（在移动端）
 <MoveTabList
-  tabIndex={activeTab}
+  tabKey={activeTab}
   tabList={tabList}
   forceWebStyle={true}
 />
 
 // 组合使用所有参数
 <MoveTabList
-  tabIndex={activeTab}
+  tabKey={activeTab}
   tabList={tabList}
   moveType={MoveType.BG}
   borderRadius={16}
@@ -1119,7 +1216,7 @@ function TabWithContent() {
   return (
     <div>
       <MoveTabList
-        tabIndex={activeTab}
+        tabKey={activeTab}
         tabList={tabList}
         moveType={MoveType.LINE}
       />

@@ -7,7 +7,7 @@ import { Trans } from '@lingui/react'
 import { css, styled } from 'styled-components'
 import { BaseButton } from 'components/Button'
 import { vm } from 'pages/helper'
-import { useIsMobile, useCurrentRouter } from 'store/application/hooks'
+import { useIsMobile, useSetCurrentRouter } from 'store/application/hooks'
 import TitleDescriptionWithAvatar from 'pages/AgentHub/components/TitleDescriptionWithAvatar'
 import AgentTopNavigationBar from 'pages/AgentHub/components/AgentTopNavigationBar'
 import { ROUTER } from 'pages/router'
@@ -55,7 +55,7 @@ const BackButton = styled(BaseButton)`
   margin-top: 20px;
   font-size: 14px;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   .icon-chat-back {
     font-size: 18px;
   }
@@ -69,7 +69,7 @@ const BackButton = styled(BaseButton)`
       height: ${vm(44)};
       margin-top: 0;
       margin-bottom: ${vm(12)};
-      color: ${({ theme }) => theme.textL2};
+      color: ${({ theme }) => theme.black100};
       .icon-chat-back {
         font-size: 0.24rem;
       }
@@ -79,7 +79,7 @@ const BackButton = styled(BaseButton)`
 export default memo(function KolAgentList({ initialTag, filterType }: KolAgentListProps) {
   const [currentKolInfo, setCurrentKolInfo] = useCurrentKolInfo()
   const isMobile = useIsMobile()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
 
   const handleBack = () => {
     setCurrentRouter(ROUTER.AGENT_HUB + '#kol-radar')

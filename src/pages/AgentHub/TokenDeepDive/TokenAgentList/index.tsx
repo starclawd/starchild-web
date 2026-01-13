@@ -8,7 +8,7 @@ import { css, styled } from 'styled-components'
 import { vm } from 'pages/helper'
 import { BaseButton } from 'components/Button'
 import TokenCard from 'pages/AgentHub/components/AgentCardList/components/TokenCard'
-import { useIsMobile, useCurrentRouter } from 'store/application/hooks'
+import { useIsMobile, useSetCurrentRouter } from 'store/application/hooks'
 import { formatNumber, formatPercent } from 'utils/format'
 import AvatarComponent from 'components/Avatar'
 import TitleDescriptionWithAvatar from 'pages/AgentHub/components/TitleDescriptionWithAvatar'
@@ -72,7 +72,7 @@ const BackButton = styled(BaseButton)`
   margin-top: 20px;
   font-size: 14px;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   .icon-chat-back {
     font-size: 18px;
   }
@@ -86,7 +86,7 @@ const BackButton = styled(BaseButton)`
       height: ${vm(44)};
       margin-top: 0;
       margin-bottom: ${vm(12)};
-      color: ${({ theme }) => theme.textL2};
+      color: ${({ theme }) => theme.black100};
       .icon-chat-back {
         font-size: 0.24rem;
       }
@@ -115,7 +115,7 @@ const MobileTokenCard = styled.div`
   gap: ${vm(4)};
   flex: 1;
   padding: ${vm(4)};
-  background: ${({ theme }) => theme.bgT20};
+  background: ${({ theme }) => theme.black800};
   border-radius: ${vm(8)};
   align-items: center;
 `
@@ -124,7 +124,7 @@ const MobileTokenSymbol = styled.h3`
   font-size: 0.16rem;
   line-height: 0.24rem;
   font-weight: 600;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   margin: 0;
   text-align: center;
 `
@@ -132,7 +132,7 @@ const MobileTokenSymbol = styled.h3`
 const MobileTokenName = styled.p`
   font-size: 0.14rem;
   line-height: 0.2rem;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   margin: 0;
   text-align: center;
 `
@@ -143,7 +143,7 @@ const MobilePriceCard = styled.div`
   gap: ${vm(4)};
   flex: 1;
   padding: ${vm(4)};
-  background: ${({ theme }) => theme.bgT20};
+  background: ${({ theme }) => theme.black800};
   border-radius: ${vm(8)};
   align-items: center;
 `
@@ -152,7 +152,7 @@ const MobilePrice = styled.span`
   font-size: 0.16rem;
   line-height: 0.24rem;
   font-weight: 400;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   text-align: center;
 `
 
@@ -167,7 +167,7 @@ const MobilePriceChange = styled.span<{ $isPositive: boolean }>`
 export default memo(function TokenAgentList({ initialTag, filterType }: TokenAgentListProps) {
   const [currentTokenInfo, setCurrentTokenInfo] = useCurrentTokenInfo()
   const isMobile = useIsMobile()
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
 
   const handleBack = () => {
     setCurrentRouter(ROUTER.AGENT_HUB + '#token-deep-dive')

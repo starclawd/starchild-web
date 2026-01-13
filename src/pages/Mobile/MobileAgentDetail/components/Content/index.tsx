@@ -73,7 +73,7 @@ const Header = styled.div`
   font-size: 0.2rem;
   font-weight: 500;
   line-height: 0.28rem;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 `
 
 export default function MobileAgentDetailContent({
@@ -164,7 +164,7 @@ export default function MobileAgentDetailContent({
       />
       <ContentWrapper $isFromMyAgent={isFromMyAgent}>
         {isLoading ? (
-          <Pending isFetching />
+          <Pending isNotButtonLoading />
         ) : (
           <PullUpRefresh
             onRefresh={handleLoadMore}

@@ -1,5 +1,10 @@
 import styled, { css } from 'styled-components'
-import Modal from 'components/Modal'
+import Modal, {
+  CommonModalContent,
+  CommonModalContentWrapper,
+  CommonModalFooter,
+  CommonModalHeader,
+} from 'components/Modal'
 import { useIsMobile, useModalOpen, usePreferenceModalToggle } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
 import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
@@ -10,7 +15,6 @@ import { useCallback, useEffect, useState } from 'react'
 import TradingExperience from './components/TradingExperience'
 import AiExperience from './components/AiExperience'
 import WatchList from './components/WatchList'
-import WalletManagement from './components/WalletManagement'
 import PersonalProfile from './components/PersonalProfile'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import { useScrollbarClass } from 'hooks/useScrollbarClass'
@@ -20,17 +24,6 @@ import Pending from 'components/Pending'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useTheme } from 'store/themecache/hooks'
 
-const PerferenceWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 580px;
-  max-height: calc(100vh - 40px);
-  border-radius: 24px;
-  padding: 0 20px;
-  background: ${({ theme }) => theme.black800};
-  backdrop-filter: blur(8px);
-`
-
 const PerferenceMobileWrapper = styled(ModalSafeAreaWrapper)`
   display: flex;
   flex-direction: column;
@@ -38,40 +31,6 @@ const PerferenceMobileWrapper = styled(ModalSafeAreaWrapper)`
   max-height: 100%;
   padding: 0 ${vm(20)};
   background: transparent;
-`
-
-const Header = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 20px 20px 8px;
-  font-size: 20px;
-  font-weight: 500;
-  line-height: 28px;
-  color: ${({ theme }) => theme.textL1};
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      padding: ${vm(20)} ${vm(20)} ${vm(8)};
-      font-size: 0.2rem;
-      line-height: 0.28rem;
-    `}
-`
-
-const Content = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-  padding: 20px 0;
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(12)};
-      padding: ${vm(20)} 0;
-    `}
 `
 
 const SelectWrapper = styled.div`
@@ -91,12 +50,12 @@ const SelectItem = styled.div`
   flex-direction: column;
   width: 50%;
   .title {
-    padding: 8px 12px;
+    padding: 8px 0;
     font-size: 13px;
     font-weight: 400;
     line-height: 20px;
     white-space: nowrap;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black100};
   }
   ${({ theme }) =>
     theme.isMobile &&
@@ -117,22 +76,13 @@ const PersonalProfileWrapper = styled(SelectItem)`
   width: 100%;
 `
 
-const ButtonWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-  gap: 8px;
-  padding: 8px 0 20px;
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(8)};
-      padding: ${vm(8)} 0 ${vm(20)};
-    `}
-`
-
 const ButtonCancel = styled(ButtonBorder)`
   width: 50%;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
+  border: 1px solid ${({ theme }) => theme.black600};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -142,6 +92,10 @@ const ButtonCancel = styled(ButtonBorder)`
 
 const ButtonConfirm = styled(ButtonCommon)`
   width: 50%;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px;
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -185,7 +139,7 @@ export default function Preference() {
             description: <Trans>Preference modified</Trans>,
             status: TOAST_STATUS.SUCCESS,
             typeIcon: 'icon-preference',
-            iconTheme: theme.textL2,
+            iconTheme: theme.black0,
           })
           if (preferenceModalOpen) {
             togglePreferenceModal()
@@ -199,8 +153,8 @@ export default function Preference() {
             title: errorTitle,
             description: errorDescription,
             status: TOAST_STATUS.ERROR,
-            typeIcon: 'icon-chat-close',
-            iconTheme: theme.ruby50,
+            typeIcon: 'icon-close',
+            iconTheme: theme.black0,
           })
         }
       }
@@ -234,10 +188,10 @@ export default function Preference() {
   const renderContent = () => {
     return (
       <>
-        <Header>
+        <CommonModalHeader>
           <Trans>Preferences</Trans>
-        </Header>
-        <Content ref={contentRef} className='scroll-style'>
+        </CommonModalHeader>
+        <CommonModalContent ref={contentRef} className='scroll-style'>
           <SelectWrapper>
             <SelectItem style={{ width: '100%' }}>
               <span className='title'>
@@ -278,15 +232,15 @@ export default function Preference() {
               setPersonalProfileText={setPersonalProfileText}
             />
           </PersonalProfileWrapper>
-        </Content>
-        <ButtonWrapper>
+        </CommonModalContent>
+        <CommonModalFooter>
           <ButtonCancel onClick={togglePreferenceModal}>
             <Trans>Cancel</Trans>
           </ButtonCancel>
           <ButtonConfirm onClick={handleUpdatePreference}>
             {isLoading ? <Pending /> : <Trans>Confirm</Trans>}
           </ButtonConfirm>
-        </ButtonWrapper>
+        </CommonModalFooter>
       </>
     )
   }
@@ -304,7 +258,7 @@ export default function Preference() {
     </BottomSheet>
   ) : (
     <Modal useDismiss isOpen={preferenceModalOpen} onDismiss={togglePreferenceModal}>
-      <PerferenceWrapper>{renderContent()}</PerferenceWrapper>
+      <CommonModalContentWrapper>{renderContent()}</CommonModalContentWrapper>
     </Modal>
   )
 }

@@ -12,17 +12,8 @@ export const GlobalStyle = createGlobalStyle<{ theme: ReturnType<typeof getTheme
       /* 这是WebKit浏览器的一个已知渲染bug，滚动条伪元素（::-webkit-scrollbar-thumb）的样式有时不会在hover状态下正确重绘 */
       transform: translateZ(0);
        &::-webkit-scrollbar-thumb {
-        background: ${({ theme }) => theme.text10};
+        background: ${({ theme }) => theme.black600};
       }
-    }
-
-    /* 非 textarea 元素添加固定的 padding-right */
-    &:not(textarea) {
-      ${({ theme }) =>
-        !theme.isMobile &&
-        css`
-          padding-right: 14px;
-        `}
     }
 
     /* textarea 元素在有滚动条时的样式 */
@@ -33,6 +24,16 @@ export const GlobalStyle = createGlobalStyle<{ theme: ReturnType<typeof getTheme
           padding-right: 14px;
           margin-right: 4px;
         `}
+    }
+  }
+
+  .transparent-scroll-style {
+    overflow: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    
+    &::-webkit-scrollbar {
+      display: none;
     }
   }
 
@@ -79,7 +80,7 @@ export const GlobalStyle = createGlobalStyle<{ theme: ReturnType<typeof getTheme
             background: transparent;
           }
           .scroll-style::-webkit-scrollbar-corner {
-            background: ${({ theme }) => theme.text10};
+            background: ${({ theme }) => theme.black600};
           }
         `}
 `

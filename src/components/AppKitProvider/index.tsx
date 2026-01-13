@@ -5,8 +5,10 @@ import {
   abstract,
   AppKitNetwork,
   arbitrum,
+  arbitrumSepolia,
   avalanche,
   base,
+  baseSepolia,
   berachain,
   bsc,
   mainnet,
@@ -48,25 +50,27 @@ const metadata = isPro
     }
 
 // 3. Create Wagmi Adapter
-const networks: [AppKitNetwork, ...AppKitNetwork[]] = [
-  mainnet,
-  arbitrum,
-  base,
-  optimism,
-  polygon,
-  mantle,
-  sei,
-  avalanche,
-  morph,
-  sonic,
-  berachain,
-  story,
-  mode,
-  plume,
-  abstract,
-  bsc,
-  solana,
-]
+const networks: [AppKitNetwork, ...AppKitNetwork[]] = isPro
+  ? [
+      mainnet,
+      arbitrum,
+      base,
+      optimism,
+      polygon,
+      mantle,
+      sei,
+      avalanche,
+      morph,
+      sonic,
+      berachain,
+      story,
+      mode,
+      plume,
+      abstract,
+      bsc,
+      solana,
+    ]
+  : [arbitrumSepolia, baseSepolia]
 
 const wagmiAdapter = new WagmiAdapter({
   networks,

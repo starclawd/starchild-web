@@ -51,7 +51,7 @@ const SourceItem = styled.a`
       font-size: 12px;
       font-weight: 400;
       line-height: 18px;
-      color: ${({ theme }) => theme.textL2};
+      color: ${({ theme }) => theme.black100};
     }
   }
   > span:last-child {
@@ -62,13 +62,13 @@ const SourceItem = styled.a`
       font-size: 14px;
       font-weight: 400;
       line-height: 20px;
-      color: ${({ theme }) => theme.textL1};
+      color: ${({ theme }) => theme.black0};
     }
     span:last-child {
       font-size: 12px;
       font-weight: 400;
       line-height: 18px;
-      color: ${({ theme }) => theme.textL3};
+      color: ${({ theme }) => theme.black200};
     }
   }
   ${({ theme }) =>
@@ -114,7 +114,7 @@ const SourceItem = styled.a`
           &:hover {
             -webkit-background-clip: unset !important;
             color: unset !important;
-            background-color: ${({ theme }) => theme.bgT20} !important;
+            background-color: ${({ theme }) => theme.black800} !important;
           }
         `}
 `

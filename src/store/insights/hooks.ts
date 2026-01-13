@@ -5,18 +5,11 @@ import { RootState } from 'store'
 import {
   BinanceSymbolsDataType,
   CoingeckoCoinIdMapDataType,
-  INSIGHTS_ACTIVE_TAB,
   KlineSubDataType,
   KlineSubInnerDataType,
   LiveChatDataType,
 } from './insights'
-import {
-  updateActiveTab,
-  updateBinanceSymbols,
-  updateCoingeckoCoinIdMap,
-  updateKlineSubData,
-  updateLiveChatList,
-} from './reducer'
+import { updateBinanceSymbols, updateCoingeckoCoinIdMap, updateKlineSubData, updateLiveChatList } from './reducer'
 import { useLazyGetExchangeInfoQuery, useLazyGetKlineDataQuery } from 'api/binance'
 import { KLINE_SUB_ID, KLINE_UNSUB_ID, WS_TYPE } from 'store/websocket/websocket'
 import { KlineSubscriptionParams, useWebSocketConnection } from 'store/websocket/hooks'
@@ -374,16 +367,4 @@ export function useInsightsSubscription(options?: { handleMessage?: boolean }) {
     subscribe,
     unsubscribe,
   }
-}
-
-export function useActiveTab(): [INSIGHTS_ACTIVE_TAB, (tab: INSIGHTS_ACTIVE_TAB) => void] {
-  const activeTab = useSelector((state: RootState) => state.insights.activeTab)
-  const dispatch = useDispatch()
-  const setActiveTab = useCallback(
-    (tab: INSIGHTS_ACTIVE_TAB) => {
-      dispatch(updateActiveTab(tab))
-    },
-    [dispatch],
-  )
-  return [activeTab, setActiveTab]
 }

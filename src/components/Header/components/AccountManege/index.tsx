@@ -19,11 +19,9 @@ const AccountManegeWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 580px;
-  max-height: calc(100vh - 40px);
-  border-radius: 24px;
-  padding: 0 20px;
-  background: ${({ theme }) => theme.black800};
-  backdrop-filter: blur(8px);
+  background: ${({ theme }) => theme.black900};
+  border-radius: 8px;
+  position: relative;
 `
 
 const AccountManegeMobileWrapper = styled(ModalSafeAreaWrapper)`
@@ -31,7 +29,6 @@ const AccountManegeMobileWrapper = styled(ModalSafeAreaWrapper)`
   flex-direction: column;
   width: 100%;
   max-height: 100%;
-  background: transparent;
 `
 
 const Header = styled.div`
@@ -40,18 +37,12 @@ const Header = styled.div`
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 20px 20px 8px;
-  font-size: 20px;
-  font-weight: 500;
-  line-height: 28px;
-  color: ${({ theme }) => theme.textL1};
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      padding: ${vm(20)} ${vm(20)} ${vm(8)};
-      font-size: 0.2rem;
-      line-height: 0.28rem;
-    `}
+  padding: 16px 0 8px;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+  color: ${({ theme }) => theme.black0};
 `
 
 const Content = styled.div`
@@ -59,7 +50,7 @@ const Content = styled.div`
   flex-direction: column;
   width: 100%;
   height: 100%;
-  padding: 20px 0;
+  padding: 20px;
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -71,7 +62,7 @@ const Title = styled.div`
   font-size: 14px;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -105,7 +96,7 @@ const Left = styled.div`
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black100};
   i {
     font-size: 18px;
   }
@@ -137,21 +128,9 @@ export function AccountManegeModal() {
   const loginMethods = useMemo(() => {
     return [
       {
-        key: 'Google',
-        name: <Trans>Google</Trans>,
-        icon: <img src={googleIcon} alt='Google' />,
-        value: <Google />,
-      },
-      {
-        key: 'Telegram',
-        name: <Trans>Telegram</Trans>,
-        icon: <IconBase className='icon-telegram' />,
-        value: <Telegram />,
-      },
-      {
         key: 'Wallet',
         name: <Trans>Wallet</Trans>,
-        icon: <IconBase className='icon-account-wallet' />,
+        icon: <IconBase className='icon-wallet' />,
         value: <Wallet />,
       },
     ]

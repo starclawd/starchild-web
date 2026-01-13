@@ -63,54 +63,55 @@ const InputWrapper = styled(BorderAllSide1PxBox)<{ $isFocus: boolean }>`
   display: flex;
   align-items: center;
   width: 100%;
-  height: 44px;
+  height: 48px;
   flex-shrink: 0;
+  border-radius: 4px;
   .icon-search {
     position: absolute;
     left: 16px;
-    top: calc(50% - 11px);
+    top: calc(50% - 8px);
     font-size: 18px;
-    color: ${({ theme }) => theme.textL2};
+    color: ${({ theme }) => theme.black300};
   }
-  .icon-chat-close {
+  .icon-close {
     position: absolute;
     right: 12px;
     top: calc(50% - 8px);
     font-size: 18px;
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
     cursor: pointer;
     transition: color ${ANI_DURATION}s;
   }
   &:hover {
-    border-color: ${({ theme }) => theme.textL4};
+    border-color: ${({ theme }) => theme.black300};
   }
   ${({ $isFocus }) =>
     $isFocus &&
     css`
-      border-color: ${({ theme }) => theme.textL3} !important;
+      border-color: ${({ theme }) => theme.black200} !important;
     `}
   ${({ theme }) =>
     theme.isMobile
       ? css`
-          height: ${vm(44)};
+          height: ${vm(48)};
           .icon-search {
             left: ${vm(16)};
             top: calc(50% - ${vm(8)});
             font-size: 0.18rem;
           }
-          .icon-chat-close {
+          .icon-close {
             font-size: 0.18rem;
             right: ${vm(12)};
             top: calc(50% - ${vm(9)});
             &:active {
-              color: ${({ theme }) => theme.textL2};
+              color: ${({ theme }) => theme.black100};
             }
           }
         `
       : css`
-          .icon-chat-close {
+          .icon-close {
             &:hover {
-              color: ${({ theme }) => theme.textL2};
+              color: ${({ theme }) => theme.black100};
             }
           }
         `}
@@ -123,10 +124,10 @@ const BaseInput = styled.input<{ $isSearch: boolean }>`
   font-size: 14px;
   font-weight: 500;
   line-height: 20px;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
   background-color: transparent;
   &::placeholder {
-    color: ${({ theme }) => theme.textL4};
+    color: ${({ theme }) => theme.black300};
   }
   ${({ $isSearch }) =>
     $isSearch &&
@@ -257,12 +258,12 @@ export default memo(function Input({
       style={rootStyle}
       ref={inputWrapperRef as any}
       className='input-wrapper'
-      $borderRadius={24}
-      $borderColor={theme.text10}
+      $borderRadius={0}
+      $borderColor={theme.black600}
       $isFocus={isFocus}
     >
       {isSearch && <IconBase className='icon-search' />}
-      {isSearch && inputValue && <IconBase className='icon-chat-close' onClick={onResetValue} />}
+      {isSearch && inputValue && <IconBase className='icon-close' onClick={onResetValue} />}
       <BaseInput
         type={type}
         tabIndex={1}

@@ -11,7 +11,7 @@ import { useIsAgentSubscribed, useIsSelfAgent, useSubscribeAgent, useUnsubscribe
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import AgentCardDetailModal from 'pages/AgentHub/components/AgentCardList/components/AgentCardDetailModal'
 import { AGENT_HUB_TYPE, ANI_DURATION } from 'constants/index'
-import { useCurrentRouter } from 'store/application/hooks'
+import { useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import SubscribeButton from '../SubscribeButton'
 import useSubErrorInfo from 'hooks/useSubErrorInfo'
@@ -27,7 +27,7 @@ const AgentCardWithImageWrapper = styled(BorderAllSide1PxBox)`
   border-radius: 16px;
 
   &:hover {
-    background: ${({ theme }) => theme.bgT20};
+    background: ${({ theme }) => theme.black800};
   }
 
   ${({ theme }) =>
@@ -83,7 +83,7 @@ const StatItem = styled.div`
   align-items: center;
   gap: 4px;
   font-size: 12px;
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
   background: ${({ theme }) => theme.bgL2};
   padding: 8px 12px;
   border-radius: 6px;
@@ -131,12 +131,12 @@ const TokenLogo = styled.div<{ $offset: number }>`
 `
 
 const StatLabel = styled.span`
-  color: ${({ theme }) => theme.textL3};
+  color: ${({ theme }) => theme.black200};
 `
 
 const StatValue = styled.span`
   font-weight: 600;
-  color: ${({ theme }) => theme.textL1};
+  color: ${({ theme }) => theme.black0};
 `
 
 const APRValue = styled.span`
@@ -167,7 +167,7 @@ export default memo(function AgentCardWithImage({
   showDescriptionButton = false,
   forceGoToDetail = false,
 }: AgentCardProps & { showDescriptionButton?: boolean; forceGoToDetail?: boolean }) {
-  const [, setCurrentRouter] = useCurrentRouter()
+  const setCurrentRouter = useSetCurrentRouter()
   const subscribeAgent = useSubscribeAgent()
   const unsubscribeAgent = useUnsubscribeAgent()
   const isSubscribed = useIsAgentSubscribed(agentId)
@@ -205,16 +205,16 @@ export default memo(function AgentCardWithImage({
           </Trans>
         ),
         status: TOAST_STATUS.SUCCESS,
-        typeIcon: 'icon-chat-rubbish',
-        iconTheme: theme.jade10,
+        typeIcon: 'icon-delete',
+        iconTheme: theme.black0,
       })
     } else {
       toast({
         title: <Trans>Failed to toggle subscription</Trans>,
         description: '',
         status: TOAST_STATUS.ERROR,
-        typeIcon: 'icon-chat-rubbish',
-        iconTheme: theme.ruby50,
+        typeIcon: 'icon-delete',
+        iconTheme: theme.black0,
       })
     }
   }
