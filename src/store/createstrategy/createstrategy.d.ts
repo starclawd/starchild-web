@@ -383,3 +383,11 @@ export enum STRATEGY_TAB_INDEX {
   PAPER_TRADING = 'paper_trading',
   LAUNCH = 'launch',
 }
+
+export interface UserConfigDataType {
+  user_info_id: number
+  is_temp: boolean
+  strategy_count: number
+  strategy_limit: number
+  can_create_more: boolean
+}

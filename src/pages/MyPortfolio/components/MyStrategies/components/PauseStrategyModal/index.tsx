@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components'
-import Modal from 'components/Modal'
+import Modal, { CommonModalContent, CommonModalContentWrapper, CommonModalFooter } from 'components/Modal'
 import BottomSheet from 'components/BottomSheet'
+import { CommonModalHeader } from 'components/Modal'
 import { usePauseStrategyModalToggle, useIsMobile, useModalOpen } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
 import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
@@ -14,15 +15,8 @@ import { IconBase } from 'components/Icons'
 import Pending from 'components/Pending'
 import { useCurrentStrategyId, useMyStrategies, usePauseStrategy } from 'store/mystrategy/hooks/useMyStrategies'
 import { useAppKitAccount } from '@reown/appkit/react'
-const PauseStrategyModalWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
+const PauseStrategyModalWrapper = styled(CommonModalContentWrapper)`
   width: 380px;
-  max-height: calc(100vh - 40px);
-  border-radius: 24px;
-  padding: 0 20px;
-  background: ${({ theme }) => theme.black800};
-  backdrop-filter: blur(8px);
 `
 
 const PauseStrategyModalMobileWrapper = styled(ModalSafeAreaWrapper)`
@@ -34,33 +28,9 @@ const PauseStrategyModalMobileWrapper = styled(ModalSafeAreaWrapper)`
   /* 移除背景和模糊效果，因为 BottomSheet 会提供 */
 `
 
-const Header = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  padding: 20px 0 8px;
-  font-size: 20px;
-  font-weight: 500;
-  line-height: 28px;
-  color: ${({ theme }) => theme.black0};
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      padding: ${vm(20)} ${vm(8)} ${vm(8)};
-      font-size: 0.2rem;
-      line-height: 0.28rem;
-    `}
-`
+const Header = styled(CommonModalHeader)``
 
-const ContentWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  width: 100%;
-  padding: 20px 0;
-`
+const ContentWrapper = styled(CommonModalContent)``
 
 const ContentTitle = styled.div`
   font-size: 14px;
@@ -76,7 +46,7 @@ const Content = styled.div`
   gap: 12px;
   padding: 12px;
   border-radius: 8px;
-  background: ${({ theme }) => theme.black900};
+  background: ${({ theme }) => theme.black1000};
   > span:first-child {
     font-size: 13px;
     font-style: normal;
@@ -118,17 +88,7 @@ const Content = styled.div`
   }
 `
 
-const BottomContent = styled.div`
-  display: flex;
-  gap: 8px;
-  padding: 8px 0 20px;
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(8)};
-      padding: ${vm(8)} ${vm(8)} ${vm(20)};
-    `}
-`
+const BottomContent = styled(CommonModalFooter)``
 
 const ButtonCancel = styled(ButtonBorder)`
   display: flex;

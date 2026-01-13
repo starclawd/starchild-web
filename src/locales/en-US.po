@@ -39,7 +39,7 @@ msgstr "Create agent"
 #~ msgid "Click [**Run Backtest]** to see how your strategy would have performed on historical data."
 #~ msgstr "Click [**Run backtest]** to see how your strategy would have performed on historical data."
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:207
+#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:170
 msgid "Unable to delete the strategy. Please try again."
 msgstr "Unable to delete the strategy. Please try again."
 
@@ -98,7 +98,7 @@ msgstr "Performance"
 #~ msgid "Solana address"
 #~ msgstr "Solana address"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:193
+#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:155
 msgid "The vault has been closed and trading has stopped. Funds are ready for claim."
 msgstr "The vault has been closed and trading has stopped. Funds are ready for claim."
 
@@ -120,7 +120,7 @@ msgstr "My positions analysis?"
 msgid "Est. price per Share"
 msgstr "Est. price per share"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:254
+#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:214
 msgid "This action can be resumed later."
 msgstr "This action can be resumed later."
 
@@ -141,7 +141,7 @@ msgstr "First 7 days"
 msgid "Stability"
 msgstr "Stability"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:252
+#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:214
 msgid "All assets will be settled"
 msgstr "All assets will be settled"
 
@@ -307,8 +307,8 @@ msgstr "Bind failed"
 msgid "Total Deposited"
 msgstr "Total Deposited"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:260
-#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:244
+#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:222
+#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:207
 msgid "This action cannot be undone."
 msgstr "This action cannot be undone."
 
@@ -437,7 +437,7 @@ msgstr "No current agent data or agentId found"
 #~ msgid "Strategy summary"
 #~ msgstr "Strategy summary"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:133
+#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:132
 msgid "Comming soon"
 msgstr "Comming soon"
 
@@ -622,9 +622,9 @@ msgstr "Add question"
 #~ msgid "Subscribed"
 #~ msgstr "Subscribed"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:263
-#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:269
-#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:253
+#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:223
+#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:231
+#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:216
 #: src/pages/MyAgent/components/CreateModal/index.tsx:323
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/components/EditStrategyInfoModal/index.tsx:266
 #: src/components/Header/components/Preference/index.tsx:241
@@ -734,7 +734,7 @@ msgstr "Backtesting"
 msgid "Est. receiving"
 msgstr "Est. receiving"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:255
+#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:217
 msgid "You must claim funds afterward"
 msgstr "You must claim funds afterward"
 
@@ -790,7 +790,7 @@ msgstr "My vaults portfolio"
 msgid "Web3 Events"
 msgstr "Web3 events"
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:281
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:315
 msgid "Turn your idea into live strategy. e.g., Buy ETH when RSI < 30 on 15m chart."
 msgstr "Turn your idea into live strategy. e.g., Buy ETH when RSI < 30 on 15m chart."
 
@@ -799,11 +799,11 @@ msgid "Search"
 msgstr "Search"
 
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/components/UnLogin/index.tsx:38
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:263
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:297
 msgid "Log in to view AI responses"
 msgstr "Log in to view AI responses"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:190
+#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:153
 msgid "Strategy deleted"
 msgstr "Strategy deleted"
 
@@ -817,11 +817,11 @@ msgstr "Chat"
 msgid "Thinking"
 msgstr "Thinking"
 
-#: src/components/Header/index.tsx:294
+#: src/components/Header/index.tsx:293
 msgid "Coming soon"
 msgstr "Coming soon"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:249
+#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:209
 msgid "Vault becomes 100% cash"
 msgstr "Vault becomes 100% cash"
 
@@ -854,7 +854,7 @@ msgstr "No data"
 msgid "All-time APR"
 msgstr "All-time APR"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:208
+#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:168
 msgid "Pause Failed"
 msgstr "Pause Failed"
 
@@ -1022,6 +1022,10 @@ msgstr "Bottom fishing or top chasing? Tell me!"
 msgid "Documents"
 msgstr "Documents"
 
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:246
+msgid "Slot limit reached ({strategy_count}/{strategy_limit})! Boost your current strategy's APR to unlock more slots."
+msgstr "Slot limit reached ({strategy_count}/{strategy_limit})! Boost your current strategy's APR to unlock more slots."
+
 #: src/components/Footer/index.tsx:58
 msgid "Copyright 2025 WOO. All Rights Reserved"
 msgstr "Copyright 2025 WOO. All Rights Reserved"
@@ -1060,7 +1064,7 @@ msgstr "What are the latest and most talked-about token listings recently?"
 msgid "Code"
 msgstr "Code"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:239
+#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:199
 msgid "Once paused:"
 msgstr "Once paused:"
 
@@ -1184,8 +1188,8 @@ msgstr "Please enter"
 #~ msgid "WalletConnect"
 #~ msgstr "WalletConnect"
 
-#: src/pages/VaultDetail/components/VaultInfo/index.tsx:175
-#: src/pages/VaultDetail/components/VaultInfo/index.tsx:184
+#: src/pages/VaultDetail/components/VaultInfo/index.tsx:176
+#: src/pages/VaultDetail/components/VaultInfo/index.tsx:185
 msgid "Strategy"
 msgstr "Strategy"
 
@@ -1194,7 +1198,7 @@ msgstr "Strategy"
 msgid "Deploy"
 msgstr "Deploy"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:209
+#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:169
 msgid "The strategy could not be paused. Please try again."
 msgstr "The strategy could not be paused. Please try again."
 
@@ -1248,17 +1252,21 @@ msgstr "Withdraw interface coming soon"
 msgid "Setting successfully"
 msgstr "Setting successfully"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:236
+#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:199
 msgid "If you delete this strategy:"
 msgstr "If you delete this strategy:"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:228
+#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:191
 msgid "Delete Strategy"
 msgstr "Delete strategy"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:73
 #~ msgid "Access via web or Telegram bot:"
 #~ msgstr "Access via web or Telegram bot:"
+
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:245
+msgid "Create strategy failed"
+msgstr "Create strategy failed"
 
 #: src/pages/Chat/components/AiInput/components/Recommendations/index.tsx:280
 #~ msgid "More use cases"
@@ -1295,7 +1303,7 @@ msgstr "All time APR"
 msgid "Agent has been successfully updated"
 msgstr "Agent has been successfully updated"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:243
+#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:203
 msgid "Trading stops immediately"
 msgstr "Trading stops immediately"
 
@@ -1393,7 +1401,7 @@ msgstr "Turns your text description into code."
 msgid "Recent chats:"
 msgstr "Recent chats:"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:246
+#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:206
 msgid "All positions close at market"
 msgstr "All positions close at market"
 
@@ -1465,11 +1473,11 @@ msgstr "Vibe more, earn more."
 msgid "Select time"
 msgstr "Select time"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:249
+#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:211
 msgid "Trading stops instantly"
 msgstr "Trading stops instantly"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:211
+#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:173
 msgid "Discontinue Failed"
 msgstr "Discontinue Failed"
 
@@ -1525,7 +1533,7 @@ msgstr "Positions{0}"
 msgid "Risk Management"
 msgstr "Risk management"
 
-#: src/pages/Vaults/components/StrategyTable/components/StrategyItem/index.tsx:349
+#: src/pages/Vaults/components/StrategyTable/components/StrategyItem/index.tsx:350
 #: src/pages/VaultDetail/components/VaultInfo/components/TvfSection/index.tsx:204
 msgid "Follow"
 msgstr "Follow"
@@ -1622,7 +1630,6 @@ msgid "Created by"
 msgstr "Created by"
 
 #: src/pages/MyPortfolio/index.tsx:178
-#: src/components/Header/index.tsx:294
 msgid "My portfolio"
 msgstr "My portfolio"
 
@@ -1773,7 +1780,7 @@ msgstr "Agents marketplace"
 msgid "Live sentiment. Real-time momentum"
 msgstr "Live sentiment. Real-time momentum"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:245
+#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:207
 msgid "Once discontinued:"
 msgstr "Once discontinued:"
 
@@ -1781,7 +1788,7 @@ msgstr "Once discontinued:"
 msgid "Language switched successfully"
 msgstr "Language switched successfully"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:231
+#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:191
 msgid "Pause Strategy"
 msgstr "Pause strategy"
 
@@ -1892,7 +1899,7 @@ msgstr "My wallet"
 msgid "Every Sunday, receive a crypto market sentiment summary based on social trends, funding rates, and the fear & greed index."
 msgstr "Every Sunday, receive a crypto market sentiment summary based on social trends, funding rates, and the fear & greed index."
 
-#: src/pages/Vaults/components/StrategyTable/components/StrategyItem/index.tsx:349
+#: src/pages/Vaults/components/StrategyTable/components/StrategyItem/index.tsx:350
 #: src/pages/VaultDetail/components/VaultInfo/components/TvfSection/index.tsx:204
 msgid "Followed"
 msgstr "Followed"
@@ -1984,7 +1991,7 @@ msgstr "Error"
 #~ msgid "Primary"
 #~ msgstr "Primary"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:241
+#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:203
 msgid "Are you sure you want to discontinue the strategy?"
 msgstr "Are you sure you want to discontinue the strategy?"
 
@@ -2006,7 +2013,7 @@ msgstr "Disconnect wallet"
 msgid "Withdraw in progress"
 msgstr "Withdraw in progress"
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:282
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:316
 msgid "Refine logic, check paper trade, or launch to earn..."
 msgstr "Refine logic, check paper trade, or launch to earn..."
 
@@ -2246,7 +2253,7 @@ msgstr "Technical analysis (TA)"
 msgid "Latest deposit"
 msgstr "Latest deposit"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:193
+#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:153
 msgid "Trading has been halted and all positions are closed."
 msgstr "Trading has been halted and all positions are closed."
 
@@ -2360,7 +2367,7 @@ msgstr "Approve Agent"
 msgid "Delete Agent"
 msgstr "Delete agent"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:235
+#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:195
 msgid "Are you sure you want to pause the strategy?"
 msgstr "Are you sure you want to pause the strategy?"
 
@@ -2508,8 +2515,8 @@ msgid "View all vaults"
 msgstr "View all vaults"
 
 #: src/pages/Connect/index.tsx:343
-msgid "Welcome to <0>Starchild</0>"
-msgstr "Welcome to <0>Starchild</0>"
+#~ msgid "Welcome to <0>Starchild</0>"
+#~ msgstr "Welcome to <0>Starchild</0>"
 
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Backtest/components/Workflow/components/ParamsContent/index.tsx:102
 msgid "Position Size"
@@ -2664,9 +2671,9 @@ msgstr "Available"
 
 #: src/pages/VaultDetail/components/DepositHyperliquidVault/index.tsx:655
 #: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:697
-#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:260
-#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:266
-#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:250
+#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:220
+#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:228
+#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:213
 #: src/pages/MyAgent/components/DeleteMyAgentModal/index.tsx:200
 #: src/pages/MyAgent/components/CreateModal/index.tsx:320
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/index.tsx:714
@@ -2871,7 +2878,7 @@ msgstr "My wallet"
 msgid "Is there a chance of an interest rate hike or cut in the near future?"
 msgstr "Is there a chance of an interest rate hike or cut in the near future?"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:232
+#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:195
 msgid "Are you sure you want to delete the strategy?"
 msgstr "Are you sure you want to delete the strategy?"
 
@@ -2980,7 +2987,7 @@ msgstr "Failed to toggle subscription"
 msgid "Signal Layer"
 msgstr "Signal layer"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:212
+#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:174
 msgid "The strategy could not be discontinued. Please try again."
 msgstr "The strategy could not be discontinued. Please try again."
 
@@ -3020,7 +3027,7 @@ msgstr "The strategy could not be discontinued. Please try again."
 msgid "Please approve agent first"
 msgstr "Please approve agent first"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:192
+#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:154
 msgid "Strategy Discontinued"
 msgstr "Strategy Discontinued"
 
@@ -3036,7 +3043,7 @@ msgstr ""
 "Enter your wallet addresses (comma-separated): \n"
 "Example: 0x123478293892302839827hgsdbh, 0x7e3gqhdbyukeahbuildheli"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:191
+#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:154
 msgid "This strategy has been successfully deleted."
 msgstr "This strategy has been successfully deleted."
 
@@ -3181,11 +3188,11 @@ msgstr "Margin"
 #~ msgid "Click **Run Paper Trading to s**imulate in real-time with virtual funds."
 #~ msgstr "Click **Run Paper Trading to s**imulate in real-time with virtual funds."
 
-#: src/pages/Vaults/components/StrategyTable/components/StrategyItem/index.tsx:337
+#: src/pages/Vaults/components/StrategyTable/components/StrategyItem/index.tsx:338
 msgid "My followed"
 msgstr "My followed"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:192
+#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:152
 msgid "Strategy Paused"
 msgstr "Strategy Paused"
 
@@ -3213,7 +3220,7 @@ msgstr "Scan the market. Spot real-time opportunities"
 msgid "Share image"
 msgstr "Share image"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:237
+#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:199
 msgid "Delist Strategy"
 msgstr "Delist strategy"
 
@@ -3499,7 +3506,7 @@ msgid "AI reasoning in progress"
 msgstr "AI reasoning in progress"
 
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/components/UnLogin/index.tsx:41
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:266
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:300
 msgid "Log in"
 msgstr "Log in"
 
@@ -3547,7 +3554,7 @@ msgstr "Advanced"
 msgid "Leaderboard"
 msgstr "Leaderboard"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:206
+#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:169
 msgid "Delete Failed"
 msgstr "Delete Failed"
 
@@ -3619,7 +3626,7 @@ msgstr "Running backtest code..."
 
 #: src/pages/Vaults/components/MyVaultStats/index.tsx:129
 #: src/pages/Vaults/components/MyVaultStats/index.tsx:168
-#: src/pages/VaultDetail/components/VaultInfo/index.tsx:190
+#: src/pages/VaultDetail/components/VaultInfo/index.tsx:191
 msgid "Vaults"
 msgstr "Vaults"
 
@@ -3680,6 +3687,7 @@ msgstr "AI experience"
 msgid "Data Layer"
 msgstr "Data layer"
 
+#: src/pages/Connect/index.tsx:343
 #: src/pages/Chat/components/ChatInput/index.tsx:130
 msgid "Welcome to <0>starchild</0>"
 msgstr "Welcome to <0>starchild</0>"

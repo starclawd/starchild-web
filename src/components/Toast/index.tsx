@@ -181,7 +181,7 @@ function ToastContent({
         ) : status === TOAST_STATUS.SUCCESS ? (
           <IconBase className='icon-circle-success' />
         ) : (
-          <IconBase className='icon-circle-error' />
+          <IconBase className='icon-close' />
         )}
       </StatusWrapper>
     </ToastContentWrapper>

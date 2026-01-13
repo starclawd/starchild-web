@@ -10,6 +10,7 @@ import {
   StrategyDetailDataType,
   STRATEGY_TAB_INDEX,
   DEPLOY_MODAL_STATUS,
+  UserConfigDataType,
 } from './createstrategy'
 import { ROLE_TYPE, STREAM_DATA_TYPE } from 'store/chat/chat'
 
@@ -70,6 +71,8 @@ export interface CreateStrategyState {
   isShowExpandPaperTrading: boolean
   isShowExpandCode: boolean
   currentStrategyTabIndex: STRATEGY_TAB_INDEX
+  userConfig: UserConfigDataType | null
+  isLoadingUserConfig: boolean
 }
 
 const initialState: CreateStrategyState = {
@@ -118,6 +121,8 @@ const initialState: CreateStrategyState = {
   isShowSignals: true,
   shouldRefreshData: false,
   currentStrategyTabIndex: STRATEGY_TAB_INDEX.CREATE,
+  userConfig: null,
+  isLoadingUserConfig: false,
 }
 
 export const createStrategySlice = createSlice({
@@ -329,6 +334,12 @@ export const createStrategySlice = createSlice({
     resetCreateStrategy: (state) => {
       return { ...initialState }
     },
+    updateUserConfig: (state, action: PayloadAction<UserConfigDataType>) => {
+      state.userConfig = action.payload
+    },
+    changeIsLoadingUserConfig: (state, action: PayloadAction<{ isLoadingUserConfig: boolean }>) => {
+      state.isLoadingUserConfig = action.payload.isLoadingUserConfig
+    },
   },
 })
 export const {
@@ -376,5 +387,7 @@ export const {
   addStreamingStep,
   updateStreamingStepMessage,
   completeStreamingStep,
+  updateUserConfig,
+  changeIsLoadingUserConfig,
 } = createStrategySlice.actions
 export default createStrategySlice.reducer

@@ -30,7 +30,7 @@ msgstr "搜索Agents"
 msgid "Create agent"
 msgstr "创建agent"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:207
+#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:170
 msgid "Unable to delete the strategy. Please try again."
 msgstr "无法删除策略，请重试。"
 
@@ -85,7 +85,7 @@ msgstr "收益表现"
 #~ msgid "Solana address"
 #~ msgstr "Solana地址"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:193
+#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:155
 msgid "The vault has been closed and trading has stopped. Funds are ready for claim."
 msgstr "金库已关闭，已停止交易。资金可申领。"
 
@@ -107,7 +107,7 @@ msgstr "我的持仓分析？"
 msgid "Est. price per Share"
 msgstr "每份预估价格"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:254
+#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:214
 msgid "This action can be resumed later."
 msgstr "该操作之后可以恢复。"
 
@@ -128,7 +128,7 @@ msgstr "前 7 天"
 msgid "Stability"
 msgstr "稳定性"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:252
+#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:214
 msgid "All assets will be settled"
 msgstr "所有资产将被清算"
 
@@ -269,8 +269,8 @@ msgstr "绑定失败"
 msgid "Total Deposited"
 msgstr "累计存入"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:260
-#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:244
+#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:222
+#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:207
 msgid "This action cannot be undone."
 msgstr "此操作无法撤销。"
 
@@ -378,7 +378,7 @@ msgstr "AI Agent 的最小触发间隔为 1 小时，Code Agent 的最小检查�
 msgid "No current agent data or agentId found"
 msgstr "没有找到当前代理数据或 agentId"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:133
+#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:132
 msgid "Comming soon"
 msgstr "即将上线"
 
@@ -503,7 +503,7 @@ msgstr "再也不要错过关键行情。创建自己的智能体，或在市场
 
 #: src/pages/Chat/components/ChatInput/index.tsx:134
 msgid "Welcome, <0>{userName}</0>"
-msgstr "欢迎，<0>{userName}</0>"
+msgstr "欢迎您，<0>{userName}</0>"
 
 #: src/pages/VaultDetail/components/StrategyMarket/index.tsx:143
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Backtest/components/DataList/index.tsx:219
@@ -534,9 +534,9 @@ msgstr "添加问题"
 #~ msgid "Subscribed"
 #~ msgstr "已订阅"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:263
-#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:269
-#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:253
+#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:223
+#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:231
+#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:216
 #: src/pages/MyAgent/components/CreateModal/index.tsx:323
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/components/EditStrategyInfoModal/index.tsx:266
 #: src/components/Header/components/Preference/index.tsx:241
@@ -642,7 +642,7 @@ msgstr "回测"
 msgid "Est. receiving"
 msgstr "预估到账"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:255
+#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:217
 msgid "You must claim funds afterward"
 msgstr "请之后领取资金"
 
@@ -698,7 +698,7 @@ msgstr "我的金库组合"
 msgid "Web3 Events"
 msgstr "Web3 活动"
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:281
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:315
 msgid "Turn your idea into live strategy. e.g., Buy ETH when RSI < 30 on 15m chart."
 msgstr "将你的想法变成实时策略。例如：15分钟RSI小于30买入ETH。"
 
@@ -707,11 +707,11 @@ msgid "Search"
 msgstr "搜索"
 
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/components/UnLogin/index.tsx:38
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:263
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:297
 msgid "Log in to view AI responses"
 msgstr "登录后查看AI回复"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:190
+#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:153
 msgid "Strategy deleted"
 msgstr "策略已删除"
 
@@ -725,11 +725,11 @@ msgstr "聊天"
 msgid "Thinking"
 msgstr "思考"
 
-#: src/components/Header/index.tsx:294
+#: src/components/Header/index.tsx:293
 msgid "Coming soon"
 msgstr "即将推出"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:249
+#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:209
 msgid "Vault becomes 100% cash"
 msgstr "金库变为100%现金"
 
@@ -758,7 +758,7 @@ msgstr "没有数据"
 msgid "All-time APR"
 msgstr "年化回报率"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:208
+#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:168
 msgid "Pause Failed"
 msgstr "暂停失败"
 
@@ -906,6 +906,10 @@ msgstr "抄底还是追顶？告诉我！"
 msgid "Documents"
 msgstr "文档"
 
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:246
+msgid "Slot limit reached ({strategy_count}/{strategy_limit})! Boost your current strategy's APR to unlock more slots."
+msgstr "策略个数已满({strategy_count}/{strategy_limit})！请先提升现有策略表现以提高个数上限。"
+
 #: src/components/Footer/index.tsx:58
 msgid "Copyright 2025 WOO. All Rights Reserved"
 msgstr "@2025 Starchild 版权所有"
@@ -944,7 +948,7 @@ msgstr "最近有哪些最新、最受关注的代币上市？"
 msgid "Code"
 msgstr "代码"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:239
+#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:199
 msgid "Once paused:"
 msgstr "暂停后："
 
@@ -1052,8 +1056,8 @@ msgstr "请输入"
 #~ msgid "WalletConnect"
 #~ msgstr "WalletConnect"
 
-#: src/pages/VaultDetail/components/VaultInfo/index.tsx:175
-#: src/pages/VaultDetail/components/VaultInfo/index.tsx:184
+#: src/pages/VaultDetail/components/VaultInfo/index.tsx:176
+#: src/pages/VaultDetail/components/VaultInfo/index.tsx:185
 msgid "Strategy"
 msgstr "策略"
 
@@ -1062,7 +1066,7 @@ msgstr "策略"
 msgid "Deploy"
 msgstr "部署"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:209
+#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:169
 msgid "The strategy could not be paused. Please try again."
 msgstr "策略无法暂停，请重试。"
 
@@ -1112,17 +1116,21 @@ msgstr "提现界面即将上线"
 msgid "Setting successfully"
 msgstr "成功设置"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:236
+#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:199
 msgid "If you delete this strategy:"
 msgstr "如果你删除该策略："
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:228
+#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:191
 msgid "Delete Strategy"
 msgstr "删除策略"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:73
 #~ msgid "Access via web or Telegram bot:"
 #~ msgstr "可通过网页或 Telegram bot使用："
+
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:245
+msgid "Create strategy failed"
+msgstr "创建策略失败"
 
 #: src/pages/Chat/components/AiInput/components/Recommendations/index.tsx:280
 #~ msgid "More use cases"
@@ -1151,7 +1159,7 @@ msgstr "年化收益率"
 msgid "Agent has been successfully updated"
 msgstr "Agent 已成功更新"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:243
+#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:203
 msgid "Trading stops immediately"
 msgstr "交易将立即停止"
 
@@ -1233,7 +1241,7 @@ msgstr "将你的文字描述转为代码。"
 msgid "Recent chats:"
 msgstr "最近的聊天"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:246
+#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:206
 msgid "All positions close at market"
 msgstr "所有持仓市价平仓"
 
@@ -1289,11 +1297,11 @@ msgstr "Vibe more, earn more."
 msgid "Select time"
 msgstr "选择时间"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:249
+#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:211
 msgid "Trading stops instantly"
 msgstr "交易将立即停止"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:211
+#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:173
 msgid "Discontinue Failed"
 msgstr "下架失败"
 
@@ -1349,7 +1357,7 @@ msgstr "持仓{0}"
 msgid "Risk Management"
 msgstr "风险管理"
 
-#: src/pages/Vaults/components/StrategyTable/components/StrategyItem/index.tsx:349
+#: src/pages/Vaults/components/StrategyTable/components/StrategyItem/index.tsx:350
 #: src/pages/VaultDetail/components/VaultInfo/components/TvfSection/index.tsx:204
 msgid "Follow"
 msgstr "关注"
@@ -1441,7 +1449,6 @@ msgid "Created by"
 msgstr "创建人"
 
 #: src/pages/MyPortfolio/index.tsx:178
-#: src/components/Header/index.tsx:294
 msgid "My portfolio"
 msgstr "我的组合"
 
@@ -1580,7 +1587,7 @@ msgstr "智能体市场"
 msgid "Live sentiment. Real-time momentum"
 msgstr "实时情绪，实时动能"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:245
+#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:207
 msgid "Once discontinued:"
 msgstr "下架后："
 
@@ -1588,7 +1595,7 @@ msgstr "下架后："
 msgid "Language switched successfully"
 msgstr "语言切换成功"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:231
+#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:191
 msgid "Pause Strategy"
 msgstr "暂停策略"
 
@@ -1680,7 +1687,7 @@ msgstr "我的钱包"
 msgid "Every Sunday, receive a crypto market sentiment summary based on social trends, funding rates, and the fear & greed index."
 msgstr "每周日，您都会收到一份基于社会趋势、融资率以及恐惧和贪婪指数的加密货币市场情绪摘要。"
 
-#: src/pages/Vaults/components/StrategyTable/components/StrategyItem/index.tsx:349
+#: src/pages/Vaults/components/StrategyTable/components/StrategyItem/index.tsx:350
 #: src/pages/VaultDetail/components/VaultInfo/components/TvfSection/index.tsx:204
 msgid "Followed"
 msgstr "已关注"
@@ -1768,7 +1775,7 @@ msgstr "错误"
 #~ msgid "Primary"
 #~ msgstr "初始账号"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:241
+#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:203
 msgid "Are you sure you want to discontinue the strategy?"
 msgstr "确定要下架该策略吗？"
 
@@ -1785,7 +1792,7 @@ msgstr "断开钱包连接"
 msgid "Withdraw in progress"
 msgstr "提现进行中"
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:282
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:316
 msgid "Refine logic, check paper trade, or launch to earn..."
 msgstr "优化策略逻辑，检查模拟交易或上线赚收益..."
 
@@ -2013,7 +2020,7 @@ msgstr "技术分析（TA）"
 msgid "Latest deposit"
 msgstr "最新存入"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:193
+#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:153
 msgid "Trading has been halted and all positions are closed."
 msgstr "交易已暂停，所有仓位已平仓。"
 
@@ -2107,7 +2114,7 @@ msgstr "授权智能体"
 msgid "Delete Agent"
 msgstr "删除 Agent"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:235
+#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:195
 msgid "Are you sure you want to pause the strategy?"
 msgstr "确定要暂停该策略吗？"
 
@@ -2247,8 +2254,8 @@ msgid "View all vaults"
 msgstr "查看全部金库"
 
 #: src/pages/Connect/index.tsx:343
-msgid "Welcome to <0>Starchild</0>"
-msgstr "欢迎来到<0>Starchild</0>"
+#~ msgid "Welcome to <0>Starchild</0>"
+#~ msgstr "欢迎来到 <0>Starchild</0>"
 
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Backtest/components/Workflow/components/ParamsContent/index.tsx:102
 msgid "Position Size"
@@ -2386,9 +2393,9 @@ msgstr "可用"
 
 #: src/pages/VaultDetail/components/DepositHyperliquidVault/index.tsx:655
 #: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:697
-#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:260
-#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:266
-#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:250
+#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:220
+#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:228
+#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:213
 #: src/pages/MyAgent/components/DeleteMyAgentModal/index.tsx:200
 #: src/pages/MyAgent/components/CreateModal/index.tsx:320
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/index.tsx:714
@@ -2561,7 +2568,7 @@ msgstr "我的钱包"
 msgid "Is there a chance of an interest rate hike or cut in the near future?"
 msgstr "近期是否有可能加息或降息？"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:232
+#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:195
 msgid "Are you sure you want to delete the strategy?"
 msgstr "确定要删除该策略吗？"
 
@@ -2661,7 +2668,7 @@ msgstr "切换订阅失败"
 msgid "Signal Layer"
 msgstr "信号层"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:212
+#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:174
 msgid "The strategy could not be discontinued. Please try again."
 msgstr "策略无法下架，请重试。"
 
@@ -2697,7 +2704,7 @@ msgstr "策略无法下架，请重试。"
 msgid "Please approve agent first"
 msgstr "请先授权智能体"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:192
+#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:154
 msgid "Strategy Discontinued"
 msgstr "策略已下架"
 
@@ -2713,7 +2720,7 @@ msgstr ""
 "请输入您的钱包地址（用逗号分隔）：\n"
 "例如：0x123478293892302839827hgsdbh, 0x7e3gqhdbyukeahbuildheli"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:191
+#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:154
 msgid "This strategy has been successfully deleted."
 msgstr "该策略已成功删除。"
 
@@ -2821,11 +2828,11 @@ msgstr "保证金"
 #~ msgid "{filterType}"
 #~ msgstr "{filterType}"
 
-#: src/pages/Vaults/components/StrategyTable/components/StrategyItem/index.tsx:337
+#: src/pages/Vaults/components/StrategyTable/components/StrategyItem/index.tsx:338
 msgid "My followed"
 msgstr "我关注的"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:192
+#: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:152
 msgid "Strategy Paused"
 msgstr "策略已暂停"
 
@@ -2835,7 +2842,7 @@ msgstr "策略已暂停"
 
 #: src/pages/Chat/components/DefalutUi/index.tsx:117
 msgid "Welcome to<0/>Starchild AI Agent"
-msgstr "欢迎访问<0/>Starchild AI Agent"
+msgstr "欢迎访问 <0/>Starchild AI Agent"
 
 #: src/store/agentdetail/hooks.ts:82
 msgid "Agent not found"
@@ -2853,7 +2860,7 @@ msgstr "扫描市场，捕捉实时机会"
 msgid "Share image"
 msgstr "分享图片"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:237
+#: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:199
 msgid "Delist Strategy"
 msgstr "下架策略"
 
@@ -3118,7 +3125,7 @@ msgid "AI reasoning in progress"
 msgstr "AI推理中"
 
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/components/UnLogin/index.tsx:41
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:266
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:300
 msgid "Log in"
 msgstr "登录"
 
@@ -3162,7 +3169,7 @@ msgstr "专家"
 msgid "Leaderboard"
 msgstr "排行榜"
 
-#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:206
+#: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:169
 msgid "Delete Failed"
 msgstr "删除失败"
 
@@ -3222,7 +3229,7 @@ msgstr "运行回溯测试代码..."
 
 #: src/pages/Vaults/components/MyVaultStats/index.tsx:129
 #: src/pages/Vaults/components/MyVaultStats/index.tsx:168
-#: src/pages/VaultDetail/components/VaultInfo/index.tsx:190
+#: src/pages/VaultDetail/components/VaultInfo/index.tsx:191
 msgid "Vaults"
 msgstr "金库"
 
@@ -3283,9 +3290,10 @@ msgstr "AI 体验"
 msgid "Data Layer"
 msgstr "数据层"
 
+#: src/pages/Connect/index.tsx:343
 #: src/pages/Chat/components/ChatInput/index.tsx:130
 msgid "Welcome to <0>starchild</0>"
-msgstr "欢迎来到<0>starchild</0>"
+msgstr "欢迎来到 <0>starchild</0>"
 
 #: src/constants/agentHub.ts:53
 msgid "KOL Radar"

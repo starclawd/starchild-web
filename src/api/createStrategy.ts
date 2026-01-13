@@ -389,6 +389,12 @@ export const strategyApi = chatApi.injectEndpoints({
         body: { guest_uuid: guestUuid, target_user_info_id: Number(userInfoId), guest_api_key: guestApiKey },
       }),
     }),
+    getUserConfig: builder.query<any, any>({
+      query: () => ({
+        url: '/vibe-trading/user_config',
+        method: 'GET',
+      }),
+    }),
   }),
 })
 
@@ -440,4 +446,6 @@ export const {
   useLazyGenerateGuestUserQuery,
   useBindStrategyToGuestQuery,
   useLazyBindStrategyToGuestQuery,
+  useGetUserConfigQuery,
+  useLazyGetUserConfigQuery,
 } = strategyApi

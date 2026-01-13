@@ -17,6 +17,9 @@ import { Trans } from '@lingui/react/macro'
 import { useIsLogin } from 'store/login/hooks'
 import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
 import useParsedQueryString from 'hooks/useParsedQueryString'
+import { useUserConfig } from 'store/createstrategy/hooks/useUserConfig'
+import useToast, { TOAST_STATUS } from 'components/Toast'
+import { useTheme } from 'store/themecache/hooks'
 
 const ChatInputWrapper = styled.div`
   position: relative;
@@ -184,7 +187,10 @@ const SendButton = styled(ButtonCommon)`
 `
 
 export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: boolean }) {
+  const theme = useTheme()
+  const toast = useToast()
   const isLogin = useIsLogin()
+  const { userConfig } = useUserConfig()
   const [value, setValue] = useChatValue()
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const [isMultiline, setIsMultiline] = useState(true)
@@ -198,6 +204,11 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
   const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
   const { strategy_config } = strategyDetail || {
     strategy_config: null,
+  }
+  const { strategy_limit, strategy_count, can_create_more } = userConfig || {
+    strategy_limit: 1,
+    strategy_count: 0,
+    can_create_more: false,
   }
   const inputDisabled = useMemo(() => {
     return !!strategy_config && !isLogin
@@ -229,6 +240,16 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
     if (!value || isLoadingChatStream) {
       return
     }
+    if (!can_create_more && !strategyId) {
+      toast({
+        title: t`Create strategy failed`,
+        description: t`Slot limit reached (${strategy_count}/${strategy_limit})! Boost your current strategy's APR to unlock more slots.`,
+        status: TOAST_STATUS.ERROR,
+        typeIcon: 'icon-create-strategy',
+        iconTheme: theme.black0,
+      })
+      return
+    }
     if (!isMatchCurrentRouter(currentRouter, ROUTER.CREATE_STRATEGY)) {
       resetAllState()
     }
@@ -240,7 +261,20 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
         setCurrentRouter(ROUTER.CREATE_STRATEGY)
       }
     }, 0)
-  }, [value, isLoadingChatStream, currentRouter, resetAllState, sendChatUserContent, setCurrentRouter])
+  }, [
+    value,
+    strategyId,
+    isLoadingChatStream,
+    currentRouter,
+    can_create_more,
+    strategy_count,
+    strategy_limit,
+    theme.black0,
+    toast,
+    resetAllState,
+    sendChatUserContent,
+    setCurrentRouter,
+  ])
 
   const handleLogin = useCallback(() => {
     toggleConnectWalletModal()
