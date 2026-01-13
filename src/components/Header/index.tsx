@@ -290,8 +290,7 @@ export const Header = () => {
         text: <Trans>My</Trans>,
         icon: <IconBase className='icon-menu-my' />,
         value: ROUTER.MY_PORTFOLIO,
-        // mainnet limited
-        tooltip: isPro ? <Trans>Coming soon</Trans> : <Trans>My portfolio</Trans>,
+        tooltip: <Trans>Coming soon</Trans>,
         // mainnet limited
         clickCallback: isPro ? undefined : goOtherPage,
       },
