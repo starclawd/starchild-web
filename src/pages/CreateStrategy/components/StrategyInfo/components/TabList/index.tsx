@@ -129,7 +129,7 @@ export default memo(function TabList() {
         isComplete: status === STRATEGY_STATUS.DEPLOYED && isLogin,
         // mainnet limited
         disabled: !paperTradingPublicData || !isLogin || isPro,
-        tooltipContent: <Trans>Comming soon</Trans>,
+        tooltipContent: <Trans>Coming soon</Trans>,
         showTooltip: isLogin,
         description: '',
         intervalDuration: 0,

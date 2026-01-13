@@ -437,10 +437,6 @@ msgstr "No current agent data or agentId found"
 #~ msgid "Strategy summary"
 #~ msgstr "Strategy summary"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:132
-msgid "Comming soon"
-msgstr "Comming soon"
-
 #: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:199
 msgid "Change Nickname"
 msgstr "Change nickname"
@@ -817,6 +813,7 @@ msgstr "Chat"
 msgid "Thinking"
 msgstr "Thinking"
 
+#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:132
 #: src/components/Header/index.tsx:293
 msgid "Coming soon"
 msgstr "Coming soon"

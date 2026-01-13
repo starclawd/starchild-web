@@ -378,10 +378,6 @@ msgstr "AI Agent 的最小触发间隔为 1 小时，Code Agent 的最小检查�
 msgid "No current agent data or agentId found"
 msgstr "没有找到当前代理数据或 agentId"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:132
-msgid "Comming soon"
-msgstr "即将上线"
-
 #: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:199
 msgid "Change Nickname"
 msgstr "更改昵称"
@@ -725,6 +721,7 @@ msgstr "聊天"
 msgid "Thinking"
 msgstr "思考"
 
+#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:132
 #: src/components/Header/index.tsx:293
 msgid "Coming soon"
 msgstr "即将推出"
