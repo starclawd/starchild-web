@@ -14,7 +14,7 @@ import { useGetStrategyCodeQuery } from 'api/createStrategy'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useIsLogin, useUserInfo } from 'store/login/hooks'
 import { ParamFun } from 'types/global'
-import { useStrategyDetail } from './useStrategyDetail'
+import { useCreateStrategyDetail } from './useCreateStrategyDetail'
 import { useSendChatUserContent } from './useStream'
 import { t } from '@lingui/core/macro'
 
@@ -97,7 +97,7 @@ export function useIsGeneratingCode(): [boolean, ParamFun<boolean>] {
 export function useHandleGenerateCode() {
   const { strategyId } = useParsedQueryString()
   const [isGeneratingCode] = useIsGeneratingCode()
-  const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
+  const { strategyDetail } = useCreateStrategyDetail({ strategyId: strategyId || '' })
   const sendChatUserContent = useSendChatUserContent()
   const isCreateSuccess = useMemo(() => {
     return !!strategyDetail?.strategy_config

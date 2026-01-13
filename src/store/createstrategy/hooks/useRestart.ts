@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { useCurrentStrategyTabIndex } from 'store/createstrategy/hooks/useStrategyDetail'
+import { useCurrentStrategyTabIndex } from 'store/createstrategy/hooks/useCreateStrategyDetail'
 import { useIsGeneratingCode, useIsTypewritingCode, useStrategyCode } from './useCode'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { GENERATION_STATUS, PAPER_TRADING_STATUS, STRATEGY_TAB_INDEX } from '../createstrategy'

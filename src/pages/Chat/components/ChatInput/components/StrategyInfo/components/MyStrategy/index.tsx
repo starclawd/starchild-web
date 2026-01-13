@@ -188,7 +188,7 @@ export default memo(function MyStrategy() {
   const goCreateStrategyPage = useCallback(
     (strategyId: string) => {
       return () => {
-        if (isShowDefaultStyle) {
+        if (isShowDefaultStyle || !strategyId) {
           return
         }
         setCurrentRouter(`${ROUTER.CREATE_STRATEGY}?strategyId=${strategyId}`)

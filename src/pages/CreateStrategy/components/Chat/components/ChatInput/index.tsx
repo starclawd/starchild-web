@@ -15,7 +15,7 @@ import { useResetAllState } from 'store/createstrategy/hooks/useResetAllState'
 // import ModeSelect from 'pages/Chat/components/ChatInput/components/ModeSelect'
 import { Trans } from '@lingui/react/macro'
 import { useIsLogin } from 'store/login/hooks'
-import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
+import { useCreateStrategyDetail } from 'store/createstrategy/hooks/useCreateStrategyDetail'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useUserConfig } from 'store/createstrategy/hooks/useUserConfig'
 import useToast, { TOAST_STATUS } from 'components/Toast'
@@ -201,7 +201,7 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
   const toggleConnectWalletModal = useConnectWalletModalToggle()
   const sendChatUserContent = useSendChatUserContent()
   const { strategyId } = useParsedQueryString()
-  const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
+  const { strategyDetail } = useCreateStrategyDetail({ strategyId: strategyId || '' })
   const { strategy_config } = strategyDetail || {
     strategy_config: null,
   }

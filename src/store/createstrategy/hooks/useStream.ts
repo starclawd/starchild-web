@@ -19,7 +19,7 @@ import { combineResponseData, setChatSteamData, setShouldRefreshData } from '../
 import { useSleep } from 'hooks/useSleep'
 import { useAddUrlParam } from 'hooks/useAddUrlParam'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import { useCurrentStrategyTabIndex, useIsCreateStrategy, useStrategyDetail } from './useStrategyDetail'
+import { useCurrentStrategyTabIndex, useIsCreateStrategy, useCreateStrategyDetail } from './useCreateStrategyDetail'
 import { useCodeLoadingPercent, useIsGeneratingCode, useStrategyCode } from './useCode'
 import { useIsPausingPaperTrading, useIsStartingPaperTrading } from './usePaperTrading'
 import { usePaperTradingPublic } from 'store/vaultsdetail/hooks/usePaperTradingPublic'
@@ -93,7 +93,7 @@ export function useGetChatStreamData() {
   const activeLocale = useActiveLocale()
   const [{ userInfoId }] = useUserInfo()
   const steamRenderText = useSteamRenderText()
-  const { fetchStrategyDetail } = useStrategyDetail({
+  const { fetchStrategyDetail } = useCreateStrategyDetail({
     strategyId: '',
   })
   const { fetchStrategyCode } = useStrategyCode({ strategyId: '' })

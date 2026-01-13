@@ -221,7 +221,7 @@ msgstr "手续费（吃单）"
 msgid "Est. claimable in {estClaimMinutes} mins."
 msgstr "预计{estClaimMinutes}分钟后可领取。"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:103
+#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:105
 msgid "Finish defining your strategy in Step 1 first."
 msgstr "请先完成第1步策略定义。"
 
@@ -253,7 +253,7 @@ msgstr "已存入金库"
 
 #: src/pages/Vaults/components/MyStrateyStats/index.tsx:593
 #: src/pages/Vaults/components/CreateStrategy/index.tsx:138
-#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:85
+#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:87
 #: src/pages/Chat/components/ChatInput/components/TabList/index.tsx:40
 #: src/pages/Chat/components/ChatInput/components/ModeSelect/index.tsx:78
 #: src/components/Header/index.tsx:277
@@ -453,7 +453,7 @@ msgstr "小时"
 msgid "Name"
 msgstr "名称"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:117
+#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:122
 msgid "Please generate valid code (Step 2) before starting Paper Trading."
 msgstr "请先在第2步生成有效代码后再开始模拟交易。"
 
@@ -721,7 +721,7 @@ msgstr "聊天"
 msgid "Thinking"
 msgstr "思考"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:132
+#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:137
 #: src/components/Header/index.tsx:293
 msgid "Coming soon"
 msgstr "即将推出"
@@ -1225,11 +1225,11 @@ msgstr "连接中..."
 msgid "Creation time: {formatTime}"
 msgstr "创建时间：{formatTime}"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:191
+#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:211
 msgid "Once generated, you can Simulation with virtual funds or deploy with real funds."
 msgstr "生成后你可以用虚拟资金模拟，也可以使用真实资金部署。"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:104
+#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:106
 msgid "Turns your text description into code."
 msgstr "将你的文字描述转为代码。"
 
@@ -1609,7 +1609,7 @@ msgstr "你可以打开存入窗口查看进度"
 msgid "Preferences"
 msgstr "偏好"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:200
+#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:220
 msgid "Run Paper Trading"
 msgstr "开始模拟交易"
 
@@ -1746,7 +1746,7 @@ msgstr "我的金库组合"
 msgid "Want to see how Starchild can level up your trading? Just talk to him — he's ready to help."
 msgstr "想看看 Starchild 如何助力你的交易？和他聊聊——他随时准备帮助你。"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:209
+#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:229
 msgid "View Details"
 msgstr "查看详情"
 
@@ -1763,6 +1763,7 @@ msgstr "登录错误"
 msgid "Chat history"
 msgstr "聊天记录"
 
+#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:170
 #: src/pages/Chat/components/TestChatImg/index.tsx:402
 #: src/components/Header/components/Language/index.tsx:70
 msgid "Error"
@@ -1895,7 +1896,7 @@ msgstr "授权失败"
 msgid "Stuck on strategy? Toss me a keyword!"
 msgstr "策略卡住了？给我一个关键词！"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:118
+#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:123
 msgid "Start the simulator to see how it performs."
 msgstr "启动模拟器查看策略表现。"
 
@@ -1973,7 +1974,7 @@ msgstr "提示"
 msgid "{currentDate} PnL"
 msgstr "{currentDate} 盈亏"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:90
+#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:92
 msgid "Define your strategy logic."
 msgstr "完善你的策略逻辑。"
 
@@ -2159,7 +2160,7 @@ msgid "You can describe tasks in the chat, and Starchild will automatically crea
 msgstr "您可以在聊天中描述任务，Starchild 将自动为您创建它们——包括时间、触发器和详细信息。"
 
 #: src/pages/MyPortfolio/components/MyStrategies/index.tsx:308
-#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:127
+#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:132
 #: src/pages/CreateStrategy/components/Chat/components/Action/index.tsx:61
 msgid "Launch"
 msgstr "上线"
@@ -2302,8 +2303,8 @@ msgstr "{buttonText}"
 #~ msgstr "智能加密货币交易助手"
 
 #: src/store/createstrategy/hooks/useCode.ts:109
-#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:189
-#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:99
+#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:209
+#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:101
 #: src/pages/CreateStrategy/components/Chat/components/Action/index.tsx:53
 msgid "Generate Code"
 msgstr "生成代码"
@@ -2410,7 +2411,7 @@ msgstr "取消"
 msgid "Live"
 msgstr "运行中"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:210
+#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:230
 msgid "Your strategy is public and will be displayed on the leaderboard."
 msgstr "你的策略已公开，并将在排行榜展示。"
 
@@ -2534,7 +2535,7 @@ msgid "Total ROI"
 msgstr "总投资回报率"
 
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/components/EditStrategyInfoModal/index.tsx:220
-#: src/pages/CreateStrategy/components/StrategyInfo/components/StrategyName/index.tsx:204
+#: src/pages/CreateStrategy/components/StrategyInfo/components/StrategyName/index.tsx:208
 msgid "Strategy has been successfully updated"
 msgstr "策略已成功更新"
 
@@ -2743,7 +2744,7 @@ msgstr "获取任意代币或协议的深度分析洞见。"
 msgid "Win Rate"
 msgstr "胜率"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:207
+#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:227
 msgid "View"
 msgstr "查看"
 
@@ -2885,7 +2886,7 @@ msgstr "该策略已下架。"
 msgid "AI chat"
 msgstr "AI 聊天"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:201
+#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:221
 msgid "Simulation in real-time with virtual funds."
 msgstr "实时虚拟资金模拟。"
 
@@ -3051,7 +3052,7 @@ msgstr "授权{symbol}"
 
 #: src/pages/MyAgent/components/CreateModal/index.tsx:228
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/components/EditStrategyInfoModal/index.tsx:219
-#: src/pages/CreateStrategy/components/StrategyInfo/components/StrategyName/index.tsx:203
+#: src/pages/CreateStrategy/components/StrategyInfo/components/StrategyName/index.tsx:207
 msgid "Edit success"
 msgstr "编辑成功"
 
@@ -3161,6 +3162,10 @@ msgstr "专家"
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:318
 #~ msgid "Remove"
 #~ msgstr "删除"
+
+#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:171
+msgid "This strategy is private and can only be viewed by its owner."
+msgstr "该策略为私有，仅限所有者查看。"
 
 #: src/components/Header/index.tsx:285
 msgid "Leaderboard"
@@ -3436,7 +3441,7 @@ msgstr "策略订单已同步到金库。"
 msgid "Available:"
 msgstr "可用："
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:113
+#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:118
 #: src/pages/CreateStrategy/components/Chat/components/Action/index.tsx:57
 msgid "Paper trading"
 msgstr "模拟交易"

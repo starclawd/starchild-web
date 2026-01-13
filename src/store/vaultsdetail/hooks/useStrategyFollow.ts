@@ -8,7 +8,7 @@ import {
   useLazyGetIsFollowedStrategyQuery,
 } from 'api/createStrategy'
 import { setIsFollowing, setLoadingFollowing } from 'store/vaultsdetail/reducer'
-import { useStrategyInfo } from './useStrategyInfo'
+import { useVibeTradingStrategyInfo } from './useVibeTradingStrategyInfo'
 import { useIsLogin } from 'store/login/hooks'
 import { useUserInfo } from 'store/login/hooks'
 

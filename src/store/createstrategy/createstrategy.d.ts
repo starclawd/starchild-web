@@ -122,6 +122,7 @@ export interface StrategyDetailDataType {
   updated_at: number
   vibe: string | null
   vibe_title: string | null
+  ai_summary: string
   signal: {
     id: string
     name: string

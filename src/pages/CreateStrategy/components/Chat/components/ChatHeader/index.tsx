@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { ANI_DURATION } from 'constants/index'
 import { useCallback, useMemo, useState } from 'react'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
+import { useCreateStrategyDetail } from 'store/createstrategy/hooks/useCreateStrategyDetail'
 import Select, { TriggerMethod } from 'components/Select'
 import { useMyStrategies } from 'store/mystrategy/hooks/useMyStrategies'
 import { formatPercent } from 'utils/format'
@@ -122,7 +122,7 @@ export default function ChatHeader() {
   const { strategyId } = useParsedQueryString()
   const { myStrategies } = useMyStrategies()
   const [isLoadingChatStream] = useIsLoadingChatStream()
-  const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
+  const { strategyDetail } = useCreateStrategyDetail({ strategyId: strategyId || '' })
   const [isShowSelect, setIsShowSelect] = useState(false)
   const handleToggleStrategyId = useCallback(
     (newStrategyId: string) => {

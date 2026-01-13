@@ -7,8 +7,8 @@ import { memo, useCallback, useEffect } from 'react'
 import {
   useCurrentStrategyTabIndex,
   useIsShowActionLayer,
-  useStrategyDetail,
-} from 'store/createstrategy/hooks/useStrategyDetail'
+  useCreateStrategyDetail,
+} from 'store/createstrategy/hooks/useCreateStrategyDetail'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 // import Restart from './components/Restart'
 import { useDeployment } from 'store/createstrategy/hooks/useDeployment'
@@ -27,6 +27,8 @@ import { ANI_DURATION } from 'constants/index'
 import { useDeployModalToggle, useSetCurrentRouter } from 'store/application/hooks'
 import PixelCanvas from 'pages/Chat/components/PixelCanvas'
 import { ROUTER } from 'pages/router'
+import useToast, { TOAST_STATUS } from 'components/Toast'
+import { useTheme } from 'store/themecache/hooks'
 
 const StrategyInfoWrapper = styled.div`
   position: relative;
@@ -118,6 +120,8 @@ const TabContent = styled.div<{ $isActive: boolean }>`
 
 export default memo(function StrategyInfo() {
   const isLogin = useIsLogin()
+  const toast = useToast()
+  const theme = useTheme()
   const [{ userInfoId }] = useUserInfo()
   const { strategyId } = useParsedQueryString()
   const { checkDeployStatus } = useDeployment(strategyId || '')
@@ -132,7 +136,7 @@ export default memo(function StrategyInfo() {
   // 合并展开状态：PaperTrading 或 Code 任一展开时都隐藏顶部内容
   const isShowExpand = isShowExpandPaperTrading || isShowExpandCode
   const [isStartingPaperTrading] = useIsStartingPaperTrading()
-  const { strategyDetail, refetch } = useStrategyDetail({ strategyId: strategyId || '' })
+  const { strategyDetail, error, refetch } = useCreateStrategyDetail({ strategyId: strategyId || '' })
   const { strategy_config, name, description } = strategyDetail || { strategy_config: null, name: '', description: '' }
   const { isShowGenerateCodeOperation, isShowPaperTradingOperation, isShowLaunchOperation, isShowActionLayer } =
     useIsShowActionLayer()
@@ -150,11 +154,27 @@ export default memo(function StrategyInfo() {
     if (!strategyId || strategy_config) return
 
     const intervalId = setInterval(() => {
+      if (error && (error as any).status === 403) {
+        clearInterval(intervalId)
+        return
+      }
       refetch()
     }, 5000)
 
     return () => clearInterval(intervalId)
-  }, [strategyId, strategy_config, refetch])
+  }, [error, strategyId, strategy_config, refetch])
+
+  useEffect(() => {
+    if (error && (error as any).status === 403) {
+      toast({
+        title: <Trans>Error</Trans>,
+        description: <Trans>This strategy is private and can only be viewed by its owner.</Trans>,
+        status: TOAST_STATUS.ERROR,
+        typeIcon: 'icon-create-strategy',
+        iconTheme: theme.black0,
+      })
+    }
+  }, [error, toast, theme.black0])
 
   useEffect(() => {
     if (strategyId && userInfoId) {

@@ -8,7 +8,11 @@ import useParsedQueryString from 'hooks/useParsedQueryString'
 import VibeItem from 'pages/VaultDetail/components/VaultInfo/components/VibeItem'
 import { useTheme } from 'store/themecache/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
-import { useEditStrategy, useIsCreateStrategy, useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
+import {
+  useEditStrategy,
+  useIsCreateStrategy,
+  useCreateStrategyDetail,
+} from 'store/createstrategy/hooks/useCreateStrategyDetail'
 import Pending from 'components/Pending'
 import TypewriterCursor from 'components/TypewriterCursor'
 import { ANI_DURATION } from 'constants/index'
@@ -138,7 +142,7 @@ export default memo(function StrategyName({
   const [isEdit, setIsEdit] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const { strategyId } = useParsedQueryString()
-  const { refetch: refetchStrategyDetail, strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
+  const { refetch: refetchStrategyDetail, strategyDetail } = useCreateStrategyDetail({ strategyId: strategyId || '' })
   const isStep3Deploying = useIsStep3Deploying(strategyId || '')
   const triggerEditStrategy = useEditStrategy()
   const inputRef = useRef<HTMLInputElement>(null)
