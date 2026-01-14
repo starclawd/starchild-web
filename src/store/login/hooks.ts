@@ -250,6 +250,8 @@ export function useLogout(): () => Promise<any> {
   return useCallback(async () => {
     await disconnect()
     setAuthToken('')
-    window.location.reload()
+    setTimeout(() => {
+      window.location.reload()
+    }, 100)
   }, [setAuthToken, disconnect])
 }
