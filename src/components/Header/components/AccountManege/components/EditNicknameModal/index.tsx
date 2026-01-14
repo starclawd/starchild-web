@@ -171,7 +171,7 @@ export function EditNicknameModal() {
         title: <Trans>Change succesfully</Trans>,
         description: nickname,
         status: TOAST_STATUS.SUCCESS,
-        typeIcon: 'icon-customize-avatar',
+        typeIcon: 'icon-account',
         iconTheme: theme.black0,
       })
       if (editNicknameModalOpen) {

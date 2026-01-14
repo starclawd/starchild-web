@@ -12,6 +12,7 @@ import { ANI_DURATION } from 'constants/index'
 const UserInfoWrapper = styled.div`
   display: flex;
   align-items: center;
+  height: 48px;
   gap: 12px;
   .user-avatar {
     width: 40px;
@@ -33,7 +34,7 @@ const UserInfoWrapper = styled.div`
 const RightContent = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
   flex-grow: 1;
   ${({ theme }) =>
     theme.isMobile &&
@@ -47,25 +48,19 @@ const UserName = styled.div`
   align-items: center;
   gap: 4px;
   font-size: 18px;
-  font-weight: 500;
+  font-style: normal;
+  font-weight: 400;
   line-height: 26px;
   color: ${({ theme }) => theme.black0};
   .icon-edit {
     cursor: pointer;
-    font-size: 18px;
+    font-size: 14px;
     transition: all ${ANI_DURATION}s;
     color: ${({ theme }) => theme.black200};
     &:hover {
       color: ${({ theme }) => theme.black0};
     }
   }
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(4)};
-      font-size: 0.18rem;
-      line-height: 0.26rem;
-    `}
 `
 
 const Bottom = styled.div`
@@ -79,9 +74,10 @@ const Uid = styled.div`
   align-items: center;
   gap: 8px;
   > span {
-    font-size: 14px;
+    font-size: 12px;
+    font-style: normal;
     font-weight: 400;
-    line-height: 20px;
+    line-height: 18px;
     color: ${({ theme }) => theme.black200};
     span {
       color: ${({ theme }) => theme.black0};
@@ -89,22 +85,13 @@ const Uid = styled.div`
   }
   .icon-copy {
     cursor: pointer;
-    font-size: 18px;
+    font-size: 14px;
     transition: all ${ANI_DURATION}s;
     color: ${({ theme }) => theme.black200};
     &:hover {
       color: ${({ theme }) => theme.black0};
     }
   }
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(8)};
-      > span {
-        font-size: 0.14rem;
-        line-height: 0.2rem;
-      }
-    `}
 `
 
 const Primay = styled.div`

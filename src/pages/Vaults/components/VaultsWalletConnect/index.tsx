@@ -2,19 +2,17 @@ import { memo, useCallback, useMemo } from 'react'
 import { Trans } from '@lingui/react/macro'
 import { useAppKitAccount } from '@reown/appkit/react'
 import { useAppKitWallet } from '@reown/appkit-wallet-button/react'
-import { useDisconnect } from '@reown/appkit/react'
 import { Address } from 'viem'
 import { useUsdcBalanceOf } from 'hooks/contract/useUsdcContract'
 import { formatUnits } from 'viem'
 import { useFetchMyVaultStatsData } from 'store/vaults/hooks/useVaultData'
 import ExpandWalletConnect from './components/ExpandWalletConnect'
 import ShrinkWalletConnect from './components/ShrinkWalletConnect'
-import { useUserInfo } from 'store/login/hooks'
+import { useLogout, useUserInfo } from 'store/login/hooks'
 import { useConnectWalletModalToggle } from 'store/application/hooks'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useTheme } from 'store/themecache/hooks'
 import { WALLET_CONNECT_MODE } from 'store/vaults/vaults'
-import { useAuthToken } from 'store/logincache/hooks'
 
 // 组件属性接口
 interface VaultsWalletConnectProps {
@@ -22,7 +20,7 @@ interface VaultsWalletConnectProps {
 }
 
 const VaultsWalletConnect = memo(({ mode = WALLET_CONNECT_MODE.SHRINK }: VaultsWalletConnectProps) => {
-  const [, setAuthToken] = useAuthToken()
+  const handleDisconnect = useLogout()
   const { address, isConnected } = useAppKitAccount()
   const toggleConnectWalletModal = useConnectWalletModalToggle()
   const { isPending } = useAppKitWallet({
@@ -30,7 +28,6 @@ const VaultsWalletConnect = memo(({ mode = WALLET_CONNECT_MODE.SHRINK }: VaultsW
       console.error('钱包连接错误:', error)
     },
   })
-  const { disconnect } = useDisconnect()
   const [{ userAvatar }] = useUserInfo()
   const toast = useToast()
   const theme = useTheme()
@@ -73,16 +70,6 @@ const VaultsWalletConnect = memo(({ mode = WALLET_CONNECT_MODE.SHRINK }: VaultsW
       return '0.00'
     }
   }, [balance])
-
-  const handleDisconnect = useCallback(async () => {
-    try {
-      await disconnect()
-      setAuthToken('')
-      window.location.reload()
-    } catch (error) {
-      console.error('断开钱包失败:', error)
-    }
-  }, [setAuthToken, disconnect])
 
   const handleCopy = useCallback(async () => {
     if (!address) {

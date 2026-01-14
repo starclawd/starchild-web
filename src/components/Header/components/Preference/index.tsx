@@ -237,7 +237,7 @@ export default function Preference() {
           <ButtonCancel onClick={togglePreferenceModal}>
             <Trans>Cancel</Trans>
           </ButtonCancel>
-          <ButtonConfirm onClick={handleUpdatePreference}>
+          <ButtonConfirm $disabled={isLoading} onClick={handleUpdatePreference}>
             {isLoading ? <Pending /> : <Trans>Confirm</Trans>}
           </ButtonConfirm>
         </CommonModalFooter>

@@ -3,9 +3,7 @@ import Avatar from 'boring-avatars'
 import { IconBase } from 'components/Icons'
 import Select, { TriggerMethod } from 'components/Select'
 import { useCallback, useMemo } from 'react'
-import { useIsLogin, useUserInfo } from 'store/login/hooks'
-import { useAuthToken } from 'store/logincache/hooks'
-import { useTheme } from 'store/themecache/hooks'
+import { useIsLogin, useLogout, useUserInfo } from 'store/login/hooks'
 import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import {
@@ -14,12 +12,9 @@ import {
   useIsShowMobileMenu,
   usePreferenceModalToggle,
   useConnectWalletModalToggle,
-  useSetCurrentRouter,
 } from 'store/application/hooks'
 import { useWindowSize } from 'hooks/useWindowSize'
 import { MOBILE_DESIGN_WIDTH } from 'constants/index'
-import { ROUTER } from 'pages/router'
-import { useDisconnect } from '@reown/appkit/react'
 import { ANI_DURATION } from 'constants/index'
 
 const AvatarWrapper = styled.div`
@@ -116,23 +111,15 @@ const Logout = styled(Customise)`
 `
 
 export default function LoginButton() {
-  const theme = useTheme()
   const isLogin = useIsLogin()
   const isMobile = useIsMobile()
   const { width } = useWindowSize()
-  const [, setAuthToken] = useAuthToken()
-  const setCurrentRouter = useSetCurrentRouter()
   const [, setIsShowMobileMenu] = useIsShowMobileMenu()
   const togglePreferenceModal = usePreferenceModalToggle()
   const toggleAccountManegeModal = useAccountManegeModalToggle()
   const [{ userName, userAvatar }] = useUserInfo()
-  const { disconnect } = useDisconnect()
   const toggleConnectWalletModal = useConnectWalletModalToggle()
-  const logout = useCallback(async () => {
-    await disconnect()
-    setAuthToken('')
-    window.location.reload()
-  }, [setAuthToken, disconnect])
+  const logout = useLogout()
 
   const selectList = useMemo(() => {
     return [

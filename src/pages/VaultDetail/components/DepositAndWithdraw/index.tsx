@@ -36,7 +36,6 @@ import { useFetchClaimInfoData } from 'store/vaultsdetail/hooks/useClaimInfo'
 import { BROKER_HASH } from 'constants/brokerHash'
 import { formatContractError } from 'utils/handleError'
 import { useSleep } from 'hooks/useSleep'
-import useValidVaultWalletAddress from 'hooks/useValidVaultWalletAddress'
 import { useReadOrderlyVaultQuoteOperation } from 'hooks/contract/useGeneratedHooks'
 import { useUserInfo } from 'store/login/hooks'
 import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
@@ -266,7 +265,6 @@ const DepositAndWithdraw = memo(() => {
   const isMobile = useIsMobile()
   const [userInfo] = useUserInfo()
   const { address: account } = useAppKitAccount()
-  const [isValidWallet] = useValidVaultWalletAddress()
   const { chainId } = useAppKitNetwork()
   const toast = useToast()
   const theme = useTheme()
@@ -298,7 +296,7 @@ const DepositAndWithdraw = memo(() => {
     )
   }, [strategyDetail])
   const { vaultLpInfo, refetch: refetchVaultLpInfo } = useVaultLpInfo({
-    walletAddress: account && isValidWallet ? account : '',
+    walletAddress: account || '',
     vaultId: vaultId || '',
   })
   const { refetch: refetchLatestTransactionHistory } = useLatestTransactionHistory({
@@ -633,17 +631,17 @@ const DepositAndWithdraw = memo(() => {
   }, [isButtonDisabled, depositAndWithdrawTabIndex, needsApproval, handleApprove, handleDeposit, handleWithdraw])
 
   useEffect(() => {
-    if (account && vaultId && isValidWallet) {
+    if (account && vaultId) {
       refetchLatestTransactionHistory()
     }
-  }, [account, vaultId, isValidWallet, depositAndWithdrawTabIndex, refetchLatestTransactionHistory])
+  }, [account, vaultId, depositAndWithdrawTabIndex, refetchLatestTransactionHistory])
 
   // 处理claim数据获取
   useEffect(() => {
-    if (account && vaultId && isValidWallet && currentDepositAndWithdrawVault) {
+    if (account && vaultId && currentDepositAndWithdrawVault) {
       fetchClaimData({ vaultInfo: currentDepositAndWithdrawVault, walletAddress: account as string })
     }
-  }, [account, vaultId, isValidWallet, currentDepositAndWithdrawVault, fetchClaimData])
+  }, [account, vaultId, currentDepositAndWithdrawVault, fetchClaimData])
 
   const renderContent = function () {
     return (

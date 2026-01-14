@@ -4,7 +4,7 @@ import NoData from 'components/NoData'
 import Pending from 'components/Pending'
 import PullUpRefresh from 'components/PullUpRefresh'
 import Tooltip from 'components/Tooltip'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { useTransactionHistory } from 'store/myvault/hooks/useTransactionHistory'
 import dayjs from 'dayjs'
@@ -14,7 +14,6 @@ import { useTheme } from 'store/themecache/hooks'
 import { CHAIN_ID_TO_CHAIN } from 'constants/chainInfo'
 import { getExplorerLink } from 'utils'
 import { ANI_DURATION } from 'constants/index'
-import useValidVaultWalletAddress from 'hooks/useValidVaultWalletAddress'
 import { IconBase } from 'components/Icons'
 import { useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
@@ -161,20 +160,19 @@ export default function Transactions() {
   const theme = useTheme()
   const { address } = useAppKitAccount()
   const setCurrentRouter = useSetCurrentRouter()
-  const [isValidWallet] = useValidVaultWalletAddress()
   const [isRefreshing, setIsRefreshing] = useState(false)
   const { allStrategies } = useAllStrategiesOverview()
 
   const { transactionHistoryList, isLoading, isLoadingMore, hasNextPage, loadFirstPage, loadNextPage, reset } =
-    useTransactionHistory({ walletAddress: address && isValidWallet ? address : '' })
+    useTransactionHistory({ walletAddress: address || '' })
 
   // 当钱包地址变化且有效时重新加载
   useEffect(() => {
-    if (address && isValidWallet) {
+    if (address) {
       reset()
       loadFirstPage()
     }
-  }, [address, isValidWallet, loadFirstPage, reset])
+  }, [address, loadFirstPage, reset])
 
   // 上拉加载更多
   const handleLoadMore = useCallback(async () => {

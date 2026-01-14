@@ -16,6 +16,7 @@ import {
 import { useUpdateLanguageFromAPI } from 'store/language/hooks'
 import { useLazyChangeNicknameQuery } from 'api/perference'
 import { useBindStrategyToGuest } from './hooks/useBindStrategyToGuest'
+import { useDisconnect } from '@reown/appkit/react'
 
 export function useIsLogin() {
   const [loginStatus] = useLoginStatus()
@@ -241,4 +242,14 @@ export function useChangeNickname(): (nickname: string) => Promise<any> {
     },
     [triggerChangeNickname],
   )
+}
+
+export function useLogout(): () => Promise<any> {
+  const { disconnect } = useDisconnect()
+  const [, setAuthToken] = useAuthToken()
+  return useCallback(async () => {
+    await disconnect()
+    setAuthToken('')
+    window.location.reload()
+  }, [setAuthToken, disconnect])
 }
