@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { VaultDetailState, DETAIL_TYPE, CHART_TYPE, ClaimData } from './vaultsdetail.d'
 import type { VaultInfo, VaultTransactionHistory } from 'api/vaults'
-import type { CombinedSignalType, StrategiesOverviewDataType } from 'api/strategy'
+import type { StrategySignalDataType, StrategiesOverviewDataType } from 'api/strategy'
 import { CHAIN_ID } from 'constants/chainInfo'
 import { PaperTradingCurrentDataType } from 'store/createstrategy/createstrategy'
 
@@ -94,7 +94,7 @@ const vaultsdetailSlice = createSlice({
     setLoadingLatestTransactionHistory: (state, action: PayloadAction<boolean>) => {
       state.isLoadingLatestTransactionHistory = action.payload
     },
-    updateSignalList: (state, action: PayloadAction<CombinedSignalType[]>) => {
+    updateSignalList: (state, action: PayloadAction<StrategySignalDataType[]>) => {
       state.signalList = [...action.payload, ...state.signalList]
     },
     setLoadingSignalList: (state, action: PayloadAction<boolean>) => {

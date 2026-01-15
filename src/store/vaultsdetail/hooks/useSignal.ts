@@ -8,7 +8,7 @@ import { useIsLogin } from 'store/login/hooks'
 export function useSetSignalList() {
   const dispatch = useDispatch()
   const setSignalList = useCallback(
-    (signalList: CombinedSignalType[]) => {
+    (signalList: StrategySignalDataType[]) => {
       dispatch(
         updateSignalList(
           signalList.filter((item) => item.type === SIGNAL_TYPE.COMBINED_SIGNAL || item.type === SIGNAL_TYPE.LOG),
