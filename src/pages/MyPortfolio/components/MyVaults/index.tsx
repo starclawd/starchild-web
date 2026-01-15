@@ -5,13 +5,12 @@ import Pending from 'components/Pending'
 import Table, { ColumnDef } from 'components/Table'
 import { ROUTER } from 'pages/router'
 import { useCallback, useMemo } from 'react'
-import { useAppKitNetwork } from '@reown/appkit/react'
+import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 import { useVaultLpInfoList } from 'store/myvault/hooks/useVaultLpInfo'
 import { useVaultsData } from 'store/vaults/hooks'
 import styled from 'styled-components'
 import NoDataWrapper from './components/NoDataWrapper'
 import NoConnected from './components/NoConnected'
-import useValidVaultWalletAddress from 'hooks/useValidVaultWalletAddress'
 import { useDepositAndWithdrawModalToggle, useSetCurrentRouter } from 'store/application/hooks'
 import { useAllStrategiesOverview, useCurrentDepositAndWithdrawVault } from 'store/vaults/hooks'
 import { useDepositAndWithdrawTabIndex } from 'store/vaultsdetail/hooks/useDepositAndWithdraw'
@@ -115,11 +114,10 @@ const StyledTable = styled(Table)`
 export default function MyVaults() {
   const theme = useTheme()
   const { chainId, switchNetwork } = useAppKitNetwork()
-  const [isValidWallet, address] = useValidVaultWalletAddress()
+  const { address } = useAppKitAccount()
   const { allVaults, isLoadingVaults } = useVaultsData()
-  const walletAddress = address && isValidWallet ? address : ''
   const { vaultLpInfoList, isLoadingVaultLpInfoList } = useVaultLpInfoList({
-    walletAddress,
+    walletAddress: address || '',
   })
   const { allStrategies } = useAllStrategiesOverview()
   const setCurrentRouter = useSetCurrentRouter()

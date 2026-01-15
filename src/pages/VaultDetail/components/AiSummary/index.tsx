@@ -7,6 +7,8 @@ import { isMatchCurrentRouter } from 'utils'
 import { ROUTER } from 'pages/router'
 import { ANI_DURATION } from 'constants/index'
 import { useIsShowStrategyMarket } from 'store/vaultsdetailcache/hooks'
+import { useVibeTradingStrategyInfo } from 'store/vaultsdetail/hooks'
+import useParsedQueryString from 'hooks/useParsedQueryString'
 
 const AiSummaryWrapper = styled.div<{ $isShowStrategyMarket: boolean; $isVaultDetailPage?: boolean }>`
   display: flex;
@@ -114,10 +116,12 @@ const SummaryText = styled.div`
  * 展示策略的AI分析总结
  */
 const AiSummary = memo(() => {
+  const { strategyId } = useParsedQueryString()
   const [isShowStrategyMarket] = useIsShowStrategyMarket()
   const currentRouter = useCurrentRouter()
   const isVaultDetailPage = isMatchCurrentRouter(currentRouter, ROUTER.VAULT_DETAIL)
-  const summary = 'Just for test Just for test Just for test Just for test Just for test Just for test'
+  const { strategyInfo } = useVibeTradingStrategyInfo({ strategyId: strategyId || null })
+  const summary = strategyInfo?.ai_summary || ''
   return (
     <AiSummaryWrapper $isShowStrategyMarket={isShowStrategyMarket} $isVaultDetailPage={isVaultDetailPage}>
       <ContentSection>

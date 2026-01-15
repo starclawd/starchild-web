@@ -15,7 +15,7 @@ import { usePaperTradingPublic } from 'store/vaultsdetail/hooks/usePaperTradingP
 import { GENERATION_STATUS, STRATEGY_STATUS, STRATEGY_TAB_INDEX } from '../createstrategy'
 
 // for create page
-export function useStrategyDetail({ strategyId }: { strategyId: string }) {
+export function useCreateStrategyDetail({ strategyId }: { strategyId: string }) {
   const dispatch = useDispatch()
   const [{ userInfoId }] = useUserInfo()
   const strategyDetail = useSelector((state: RootState) => state.createstrategy.strategyDetail)
@@ -84,7 +84,7 @@ export function useIsShowActionLayer() {
   const isLogin = useIsLogin()
   const { strategyId } = useParsedQueryString()
   const [currentStrategyTabIndex] = useCurrentStrategyTabIndex()
-  const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
+  const { strategyDetail } = useCreateStrategyDetail({ strategyId: strategyId || '' })
   const { strategyCode } = useStrategyCode({ strategyId: strategyId || '' })
   const { paperTradingPublicData } = usePaperTradingPublic({
     strategyId: strategyId || '',

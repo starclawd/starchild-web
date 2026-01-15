@@ -4,7 +4,7 @@ import styled, { keyframes } from 'styled-components'
 import EditContent from '../EditContent'
 import { Dispatch, memo, SetStateAction } from 'react'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
+import { useCreateStrategyDetail } from 'store/createstrategy/hooks/useCreateStrategyDetail'
 import UnLogin from '../UnLogin'
 import { useIsLogin } from 'store/login/hooks'
 
@@ -131,7 +131,7 @@ export default memo(function InfoLayer({
 }) {
   const isLogin = useIsLogin()
   const { strategyId } = useParsedQueryString()
-  const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
+  const { strategyDetail } = useCreateStrategyDetail({ strategyId: strategyId || '' })
   const { strategy_config } = strategyDetail || {
     strategy_config: null,
   }

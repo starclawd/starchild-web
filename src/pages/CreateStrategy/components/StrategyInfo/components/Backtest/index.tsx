@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import ActionLayer from '../ActionLayer'
 import { Trans } from '@lingui/react/macro'
 import { memo, useEffect, useMemo, useState } from 'react'
-import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
+import { useCreateStrategyDetail } from 'store/createstrategy/hooks/useCreateStrategyDetail'
 import { BACKTEST_STATUS, STRATEGY_STATUS, SymbolDataType } from 'store/createstrategy/createstrategy'
 import { useStrategyBacktest, useStreamingSteps, useHandleRunBacktest } from 'store/createstrategy/hooks/useBacktest'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -49,7 +49,7 @@ const BacktestContentLoading = styled.div`
 export default memo(function Backtest() {
   const { strategyId } = useParsedQueryString()
   const handleRunBacktest = useHandleRunBacktest()
-  const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
+  const { strategyDetail } = useCreateStrategyDetail({ strategyId: strategyId || '' })
   const { strategyBacktestData, isLoadingStrategyBacktest, refetch } = useStrategyBacktest({
     strategyId: strategyId || '',
   })

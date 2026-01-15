@@ -218,7 +218,7 @@ export default memo(function ChainConnect({ className, oldWalletAddress, onSucce
           title: <Trans>Login failed</Trans>,
           description: '',
           status: TOAST_STATUS.ERROR,
-          typeIcon: 'icon-customize-avatar',
+          typeIcon: 'icon-menu-login',
           iconTheme: theme.black0,
           autoClose: 2000,
         })
@@ -261,7 +261,7 @@ export default memo(function ChainConnect({ className, oldWalletAddress, onSucce
           title: <Trans>Bind successfully</Trans>,
           description: address,
           status: TOAST_STATUS.SUCCESS,
-          typeIcon: 'icon-customize-avatar',
+          typeIcon: 'icon-menu-login',
           iconTheme: theme.black0,
           autoClose: 2000,
         })
@@ -273,7 +273,7 @@ export default memo(function ChainConnect({ className, oldWalletAddress, onSucce
           title: <Trans>Bind failed</Trans>,
           description: errorMessage,
           status: TOAST_STATUS.ERROR,
-          typeIcon: 'icon-customize-avatar',
+          typeIcon: 'icon-menu-login',
           iconTheme: theme.black0,
           autoClose: 2000,
         })
@@ -317,7 +317,7 @@ export default memo(function ChainConnect({ className, oldWalletAddress, onSucce
           title: <Trans>Login failed</Trans>,
           description: '',
           status: TOAST_STATUS.ERROR,
-          typeIcon: 'icon-customize-avatar',
+          typeIcon: 'icon-menu-login',
           iconTheme: theme.black0,
           autoClose: 2000,
         })
@@ -350,7 +350,7 @@ export default memo(function ChainConnect({ className, oldWalletAddress, onSucce
           title: <Trans>Bind successfully</Trans>,
           description: address,
           status: TOAST_STATUS.SUCCESS,
-          typeIcon: 'icon-customize-avatar',
+          typeIcon: 'icon-menu-login',
           iconTheme: theme.black0,
           autoClose: 2000,
         })
@@ -362,7 +362,7 @@ export default memo(function ChainConnect({ className, oldWalletAddress, onSucce
           title: <Trans>Bind failed</Trans>,
           description: errorMessage,
           status: TOAST_STATUS.ERROR,
-          typeIcon: 'icon-customize-avatar',
+          typeIcon: 'icon-menu-login',
           iconTheme: theme.black0,
           autoClose: 2000,
         })
@@ -435,7 +435,7 @@ export default memo(function ChainConnect({ className, oldWalletAddress, onSucce
             title: <Trans>Rabby wallet not found</Trans>,
             description: <Trans>Please install Rabby wallet extension</Trans>,
             status: TOAST_STATUS.ERROR,
-            typeIcon: 'icon-customize-avatar',
+            typeIcon: 'icon-menu-login',
             iconTheme: theme.black0,
             autoClose: 3000,
           })

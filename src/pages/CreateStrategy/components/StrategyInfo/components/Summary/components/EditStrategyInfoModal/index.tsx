@@ -12,7 +12,7 @@ import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
 import Input from 'components/Input'
 import { ANI_DURATION } from 'constants/index'
-import { useEditStrategy, useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
+import { useEditStrategy, useCreateStrategyDetail } from 'store/createstrategy/hooks/useCreateStrategyDetail'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import Pending from 'components/Pending'
 import useToast, { TOAST_STATUS } from 'components/Toast'
@@ -191,7 +191,7 @@ export default memo(function EditStrategyInfoModal({
   const [isLoading, setIsLoading] = useState(false)
   const { strategyId } = useParsedQueryString()
   const [name, setName] = useState(nameProp)
-  const { refetch: refetchStrategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
+  const { refetch: refetchStrategyDetail } = useCreateStrategyDetail({ strategyId: strategyId || '' })
   const triggerEditStrategy = useEditStrategy()
   const toggleEditStrategyInfoModal = useEditStrategyInfoModalToggle()
   const editStrategyInfoModalOpen = useModalOpen(ApplicationModal.EDIT_STRATEGY_INFO_MODAL)

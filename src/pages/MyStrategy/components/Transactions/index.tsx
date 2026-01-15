@@ -1,20 +1,16 @@
 import { Trans } from '@lingui/react/macro'
-import { useAppKitAccount } from '@reown/appkit/react'
 import NoData from 'components/NoData'
 import Pending from 'components/Pending'
 import PullUpRefresh from 'components/PullUpRefresh'
 import Tooltip from 'components/Tooltip'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import styled from 'styled-components'
-import { useTransactionHistory } from 'store/myvault/hooks/useTransactionHistory'
 import dayjs from 'dayjs'
 import { VaultTransactionHistory } from 'api/vaults'
 import { getStatusText, getTooltipContent } from 'constants/vaultTransaction'
-import { useTheme } from 'store/themecache/hooks'
 import { CHAIN_ID_TO_CHAIN } from 'constants/chainInfo'
 import { getExplorerLink } from 'utils'
 import { ANI_DURATION } from 'constants/index'
-import useValidVaultWalletAddress from 'hooks/useValidVaultWalletAddress'
 import Divider from 'components/Divider'
 
 const TransactionsWrapper = styled.div`
@@ -147,9 +143,6 @@ function formatAmount(amount: number, isDeposit: boolean) {
 }
 
 export default function Transactions() {
-  const theme = useTheme()
-  const { address } = useAppKitAccount()
-  const [isValidWallet] = useValidVaultWalletAddress()
   const [isRefreshing, setIsRefreshing] = useState(false)
   const transactionHistoryList: any[] = []
   const isLoading = false

@@ -87,7 +87,7 @@ export const TgLogin = () => {
             title: <Trans>Failed to bind Telegram</Trans>,
             description: data.error.data.message,
             status: TOAST_STATUS.ERROR,
-            typeIcon: 'icon-customize-avatar',
+            typeIcon: 'icon-menu-login',
             iconTheme: theme.black0,
           })
         } else {
@@ -98,7 +98,7 @@ export const TgLogin = () => {
               title: <Trans>Bind succesfully</Trans>,
               description: result.telegramUserName || '',
               status: TOAST_STATUS.SUCCESS,
-              typeIcon: 'icon-customize-avatar',
+              typeIcon: 'icon-menu-login',
               iconTheme: theme.black0,
             })
           }

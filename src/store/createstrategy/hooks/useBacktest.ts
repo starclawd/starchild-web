@@ -20,7 +20,7 @@ import { useActiveLocale } from 'hooks/useActiveLocale'
 import { useAiChatKey } from 'store/chat/hooks'
 import { API_LANG_MAP } from 'constants/locales'
 import { useSleep } from 'hooks/useSleep'
-import { useStrategyDetail } from './useStrategyDetail'
+import { useCreateStrategyDetail } from './useCreateStrategyDetail'
 import { STRATEGY_STATUS } from '../createstrategy'
 import { ParamFun } from 'types/global'
 
@@ -279,7 +279,7 @@ export function useGetBacktestStreamData() {
 
 export function useHandleRunBacktest() {
   const { strategyId } = useParsedQueryString()
-  const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
+  const { strategyDetail } = useCreateStrategyDetail({ strategyId: strategyId || '' })
   const { fetchBacktestStream } = useGetBacktestStreamData()
   const [, isBacktestStreaming] = useStreamingSteps()
   const isStrategyGenerated = useMemo(() => {

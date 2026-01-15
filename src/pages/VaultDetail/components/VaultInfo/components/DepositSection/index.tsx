@@ -5,7 +5,7 @@ import { IconBase } from 'components/Icons'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import { useDepositAndWithdrawModalToggle, useSetCurrentRouter } from 'store/application/hooks'
 import { useCurrentDepositAndWithdrawVault } from 'store/vaults/hooks'
-import { useVaultInfo, useCurrentVaultId, useStrategyInfo } from 'store/vaultsdetail/hooks'
+import { useVaultInfo, useCurrentVaultId, useVibeTradingStrategyInfo } from 'store/vaultsdetail/hooks'
 import { useVaultLpInfo } from 'store/myvault/hooks/useVaultLpInfo'
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 import { toFix } from 'utils/calc'
@@ -116,7 +116,7 @@ export default memo(function DepositSection() {
   const vaultId = useCurrentVaultId()
   const { vaultLpInfo } = useVaultLpInfo({ walletAddress: address as string, vaultId: vaultId || '' })
   const { vaultInfo } = useVaultInfo({ vaultId })
-  const { strategyInfo } = useStrategyInfo({ strategyId: strategyId || null })
+  const { strategyInfo } = useVibeTradingStrategyInfo({ strategyId: strategyId || null })
   const depositDisabled = useMemo(() => {
     return (
       strategyInfo?.status === STRATEGY_STATUS.ARCHIVED ||

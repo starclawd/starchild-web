@@ -51,7 +51,6 @@ export type UserInfoData = {
   email: string
   walletType: string
   walletAddress: string
-  secondaryWalletAddress: string
   secondaryWalletType: string
 }
 
@@ -110,7 +109,6 @@ export const initialUserInfo: UserInfoData = {
   primaryLoginType: '',
   walletType: '',
   walletAddress: '',
-  secondaryWalletAddress: '',
   secondaryWalletType: '',
   userName: '',
   userAvatar: '',

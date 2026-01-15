@@ -6,7 +6,7 @@ import styled, { css } from 'styled-components'
 import { ANI_DURATION } from 'constants/index'
 import { useShareStrategyModalToggle } from 'store/application/hooks'
 import { useCurrentShareStrategyData } from 'store/vaultsdetail/hooks/useCurrentShareStrategyData'
-import { useStrategyInfo } from 'store/vaultsdetail/hooks'
+import { useVibeTradingStrategyInfo } from 'store/vaultsdetail/hooks'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { formatKMBNumber } from 'utils/format'
 import { useFollowStrategy, useIsFollowedStrategy, useUnfollowStrategy } from 'store/vaults/hooks'
@@ -148,11 +148,11 @@ export default memo(function TvfSection() {
   const [isLoading, setIsLoading] = useState(false)
   const { strategyId } = useParsedQueryString()
   const { isFollowedStrategy } = useIsFollowedStrategy({ strategyId: strategyId || '' })
-  const { strategyInfo } = useStrategyInfo({ strategyId: strategyId || '' })
+  const { strategyInfo } = useVibeTradingStrategyInfo({ strategyId: strategyId || '' })
   const followStrategy = useFollowStrategy()
   const unfollowStrategy = useUnfollowStrategy()
   const { fetchIsFollowed } = useIsFollowedStrategy({ strategyId: '' })
-  const { fetchStrategyInfo } = useStrategyInfo({ strategyId: '' })
+  const { fetchStrategyInfo } = useVibeTradingStrategyInfo({ strategyId: '' })
   const toggleShareStrategyModal = useShareStrategyModalToggle()
   const [, setCurrentShareStrategyData] = useCurrentShareStrategyData()
   const tvf = useMemo(() => strategyInfo?.tvf || 0, [strategyInfo?.tvf])

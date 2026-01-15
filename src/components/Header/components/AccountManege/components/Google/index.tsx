@@ -56,7 +56,7 @@ export default function Google() {
             title: <Trans>Failed to bind Google</Trans>,
             description: data.error.data.message,
             status: TOAST_STATUS.ERROR,
-            typeIcon: 'icon-customize-avatar',
+            typeIcon: 'icon-menu-login',
             iconTheme: theme.black0,
           })
         } else {
@@ -65,7 +65,7 @@ export default function Google() {
             title: <Trans>Bind succesfully</Trans>,
             description: data.data.email || '',
             status: TOAST_STATUS.SUCCESS,
-            typeIcon: 'icon-customize-avatar',
+            typeIcon: 'icon-menu-login',
             iconTheme: theme.black0,
           })
         }

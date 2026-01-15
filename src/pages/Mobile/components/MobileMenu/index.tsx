@@ -316,7 +316,7 @@ export default function MobileMenu() {
       {
         key: ROUTER.MY_SIGNALS,
         title: <Trans>My</Trans>,
-        icon: 'icon-customize-avatar',
+        icon: 'icon-menu-login',
         value: ROUTER.MY_SIGNALS,
         clickCallback: () => {
           changeCurrentActiveNavKey(ROUTER.MY_SIGNALS)

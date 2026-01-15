@@ -2,7 +2,7 @@ import { memo, useEffect, useMemo } from 'react'
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
-import { useCurrentVaultId, useActiveTab, useStrategyInfo } from 'store/vaultsdetail/hooks'
+import { useCurrentVaultId, useActiveTab, useVibeTradingStrategyInfo } from 'store/vaultsdetail/hooks'
 import { usePaperTradingPublic } from 'store/vaultsdetail/hooks/usePaperTradingPublic'
 import { useAppKitAccount } from '@reown/appkit/react'
 import StrategyStatus from './components/StrategyStatus'
@@ -157,7 +157,7 @@ export default memo(function VaultInfo() {
   const [isShowStrategyMarket] = useIsShowStrategyMarket()
   const [activeTab, setActiveTab] = useActiveTab()
   const vaultId = useCurrentVaultId()
-  const { strategyInfo } = useStrategyInfo({ strategyId: strategyId || null })
+  const { strategyInfo } = useVibeTradingStrategyInfo({ strategyId: strategyId || null })
   const { paperTradingPublicData } = usePaperTradingPublic({ strategyId: strategyId || '' })
   const [vibe, vibeTitle, strategyName, userName, userAvatar] = useMemo(() => {
     return [

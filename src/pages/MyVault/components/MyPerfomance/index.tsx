@@ -10,9 +10,7 @@ import {
 import { useInitialEquityLinePlugin } from 'pages/Vaults/components/Leaderboard/components/PnLChart/utils/InitialEquityLinePlugin'
 import { useTheme } from 'styled-components'
 import useMyPerformanceChart from 'store/myvault/hooks/useMyPerformanceChart'
-import useValidVaultWalletAddress from 'hooks/useValidVaultWalletAddress'
-import ChartTypeTabs from './components/ChartTypeTabs'
-import VaultsSelector from './components/VaultsSelector'
+import { useAppKitAccount } from '@reown/appkit/react'
 import TimeRangeSelector from 'pages/VaultDetail/components/PaperTradingPerformance/components/TimeRangeSelector'
 
 const MyPerformanceWrapper = styled.div`
@@ -31,15 +29,15 @@ const MyPerformance = memo(() => {
   const theme = useTheme()
 
   // 获取钱包地址验证
-  const [isValidWallet, address] = useValidVaultWalletAddress()
+  const { address } = useAppKitAccount()
 
   // 获取图表数据
   const chartData = useMyPerformanceChart({
     vaultId: vaultId || '',
-    walletAddress: address && isValidWallet ? address : '',
+    walletAddress: address || '',
     timeRange: chartState.timeRange,
     type: chartState.chartType,
-    skip: !vaultId || !address || !isValidWallet,
+    skip: !vaultId || !address,
   })
 
   // 获取图表配置

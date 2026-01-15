@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import usdc from 'assets/tokens/usdc.png'
 import { formatNumber } from 'utils/format'
 import { ButtonCommon } from 'components/Button'
-import { useAppKitNetwork } from '@reown/appkit/react'
+import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react'
 import { useClaimInfo, useFetchClaimInfoData } from 'store/vaultsdetail/hooks/useClaimInfo'
 import { useCallback, useMemo, useState } from 'react'
 import NetworkSelector, { ColorMode } from 'pages/Vaults/components/VaultsWalletConnect/components/NetworkSelector'
@@ -18,7 +18,6 @@ import { BROKER_HASH } from 'constants/brokerHash'
 import { formatContractError } from 'utils/handleError'
 import { useSleep } from 'hooks/useSleep'
 import { useLatestTransactionHistory } from 'store/vaultsdetail/hooks/useTransactionData'
-import useValidVaultWalletAddress from 'hooks/useValidVaultWalletAddress'
 import { useReadOrderlyVaultCrossChainFee } from 'hooks/contract/useGeneratedHooks'
 import { useAccountId } from 'hooks/useAccountId'
 import { VaultInfo } from 'api/vaults'
@@ -74,7 +73,7 @@ const ButtonClaim = styled(ButtonCommon)`
 
 export default function AvailableClaim() {
   const [claimData] = useClaimInfo()
-  const [isValidWallet, address] = useValidVaultWalletAddress()
+  const { address } = useAppKitAccount()
   const { chainId } = useAppKitNetwork()
   const { fetchClaimData } = useFetchClaimInfoData()
   const [currentDepositAndWithdrawVault] = useCurrentDepositAndWithdrawVault()
@@ -86,7 +85,7 @@ export default function AvailableClaim() {
   const { refetch: refetchLatestTransactionHistory } = useLatestTransactionHistory({
     vaultId: currentDepositAndWithdrawVault?.vault_id as string,
     type: 'withdrawal',
-    walletAddress: address as string,
+    walletAddress: address || '',
   })
 
   const availableClaimAmount = useMemo(() => {
@@ -112,7 +111,7 @@ export default function AvailableClaim() {
   })
 
   const handleClaim = useCallback(async () => {
-    if (!vaultAddress || !usdcAddress || availableClaimAmount <= 0 || !address || !isValidWallet) return
+    if (!vaultAddress || !usdcAddress || availableClaimAmount <= 0 || !address) return
     if (!crossChainFee) {
       return
     }
@@ -131,7 +130,7 @@ export default function AvailableClaim() {
 
       await fetchClaimData({
         vaultInfo: currentDepositAndWithdrawVault as VaultInfo,
-        walletAddress: address as string,
+        walletAddress: address || '',
       })
 
       await refetchLatestTransactionHistory()
@@ -156,7 +155,6 @@ export default function AvailableClaim() {
     }
   }, [
     address,
-    isValidWallet,
     theme,
     vaultAddress,
     usdcAddress,
@@ -170,8 +168,7 @@ export default function AvailableClaim() {
     crossChainFee,
   ])
 
-  const isClaimDisabled =
-    !vaultAddress || !usdcAddress || availableClaimAmount <= 0 || isClaiming || !address || !isValidWallet
+  const isClaimDisabled = !vaultAddress || !usdcAddress || availableClaimAmount <= 0 || isClaiming || !address
 
   return (
     <AvailableClaimWrapper>

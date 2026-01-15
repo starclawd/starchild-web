@@ -241,6 +241,7 @@ export type StrategiesOverviewDataType = {
   s24h: { t: number; b: number }[]
   followers: number
   tvf: number
+  ai_summary: string
   user_info: {
     user_avatar: string
     user_info_id: number

@@ -251,7 +251,7 @@ msgstr "Fees (Taker)"
 msgid "Est. claimable in {estClaimMinutes} mins."
 msgstr "Est. claimable in {estClaimMinutes} mins."
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:103
+#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:105
 msgid "Finish defining your strategy in Step 1 first."
 msgstr "Finish defining your strategy in Step 1 first."
 
@@ -291,7 +291,7 @@ msgstr "Deposited in Vault"
 
 #: src/pages/Vaults/components/MyStrateyStats/index.tsx:593
 #: src/pages/Vaults/components/CreateStrategy/index.tsx:138
-#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:85
+#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:87
 #: src/pages/Chat/components/ChatInput/components/TabList/index.tsx:40
 #: src/pages/Chat/components/ChatInput/components/ModeSelect/index.tsx:78
 #: src/components/Header/index.tsx:277
@@ -437,10 +437,6 @@ msgstr "No current agent data or agentId found"
 #~ msgid "Strategy summary"
 #~ msgstr "Strategy summary"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:132
-msgid "Comming soon"
-msgstr "Comming soon"
-
 #: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:199
 msgid "Change Nickname"
 msgstr "Change nickname"
@@ -532,7 +528,7 @@ msgstr "Hour"
 msgid "Name"
 msgstr "Name"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:117
+#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:122
 msgid "Please generate valid code (Step 2) before starting Paper Trading."
 msgstr "Please generate valid code (Step 2) before starting Paper Trading."
 
@@ -817,6 +813,7 @@ msgstr "Chat"
 msgid "Thinking"
 msgstr "Thinking"
 
+#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:137
 #: src/components/Header/index.tsx:293
 msgid "Coming soon"
 msgstr "Coming soon"
@@ -1388,11 +1385,11 @@ msgstr "Creation time: {formatTime}"
 #~ msgid "Block explorer"
 #~ msgstr "Block explorer"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:191
+#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:211
 msgid "Once generated, you can Simulation with virtual funds or deploy with real funds."
 msgstr "Once generated, you can Simulation with virtual funds or deploy with real funds."
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:104
+#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:106
 msgid "Turns your text description into code."
 msgstr "Turns your text description into code."
 
@@ -1809,7 +1806,7 @@ msgstr "Preferences"
 #~ msgid "Strategy Provider"
 #~ msgstr "Strategy provider"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:200
+#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:220
 msgid "Run Paper Trading"
 msgstr "Run paper trading"
 
@@ -1965,7 +1962,7 @@ msgstr "My vault portfolio"
 msgid "Want to see how Starchild can level up your trading? Just talk to him — he's ready to help."
 msgstr "Want to see how Starchild can level up your trading? Just talk to him — he's ready to help."
 
-#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:209
+#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:229
 msgid "View Details"
 msgstr "View Details"
 
@@ -1982,6 +1979,7 @@ msgstr "Login error"
 msgid "Chat history"
 msgstr "Chat history"
 
+#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:170
 #: src/pages/Chat/components/TestChatImg/index.tsx:402
 #: src/components/Header/components/Language/index.tsx:70
 msgid "Error"
@@ -2127,7 +2125,7 @@ msgstr "Stuck on strategy? Toss me a keyword!"
 #~ msgid "Starchild supports a maximum of 2 wallets. Please unbind an existing one to add a new one."
 #~ msgstr "Starchild supports a maximum of 2 wallets. Please unbind an existing one to add a new one."
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:118
+#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:123
 msgid "Start the simulator to see how it performs."
 msgstr "Start the simulator to see how it performs."
 
@@ -2209,7 +2207,7 @@ msgstr "Prompt"
 msgid "{currentDate} PnL"
 msgstr "{currentDate} PnL"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:90
+#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:92
 msgid "Define your strategy logic."
 msgstr "Define your strategy logic."
 
@@ -2423,7 +2421,7 @@ msgid "You can describe tasks in the chat, and Starchild will automatically crea
 msgstr "You can describe tasks in the chat, and Starchild will automatically create them for you — including time, trigger, and details."
 
 #: src/pages/MyPortfolio/components/MyStrategies/index.tsx:308
-#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:127
+#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:132
 #: src/pages/CreateStrategy/components/Chat/components/Action/index.tsx:61
 msgid "Launch"
 msgstr "Launch"
@@ -2570,8 +2568,8 @@ msgstr "{buttonText}"
 #~ msgstr "Smart crypto trading assistant"
 
 #: src/store/createstrategy/hooks/useCode.ts:109
-#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:189
-#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:99
+#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:209
+#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:101
 #: src/pages/CreateStrategy/components/Chat/components/Action/index.tsx:53
 msgid "Generate Code"
 msgstr "Generate code"
@@ -2691,7 +2689,7 @@ msgstr "Cancel"
 msgid "Live"
 msgstr "Live"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:210
+#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:230
 msgid "Your strategy is public and will be displayed on the leaderboard."
 msgstr "Your strategy is public and will be displayed on the leaderboard."
 
@@ -2843,7 +2841,7 @@ msgid "Total ROI"
 msgstr "Total ROI"
 
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/components/EditStrategyInfoModal/index.tsx:220
-#: src/pages/CreateStrategy/components/StrategyInfo/components/StrategyName/index.tsx:204
+#: src/pages/CreateStrategy/components/StrategyInfo/components/StrategyName/index.tsx:208
 msgid "Strategy has been successfully updated"
 msgstr "Strategy has been successfully updated"
 
@@ -3077,7 +3075,7 @@ msgstr "Win rate"
 #~ msgid "Need inspiration?"
 #~ msgstr "Need inspiration?"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:207
+#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:227
 msgid "View"
 msgstr "View"
 
@@ -3257,7 +3255,7 @@ msgstr "The strategy has been delisted."
 msgid "AI chat"
 msgstr "AI chat"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:201
+#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:221
 msgid "Simulation in real-time with virtual funds."
 msgstr "Simulation in real-time with virtual funds."
 
@@ -3435,7 +3433,7 @@ msgstr "Approve {symbol}"
 
 #: src/pages/MyAgent/components/CreateModal/index.tsx:228
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/components/EditStrategyInfoModal/index.tsx:219
-#: src/pages/CreateStrategy/components/StrategyInfo/components/StrategyName/index.tsx:203
+#: src/pages/CreateStrategy/components/StrategyInfo/components/StrategyName/index.tsx:207
 msgid "Edit success"
 msgstr "Edit success"
 
@@ -3549,6 +3547,10 @@ msgstr "Advanced"
 #: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:318
 #~ msgid "Remove"
 #~ msgstr "Remove"
+
+#: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:171
+msgid "This strategy is private and can only be viewed by its owner."
+msgstr "This strategy is private and can only be viewed by its owner."
 
 #: src/components/Header/index.tsx:285
 msgid "Leaderboard"
@@ -3840,7 +3842,7 @@ msgstr "Strategy orders are now mirrored to the Vault."
 msgid "Available:"
 msgstr "Available:"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:113
+#: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:118
 #: src/pages/CreateStrategy/components/Chat/components/Action/index.tsx:57
 msgid "Paper trading"
 msgstr "Paper trading"

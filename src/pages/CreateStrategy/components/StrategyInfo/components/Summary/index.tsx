@@ -1,11 +1,11 @@
 import styled, { css, keyframes } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useIsCreateStrategy } from 'store/createstrategy/hooks/useStrategyDetail'
+import { useIsCreateStrategy } from 'store/createstrategy/hooks/useCreateStrategyDetail'
 import { IconBase } from 'components/Icons'
 import InfoLayer from './components/InfoLayer'
 import { ButtonBorder } from 'components/Button'
-import { useStrategyDetail } from 'store/createstrategy/hooks/useStrategyDetail'
+import { useCreateStrategyDetail } from 'store/createstrategy/hooks/useCreateStrategyDetail'
 import { useIsLoadingChatStream } from 'store/createstrategy/hooks/useLoadingState'
 import { useSendChatUserContent } from 'store/createstrategy/hooks/useStream'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -202,7 +202,7 @@ export default memo(function Summary() {
   const { width } = useWindowSize()
   const { strategyId } = useParsedQueryString()
   const isStep3Deploying = useIsStep3Deploying(strategyId || '')
-  const { strategyDetail } = useStrategyDetail({ strategyId: strategyId || '' })
+  const { strategyDetail } = useCreateStrategyDetail({ strategyId: strategyId || '' })
   const [isEdit, setIsEdit] = useState(false)
   const sendChatUserContent = useSendChatUserContent()
   const [isCreateStrategyFrontend] = useIsCreateStrategy()

@@ -56,6 +56,7 @@ export const ButtonCommon = styled(BaseButton)<{ $pending?: boolean; $disabled?:
   font-weight: 400;
   line-height: 18px;
   padding: 8px;
+  white-space: nowrap;
   transition: all ${ANI_DURATION}s;
   color: ${({ theme }) => theme.black1000};
   border-radius: 4px;
@@ -92,6 +93,7 @@ export const ButtonBorder = styled(BaseButton)<{ $pending?: boolean; $disabled?:
   display: flex;
   align-items: center;
   justify-content: center;
+  white-space: nowrap;
   gap: 4px;
   width: 100%;
   height: 40px;
