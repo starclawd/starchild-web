@@ -213,21 +213,12 @@ const VibeWrapper = styled.div`
   align-items: center;
   height: 40px;
   span {
-    font-size: 12px;
-    font-style: normal;
+    font-size: 13px;
+    font-style: italic;
     font-weight: 400;
     line-height: 18px;
-    &:first-child {
-      color: ${({ theme }) => theme.brand200};
-    }
-    &:last-child {
-      font-size: 13px;
-      font-style: italic;
-      font-weight: 400;
-      line-height: 18px;
-      transition: color ${ANI_DURATION}s;
-      color: ${({ theme }) => theme.black200};
-    }
+    transition: color ${ANI_DURATION}s;
+    color: ${({ theme }) => theme.black200};
   }
 `
 
@@ -359,8 +350,6 @@ const StrategyItem = memo(({ record, rowIndex }: StrategyItemProps) => {
         <TagsCell />
         <TagsCell colSpan={columnCount - 1}>
           <VibeWrapper className='vibe-wrapper'>
-            <span>{vibeTitle || '--'}</span>
-            <Divider height={1} length={18} color={theme.black600} vertical paddingHorizontal={8} />
             <span>"{vibe || '--'}"</span>
           </VibeWrapper>
         </TagsCell>
