@@ -199,6 +199,7 @@ export default function StrategyTable() {
               onChange={changeSearchValue}
               placeholder={t`Search by name or leader...`}
               inputType={InputType.SEARCH}
+              onResetValue={() => setSearchValue('')}
             />
           </InputWrapper>
         </Title>
