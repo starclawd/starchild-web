@@ -6,27 +6,17 @@ const VibeWrapper = styled.div`
   flex-direction: column;
   gap: 8px;
   span {
-    font-size: 12px;
-    font-style: normal;
+    max-width: 480px;
+    font-size: 13px;
+    font-style: italic;
     font-weight: 400;
     line-height: 18px;
-    &:first-child {
-      color: ${({ theme }) => theme.brand200};
-    }
-    &:last-child {
-      max-width: 480px;
-      font-size: 13px;
-      font-style: italic;
-      font-weight: 400;
-      line-height: 18px;
-      color: ${({ theme }) => theme.black200};
-    }
+    color: ${({ theme }) => theme.black200};
   }
 `
-export default memo(function VibeItem({ vibe, vibeTitle }: { vibe: string; vibeTitle: string }) {
+export default memo(function VibeItem({ vibe }: { vibe: string }) {
   return (
     <VibeWrapper>
-      <span>{vibeTitle || '--'}</span>
       <span>"{vibe || '--'}"</span>
     </VibeWrapper>
   )

@@ -22,22 +22,22 @@ const VaultInfoContainer = styled.div<{ $isShowStrategyMarket: boolean }>`
   justify-content: space-between;
   flex-direction: column;
   flex-shrink: 0;
-  min-height: 280px;
+  min-height: 184px;
   transition: all ${ANI_DURATION}s;
   ${({ theme }) => theme.mediaMaxWidth.width1440`
-    min-height: 272px;
+    min-height: 174px;
   `}
   ${({ theme }) => theme.mediaMaxWidth.width1280`
-    min-height: 248px;
+    min-height: 132px;
   `}
   ${({ $isShowStrategyMarket, theme }) =>
     $isShowStrategyMarket &&
     css`
       ${theme.mediaMaxWidth.width1440`
-        min-height: 282px;
+        min-height: 174px;
       `}
       ${theme.mediaMaxWidth.width1280`
-        min-height: 310px;
+        min-height: 202px;
       `}
     `}
 `
@@ -159,10 +159,9 @@ export default memo(function VaultInfo() {
   const vaultId = useCurrentVaultId()
   const { strategyInfo } = useVibeTradingStrategyInfo({ strategyId: strategyId || null })
   const { paperTradingPublicData } = usePaperTradingPublic({ strategyId: strategyId || '' })
-  const [vibe, vibeTitle, strategyName, userName, userAvatar] = useMemo(() => {
+  const [vibe, strategyName, userName, userAvatar] = useMemo(() => {
     return [
       strategyInfo?.vibe || '',
-      strategyInfo?.vibe_title || '',
       strategyInfo?.strategy_name || '--',
       strategyInfo?.user_info?.user_name || '',
       strategyInfo?.user_info?.user_avatar || '',
@@ -217,12 +216,12 @@ export default memo(function VaultInfo() {
                 <StrategyStatus status={paperTradingPublicData?.status} />
               </RightStatuswrapper>
             </HeaderTop>
-            <VibeItem vibe={vibe} vibeTitle={vibeTitle || ''} />
+            <VibeItem vibe={vibe} />
           </VaultHeader>
 
-          <TabsWrapper>
+          {/* <TabsWrapper>
             <MoveTabList gap={20} tabKey={activeTab} tabList={tabList} moveType={MoveType.LINE} />
-          </TabsWrapper>
+          </TabsWrapper> */}
         </LeftWrapper>
         {activeTab === DETAIL_TYPE.STRATEGY && <TvfSection />}
         {activeTab === DETAIL_TYPE.VAULT && vaultId && address && <DepositSection />}

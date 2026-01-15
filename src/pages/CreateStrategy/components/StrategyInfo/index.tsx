@@ -45,10 +45,10 @@ const TopContent = styled.div<{ $isShowExpandPaperTrading: boolean }>`
   flex-direction: column;
   flex-shrink: 0;
   width: 100%;
-  height: 260px;
+  height: 242px;
   transition: all ${ANI_DURATION}s;
   ${({ theme }) => theme.mediaMaxWidth.width1560`
-    height: 196px;
+    height: 178px;
   `}
   ${({ $isShowExpandPaperTrading }) =>
     $isShowExpandPaperTrading &&
@@ -64,12 +64,12 @@ const InnerContent = styled.div`
   flex-direction: column;
   flex-shrink: 0;
   width: 100%;
-  height: 260px;
+  height: 242px;
   padding: 40px;
   z-index: 2;
   transition: all ${ANI_DURATION}s;
   ${({ theme }) => theme.mediaMaxWidth.width1560`
-    height: 196px;
+    height: 178px;
     padding: 20px;
   `}
 `
@@ -77,10 +77,10 @@ const InnerContent = styled.div`
 const BottomContent = styled.div<{ $isShowExpandPaperTrading: boolean }>`
   display: flex;
   width: 100%;
-  height: calc(100% - 260px);
+  height: calc(100% - 242px);
   border-top: 1px solid ${({ theme }) => theme.black800};
   ${({ theme }) => theme.mediaMaxWidth.width1560`
-    height: calc(100% - 196px);
+    height: calc(100% - 178px);
   `}
   ${({ $isShowExpandPaperTrading }) =>
     $isShowExpandPaperTrading &&
