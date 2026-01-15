@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { ButtonBorder } from 'components/Button'
-import { ChangeEvent, memo, useCallback, useState, useEffect, useRef, KeyboardEvent, useMemo } from 'react'
+import { ChangeEvent, memo, useCallback, useState, useEffect, useRef, useMemo } from 'react'
 import { useIsStep3Deploying } from 'store/createstrategy/hooks/useDeployment'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import VibeItem from 'pages/VaultDetail/components/VaultInfo/components/VibeItem'
@@ -218,8 +218,11 @@ export default memo(function StrategyName({
     }
   }, [name, isLoading, descriptionProp, strategyId, theme.black0, toast, refetchStrategyDetail, triggerEditStrategy])
 
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent<HTMLInputElement>) => {
+  // ESC 和 Enter 键绑定到 document
+  useEffect(() => {
+    if (!isEdit) return
+
+    const handleKeyDown = (e: globalThis.KeyboardEvent) => {
       if (isLoading) return
       if (e.key === 'Escape') {
         cancelEdit()
@@ -230,9 +233,13 @@ export default memo(function StrategyName({
           handleConfirm()
         }
       }
-    },
-    [isLoading, cancelEdit, name, nameProp, handleConfirm],
-  )
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isEdit, isLoading, cancelEdit, name, nameProp, handleConfirm])
 
   // 编辑模式时自动聚焦并选中所有文本
   useEffect(() => {
@@ -282,7 +289,6 @@ export default memo(function StrategyName({
                 ref={inputRef}
                 value={name}
                 onChange={changeName}
-                onKeyDown={handleKeyDown}
                 disabled={isLoading}
                 placeholder='Strategy Name'
                 maxLength={40}
