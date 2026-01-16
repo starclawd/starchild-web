@@ -173,8 +173,8 @@ export default memo(function StrategyName({
     (e: ChangeEvent<HTMLInputElement>) => {
       if (isLoading) return
       const value = e.target.value
-      // 限制40个字符（中文算2个，英文算1个）
-      if (getCharacterLength(value) > 40) return
+      // 限制20个字符（中文算2个，英文算1个）
+      if (getCharacterLength(value) > 20) return
       setName(value)
     },
     [isLoading, getCharacterLength],
@@ -291,7 +291,7 @@ export default memo(function StrategyName({
                 onChange={changeName}
                 disabled={isLoading}
                 placeholder='Strategy Name'
-                maxLength={40}
+                maxLength={20}
               />
             </StrategyNameInputWrapper>
           ) : (

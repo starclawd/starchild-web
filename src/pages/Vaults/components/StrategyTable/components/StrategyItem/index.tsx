@@ -224,10 +224,10 @@ const VibeWrapper = styled.div`
 
 interface StrategyItemProps {
   record: StrategiesOverviewDataType
-  rowIndex: number
+  aprRank: number
 }
 
-const StrategyItem = memo(({ record, rowIndex }: StrategyItemProps) => {
+const StrategyItem = memo(({ record, aprRank }: StrategyItemProps) => {
   const theme = useTheme()
   const isLogin = useIsLogin()
   const [{ userInfoId }] = useUserInfo()
@@ -241,12 +241,12 @@ const StrategyItem = memo(({ record, rowIndex }: StrategyItemProps) => {
   // 计算派生数据
   const vibe = record.vibe
   const vibeTitle = record.vibe_title || ''
-  const rankIndex = rowIndex + 1
   const tvf = record.tvf || 0
   const followers = record.followers || 0
   const userName = record.user_info?.user_name || ''
   const columnCount = 9
-  const showRank = rankIndex <= 3
+  // 根据 all_time_apr 倒序排名，前三名显示特殊样式
+  const showRank = aprRank >= 1 && aprRank <= 3
   const isCurrentUser = record.user_info?.user_info_id === Number(userInfoId)
   const isFollowed = allFollowedStrategies.some((s) => s.strategy_id === record.strategy_id)
 
@@ -296,7 +296,7 @@ const StrategyItem = memo(({ record, rowIndex }: StrategyItemProps) => {
     <StrategyTbody onClick={handleRowClick}>
       <DataRow>
         <TableCell>
-          {showRank ? <Rank type={RANK_TYPE.TABLE} rank={rankIndex} /> : <NormalRank>{rankIndex}</NormalRank>}
+          {showRank ? <Rank type={RANK_TYPE.TABLE} rank={aprRank} /> : <NormalRank>{aprRank}</NormalRank>}
         </TableCell>
         <TableCell>
           <StrategyName>{record.strategy_name}</StrategyName>

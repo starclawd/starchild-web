@@ -63,6 +63,18 @@ const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   const loadMoreRef = useRef<HTMLDivElement>(null)
 
+  // 计算基于 all_time_apr 倒序的排名 Map
+  const aprRankMap = useMemo(() => {
+    const sorted = [...allStrategies].sort((a, b) => (b.all_time_apr || 0) - (a.all_time_apr || 0))
+    const rankMap = new Map<string, number>()
+    sorted.forEach((strategy, index) => {
+      if (strategy.strategy_id) {
+        rankMap.set(String(strategy.strategy_id), index + 1)
+      }
+    })
+    return rankMap
+  }, [allStrategies])
+
   // 通过 searchValue 筛选数据
   const filteredStrategies = useMemo(() => {
     if (!searchValue.trim()) {
@@ -178,8 +190,12 @@ const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
               <col key={index} style={{ width }} />
             ))}
           </colgroup>
-          {displayStrategies.map((record, rowIndex) => (
-            <StrategyItem key={record.strategy_id || rowIndex} record={record} rowIndex={rowIndex} />
+          {displayStrategies.map((record, index) => (
+            <StrategyItem
+              key={record.strategy_id || index}
+              record={record}
+              aprRank={record.strategy_id ? aprRankMap.get(String(record.strategy_id)) || 0 : 0}
+            />
           ))}
         </StyledTable>
         {hasNextPage && (

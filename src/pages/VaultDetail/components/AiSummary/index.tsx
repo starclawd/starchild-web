@@ -130,7 +130,7 @@ const AiSummary = memo(() => {
         </IconWrapper>
 
         <TextWrapper>
-          <TitleText>AI summary:</TitleText>
+          {/* <TitleText>AI summary:</TitleText> */}
           <SummaryText>{summary}</SummaryText>
         </TextWrapper>
       </ContentSection>
