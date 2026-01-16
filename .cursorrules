@@ -6,9 +6,68 @@
 - Use `yarn add <package>` for dependencies and `yarn add -D <package>` for dev dependencies.
 - Never use `npm install` or `npx` commands.
 
-## File Modification Restrictions
+## Tech Stack
 
-- Do NOT modify any files outside the `src/` directory unless explicitly instructed by the user.
-- Configuration files (e.g., `vite.config.ts`, `tsconfig.json`, `package.json`) should only be changed when the user specifically requests it.
+- React 19 + TypeScript
+- Vite as build tool
+- styled-components for styling
+- Redux Toolkit + React Redux for state management
+- @lingui for internationalization (i18n)
+- wagmi + viem + @reown/appkit for Web3 wallet integration
+- react-router-dom v7 for routing
+- TanStack React Query for server state
 
-- /searchGit 表示查询 git 状态，执行 git status 命令
+## Code Style & Conventions
+
+### Components
+
+- Always wrap components with `memo()` for performance optimization.
+- Use the pattern: `export default memo(function ComponentName() { ... })`.
+- Place styled-components definitions at the top of the file, before the component.
+- Use `$` prefix for transient props in styled-components (e.g., `$isActive`, `$isShowStrategyMarket`).
+
+### Styling
+
+- Use `styled-components` for all styling, avoid inline styles.
+- Use theme variables from `styled-components` theme (e.g., `${({ theme }) => theme.black0}`).
+- Use theme media queries for responsive design (e.g., `theme.mediaMaxWidth.width1440`).
+
+### Hooks & State
+
+- Use custom hooks from `store/` for state management.
+- Prefer `useMemo` and `useCallback` for expensive computations and callback functions.
+- Follow the existing hook patterns in `src/hooks/` and `src/store/*/hooks/`.
+
+### Internationalization
+
+- Use `@lingui/react/macro` for translations.
+- Wrap translatable text with `<Trans>` component.
+- Example: `<Trans>Strategy</Trans>`.
+
+### Imports
+
+- Use absolute imports with path aliases (e.g., `import { IconBase } from 'components/Icons'`).
+- Group imports: React/external libs first, then internal modules, then relative imports.
+
+### File Structure
+
+- Components should be in their own folder with an `index.tsx` file.
+- Sub-components should be in a `components/` subfolder.
+- Follow pattern: `pages/[PageName]/components/[ComponentName]/index.tsx`.
+
+## Naming Conventions
+
+- Component files: PascalCase (e.g., `VaultInfo`, `StrategyStatus`)
+- Hook files: camelCase with `use` prefix (e.g., `useSignal.ts`, `usePaperTradingPublic.ts`)
+- Store files: camelCase (e.g., `hooks.tsx`, `vaultsdetail.ts`)
+- Styled components: PascalCase (e.g., `VaultInfoContainer`, `InnerContent`)
+- Constants: SCREAMING_SNAKE_CASE (e.g., `DETAIL_TYPE`, `ANI_DURATION`)
+
+## Best Practices
+
+- Handle loading and error states properly.
+- Use TypeScript types/interfaces for props and data structures.
+- Avoid `any` type; use proper typing.
+- Keep components focused and single-responsibility.
+- Extract reusable logic into custom hooks.
+- Prioritize using components from src/components. If there is no corresponding component, and it's not complex, you can implement it directly. If it is complex, then consider using external components.
