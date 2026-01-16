@@ -164,6 +164,8 @@ export default defineConfig({
               fileName: false,
             },
           ],
+          // 开发环境注入源码位置信息，用于 DevInspector
+          ...(process.env.NODE_ENV === 'development' ? ['./babel-plugin-dev-inspector.cjs'] : []),
         ],
       },
     }),
