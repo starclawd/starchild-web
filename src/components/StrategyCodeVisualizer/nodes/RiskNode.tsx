@@ -38,6 +38,43 @@ const AdvancedGrid = styled.div`
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 `
 
+const HardStopsSection = styled.div`
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(255, 55, 91, 0.3);
+`
+
+const HardStopsTitle = styled.div`
+  font-size: 9px;
+  font-weight: 600;
+  color: #ff375b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  &::before {
+    content: '⚠️';
+    font-size: 10px;
+  }
+`
+
+const HardStopItem = styled.div`
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 4px 8px;
+  margin-bottom: 4px;
+  border-radius: 4px;
+  background-color: rgba(255, 55, 91, 0.1);
+  border-left: 2px solid #ff375b;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+`
+
 const AsymmetricRow = styled.div`
   display: flex;
   justify-content: center;
@@ -94,6 +131,8 @@ interface RiskNodeData {
   maxRoeLoss?: string
   maxDrawdown?: string
   maxAccountRisk?: string
+  // 新版 - hard stops 列表
+  hardStops?: string[]
 }
 
 function RiskNode({ data }: NodeProps) {
@@ -101,6 +140,7 @@ function RiskNode({ data }: NodeProps) {
 
   const hasAsymmetricSize = nodeData.longPositionSize || nodeData.shortPositionSize
   const hasAdvancedRisk = nodeData.maxRoeLoss || nodeData.maxDrawdown || nodeData.maxAccountRisk
+  const hasHardStops = nodeData.hardStops && nodeData.hardStops.length > 0
 
   return (
     <NodeWrapper>
@@ -163,6 +203,16 @@ function RiskNode({ data }: NodeProps) {
             </RiskItem>
           )}
         </AdvancedGrid>
+      )}
+
+      {/* 新版格式 - Hard Stops 列表 */}
+      {hasHardStops && (
+        <HardStopsSection>
+          <HardStopsTitle>Hard Stops</HardStopsTitle>
+          {nodeData.hardStops?.map((stop, index) => (
+            <HardStopItem key={index}>{stop}</HardStopItem>
+          ))}
+        </HardStopsSection>
       )}
     </NodeWrapper>
   )

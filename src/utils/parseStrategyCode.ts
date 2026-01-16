@@ -1,5 +1,6 @@
 /**
  * 解析 Python 策略代码，提取关键信息用于 React Flow 可视化
+ * 支持新旧两种代码生成格式，保持向下兼容
  */
 
 export interface StrategyConfig {
@@ -18,6 +19,41 @@ export interface StrategyConfig {
   max_roe_loss?: number
   max_drawdown?: number
   max_account_risk?: number
+  // 新版代码生成格式 - 轮询配置
+  base_interval?: number
+  min_interval?: number
+  // 新版代码生成格式 - 调度配置
+  schedule_type?: string
+  schedule_timeframe?: string
+  schedule_cron?: string
+  // 新版代码生成格式 - 状态管理
+  needs_state_reset?: boolean
+  reset_trigger?: string
+  // 新版代码生成格式 - 仓位大小
+  position_size?: string
+}
+
+// ============================================
+// 新版代码格式 - K线模式分析
+// ============================================
+
+export interface CandlePatternInfo {
+  type: 'consecutive_color' | 'pattern' | 'custom'
+  name: string
+  description: string
+  requiredCandles: number
+  // 连续颜色模式
+  colorPattern?: ('green' | 'red')[]
+  // 入场/出场条件
+  entryCondition?: string
+  exitCondition?: string
+}
+
+// 状态管理配置
+export interface StateManagementInfo {
+  needsState: boolean
+  fields: string[]
+  resetTrigger?: string
 }
 
 export interface DataSourceNode {
@@ -85,6 +121,8 @@ export interface ParsedStrategy {
     maxRoeLoss?: string
     maxDrawdown?: string
     maxAccountRisk?: string
+    // 新版 - hard stops
+    hardStops?: string[]
   }
   // Cross-Asset 信息
   crossAssetInfo?: {
@@ -99,6 +137,23 @@ export interface ParsedStrategy {
     hasPosition: DecisionBranch[]
     noPosition: DecisionBranch[]
   }
+  // ============================================
+  // 新版代码格式 - 扩展字段
+  // ============================================
+  // K线模式分析
+  candlePattern?: CandlePatternInfo
+  // 状态管理
+  stateManagement?: StateManagementInfo
+  // 策略描述/vibe
+  vibe?: string
+  // 数据层计算
+  calculations?: string[]
+  // 轮询配置
+  pollingConfig?: {
+    mode: string
+    baseInterval: number
+    minInterval: number
+  }
 }
 
 /**
@@ -111,6 +166,7 @@ function extractDocstring(code: string): string {
 
 /**
  * 推断策略类型
+ * 支持新旧两种代码格式
  */
 function inferStrategyType(code: string): string {
   const lower = code.toLowerCase()
@@ -122,6 +178,42 @@ function inferStrategyType(code: string): string {
       code.match(/"signal_symbol":\s*"([^"]+)"/)?.[1] !== code.match(/"trading_symbol":\s*"([^"]+)"/)?.[1]) ||
     lower.includes('cross_asset') ||
     lower.includes('cross-asset')
+
+  // ============================================
+  // 新版代码格式 - K线模式策略类型
+  // ============================================
+
+  // 连续绿线动量策略 (3-green momentum 等)
+  if (
+    lower.includes('consecutive_green') ||
+    lower.includes('3_green') ||
+    lower.includes('3-green') ||
+    (lower.includes('candle_colors') && lower.includes('green'))
+  ) {
+    const countMatch = code.match(/(\d+)[\s_-]*green/i)
+    const count = countMatch ? countMatch[1] : '3'
+    return `${count}-Green Momentum`
+  }
+
+  // 连续红线策略
+  if (
+    lower.includes('consecutive_red') ||
+    lower.includes('3_red') ||
+    lower.includes('3-red')
+  ) {
+    const countMatch = code.match(/(\d+)[\s_-]*red/i)
+    const count = countMatch ? countMatch[1] : '3'
+    return `${count}-Red Reversal`
+  }
+
+  // K线模式策略
+  if (lower.includes('candle_colors') || lower.includes('candlestick pattern')) {
+    return 'Candle Pattern'
+  }
+
+  // ============================================
+  // 旧版代码格式 - 保持向下兼容
+  // ============================================
 
   if (lower.includes('fibonacci') || lower.includes('fib_level') || lower.includes('fib_retracement'))
     return 'Fibonacci Retracement'
@@ -216,10 +308,37 @@ function extractConfig(code: string): StrategyConfig {
   const longMarginPct = extractNum('long_margin_pct')
   const shortMarginPct = extractNum('short_margin_pct')
 
-  // 提取高级风控参数
+  // 提取高级风控参数 - 支持数字和字符串格式
   const maxRoeLoss = extractNum('max_roe_loss')
-  const maxDrawdown = extractNum('max_drawdown')
+  // max_drawdown 支持 "-20%" 字符串格式或 0.2 数字格式
+  let maxDrawdown: number | null = extractNum('max_drawdown')
+  if (maxDrawdown === null) {
+    const maxDrawdownStr = extractStr('max_drawdown')
+    if (maxDrawdownStr) {
+      // 从 "-20%" 或 "20%" 提取数字
+      const numMatch = maxDrawdownStr.match(/-?([\d.]+)/)?.[1]
+      if (numMatch) {
+        maxDrawdown = parseFloat(numMatch) / 100 // 转换为小数
+      }
+    }
+  }
   const maxAccountRisk = extractNum('max_account_risk')
+
+  // 新版代码格式 - 轮询配置
+  const baseInterval = extractNum('base_interval')
+  const minInterval = extractNum('min_interval')
+
+  // 新版代码格式 - 调度配置
+  const scheduleType = extractStr('schedule_type')
+  const scheduleTimeframe = extractStr('schedule_timeframe')
+  const scheduleCron = extractStr('schedule_cron')
+
+  // 新版代码格式 - 状态管理
+  const needsStateReset = configMatch.includes('"needs_state_reset": true') || configMatch.includes('"needs_state_reset": True')
+  const resetTrigger = extractStr('reset_trigger')
+
+  // 新版代码格式 - 仓位大小字符串
+  const positionSizeStr = extractStr('position_size')
 
   return {
     name: extractStr('name'),
@@ -235,6 +354,15 @@ function extractConfig(code: string): StrategyConfig {
     max_roe_loss: maxRoeLoss ?? undefined,
     max_drawdown: maxDrawdown ?? undefined,
     max_account_risk: maxAccountRisk ?? undefined,
+    // 新版字段
+    base_interval: baseInterval ?? undefined,
+    min_interval: minInterval ?? undefined,
+    schedule_type: scheduleType || undefined,
+    schedule_timeframe: scheduleTimeframe || undefined,
+    schedule_cron: scheduleCron || undefined,
+    needs_state_reset: needsStateReset || undefined,
+    reset_trigger: resetTrigger || undefined,
+    position_size: positionSizeStr || undefined,
   }
 }
 
@@ -261,10 +389,18 @@ function extractDataSources(code: string): DataSourceNode[] {
   // 只有当代码实际调用了 TAAPI API 时才添加（检查 api.taapi.io 调用）
   if (code.includes('api.taapi.io') || code.includes('taapi.io/bulk')) {
     const fields: string[] = []
-    if (code.includes('sma')) fields.push('SMA')
-    if (code.includes('rsi')) fields.push('RSI')
-    if (code.includes('fibonacci')) fields.push('Fib')
-    if (code.includes('ema')) fields.push('EMA')
+    if (code.includes('sma') || code.includes('"sma"')) fields.push('SMA')
+    if (code.includes('rsi') || code.includes('"rsi"')) fields.push('RSI')
+    if (code.includes('fibonacci') || code.includes('"fib"')) fields.push('Fib')
+    if (code.includes('ema') || code.includes('"ema"')) fields.push('EMA')
+    // 新增：ROC (Rate of Change) 检测
+    if (code.includes('roc') || code.includes('"roc"')) fields.push('ROC')
+    // 新增：Candle/OHLCV 检测
+    if (code.includes('"candle"') || code.includes('candle')) fields.push('Candle')
+    // 新增：MACD 检测
+    if (code.includes('macd') || code.includes('"macd"')) fields.push('MACD')
+    // 新增：Bollinger Bands 检测
+    if (code.includes('bbands') || code.includes('"bbands"')) fields.push('BB')
     sources.push({ id: 'ds-taapi', type: 'datasource', api: 'TAAPI', fields: fields.length ? fields : ['Indicators'] })
   }
 
@@ -562,28 +698,49 @@ function extractEntryConditions(code: string, docstring: string): ConditionNode[
       })
     }
 
-    // Momentum
-    if (code.includes('momentum_pct') && code.includes('>= threshold')) {
-      conditions.push({
-        id: 'entry-long-mom',
-        type: 'condition',
-        direction: 'long',
-        category: 'entry',
-        triggerType: 'signal',
-        conditions: ['Momentum >= +0.5%'],
-        description: 'Positive momentum entry',
-      })
-    }
-    if (code.includes('momentum_pct') && code.includes('<= -threshold')) {
-      conditions.push({
-        id: 'entry-short-mom',
-        type: 'condition',
-        direction: 'short',
-        category: 'entry',
-        triggerType: 'signal',
-        conditions: ['Momentum <= -0.5%'],
-        description: 'Negative momentum entry',
-      })
+    // Momentum / Price Change Scalper - 多种检测模式
+    const hasMomentumLogic = code.includes('momentum_pct') || code.includes('price_change') || code.includes('bullish_signal')
+
+    if (hasMomentumLogic) {
+      // 提取阈值
+      const thresholdMatch = code.match(/["'](?:threshold_percent|momentum_threshold)["']\s*:\s*([\d.]+)/)?.[1]
+      const threshold = thresholdMatch || '0.5'
+
+      // 检测多种入场条件模式
+      const hasBullishEntry =
+        code.includes('>= threshold') ||
+        code.includes('bullish_signal') ||
+        code.includes('price_change >= threshold') ||
+        code.includes(`>= ${threshold}`)
+
+      const hasBearishEntry =
+        code.includes('<= -threshold') ||
+        code.includes('bearish_signal') ||
+        code.includes('price_change <= -threshold') ||
+        code.includes(`<= -${threshold}`)
+
+      if (hasBullishEntry) {
+        conditions.push({
+          id: 'entry-long-mom',
+          type: 'condition',
+          direction: 'long',
+          category: 'entry',
+          triggerType: 'signal',
+          conditions: [`Price change >= +${threshold}%`],
+          description: `Bullish momentum entry (+${threshold}%)`,
+        })
+      }
+      if (hasBearishEntry) {
+        conditions.push({
+          id: 'entry-short-mom',
+          type: 'condition',
+          direction: 'short',
+          category: 'entry',
+          triggerType: 'signal',
+          conditions: [`Price change <= -${threshold}%`],
+          description: `Bearish momentum entry (-${threshold}%)`,
+        })
+      }
     }
 
     // RSI Crossover - 检测超卖/超买反弹
@@ -807,7 +964,147 @@ function extractExitConditions(code: string, config: StrategyConfig): ConditionN
 }
 
 /**
+ * 检测新版代码格式 - K线模式分析
+ * 支持连续绿/红线、K线形态等模式
+ */
+function extractCandlePattern(code: string, docstring: string): CandlePatternInfo | undefined {
+  // 检测连续绿线模式 (如 3-green momentum)
+  const consecutiveGreenMatch = code.match(/consecutive_greens?\s*>=?\s*(\d+)/i) ||
+    code.match(/(\d+)\s*consecutive\s*green/i) ||
+    docstring.match(/(\d+)\s*consecutive\s*green/i) ||
+    code.match(/last_(\d+)_candles_green/i)
+
+  if (consecutiveGreenMatch) {
+    const count = parseInt(consecutiveGreenMatch[1])
+    return {
+      type: 'consecutive_color',
+      name: `${count}-Green Momentum`,
+      description: `${count} consecutive green candles (Close > Open)`,
+      requiredCandles: count,
+      colorPattern: Array(count).fill('green') as ('green' | 'red')[],
+      entryCondition: `Last ${count} candles are ALL green`,
+      exitCondition: 'First red candle (Close <= Open)',
+    }
+  }
+
+  // 检测连续红线模式
+  const consecutiveRedMatch = code.match(/consecutive_reds?\s*>=?\s*(\d+)/i) ||
+    code.match(/(\d+)\s*consecutive\s*red/i) ||
+    docstring.match(/(\d+)\s*consecutive\s*red/i)
+
+  if (consecutiveRedMatch) {
+    const count = parseInt(consecutiveRedMatch[1])
+    return {
+      type: 'consecutive_color',
+      name: `${count}-Red Reversal`,
+      description: `${count} consecutive red candles (Close < Open)`,
+      requiredCandles: count,
+      colorPattern: Array(count).fill('red') as ('green' | 'red')[],
+      entryCondition: `Last ${count} candles are ALL red`,
+      exitCondition: 'First green candle (Close >= Open)',
+    }
+  }
+
+  // 检测 candle_colors 分析模式
+  if (code.includes('candle_colors') || code.includes('candle["close"] > candle["open"]')) {
+    // 尝试从 docstring 提取更多信息
+    const entryMatch = docstring.match(/Entry[:\s]*(.*?)(?=Exit|$)/i)?.[1]?.trim()
+    const exitMatch = docstring.match(/Exit[:\s]*(.*?)(?=Timeframe|Data|$)/i)?.[1]?.trim()
+
+    return {
+      type: 'pattern',
+      name: 'Candle Color Pattern',
+      description: 'Strategy based on candle color analysis',
+      requiredCandles: 3,
+      entryCondition: entryMatch || 'Specific candle color pattern',
+      exitCondition: exitMatch || 'Reversal candle detected',
+    }
+  }
+
+  return undefined
+}
+
+/**
+ * 检测新版代码格式 - 状态管理配置
+ */
+function extractStateManagement(code: string): StateManagementInfo | undefined {
+  // 检测 state 使用
+  const hasState = code.includes('state = state or {}') ||
+    code.includes('state.get(') ||
+    code.includes('"state":') ||
+    code.includes('needs_state_reset')
+
+  if (!hasState) return undefined
+
+  const fields: string[] = []
+
+  // 提取状态字段
+  if (code.includes('had_3_greens') || code.includes('"had_3_greens"')) {
+    fields.push('had_3_greens')
+  }
+  if (code.includes('candle_colors') || code.includes('"candle_colors"')) {
+    fields.push('candle_colors')
+  }
+  if (code.includes('consecutive_greens') || code.includes('"consecutive_greens"')) {
+    fields.push('consecutive_greens')
+  }
+  if (code.includes('consecutive_reds') || code.includes('"consecutive_reds"')) {
+    fields.push('consecutive_reds')
+  }
+  if (code.includes('last_signal') || code.includes('"last_signal"')) {
+    fields.push('last_signal')
+  }
+  if (code.includes('entry_candle') || code.includes('"entry_candle"')) {
+    fields.push('entry_candle')
+  }
+  if (code.includes('used_levels') || code.includes('"used_levels"')) {
+    fields.push('used_levels')
+  }
+
+  // 提取 reset_trigger
+  const resetTriggerMatch = code.match(/"reset_trigger":\s*"([^"]+)"/)?.[1]
+
+  return {
+    needsState: true,
+    fields: fields.length > 0 ? fields : ['state'],
+    resetTrigger: resetTriggerMatch,
+  }
+}
+
+/**
+ * 提取数据层计算 - 新版代码格式
+ */
+function extractCalculations(code: string, docstring: string): string[] {
+  const calculations: string[] = []
+
+  // 从 docstring 提取
+  if (docstring.includes('candle')) {
+    const candleMatch = docstring.match(/last\s*(\d+).*?candle/i)
+    if (candleMatch) {
+      calculations.push(`Last ${candleMatch[1]} candles: Close vs Open comparison`)
+    }
+  }
+
+  // 从代码提取计算逻辑
+  if (code.includes('candle["close"] > candle["open"]')) {
+    calculations.push('Candle color determination (green/red)')
+  }
+  if (code.includes('consecutive_greens') || code.includes('consecutive greens')) {
+    calculations.push('Consecutive green candle count')
+  }
+  if (code.includes('last_candle_red')) {
+    calculations.push('Last candle color check')
+  }
+  if (code.includes('proximity')) {
+    calculations.push('Signal proximity calculation')
+  }
+
+  return calculations
+}
+
+/**
  * 提取分析步骤 - 从 analyze 函数中提取数据处理逻辑
+ * 支持新旧两种代码格式
  */
 function extractAnalyzeSteps(code: string, docstring: string): AnalyzeStep[] {
   const steps: AnalyzeStep[] = []
@@ -821,15 +1118,97 @@ function extractAnalyzeSteps(code: string, docstring: string): AnalyzeStep[] {
     })
   }
 
+  // ============================================
+  // 新版代码格式 - K线模式分析步骤
+  // ============================================
+
+  // K线数据获取 (新版格式)
+  if (code.includes('last_3_candles') || code.includes('kline_resp') || code.includes('ohlcv')) {
+    steps.push({
+      id: 'step-fetch-candles',
+      label: 'Fetch Candle Data',
+      description: 'Get OHLCV candles from exchange API',
+    })
+  }
+
+  // K线颜色分析 (新版格式)
+  if (code.includes('candle_colors') || code.includes('candle["close"] > candle["open"]')) {
+    steps.push({
+      id: 'step-analyze-colors',
+      label: 'Analyze Candle Colors',
+      description: 'Determine if candles are green (Close > Open) or red',
+    })
+  }
+
+  // 连续绿线计数 (新版格式)
+  if (code.includes('consecutive_greens') || code.includes('consecutive green')) {
+    const countMatch = code.match(/consecutive_greens?\s*>=?\s*(\d+)/i) || docstring.match(/(\d+)\s*consecutive/i)
+    const count = countMatch ? countMatch[1] : '3'
+    steps.push({
+      id: 'step-count-greens',
+      label: 'Count Consecutive Greens',
+      description: `Track consecutive green candles (target: ${count})`,
+    })
+  }
+
+  // 连续红线计数 (新版格式)
+  if (code.includes('consecutive_reds') || code.includes('consecutive red')) {
+    steps.push({
+      id: 'step-count-reds',
+      label: 'Count Consecutive Reds',
+      description: 'Track consecutive red candles',
+    })
+  }
+
+  // Proximity 计算 (新版格式)
+  if (code.includes('proximity =') || code.includes('"proximity":')) {
+    steps.push({
+      id: 'step-calc-proximity',
+      label: 'Calculate Proximity',
+      description: 'Determine signal proximity (0.0-1.0) for adaptive polling',
+    })
+  }
+
+  // 状态更新 (新版格式)
+  if (code.includes('"state":') && (code.includes('had_3_greens') || code.includes('candle_colors'))) {
+    steps.push({
+      id: 'step-update-state',
+      label: 'Update State',
+      description: 'Persist candle analysis state between polls',
+    })
+  }
+
+  // ============================================
+  // 旧版代码格式 - 保持向下兼容
+  // ============================================
+
   // 2. 计算步骤 - 根据策略类型
-  if (code.includes('momentum_pct') || code.includes('price_change_pct')) {
+  if (code.includes('momentum_pct') || code.includes('price_change_pct') || code.includes('price_change_percent')) {
     // 尝试提取具体阈值
-    const thresholdMatch = code.match(/["']momentum_threshold["']\s*:\s*([\d.]+)/)?.[1]
+    const thresholdMatch = code.match(/["'](?:momentum_threshold|threshold_percent)["']\s*:\s*([\d.]+)/)?.[1]
     const threshold = thresholdMatch ? `${thresholdMatch}%` : '0.5%'
     steps.push({
       id: 'step-calc-momentum',
       label: 'Calculate Momentum',
       description: `Compute price change % (threshold: ±${threshold})`,
+    })
+  }
+
+  // ROC (Rate of Change) 指标
+  if (code.includes('"roc"') || code.includes('rate of change') || code.includes('roc_data')) {
+    steps.push({
+      id: 'step-calc-roc',
+      label: 'Calculate ROC',
+      description: 'Get rate of change (price momentum) from TAAPI',
+    })
+  }
+
+  // 信号方向判断
+  if (code.includes('bullish_signal') && code.includes('bearish_signal')) {
+    steps.push({
+      id: 'step-signal-direction',
+      label: 'Determine Signal Direction',
+      description: 'Check if bullish (buy) or bearish (sell) signal',
     })
   }
 
@@ -870,8 +1249,10 @@ function extractAnalyzeSteps(code: string, docstring: string): AnalyzeStep[] {
     })
   }
 
-  // Fibonacci 状态管理 (used_levels)
-  if (code.includes('used_levels') || code.includes('triggered_level')) {
+  // Fibonacci 状态管理 (used_levels) - 只在 Fibonacci 策略中添加
+  // 注意：triggered_level 作为输出字段名在其他策略中也可能出现，需要更精确检测
+  const isFibonacciStrategy = code.includes('fibonacci') || code.includes('fib_level') || code.includes('calculate_fibonacci')
+  if (isFibonacciStrategy && (code.includes('used_levels') || code.includes('state["triggered_level"]') || code.includes('state.get("triggered_level")'))) {
     steps.push({
       id: 'step-fib-state',
       label: 'Track Used Levels',
@@ -918,8 +1299,9 @@ function extractAnalyzeSteps(code: string, docstring: string): AnalyzeStep[] {
     })
   }
 
-  // 3. Proximity 计算
-  if (code.includes('proximity')) {
+  // 3. Proximity 计算 - 避免重复添加
+  const hasProximityStep = steps.some((s) => s.id === 'step-calc-proximity')
+  if (!hasProximityStep && code.includes('proximity')) {
     steps.push({
       id: 'step-calc-proximity',
       label: 'Calculate Proximity',
@@ -941,6 +1323,7 @@ function extractAnalyzeSteps(code: string, docstring: string): AnalyzeStep[] {
 
 /**
  * 提取决策逻辑 - 从 analyze 函数中提取分支逻辑
+ * 支持新旧两种代码格式
  */
 function extractDecisionLogic(
   code: string,
@@ -951,6 +1334,32 @@ function extractDecisionLogic(
 } {
   const hasPosition: DecisionBranch[] = []
   const noPosition: DecisionBranch[] = []
+
+  // ============================================
+  // 新版代码格式 - K线模式决策逻辑
+  // ============================================
+
+  // 检测 K 线模式入场逻辑 (3-green momentum 等)
+  const hasGreenMomentum = code.includes('current_has_3_greens') ||
+    code.includes('consecutive_greens >= 3') ||
+    code.includes('3 consecutive green')
+
+  if (hasGreenMomentum) {
+    // 提取连续绿线数量
+    const countMatch = code.match(/consecutive_greens?\s*>=?\s*(\d+)/i)
+    const count = countMatch ? countMatch[1] : '3'
+
+    noPosition.push({
+      condition: `${count} consecutive green candles`,
+      action: 'BUY',
+      description: `Open long on ${count}-green momentum signal`,
+    })
+  }
+
+  // 检测红线退出逻辑
+  const hasRedExit = code.includes('last_candle_red') ||
+    code.includes('candle_colors[-1] == "red"') ||
+    code.includes('red candle')
 
   // 检测持仓变量的各种格式
   const hasLongPosition =
@@ -966,6 +1375,24 @@ function extractDecisionLogic(
     code.includes('current_position == "short"') ||
     code.includes("current_position == 'short'") ||
     code.includes('current_position_side == "SELL"')
+
+  // 新版格式 - LONG 持仓退出 (红线退出)
+  if (hasLongPosition && hasRedExit) {
+    hasPosition.push({
+      condition: 'LONG + Red candle detected',
+      action: 'SELL',
+      description: 'Exit long on first red candle',
+    })
+  }
+
+  // 新版格式 - SHORT 持仓退出 (绿线入场覆盖)
+  if (hasShortPosition && hasGreenMomentum) {
+    hasPosition.push({
+      condition: 'SHORT + Green momentum signal',
+      action: 'BUY',
+      description: 'Cover short on bullish momentum',
+    })
+  }
 
   // 从代码中提取持仓时的决策逻辑
   // Long position exit
@@ -1228,6 +1655,45 @@ export function parseStrategyCode(code: string): ParsedStrategy | null {
       }
     }
 
+    // ============================================
+    // 新版代码格式 - 扩展字段
+    // ============================================
+
+    // K线模式分析
+    const candlePattern = extractCandlePattern(code, docstring)
+
+    // 状态管理
+    const stateManagement = extractStateManagement(code)
+
+    // 数据层计算
+    const calculations = extractCalculations(code, docstring)
+
+    // 策略 vibe/描述 (从 docstring 提取)
+    const vibeMatch = docstring.match(/vibe[:\s]*(.*?)(?=\n|$)/i)?.[1]?.trim() ||
+      docstring.split('\n')[0]?.trim()
+
+    // 轮询配置
+    let pollingConfig: ParsedStrategy['pollingConfig'] = undefined
+    if (config.base_interval || config.min_interval) {
+      pollingConfig = {
+        mode: config.polling_mode || 'adaptive',
+        baseInterval: config.base_interval || 30,
+        minInterval: config.min_interval || 5,
+      }
+    }
+
+    // 提取 hard stops (从代码中)
+    const hardStops: string[] = []
+    if (code.includes('max_roe_loss') || maxRoeLoss) {
+      hardStops.push(`Total ROE < -${maxRoeLoss || '80%'}`)
+    }
+    if (code.includes('max_drawdown') || maxDrawdown) {
+      hardStops.push(`Max Drawdown: ${maxDrawdown || '20%'}`)
+    }
+    if (code.includes('max_account_risk') || maxAccountRisk) {
+      hardStops.push(`Account Risk > ${maxAccountRisk || '80%'}`)
+    }
+
     return {
       name: config.name || 'Trading Strategy',
       strategyType,
@@ -1246,10 +1712,17 @@ export function parseStrategyCode(code: string): ParsedStrategy | null {
         maxRoeLoss,
         maxDrawdown,
         maxAccountRisk,
+        hardStops: hardStops.length > 0 ? hardStops : undefined,
       },
       analyzeSteps,
       decisionLogic,
       crossAssetInfo,
+      // 新版扩展字段
+      candlePattern,
+      stateManagement,
+      vibe: vibeMatch || undefined,
+      calculations: calculations.length > 0 ? calculations : undefined,
+      pollingConfig,
     }
   } catch (error) {
     console.error('Failed to parse strategy code:', error)

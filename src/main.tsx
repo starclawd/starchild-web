@@ -8,8 +8,9 @@ import { LanguageProvider } from 'i18n'
 import App from 'pages/App'
 import '@reach/dialog/styles.css'
 import RouteLoading from 'components/RouteLoading'
-import { isLocalEnv, isTestEnv } from 'utils/url'
 import { AppKitProvider } from 'components/AppKitProvider'
+import { isLocalEnv, isTestEnv } from 'utils/url'
+import DevInspector from 'components/DevInspector'
 import './index.scss'
 
 if (isTestEnv || isLocalEnv) {
@@ -25,6 +26,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <AppKitProvider>
               <Suspense fallback={<RouteLoading />}>
                 <App />
+                {isLocalEnv && <DevInspector />}
               </Suspense>
             </AppKitProvider>
           </BrowserRouter>

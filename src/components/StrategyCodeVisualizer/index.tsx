@@ -1,4 +1,4 @@
-import { memo, useMemo, useCallback, useRef, useEffect } from 'react'
+import { memo, useMemo, useCallback, useRef } from 'react'
 import {
   ReactFlow,
   Node,
@@ -13,6 +13,7 @@ import {
 import '@xyflow/react/dist/style.css'
 import styled, { css, useTheme } from 'styled-components'
 import { parseStrategyCode, ParsedStrategy } from 'utils/parseStrategyCode'
+import { isNewCodeFormat } from 'utils/extractExecutableCode'
 import { vm } from 'pages/helper'
 
 // Custom Node Components
@@ -24,6 +25,10 @@ import HeaderNode from './nodes/HeaderNode'
 import RiskNode from './nodes/RiskNode'
 import AnalyzeDetailNode from './nodes/AnalyzeDetailNode'
 import DecisionDetailNode from './nodes/DecisionDetailNode'
+// 新增节点类型 - 支持新版代码格式
+import CandlePatternNode from './nodes/CandlePatternNode'
+import StateNode from './nodes/StateNode'
+import PollingNode from './nodes/PollingNode'
 
 // ============================================
 // Styled Components
@@ -84,18 +89,30 @@ const nodeTypes = {
   risk: RiskNode,
   analyzeDetail: AnalyzeDetailNode,
   decisionDetail: DecisionDetailNode,
+  // 新增节点类型 - 支持新版代码格式
+  candlePattern: CandlePatternNode,
+  state: StateNode,
+  polling: PollingNode,
 }
 
 // ============================================
 // Flow Generation
 // ============================================
 
+/**
+ * 生成流程图元素
+ * 支持新旧两种代码格式，自动检测并选择合适的布局
+ */
 function generateFlowElements(
   strategy: ParsedStrategy,
   theme: ReturnType<typeof useTheme>,
+  code?: string,
 ): { nodes: Node[]; edges: Edge[] } {
   const nodes: Node[] = []
   const edges: Edge[] = []
+
+  // 检测是否为新版代码格式
+  const isNewFormat = code ? isNewCodeFormat(code) : !!strategy.candlePattern
 
   const COLUMN_X = {
     left: 50,
@@ -116,10 +133,39 @@ function generateFlowElements(
       timeframe: strategy.config.timeframe,
       symbol: strategy.config.trading_symbol,
       crossAssetInfo: strategy.crossAssetInfo,
+      // 新版字段
+      vibe: strategy.vibe,
     },
   })
 
   currentY += 120
+
+  // ============================================
+  // 新版代码格式 - 增加轮询和状态管理节点
+  // ============================================
+
+  // 2a. Polling Node (新版格式 - 右上角)
+  if (strategy.pollingConfig) {
+    nodes.push({
+      id: 'polling',
+      type: 'polling',
+      position: { x: COLUMN_X.right, y: currentY - 80 },
+      data: {
+        mode: strategy.pollingConfig.mode,
+        baseInterval: strategy.pollingConfig.baseInterval,
+        minInterval: strategy.pollingConfig.minInterval,
+      },
+    })
+
+    // 连接 header 到 polling
+    edges.push({
+      id: 'edge-header-polling',
+      source: 'header',
+      target: 'polling',
+      type: 'smoothstep',
+      style: { stroke: '#00A9DE', strokeWidth: 1, strokeDasharray: '5,5' },
+    })
+  }
 
   // 2. Data Sources (Left column)
   const dsStartY = currentY
@@ -133,33 +179,83 @@ function generateFlowElements(
   })
 
   // 3. Indicators (Center column, connected to data sources)
+  // 对于新版格式，如果没有传统指标但有 K 线模式，跳过指标节点
+  const hasTraditionalIndicators = strategy.indicators.length > 0
   const indStartY = currentY
-  strategy.indicators.forEach((ind, i) => {
-    nodes.push({
-      id: ind.id,
-      type: 'indicator',
-      position: { x: COLUMN_X.center, y: indStartY + i * 80 },
-      data: { name: ind.name, params: ind.params },
+
+  if (hasTraditionalIndicators) {
+    strategy.indicators.forEach((ind, i) => {
+      nodes.push({
+        id: ind.id,
+        type: 'indicator',
+        position: { x: COLUMN_X.center, y: indStartY + i * 80 },
+        data: { name: ind.name, params: ind.params },
+      })
     })
 
-    // Connect to first data source
-    if (strategy.dataSources.length > 0) {
-      edges.push({
-        id: `edge-ds-${ind.id}`,
-        source: strategy.dataSources[0].id,
-        target: ind.id,
-        type: 'smoothstep',
-        animated: true,
-        style: { stroke: '#00A9DE', strokeWidth: 2 },
-        markerEnd: { type: MarkerType.ArrowClosed, color: '#00A9DE' },
+    // 连接所有数据源到第一个指标节点
+    if (strategy.dataSources.length > 0 && strategy.indicators.length > 0) {
+      const firstIndicatorId = strategy.indicators[0].id
+      strategy.dataSources.forEach((ds) => {
+        edges.push({
+          id: `edge-${ds.id}-${firstIndicatorId}`,
+          source: ds.id,
+          target: firstIndicatorId,
+          type: 'smoothstep',
+          animated: true,
+          style: { stroke: '#00A9DE', strokeWidth: 2 },
+          markerEnd: { type: MarkerType.ArrowClosed, color: '#00A9DE' },
+        })
       })
     }
-  })
+  }
 
   // Calculate max Y from data sources and indicators
   const dsMaxY = dsStartY + strategy.dataSources.length * 90
-  const indMaxY = indStartY + strategy.indicators.length * 80
+  const indMaxY = hasTraditionalIndicators ? indStartY + strategy.indicators.length * 80 : dsMaxY
   currentY = Math.max(dsMaxY, indMaxY) + 40
+
+  // ============================================
+  // 新版代码格式 - K线模式节点
+  // ============================================
+
+  let candlePatternNodeId: string | null = null
+
+  if (strategy.candlePattern) {
+    candlePatternNodeId = 'candle-pattern'
+    nodes.push({
+      id: candlePatternNodeId,
+      type: 'candlePattern',
+      position: { x: COLUMN_X.center - 40, y: currentY },
+      data: {
+        type: strategy.candlePattern.type,
+        name: strategy.candlePattern.name,
+        description: strategy.candlePattern.description,
+        requiredCandles: strategy.candlePattern.requiredCandles,
+        colorPattern: strategy.candlePattern.colorPattern,
+        entryCondition: strategy.candlePattern.entryCondition,
+        exitCondition: strategy.candlePattern.exitCondition,
+      },
+    })
+
+    // 连接所有数据源到 K 线模式节点
+    if (strategy.dataSources.length > 0) {
+      const targetNodeId = candlePatternNodeId // TypeScript narrowing
+      strategy.dataSources.forEach((ds) => {
+        edges.push({
+          id: `edge-${ds.id}-candle`,
+          source: ds.id,
+          target: targetNodeId,
+          type: 'smoothstep',
+          animated: true,
+          style: { stroke: '#00DE73', strokeWidth: 2 },
+          markerEnd: { type: MarkerType.ArrowClosed, color: '#00DE73' },
+        })
+      })
+    }
+
+    currentY += 200
+  }
 
   // 4. Analyze Detail Node (Center) - 展示详细的分析步骤
   const processNodeId = 'process-analyze'
@@ -170,21 +266,77 @@ function generateFlowElements(
     data: { steps: strategy.analyzeSteps },
   })
 
-  // Connect indicators to process
-  strategy.indicators.forEach((ind) => {
+  // Connect indicators to process (旧版格式)
+  if (hasTraditionalIndicators) {
+    strategy.indicators.forEach((ind) => {
+      edges.push({
+        id: `edge-${ind.id}-process`,
+        source: ind.id,
+        target: processNodeId,
+        type: 'smoothstep',
+        style: { stroke: '#A87FFF', strokeWidth: 2 },
+        markerEnd: { type: MarkerType.ArrowClosed, color: '#A87FFF' },
+      })
+    })
+  }
+
+  // Connect candle pattern to process (新版格式)
+  if (candlePatternNodeId) {
     edges.push({
-      id: `edge-${ind.id}-process`,
-      source: ind.id,
+      id: 'edge-candle-process',
+      source: candlePatternNodeId,
       target: processNodeId,
       type: 'smoothstep',
-      style: { stroke: '#A87FFF', strokeWidth: 2 },
-      markerEnd: { type: MarkerType.ArrowClosed, color: '#A87FFF' },
+      style: { stroke: '#00DE73', strokeWidth: 2 },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#00DE73' },
     })
-  })
+  }
+
+  // 如果没有指标也没有 K 线模式，直接连接所有数据源到分析节点
+  if (!hasTraditionalIndicators && !candlePatternNodeId && strategy.dataSources.length > 0) {
+    strategy.dataSources.forEach((ds) => {
+      edges.push({
+        id: `edge-${ds.id}-process`,
+        source: ds.id,
+        target: processNodeId,
+        type: 'smoothstep',
+        animated: true,
+        style: { stroke: '#A87FFF', strokeWidth: 2 },
+        markerEnd: { type: MarkerType.ArrowClosed, color: '#A87FFF' },
+      })
+    })
+  }
 
   // 根据分析步骤数量计算高度
   const analyzeNodeHeight = Math.max(120, strategy.analyzeSteps.length * 50 + 60)
   currentY += analyzeNodeHeight
+
+  // ============================================
+  // 新版代码格式 - 状态管理节点
+  // ============================================
+
+  if (strategy.stateManagement) {
+    const stateNodeId = 'state-management'
+    nodes.push({
+      id: stateNodeId,
+      type: 'state',
+      position: { x: COLUMN_X.right, y: currentY - analyzeNodeHeight + 20 },
+      data: {
+        needsState: strategy.stateManagement.needsState,
+        fields: strategy.stateManagement.fields,
+        resetTrigger: strategy.stateManagement.resetTrigger,
+      },
+    })
+
+    // 连接分析节点到状态节点
+    edges.push({
+      id: 'edge-process-state',
+      source: processNodeId,
+      target: stateNodeId,
+      type: 'smoothstep',
+      style: { stroke: '#8B5CF6', strokeWidth: 1, strokeDasharray: '4,4' },
+    })
+  }
 
   // 5. Decision Detail Node - 展示详细的决策逻辑
   const decisionNodeId = 'decision'
@@ -365,6 +517,8 @@ function generateFlowElements(
       maxRoeLoss: strategy.riskParams.maxRoeLoss,
       maxDrawdown: strategy.riskParams.maxDrawdown,
       maxAccountRisk: strategy.riskParams.maxAccountRisk,
+      // 新版 - hard stops
+      hardStops: strategy.riskParams.hardStops,
     },
   })
 
@@ -382,14 +536,14 @@ interface Props {
 }
 
 // 内部组件
-function StrategyFlowInner({ strategy, visible }: { strategy: ParsedStrategy; visible: boolean }) {
+function StrategyFlowInner({ strategy, visible, code }: { strategy: ParsedStrategy; visible: boolean; code?: string }) {
   const theme = useTheme()
   const reactFlowInstance = useRef<any>(null)
 
   const { initialNodes, initialEdges } = useMemo(() => {
-    const { nodes, edges } = generateFlowElements(strategy, theme)
+    const { nodes, edges } = generateFlowElements(strategy, theme, code)
     return { initialNodes: nodes, initialEdges: edges }
-  }, [strategy, theme])
+  }, [strategy, theme, code])
 
   const [nodes, , onNodesChange] = useNodesState(initialNodes)
   const [edges, , onEdgesChange] = useEdgesState(initialEdges)
@@ -446,7 +600,7 @@ function StrategyCodeVisualizer({ code, className, visible = true }: Props) {
   return (
     <FlowWrapper className={className}>
       <ReactFlowProvider>
-        <StrategyFlowInner strategy={strategy} visible={visible} />
+        <StrategyFlowInner strategy={strategy} visible={visible} code={code} />
       </ReactFlowProvider>
     </FlowWrapper>
   )
