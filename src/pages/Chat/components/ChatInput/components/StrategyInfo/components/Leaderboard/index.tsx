@@ -101,6 +101,7 @@ const RightContent = styled.div<{ $isPositive: boolean; $invalidVaule: boolean }
   font-style: normal;
   font-weight: 400;
   line-height: 18px;
+  color: ${({ theme }) => theme.black100};
   ${({ $isPositive, theme }) =>
     $isPositive &&
     css`
