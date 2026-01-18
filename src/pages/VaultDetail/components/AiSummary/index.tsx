@@ -9,6 +9,7 @@ import { ANI_DURATION } from 'constants/index'
 import { useIsShowStrategyMarket } from 'store/vaultsdetailcache/hooks'
 import { useVibeTradingStrategyInfo } from 'store/vaultsdetail/hooks'
 import useParsedQueryString from 'hooks/useParsedQueryString'
+import Markdown from 'components/Markdown'
 
 const AiSummaryWrapper = styled.div<{ $isShowStrategyMarket: boolean; $isVaultDetailPage?: boolean }>`
   display: flex;
@@ -131,7 +132,9 @@ const AiSummary = memo(() => {
 
         <TextWrapper>
           {/* <TitleText>AI summary:</TitleText> */}
-          <SummaryText>{summary}</SummaryText>
+          <SummaryText>
+            <Markdown>{summary}</Markdown>
+          </SummaryText>
         </TextWrapper>
       </ContentSection>
     </AiSummaryWrapper>
