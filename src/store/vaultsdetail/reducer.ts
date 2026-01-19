@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { VaultDetailState, DETAIL_TYPE, CHART_TYPE, ClaimData } from './vaultsdetail.d'
+import { VaultDetailState, DETAIL_TYPE, CHART_TYPE, ClaimData, OnchainBalanceData } from './vaultsdetail.d'
 import type { VaultInfo, VaultTransactionHistory } from 'api/vaults'
 import type { StrategySignalDataType, StrategiesOverviewDataType } from 'api/strategy'
 import { CHAIN_ID } from 'constants/chainInfo'
@@ -39,6 +39,7 @@ const initialState: VaultDetailState = {
   signalList: [],
   isLoadingSignalList: false,
   currentShareStrategyData: null,
+  onchainBalance: null,
 }
 
 const vaultsdetailSlice = createSlice({
@@ -112,6 +113,9 @@ const vaultsdetailSlice = createSlice({
     updateCurrentShareStrategyData: (state, action: PayloadAction<StrategiesOverviewDataType | null>) => {
       state.currentShareStrategyData = action.payload
     },
+    updateOnchainBalance: (state, action: PayloadAction<OnchainBalanceData | null>) => {
+      state.onchainBalance = action.payload
+    },
     resetVaultDetail: (state) => {
       return { ...initialState }
     },
@@ -139,6 +143,7 @@ export const {
   resetSignalList,
   setLoadingSignalList,
   updateCurrentShareStrategyData,
+  updateOnchainBalance,
 } = vaultsdetailSlice.actions
 
 export default vaultsdetailSlice.reducer

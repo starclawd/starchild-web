@@ -168,6 +168,8 @@ function App() {
     user_info_id: 0,
   }
 
+  const isNetlifyDomain = window.location.hostname.includes('netlify.app')
+
   // WebSocket 订阅 leaderboard-balances频道
   useLeaderboardWebSocketSubscription()
 
@@ -300,7 +302,7 @@ function App() {
                     <Route path={ROUTER.VAULT_DETAIL} element={<VaultDetail />} />
                     <Route path={ROUTER.CREATE_STRATEGY} element={<CreateStrategy />} />
                     {/* mainnet limited */}
-                    {!isPro && <Route path={ROUTER.MY_PORTFOLIO} element={<MyPortfolio />} />}
+                    {(!isPro || isNetlifyDomain) && <Route path={ROUTER.MY_PORTFOLIO} element={<MyPortfolio />} />}
                     {isLocalEnv && <Route path={ROUTER.DEMO} element={<DemoPage />} />}
                     <Route path='*' element={<Navigate to={ROUTER.CHAT} replace />} />
                   </Routes>

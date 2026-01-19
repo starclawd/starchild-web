@@ -169,8 +169,8 @@ msgstr "7天年化收益率"
 #~ msgid "Recent Transactions"
 #~ msgstr "最近交易"
 
-#: src/pages/MyStrategy/components/Transactions/index.tsx:205
-#: src/pages/MyPortfolio/components/Transactions/index.tsx:243
+#: src/pages/MyStrategy/components/Transactions/index.tsx:198
+#: src/pages/MyPortfolio/components/Transactions/index.tsx:241
 #: src/pages/CreateStrategy/components/StrategyInfo/components/PaperTrading/components/PaperTradingNormal/index.tsx:128
 msgid "History"
 msgstr "历史记录"
@@ -225,7 +225,7 @@ msgstr "预计{estClaimMinutes}分钟后可领取。"
 msgid "Finish defining your strategy in Step 1 first."
 msgstr "请先完成第1步策略定义。"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:178
+#: src/pages/Vaults/components/StrategyTable/index.tsx:268
 #: src/components/ShareModal/index.tsx:281
 msgid "TVF"
 msgstr "粉丝金额"
@@ -288,7 +288,7 @@ msgid "Friday"
 msgstr "星期五"
 
 #: src/pages/MyPortfolio/index.tsx:136
-#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:207
+#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:259
 #: src/components/Header/components/MenuContent/index.tsx:74
 msgid "My strategies"
 msgstr "我的策略"
@@ -310,7 +310,7 @@ msgstr "运行"
 msgid "Insights"
 msgstr "洞察"
 
-#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:587
+#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:585
 msgid "You can open the withdraw window to view the progress"
 msgstr "你可以打开提现窗口查看进度"
 
@@ -335,7 +335,7 @@ msgstr "在telegram上尝试Starchild bot"
 msgid "Login failed"
 msgstr "登录失败"
 
-#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:480
+#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:478
 msgid "Approval Successful"
 msgstr "授权成功"
 
@@ -353,7 +353,7 @@ msgid "Nickname"
 msgstr "昵称"
 
 #: src/pages/Insights/components/LiveChat/components/ChatItem/index.tsx:294
-#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/Leaderboard/index.tsx:201
+#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/Leaderboard/index.tsx:202
 #: src/pages/AgentHub/components/AgentCardSection/index.tsx:204
 msgid "View more"
 msgstr "查看更多"
@@ -408,7 +408,7 @@ msgstr "糟糕！出了些问题"
 msgid "Launched"
 msgstr "已上线"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:158
+#: src/pages/Vaults/components/StrategyTable/index.tsx:248
 msgid "Leader"
 msgstr "创建人"
 
@@ -444,12 +444,12 @@ msgstr "Google SDK 加载失败。请刷新页面并重试。"
 msgid "Hour"
 msgstr "小时"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:157
+#: src/pages/Vaults/components/StrategyTable/index.tsx:247
 #: src/pages/VaultDetail/components/StrategyMarket/index.tsx:139
-#: src/pages/MyPortfolio/components/MyVaults/index.tsx:212
+#: src/pages/MyPortfolio/components/MyVaults/index.tsx:210
 #: src/pages/MyPortfolio/components/MyStrategies/index.tsx:382
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/components/EditStrategyInfoModal/index.tsx:253
-#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/Leaderboard/index.tsx:175
+#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/Leaderboard/index.tsx:176
 msgid "Name"
 msgstr "名称"
 
@@ -461,7 +461,7 @@ msgstr "请先在第2步生成有效代码后再开始模拟交易。"
 msgid "Regenerate"
 msgstr "重新生成"
 
-#: src/pages/VaultDetail/components/DepositAndWithdraw/components/Process/components/AvailableClaim/index.tsx:148
+#: src/pages/VaultDetail/components/DepositAndWithdraw/components/Process/components/AvailableClaim/index.tsx:147
 msgid "Claim Failed"
 msgstr "领取失败"
 
@@ -478,7 +478,7 @@ msgstr "解释性说明"
 
 #: src/pages/VaultDetail/components/VaultInfo/components/DepositSection/index.tsx:187
 #: src/pages/VaultDetail/components/VaultInfo/components/DepositSection/index.tsx:213
-#: src/pages/MyPortfolio/components/MyVaults/index.tsx:276
+#: src/pages/MyPortfolio/components/MyVaults/index.tsx:274
 msgid "Switch Network"
 msgstr "切换网络"
 
@@ -503,7 +503,7 @@ msgstr "欢迎您，<0>{userName}</0>"
 
 #: src/pages/VaultDetail/components/StrategyMarket/index.tsx:143
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Backtest/components/DataList/index.tsx:219
-#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/Leaderboard/index.tsx:178
+#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/Leaderboard/index.tsx:179
 #: src/pages/AgentDetail/components/Preview/components/DataList/index.tsx:184
 msgid "APR"
 msgstr "年收益率"
@@ -569,7 +569,7 @@ msgstr "Telegram 绑定失败"
 msgid "Vault TVL"
 msgstr "金库TVL"
 
-#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/Leaderboard/index.tsx:164
+#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/Leaderboard/index.tsx:165
 msgid "Top Performing Strategies"
 msgstr "顶级表现策略"
 
@@ -616,6 +616,11 @@ msgstr "正在修改, 请耐心等待..."
 #: src/constants/agentHub.ts:26
 msgid "Indicator Hub"
 msgstr "指标枢纽"
+
+#: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/index.tsx:487
+#: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/index.tsx:579
+msgid "Capital"
+msgstr "资金层"
 
 #: src/components/ShareModal/index.tsx:345
 msgid "Image saved successfully"
@@ -677,8 +682,8 @@ msgstr "提现成功"
 msgid "Symbols"
 msgstr "品种"
 
-#: src/pages/Vaults/components/VaultsWalletConnect/index.tsx:90
-#: src/pages/Vaults/components/VaultsWalletConnect/index.tsx:132
+#: src/pages/Vaults/components/VaultsWalletConnect/index.tsx:77
+#: src/pages/Vaults/components/VaultsWalletConnect/index.tsx:119
 msgid "Copy failed"
 msgstr "复制失败"
 
@@ -694,7 +699,7 @@ msgstr "我的金库组合"
 msgid "Web3 Events"
 msgstr "Web3 活动"
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:315
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:316
 msgid "Turn your idea into live strategy. e.g., Buy ETH when RSI < 30 on 15m chart."
 msgstr "将你的想法变成实时策略。例如：15分钟RSI小于30买入ETH。"
 
@@ -703,7 +708,7 @@ msgid "Search"
 msgstr "搜索"
 
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/components/UnLogin/index.tsx:38
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:297
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:298
 msgid "Log in to view AI responses"
 msgstr "登录后查看AI回复"
 
@@ -730,7 +735,7 @@ msgstr "即将推出"
 msgid "Vault becomes 100% cash"
 msgstr "金库变为100%现金"
 
-#: src/components/Header/components/LoginButton/index.tsx:144
+#: src/components/Header/components/LoginButton/index.tsx:131
 msgid "Account"
 msgstr "账户"
 
@@ -787,7 +792,7 @@ msgid "What's the long/short ratio on Binance, OKX, and Bybit?"
 msgstr "Binance、OKX 和 Bybit 的多空比例是多少？"
 
 #: src/pages/VaultDetail/components/DepositHyperliquidVault/index.tsx:639
-#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:686
+#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:684
 msgid "Max"
 msgstr "最大"
 
@@ -830,12 +835,12 @@ msgstr "部署流程"
 msgid "History{0}"
 msgstr "历史{0}"
 
-#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:524
+#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:522
 msgid "Deposit in progress"
 msgstr "存入进行中"
 
 #: src/pages/VaultDetail/components/DepositHyperliquidVault/index.tsx:374
-#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:414
+#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:412
 msgid "Connect Wallet"
 msgstr "连接钱包"
 
@@ -879,7 +884,7 @@ msgstr "我的"
 #~ msgid "Expert"
 #~ msgstr "专家"
 
-#: src/pages/VaultDetail/components/DepositAndWithdraw/components/Process/components/AvailableClaim/index.tsx:140
+#: src/pages/VaultDetail/components/DepositAndWithdraw/components/Process/components/AvailableClaim/index.tsx:139
 msgid "Claim Successful"
 msgstr "领取成功"
 
@@ -903,7 +908,7 @@ msgstr "抄底还是追顶？告诉我！"
 msgid "Documents"
 msgstr "文档"
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:246
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:247
 msgid "Slot limit reached ({strategy_count}/{strategy_limit})! Boost your current strategy's APR to unlock more slots."
 msgstr "策略个数已满({strategy_count}/{strategy_limit})！请先提升现有策略表现以提高个数上限。"
 
@@ -991,7 +996,7 @@ msgstr "激活"
 #: src/pages/VaultDetail/components/PaperTradingPerformance/components/VaultChartStats.tsx:115
 #: src/pages/VaultDetail/components/PaperTradingPerformance/components/ChartTypeTabs.tsx:69
 #: src/pages/MyVault/components/MyPerfomance/components/ChartTypeTabs.tsx:62
-#: src/pages/MyPortfolio/components/MyVaults/index.tsx:217
+#: src/pages/MyPortfolio/components/MyVaults/index.tsx:215
 msgid "TVL"
 msgstr "锁仓金额 (TVL)"
 
@@ -1053,8 +1058,8 @@ msgstr "请输入"
 #~ msgid "WalletConnect"
 #~ msgstr "WalletConnect"
 
-#: src/pages/VaultDetail/components/VaultInfo/index.tsx:176
-#: src/pages/VaultDetail/components/VaultInfo/index.tsx:185
+#: src/pages/VaultDetail/components/VaultInfo/index.tsx:175
+#: src/pages/VaultDetail/components/VaultInfo/index.tsx:184
 msgid "Strategy"
 msgstr "策略"
 
@@ -1079,7 +1084,7 @@ msgstr "策略无法暂停，请重试。"
 msgid "Vault process"
 msgstr "金库流程"
 
-#: src/components/Header/components/AccountManege/components/userInfo/index.tsx:165
+#: src/components/Header/components/AccountManege/components/userInfo/index.tsx:152
 msgid "User ID"
 msgstr "用户 ID"
 
@@ -1109,6 +1114,12 @@ msgstr "提现界面即将上线"
 #~ msgid "Collapse"
 #~ msgstr "折叠"
 
+#: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/index.tsx:475
+#: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/index.tsx:552
+#: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/index.tsx:563
+msgid "Data"
+msgstr "数据层"
+
 #: src/pages/Chat/components/ChatInput/components/TypeSelect/index.tsx:190
 msgid "Setting successfully"
 msgstr "成功设置"
@@ -1125,7 +1136,7 @@ msgstr "删除策略"
 #~ msgid "Access via web or Telegram bot:"
 #~ msgstr "可通过网页或 Telegram bot使用："
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:245
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:246
 msgid "Create strategy failed"
 msgstr "创建策略失败"
 
@@ -1146,8 +1157,8 @@ msgstr "是什么引发了 BTC 的突然抛售？"
 msgid "Safety"
 msgstr "安全性"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:159
-#: src/pages/MyPortfolio/components/MyVaults/index.tsx:222
+#: src/pages/Vaults/components/StrategyTable/index.tsx:249
+#: src/pages/MyPortfolio/components/MyVaults/index.tsx:220
 #: src/components/ShareModal/index.tsx:272
 msgid "All time APR"
 msgstr "年化收益率"
@@ -1189,7 +1200,7 @@ msgid "Your daily market intel. Fully automated"
 msgstr "每日市场情报，全面自动化"
 
 #: src/pages/Vaults/components/VaultsWalletConnect/components/NetworkSelector/index.tsx:205
-#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:705
+#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:703
 msgid "Wrong network"
 msgstr "网络错误"
 
@@ -1303,8 +1314,8 @@ msgid "Discontinue Failed"
 msgstr "下架失败"
 
 #: src/components/Header/components/AccountManege/index.tsx:146
-msgid "Profile Summary"
-msgstr "个人信息概览"
+#~ msgid "Profile Summary"
+#~ msgstr "个人信息概览"
 
 #: src/pages/MyAgent/components/MyAgentsOverview/components/EmptyOverview/index.tsx:224
 #: src/constants/agentHub.ts:17
@@ -1354,8 +1365,8 @@ msgstr "持仓{0}"
 msgid "Risk Management"
 msgstr "风险管理"
 
-#: src/pages/Vaults/components/StrategyTable/components/StrategyItem/index.tsx:350
-#: src/pages/VaultDetail/components/VaultInfo/components/TvfSection/index.tsx:204
+#: src/pages/Vaults/components/StrategyTable/components/StrategyItem/index.tsx:343
+#: src/pages/VaultDetail/components/VaultInfo/components/TvfSection/index.tsx:159
 msgid "Follow"
 msgstr "关注"
 
@@ -1424,12 +1435,12 @@ msgstr "所有用户可存入金库（TVL动态），管理者收取业绩提成
 #~ msgid "Agent market"
 #~ msgstr "代理市场"
 
-#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:677
+#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:675
 msgid "Insufficient Shares"
 msgstr "份额不足"
 
 #: src/pages/VaultDetail/components/DepositHyperliquidVault/index.tsx:630
-#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:667
+#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:665
 msgid "Insufficient Balance"
 msgstr "余额不足"
 
@@ -1515,7 +1526,7 @@ msgstr "暂无业绩数据"
 #: src/pages/VaultDetail/components/PaperTradingPerformance/components/StrategyChartStats.tsx:100
 #: src/pages/VaultDetail/components/PaperTradingPerformance/components/ChartTypeTabs.tsx:70
 #: src/pages/MyVault/components/MyPerfomance/components/ChartTypeTabs.tsx:63
-#: src/pages/MyPortfolio/components/MyVaults/index.tsx:239
+#: src/pages/MyPortfolio/components/MyVaults/index.tsx:237
 #: src/pages/MyPortfolio/components/MyStrategies/components/VaultDetail/index.tsx:117
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Backtest/components/DataList/index.tsx:212
 #: src/pages/AgentDetail/components/Preview/components/DataList/index.tsx:177
@@ -1526,7 +1537,7 @@ msgstr "PnL"
 #~ msgid "Miner Fee"
 #~ msgstr "矿工费"
 
-#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:662
+#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:660
 msgid "The minimum amount is {minDepositAmount}. Please enter a larger amount to continue."
 msgstr "最小数量为{minDepositAmount}，请输入更大金额继续操作。"
 
@@ -1538,11 +1549,11 @@ msgstr "关注顶尖声音，把握专家洞察"
 #: src/pages/VaultDetail/components/VaultDepositWithdraw/index.tsx:140
 #: src/pages/VaultDetail/components/DepositHyperliquidVault/index.tsx:342
 #: src/pages/VaultDetail/components/DepositHyperliquidVault/index.tsx:375
-#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:416
+#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:414
 #: src/pages/VaultDetail/components/DepositAndWithdraw/components/Title/index.tsx:53
-#: src/pages/MyStrategy/components/Transactions/index.tsx:184
-#: src/pages/MyPortfolio/components/Transactions/index.tsx:214
-#: src/pages/MyPortfolio/components/MyVaults/index.tsx:285
+#: src/pages/MyStrategy/components/Transactions/index.tsx:177
+#: src/pages/MyPortfolio/components/Transactions/index.tsx:212
+#: src/pages/MyPortfolio/components/MyVaults/index.tsx:283
 #: src/pages/MyPortfolio/components/MyStrategies/components/BottomRight/index.tsx:160
 msgid "Withdraw"
 msgstr "提现"
@@ -1600,12 +1611,12 @@ msgstr "暂停策略"
 #~ msgid "Features"
 #~ msgstr "特征"
 
-#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:525
+#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:523
 msgid "You can open the deposit window to view the progress"
 msgstr "你可以打开存入窗口查看进度"
 
 #: src/components/Header/components/Preference/index.tsx:192
-#: src/components/Header/components/LoginButton/index.tsx:158
+#: src/components/Header/components/LoginButton/index.tsx:145
 msgid "Preferences"
 msgstr "偏好"
 
@@ -1654,7 +1665,7 @@ msgstr "上周或下周有哪些新的加密货币项目推出？"
 msgid "You do not have permission to access, please login first."
 msgstr "您没有访问权限，请先登录。"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:165
+#: src/pages/Vaults/components/StrategyTable/index.tsx:255
 msgid "The biggest drop from the peak. Lower means less risk."
 msgstr "从高点的最大下跌，越低代表风险越小。"
 
@@ -1684,12 +1695,12 @@ msgstr "我的钱包"
 msgid "Every Sunday, receive a crypto market sentiment summary based on social trends, funding rates, and the fear & greed index."
 msgstr "每周日，您都会收到一份基于社会趋势、融资率以及恐惧和贪婪指数的加密货币市场情绪摘要。"
 
-#: src/pages/Vaults/components/StrategyTable/components/StrategyItem/index.tsx:350
-#: src/pages/VaultDetail/components/VaultInfo/components/TvfSection/index.tsx:204
+#: src/pages/Vaults/components/StrategyTable/components/StrategyItem/index.tsx:343
+#: src/pages/VaultDetail/components/VaultInfo/components/TvfSection/index.tsx:159
 msgid "Followed"
 msgstr "已关注"
 
-#: src/components/Header/components/AccountManege/index.tsx:142
+#: src/components/Header/components/AccountManege/index.tsx:111
 msgid "Account management"
 msgstr "账户管理"
 
@@ -1700,9 +1711,14 @@ msgid "Running"
 msgstr "运行"
 
 #: src/pages/Vaults/components/Leaderboard/components/LeaderboardItem/index.tsx:93
-#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:229
+#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:280
 msgid "All-time APR:"
 msgstr "年化收益率："
+
+#: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/index.tsx:481
+#: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/index.tsx:571
+msgid "Signal"
+msgstr "信号层"
 
 #: src/pages/Chat/components/AiThreadsList/index.tsx:305
 #: src/pages/Chat/components/AiThreadsList/components/ThreadItem/index.tsx:217
@@ -1764,6 +1780,7 @@ msgid "Chat history"
 msgstr "聊天记录"
 
 #: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:170
+#: src/pages/CreateStrategy/components/StrategyInfo/components/StrategyName/index.tsx:199
 #: src/pages/Chat/components/TestChatImg/index.tsx:402
 #: src/components/Header/components/Language/index.tsx:70
 msgid "Error"
@@ -1783,18 +1800,18 @@ msgid "My signals"
 msgstr "我的信号"
 
 #: src/components/Header/components/DisconnectWallet/index.tsx:73
-msgid "Disconnect wallet"
-msgstr "断开钱包连接"
+#~ msgid "Disconnect wallet"
+#~ msgstr "断开钱包连接"
 
-#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:586
+#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:584
 msgid "Withdraw in progress"
 msgstr "提现进行中"
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:316
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:317
 msgid "Refine logic, check paper trade, or launch to earn..."
 msgstr "优化策略逻辑，检查模拟交易或上线赚收益..."
 
-#: src/pages/VaultDetail/components/DepositAndWithdraw/components/Process/components/AvailableClaim/index.tsx:180
+#: src/pages/VaultDetail/components/DepositAndWithdraw/components/Process/components/AvailableClaim/index.tsx:177
 #: src/constants/vaultTransaction.tsx:20
 msgid "Claimable"
 msgstr "可领取"
@@ -1888,7 +1905,7 @@ msgstr "等待中"
 msgid "The agent has been successfully deleted."
 msgstr "该 Agent 已成功删除。"
 
-#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:488
+#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:486
 msgid "Approval Failed"
 msgstr "授权失败"
 
@@ -1997,8 +2014,8 @@ msgstr "利润因数"
 #~ msgstr "MetaMask"
 
 #: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:207
-msgid "How to create a strategy"
-msgstr "如何创建策略"
+#~ msgid "How to create a strategy"
+#~ msgstr "如何创建策略"
 
 #: src/constants/useCases.ts:39
 msgid "ta BTC"
@@ -2025,11 +2042,6 @@ msgstr "交易已暂停，所有仓位已平仓。"
 #: src/pages/VaultDetail/components/VaultChatArea/components/LogItem/index.tsx:71
 msgid "Check signal:"
 msgstr "查看信号："
-
-#: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/index.tsx:487
-#: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/index.tsx:579
-msgid "Capital Layer"
-msgstr "资金层"
 
 #: src/pages/Chat/components/DefalutUi/index.tsx:125
 msgid "Ask AI anything..."
@@ -2067,9 +2079,9 @@ msgstr "全部时间"
 msgid "Did any exchange see a sudden spike in long positions or short positions?"
 msgstr "有哪个交易所的多头头寸或空头头寸突然激增？"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:160
+#: src/pages/Vaults/components/StrategyTable/index.tsx:250
 #: src/pages/VaultDetail/components/PaperTradingPerformance/components/StrategyChartStats.tsx:94
-#: src/pages/MyPortfolio/components/MyVaults/index.tsx:257
+#: src/pages/MyPortfolio/components/MyVaults/index.tsx:255
 #: src/pages/MyPortfolio/components/MyStrategies/index.tsx:431
 msgid "Age(days)"
 msgstr "年龄(天)"
@@ -2085,6 +2097,11 @@ msgstr "每周一获取投资组合表现摘要，包括收益/亏损、资产�
 #: src/pages/Chat/components/AiInput/index.tsx:471
 #~ msgid "Recording"
 #~ msgstr "录音中..."
+
+#: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/index.tsx:493
+#: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/index.tsx:587
+msgid "Risk"
+msgstr "风险层"
 
 #: src/utils/chartTooltipUtils.ts:30
 #: src/pages/VaultDetail/components/PaperTradingPerformance/components/ChartTypeTabs.tsx:66
@@ -2210,7 +2227,7 @@ msgid "An error occurred while linking Google account. Please try again later."
 msgstr "关联 Google 账号时发生错误。请稍后重试。"
 
 #: src/pages/VaultDetail/components/DepositHyperliquidVault/index.tsx:460
-#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:533
+#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:531
 msgid "Deposit Failed"
 msgstr "存入失败"
 
@@ -2224,7 +2241,7 @@ msgstr "价格"
 #~ msgid "AI knows before you do."
 #~ msgstr "人工智能比你更早知道"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:177
+#: src/pages/Vaults/components/StrategyTable/index.tsx:267
 msgid "Total follower assets. Higher TVF means more interest."
 msgstr "所有关注者的总资产，TVF越高代表越受欢迎。"
 
@@ -2390,7 +2407,7 @@ msgstr "可用"
 #~ msgstr "BNB 连锁店地址"
 
 #: src/pages/VaultDetail/components/DepositHyperliquidVault/index.tsx:655
-#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:697
+#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:695
 #: src/pages/MyPortfolio/components/MyStrategies/components/PauseStrategyModal/index.tsx:220
 #: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:228
 #: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:213
@@ -2535,7 +2552,7 @@ msgid "Total ROI"
 msgstr "总投资回报率"
 
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/components/EditStrategyInfoModal/index.tsx:220
-#: src/pages/CreateStrategy/components/StrategyInfo/components/StrategyName/index.tsx:208
+#: src/pages/CreateStrategy/components/StrategyInfo/components/StrategyName/index.tsx:215
 msgid "Strategy has been successfully updated"
 msgstr "策略已成功更新"
 
@@ -2558,6 +2575,7 @@ msgstr "我的锁仓(TVL)"
 
 #: src/pages/Vaults/components/VaultsWalletConnect/components/ExpandWalletConnect/index.tsx:267
 #: src/components/Header/components/MenuContent/components/Wallet/index.tsx:40
+#: src/components/Header/components/AccountManege/index.tsx:118
 msgid "My wallet"
 msgstr "我的钱包"
 
@@ -2610,11 +2628,6 @@ msgstr "复制"
 #~ msgid "Amount"
 #~ msgstr "金额"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/index.tsx:493
-#: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/index.tsx:587
-msgid "Risk Layer"
-msgstr "风险层"
-
 #: src/hooks/useGoogleLoginErrorHandler.tsx:74
 #: src/hooks/useGoogleLoginErrorHandler.tsx:89
 msgid "Bind Error"
@@ -2637,7 +2650,7 @@ msgstr "关闭演示"
 msgid "Deploy the On-Chain Vault Contract"
 msgstr "部署链上金库合约"
 
-#: src/pages/VaultDetail/components/DepositAndWithdraw/components/Process/components/AvailableClaim/index.tsx:190
+#: src/pages/VaultDetail/components/DepositAndWithdraw/components/Process/components/AvailableClaim/index.tsx:187
 msgid "Claim"
 msgstr "领取"
 
@@ -2660,11 +2673,6 @@ msgstr "首页"
 #: src/pages/AgentHub/components/AgentCardList/components/AgentCard/index.tsx:132
 msgid "Failed to toggle subscription"
 msgstr "切换订阅失败"
-
-#: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/index.tsx:481
-#: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/index.tsx:571
-msgid "Signal Layer"
-msgstr "信号层"
 
 #: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:174
 msgid "The strategy could not be discontinued. Please try again."
@@ -2759,11 +2767,11 @@ msgstr "入金用户"
 #: src/pages/VaultDetail/components/VaultDepositWithdraw/index.tsx:137
 #: src/pages/VaultDetail/components/DepositHyperliquidVault/index.tsx:333
 #: src/pages/VaultDetail/components/DepositHyperliquidVault/index.tsx:375
-#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:416
+#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:414
 #: src/pages/VaultDetail/components/DepositAndWithdraw/components/Title/index.tsx:44
-#: src/pages/MyStrategy/components/Transactions/index.tsx:184
-#: src/pages/MyPortfolio/components/Transactions/index.tsx:214
-#: src/pages/MyPortfolio/components/MyVaults/index.tsx:288
+#: src/pages/MyStrategy/components/Transactions/index.tsx:177
+#: src/pages/MyPortfolio/components/Transactions/index.tsx:212
+#: src/pages/MyPortfolio/components/MyVaults/index.tsx:286
 msgid "Deposit"
 msgstr "存入"
 
@@ -2772,7 +2780,7 @@ msgstr "存入"
 msgid "Thursday"
 msgstr "星期四"
 
-#: src/pages/Vaults/components/VaultsWalletConnect/index.tsx:91
+#: src/pages/Vaults/components/VaultsWalletConnect/index.tsx:78
 msgid "No address available"
 msgstr "无可用地址"
 
@@ -2826,7 +2834,7 @@ msgstr "保证金"
 #~ msgid "{filterType}"
 #~ msgstr "{filterType}"
 
-#: src/pages/Vaults/components/StrategyTable/components/StrategyItem/index.tsx:338
+#: src/pages/Vaults/components/StrategyTable/components/StrategyItem/index.tsx:331
 msgid "My followed"
 msgstr "我关注的"
 
@@ -2894,7 +2902,7 @@ msgstr "实时虚拟资金模拟。"
 msgid "Share to"
 msgstr "分享到"
 
-#: src/components/Header/components/LoginButton/index.tsx:172
+#: src/components/Header/components/LoginButton/index.tsx:159
 msgid "Logout"
 msgstr "退出"
 
@@ -2936,7 +2944,7 @@ msgstr "已转账"
 msgid "What major Web3 conferences or summits are happening next month?"
 msgstr "下个月有哪些重要的 Web3 会议或峰会？"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:200
+#: src/pages/Vaults/components/StrategyTable/index.tsx:289
 msgid "Search by name or leader..."
 msgstr "通过名称或创建人搜索……"
 
@@ -3046,13 +3054,13 @@ msgstr "我的金库"
 msgid "Track the SOL price and immediately alert if the price breaks through the upper or lower boundary of the current consolidation range."
 msgstr "追踪SOL价格，如突破当前盘整区间的上下边界立即提醒。"
 
-#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:415
+#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:413
 msgid "Approve {symbol}"
 msgstr "授权{symbol}"
 
 #: src/pages/MyAgent/components/CreateModal/index.tsx:228
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/components/EditStrategyInfoModal/index.tsx:219
-#: src/pages/CreateStrategy/components/StrategyInfo/components/StrategyName/index.tsx:207
+#: src/pages/CreateStrategy/components/StrategyInfo/components/StrategyName/index.tsx:214
 msgid "Edit success"
 msgstr "编辑成功"
 
@@ -3123,13 +3131,13 @@ msgid "AI reasoning in progress"
 msgstr "AI推理中"
 
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/components/UnLogin/index.tsx:41
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:300
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:301
 msgid "Log in"
 msgstr "登录"
 
 #: src/components/Header/components/AccountManege/index.tsx:132
-msgid "Wallet"
-msgstr "钱包"
+#~ msgid "Wallet"
+#~ msgstr "钱包"
 
 #: src/pages/MyVault/components/MyAssets/index.tsx:143
 #: src/pages/MyPortfolio/components/Performance/index.tsx:142
@@ -3154,6 +3162,11 @@ msgstr "专家"
 #: src/components/Header/components/MenuContent/components/Insights/index.tsx:274
 #~ msgid "No insights available"
 #~ msgstr "暂无洞察"
+
+#: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/index.tsx:499
+#: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/index.tsx:595
+msgid "Execution"
+msgstr "执行层"
 
 #: src/pages/Home/components/HomeMenu/index.tsx:169
 #~ msgid "Telegram bot >"
@@ -3216,8 +3229,8 @@ msgstr "从收藏夹中删除"
 msgid "Show thinking process"
 msgstr "展示思考过程"
 
-#: src/pages/Vaults/components/VaultsWalletConnect/index.tsx:103
-#: src/pages/Vaults/components/VaultsWalletConnect/index.tsx:122
+#: src/pages/Vaults/components/VaultsWalletConnect/index.tsx:90
+#: src/pages/Vaults/components/VaultsWalletConnect/index.tsx:109
 msgid "Address copied"
 msgstr "地址已复制"
 
@@ -3231,7 +3244,7 @@ msgstr "运行回溯测试代码..."
 
 #: src/pages/Vaults/components/MyVaultStats/index.tsx:129
 #: src/pages/Vaults/components/MyVaultStats/index.tsx:168
-#: src/pages/VaultDetail/components/VaultInfo/index.tsx:191
+#: src/pages/VaultDetail/components/VaultInfo/index.tsx:190
 msgid "Vaults"
 msgstr "金库"
 
@@ -3252,7 +3265,7 @@ msgstr "每日推荐"
 msgid "View vault"
 msgstr "查看金库"
 
-#: src/pages/Vaults/components/VaultsWalletConnect/index.tsx:133
+#: src/pages/Vaults/components/VaultsWalletConnect/index.tsx:120
 msgid "Unable to copy address"
 msgstr "无法复制地址"
 
@@ -3274,7 +3287,7 @@ msgid "Failed to Delete Agent"
 msgstr "删除失败"
 
 #: src/pages/VaultDetail/components/DepositHyperliquidVault/index.tsx:537
-#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:595
+#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:593
 msgid "Withdraw Failed"
 msgstr "提现失败"
 
@@ -3285,12 +3298,6 @@ msgstr "AI 体验"
 #: src/pages/Portfolio/components/Wallet/index.tsx:329
 #~ msgid "Proportion"
 #~ msgstr "比例"
-
-#: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/index.tsx:475
-#: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/index.tsx:552
-#: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/index.tsx:563
-msgid "Data Layer"
-msgstr "数据层"
 
 #: src/pages/Connect/index.tsx:343
 #: src/pages/Chat/components/ChatInput/index.tsx:130
@@ -3321,7 +3328,7 @@ msgstr "决策："
 msgid "Build, test, and refine your trading edge"
 msgstr "构建、测试并优化你的交易策略"
 
-#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:672
+#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:670
 msgid "The minimum amount is {minWithdrawalAmount}. Please enter a larger amount to continue."
 msgstr "最小数量为{minWithdrawalAmount}，请输入更大金额继续操作。"
 
@@ -3335,6 +3342,10 @@ msgstr "盈亏 (ROE%)"
 #: src/pages/VaultDetail/components/VaultPositionsOrders/components/VaultOpenOrders/index.tsx:137
 msgid "Value"
 msgstr "价值"
+
+#: src/pages/CreateStrategy/components/StrategyInfo/components/StrategyName/index.tsx:200
+msgid "Exceed the character limit (20)"
+msgstr ""
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:73
 #~ msgid "Please join our early access group on Telegram:"
@@ -3351,13 +3362,13 @@ msgstr "新手"
 #~ msgid "24h change"
 #~ msgstr "24 小时变化"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:166
+#: src/pages/Vaults/components/StrategyTable/index.tsx:256
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Backtest/components/DataList/index.tsx:200
 #: src/pages/AgentDetail/components/Preview/components/DataList/index.tsx:165
 msgid "Max drawdown"
 msgstr "最大回撤"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:185
+#: src/pages/Vaults/components/StrategyTable/index.tsx:275
 #: src/components/ShareModal/index.tsx:286
 msgid "Followers"
 msgstr "关注"
@@ -3366,7 +3377,7 @@ msgstr "关注"
 msgid "Expand details"
 msgstr "展开细节"
 
-#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:211
+#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:262
 msgid "Continue"
 msgstr "继续"
 
@@ -3398,7 +3409,7 @@ msgstr "24小时年化收益率"
 #~ msgid "Your early access pass has been consumed"
 #~ msgstr "您的早期访问通行证已消耗"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:194
+#: src/pages/Vaults/components/StrategyTable/index.tsx:283
 #: src/pages/VaultDetail/components/VaultDetailNavigation/index.tsx:53
 msgid "Strategy hub"
 msgstr "策略广场"
@@ -3427,7 +3438,7 @@ msgstr "更新时间"
 #~ msgid "Indicators"
 #~ msgstr "指标"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:186
+#: src/pages/Vaults/components/StrategyTable/index.tsx:276
 msgid "Snapshot"
 msgstr "快照"
 
@@ -3437,7 +3448,7 @@ msgstr "策略订单已同步到金库。"
 
 #: src/pages/Vaults/components/VaultsWalletConnect/components/ExpandWalletConnect/index.tsx:303
 #: src/pages/VaultDetail/components/DepositHyperliquidVault/index.tsx:636
-#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:683
+#: src/pages/VaultDetail/components/DepositAndWithdraw/index.tsx:681
 msgid "Available:"
 msgstr "可用："
 
@@ -3466,11 +3477,6 @@ msgstr "代理名称"
 #: src/pages/CreateStrategy/components/Chat/components/ChatItem/index.tsx:261
 msgid "Strategy info"
 msgstr "策略信息"
-
-#: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/index.tsx:499
-#: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/index.tsx:595
-msgid "Execution Layer"
-msgstr "执行层"
 
 #: src/pages/CreateStrategy/components/StrategyInfo/components/DeployModal/components/DeploySuccess/index.tsx:134
 #: src/pages/CreateStrategy/components/StrategyInfo/components/DeployModal/components/DeployFailed/index.tsx:111

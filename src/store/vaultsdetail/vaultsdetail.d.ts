@@ -60,6 +60,7 @@ export interface VaultDetailState {
   signalList: StrategySignalDataType[]
   isLoadingSignalList: boolean
   currentShareStrategyData: StrategiesOverviewDataType | null
+  onchainBalance: OnchainBalanceData | null
 }
 
 export interface VaultDetailChartData {
@@ -84,4 +85,12 @@ export interface VaultDetailChartOptions {
   plugins: any
   scales: any
   elements: any
+}
+
+export interface OnchainBalanceData {
+  evm_balance_usd: number
+  svm_balance_usd: number
+  total_balance_usd: number
+  updated_at: number
+  expires_at: number
 }

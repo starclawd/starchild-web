@@ -280,11 +280,11 @@ export default memo(function Summary() {
   // 各个 layer 的标题文本（用于打字机效果）
   const layerTitles = useMemo(
     () => ({
-      [SUMMARY_TAB_KEY.DATA]: 'Data Layer',
-      [SUMMARY_TAB_KEY.SIGNAL]: 'Signal Layer',
-      [SUMMARY_TAB_KEY.CAPITAL]: 'Capital Layer',
-      [SUMMARY_TAB_KEY.RISK]: 'Risk Layer',
-      [SUMMARY_TAB_KEY.EXECUTION]: 'Execution Layer',
+      [SUMMARY_TAB_KEY.DATA]: 'Data',
+      [SUMMARY_TAB_KEY.SIGNAL]: 'Signal',
+      [SUMMARY_TAB_KEY.CAPITAL]: 'Capital',
+      [SUMMARY_TAB_KEY.RISK]: 'Risk',
+      [SUMMARY_TAB_KEY.EXECUTION]: 'Execution',
     }),
     [],
   )
@@ -472,31 +472,31 @@ export default memo(function Summary() {
       {
         key: SUMMARY_TAB_KEY.DATA,
         icon: isShowIcon ? <IconBase className='icon-data-layer' /> : null,
-        text: <Trans>Data Layer</Trans>,
+        text: <Trans>Data</Trans>,
         clickCallback: () => handleTabClick(SUMMARY_TAB_KEY.DATA),
       },
       {
         key: SUMMARY_TAB_KEY.SIGNAL,
         icon: isShowIcon ? <IconBase className='icon-signal-layer' /> : null,
-        text: <Trans>Signal Layer</Trans>,
+        text: <Trans>Signal</Trans>,
         clickCallback: () => handleTabClick(SUMMARY_TAB_KEY.SIGNAL),
       },
       {
         key: SUMMARY_TAB_KEY.CAPITAL,
         icon: isShowIcon ? <IconBase className='icon-capital-layer' /> : null,
-        text: <Trans>Capital Layer</Trans>,
+        text: <Trans>Capital</Trans>,
         clickCallback: () => handleTabClick(SUMMARY_TAB_KEY.CAPITAL),
       },
       {
         key: SUMMARY_TAB_KEY.RISK,
         icon: isShowIcon ? <IconBase className='icon-risk-layer' /> : null,
-        text: <Trans>Risk Layer</Trans>,
+        text: <Trans>Risk</Trans>,
         clickCallback: () => handleTabClick(SUMMARY_TAB_KEY.RISK),
       },
       {
         key: SUMMARY_TAB_KEY.EXECUTION,
         icon: isShowIcon ? <IconBase className='icon-execution-layer' /> : null,
-        text: <Trans>Execution Layer</Trans>,
+        text: <Trans>Execution</Trans>,
         clickCallback: () => handleTabClick(SUMMARY_TAB_KEY.EXECUTION),
       },
     ]
@@ -549,7 +549,7 @@ export default memo(function Summary() {
         {
           key: SUMMARY_TAB_KEY.DATA,
           iconCls: 'icon-data-layer',
-          titleKey: <Trans>Data Layer</Trans>,
+          titleKey: <Trans>Data</Trans>,
           content: dataLayerContent,
           updateContent: setDataLayerContent,
           isLoading: !dataLayerContent,
@@ -560,7 +560,7 @@ export default memo(function Summary() {
       {
         key: SUMMARY_TAB_KEY.DATA,
         iconCls: 'icon-data-layer',
-        titleKey: <Trans>Data Layer</Trans>,
+        titleKey: <Trans>Data</Trans>,
         content: dataLayerContent,
         updateContent: setDataLayerContent,
         isLoading: !dataLayerContent,
@@ -568,7 +568,7 @@ export default memo(function Summary() {
       {
         key: SUMMARY_TAB_KEY.SIGNAL,
         iconCls: 'icon-signal-layer',
-        titleKey: <Trans>Signal Layer</Trans>,
+        titleKey: <Trans>Signal</Trans>,
         content: signalLayerContent,
         updateContent: setSignalLayerContent,
         isLoading: !signalLayerContent,
@@ -576,7 +576,7 @@ export default memo(function Summary() {
       {
         key: SUMMARY_TAB_KEY.CAPITAL,
         iconCls: 'icon-capital-layer',
-        titleKey: <Trans>Capital Layer</Trans>,
+        titleKey: <Trans>Capital</Trans>,
         content: capitalLayerContent,
         updateContent: setCapitalLayerContent,
         isLoading: !capitalLayerContent,
@@ -584,7 +584,7 @@ export default memo(function Summary() {
       {
         key: SUMMARY_TAB_KEY.RISK,
         iconCls: 'icon-risk-layer',
-        titleKey: <Trans>Risk Layer</Trans>,
+        titleKey: <Trans>Risk</Trans>,
         content: riskLayerContent,
         updateContent: setRiskLayerContent,
         isLoading: !riskLayerContent,
@@ -592,7 +592,7 @@ export default memo(function Summary() {
       {
         key: SUMMARY_TAB_KEY.EXECUTION,
         iconCls: 'icon-execution-layer',
-        titleKey: <Trans>Execution Layer</Trans>,
+        titleKey: <Trans>Execution</Trans>,
         content: executionLayerContent,
         updateContent: setExecutionLayerContent,
         isLoading: !executionLayerContent,

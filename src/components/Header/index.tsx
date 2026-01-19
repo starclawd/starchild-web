@@ -174,6 +174,7 @@ export const Header = () => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
   const [isHoverNavTabs, setIsHoverNavTabs] = useState(false)
   const [isPopoverOpen] = useIsPopoverOpen()
+  const isNetlifyDomain = window.location.hostname.includes('netlify.app')
 
   const isShowMenu = useMemo(() => {
     return isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT)
@@ -292,10 +293,10 @@ export const Header = () => {
         value: ROUTER.MY_PORTFOLIO,
         tooltip: <Trans>Coming soon</Trans>,
         // mainnet limited
-        clickCallback: isPro ? undefined : goOtherPage,
+        clickCallback: isPro && !isNetlifyDomain ? undefined : goOtherPage,
       },
     ]
-  }, [goOtherPage])
+  }, [isNetlifyDomain, goOtherPage])
 
   const getThreadsList = useCallback(async () => {
     try {

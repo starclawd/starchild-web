@@ -175,7 +175,8 @@ const SendButton = styled(ButtonCommon)`
   flex-shrink: 0;
   align-self: flex-end;
   .icon-arrow {
-    font-size: 24px;
+    font-size: 18px;
+    transform: rotate(90deg);
   }
   ${({ theme }) =>
     theme.isMobile &&

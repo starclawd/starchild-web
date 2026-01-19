@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/react/macro'
 import { ANI_DURATION } from 'constants/index'
 import { IconBase, IconChatStrategyBg } from 'components/Icons'
-import { memo, useCallback, useMemo, useState } from 'react'
+import { memo, useCallback, useMemo, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
@@ -11,6 +11,7 @@ import { formatPercent } from 'utils/format'
 import { useTheme } from 'store/themecache/hooks'
 import { useIsLogin } from 'store/login/hooks'
 import Pending from 'components/Pending'
+import createStrateVideo from 'assets/createstrategy/create-stratygy.mp4'
 
 const MyStrategyWrapper = styled.div<{ $isShowDefaultStyle: boolean }>`
   position: relative;
@@ -47,7 +48,7 @@ const Title = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  z-index: 2;
+  z-index: 3;
   .title-text {
     font-size: 16px;
     font-style: normal;
@@ -147,30 +148,57 @@ const AprItem = styled.div<{ $emptyVaule: boolean }>`
     `}
 `
 
-const DefaultContent = styled.div`
-  position: relative;
-  display: flex;
+const DefaultContent = styled.div<{ $isShowDefaultStyle: boolean }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
   justify-content: center;
   align-items: center;
   flex-grow: 1;
   z-index: 2;
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: 4px;
+  ${({ $isShowDefaultStyle }) =>
+    $isShowDefaultStyle &&
+    css`
+      display: flex;
+    `}
+  &:hover .sound-button {
+    opacity: 1;
+  }
 `
 
-const ButtonPlay = styled.div`
+const VideoElement = styled.video`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`
+
+const SoundButton = styled.div`
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 40px;
-  height: 40px;
-  background-color: ${({ theme }) => theme.black600};
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.6);
   cursor: pointer;
   transition: all ${ANI_DURATION}s;
-  .icon-play {
-    font-size: 24px;
-    color: ${({ theme }) => theme.black0};
+  z-index: 4;
+  opacity: 0;
+  svg {
+    width: 18px;
+    height: 18px;
   }
   &:hover {
-    opacity: 0.7;
+    background-color: rgba(0, 0, 0, 0.8);
   }
 `
 
@@ -179,8 +207,31 @@ export default memo(function MyStrategy() {
   const isLogin = useIsLogin()
   const setCurrentRouter = useSetCurrentRouter()
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [isMuted, setIsMuted] = useState(true)
   const { myStrategies, isLoadingMyStrategies } = useMyStrategies()
+  const videoRef = useRef<HTMLVideoElement>(null)
 
+  const handleVideoClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation()
+    const video = videoRef.current
+    if (!video) return
+
+    const isFullscreen = document.fullscreenElement !== null
+    if (isFullscreen) {
+      document.exitFullscreen()
+    } else {
+      video.requestFullscreen()
+    }
+  }, [])
+
+  const handleSoundToggle = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation()
+    const video = videoRef.current
+    if (!video) return
+
+    video.muted = !video.muted
+    setIsMuted(video.muted)
+  }, [])
   const isShowDefaultStyle = useMemo(() => {
     return (myStrategies.length === 0 && !isLoadingMyStrategies) || !isLogin
   }, [myStrategies, isLogin, isLoadingMyStrategies])
@@ -202,17 +253,17 @@ export default memo(function MyStrategy() {
       onClick={goCreateStrategyPage(myStrategies[currentIndex]?.strategy_id || '')}
     >
       <IconChatStrategyBg color={isShowDefaultStyle ? 'rgba(248, 70, 0, 0.2)' : theme.black900} />
-      <Title>
-        <span className='title-text'>
-          {!isShowDefaultStyle ? <Trans>My strategies</Trans> : <Trans>How to create a strategy</Trans>}
-        </span>
-        {!isShowDefaultStyle && (
+      {!isShowDefaultStyle && (
+        <Title>
+          <span className='title-text'>
+            <Trans>My strategies</Trans>
+          </span>
           <span className='title-arrow'>
             <Trans>Continue</Trans>
             <IconBase className='icon-arrow' />
           </span>
-        )}
-      </Title>
+        </Title>
+      )}
       {!isShowDefaultStyle && (
         <MyStrategyList>
           {isLoadingMyStrategies ? (
@@ -239,7 +290,41 @@ export default memo(function MyStrategy() {
       {!isShowDefaultStyle && (
         <Pagination currentIndex={currentIndex} setCurrentIndex={setCurrentIndex} total={myStrategies.length} />
       )}
-      {isShowDefaultStyle && <DefaultContent></DefaultContent>}
+      <DefaultContent $isShowDefaultStyle={isShowDefaultStyle} onClick={handleVideoClick}>
+        <VideoElement ref={videoRef} src={createStrateVideo} autoPlay loop muted playsInline />
+        <SoundButton className='sound-button' onClick={handleSoundToggle}>
+          {isMuted ? (
+            <svg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
+              <path
+                d='M11 5L6 9H2V15H6L11 19V5Z'
+                stroke='white'
+                strokeWidth='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+              <path d='M23 9L17 15' stroke='white' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' />
+              <path d='M17 9L23 15' stroke='white' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' />
+            </svg>
+          ) : (
+            <svg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
+              <path
+                d='M11 5L6 9H2V15H6L11 19V5Z'
+                stroke='white'
+                strokeWidth='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+              <path
+                d='M19.07 4.93C20.9447 6.80528 21.9979 9.34836 21.9979 12C21.9979 14.6516 20.9447 17.1947 19.07 19.07M15.54 8.46C16.4774 9.39764 17.0039 10.6692 17.0039 11.995C17.0039 13.3208 16.4774 14.5924 15.54 15.53'
+                stroke='white'
+                strokeWidth='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+              />
+            </svg>
+          )}
+        </SoundButton>
+      </DefaultContent>
     </MyStrategyWrapper>
   )
 })
