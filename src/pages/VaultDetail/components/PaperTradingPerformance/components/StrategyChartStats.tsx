@@ -86,40 +86,40 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ strategyId, chartTim
     {
       key: 'initialEquity',
       label: <Trans>Initial Equity</Trans>,
-      getValue: () => performanceData?.initial_balance,
+      getValue: () => performanceData?.initial_balance || 0,
       formatValue: (v) => formatNumber(v, { showDollar: true }),
     },
     {
       key: 'age',
       label: <Trans>Age(days)</Trans>,
-      getValue: () => performanceData?.age_days,
+      getValue: () => performanceData?.age_days || 0,
       formatValue: (v) => String(v),
     },
     {
       key: 'pnl',
       label: <Trans>PnL</Trans>,
-      getValue: () => performanceData?.pnl,
+      getValue: () => performanceData?.pnl || 0,
       formatValue: (v) => formatKMBNumber(v, 2, { showDollar: true }),
       showPnlColor: true,
     },
     {
       key: 'allTimeApy',
       label: <Trans>All-time APR</Trans>,
-      getValue: () => performanceData?.all_time_apr,
-      formatValue: (v) => formatPercent({ value: v, precision: 2 }),
+      getValue: () => performanceData?.all_time_apr || 0,
+      formatValue: (v) => formatPercent({ value: v, precision: 1 }),
       showPnlColor: true,
     },
     {
       key: 'maxDrawdown',
       label: <Trans>Max Drawdown</Trans>,
-      getValue: () => performanceData?.max_drawdown,
-      formatValue: (v) => formatPercent({ value: Math.abs(v), precision: 2 }),
+      getValue: () => performanceData?.max_drawdown || 0,
+      formatValue: (v) => formatPercent({ value: Math.abs(v), precision: 1 }),
     },
     {
       key: 'sharpeRatio',
       label: <Trans>Sharpe Ratio</Trans>,
-      getValue: () => performanceData?.sharpe_ratio,
-      formatValue: (v) => formatNumber(toFix(v, 2)),
+      getValue: () => performanceData?.sharpe_ratio || 0,
+      formatValue: (v) => formatNumber(toFix(v, 1)),
     },
   ]
 
@@ -129,8 +129,8 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ strategyId, chartTim
   return (
     <ChartStats $isShowStrategyMarket={isShowStrategyMarket} $isVaultDetailPage={isVaultDetailPage}>
       {visibleStats.map((config) => {
-        const value = isLoading || !performanceData ? undefined : config.getValue()
-        const displayValue = value === null || value === undefined ? '--' : config.formatValue(value)
+        const value = config.getValue()
+        const displayValue = config.formatValue(value || 0)
 
         return (
           <StatItem $isVaultDetailPage={isVaultDetailPage} key={config.key}>
