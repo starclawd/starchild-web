@@ -199,9 +199,20 @@ export default memo(function StrategyTable() {
     setSearchValue(value)
   }, [])
 
-  // 计算基于 all_time_apr 倒序的排名 Map
+  // 计算基于 all_time_apr 倒序的排名 Map（与 Strategies 组件保持一致）
   const aprRankMap = useMemo(() => {
-    const sorted = [...allStrategies].sort((a, b) => (b.all_time_apr || 0) - (a.all_time_apr || 0))
+    const sorted = [...allStrategies].sort((a, b) => {
+      const aValue = a.all_time_apr
+      const bValue = b.all_time_apr
+
+      // 处理 null 和 undefined 值，将它们排到最后
+      if (aValue == null && bValue == null) return 0
+      if (aValue == null) return 1
+      if (bValue == null) return -1
+
+      // 倒序排列（DESC），大的在前
+      return bValue - aValue
+    })
     const rankMap = new Map<string, number>()
     sorted.forEach((strategy, index) => {
       if (strategy.strategy_id) {
