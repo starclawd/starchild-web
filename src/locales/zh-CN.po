@@ -261,7 +261,7 @@ msgstr "已存入金库"
 #: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:87
 #: src/pages/Chat/components/ChatInput/components/TabList/index.tsx:40
 #: src/pages/Chat/components/ChatInput/components/ModeSelect/index.tsx:78
-#: src/components/Header/index.tsx:278
+#: src/components/Header/index.tsx:308
 msgid "Create strategy"
 msgstr "创建策略"
 
@@ -293,7 +293,7 @@ msgid "Friday"
 msgstr "星期五"
 
 #: src/pages/MyPortfolio/index.tsx:136
-#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:274
+#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:272
 #: src/components/Header/components/MenuContent/index.tsx:74
 msgid "My strategies"
 msgstr "我的策略"
@@ -353,7 +353,7 @@ msgstr "在过去一小时内，资金利率是否有任何异常波动？"
 #~ msgid "Link your Telegram"
 #~ msgstr "链接您的 Telegram"
 
-#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:204
+#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:210
 msgid "Nickname"
 msgstr "昵称"
 
@@ -383,7 +383,7 @@ msgstr "AI Agent 的最小触发间隔为 1 小时，Code Agent 的最小检查�
 msgid "No current agent data or agentId found"
 msgstr "没有找到当前代理数据或 agentId"
 
-#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:199
+#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:205
 msgid "Change Nickname"
 msgstr "更改昵称"
 
@@ -503,8 +503,8 @@ msgid "Never miss a critical move again. Create your own agent or subscribe to e
 msgstr "再也不要错过关键行情。创建自己的智能体，或在市场中订阅现有智能体。"
 
 #: src/pages/Chat/components/ChatInput/index.tsx:134
-msgid "Welcome, <0>{userName}</0>"
-msgstr "欢迎您，<0>{userName}</0>"
+#~ msgid "Welcome, <0>{userName}</0>"
+#~ msgstr "欢迎您，<0>{userName}</0>"
 
 #: src/pages/VaultDetail/components/StrategyMarket/index.tsx:143
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Backtest/components/DataList/index.tsx:219
@@ -513,7 +513,7 @@ msgstr "欢迎您，<0>{userName}</0>"
 msgid "APR"
 msgstr "年收益率"
 
-#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:171
+#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:177
 msgid "Change succesfully"
 msgstr "更改成功"
 
@@ -541,7 +541,7 @@ msgstr "添加问题"
 #: src/pages/MyAgent/components/CreateModal/index.tsx:323
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/components/EditStrategyInfoModal/index.tsx:266
 #: src/components/Header/components/Preference/index.tsx:241
-#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:226
+#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:232
 msgid "Confirm"
 msgstr "确认"
 
@@ -652,7 +652,7 @@ msgstr "预估到账"
 msgid "You must claim funds afterward"
 msgstr "请之后领取资金"
 
-#: src/components/Header/index.tsx:283
+#: src/components/Header/index.tsx:313
 msgid "Vibe trading"
 msgstr "共振交易"
 
@@ -732,7 +732,6 @@ msgid "Thinking"
 msgstr "思考"
 
 #: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:137
-#: src/components/Header/index.tsx:294
 msgid "Coming soon"
 msgstr "即将推出"
 
@@ -879,7 +878,8 @@ msgstr "{description}"
 #~ msgstr "您可以继续登录。"
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:318
-#: src/components/Header/index.tsx:291
+#: src/components/Header/index.tsx:321
+#: src/components/Header/index.tsx:324
 #: src/components/Header/components/MenuContent/index.tsx:112
 msgid "My"
 msgstr "我的"
@@ -1101,6 +1101,10 @@ msgstr "用户 ID"
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:117
 msgid "On which day did BTC record its biggest single-day gain, and by how much?"
 msgstr "BTC 在哪一天创下单日最大涨幅，涨幅有多大？"
+
+#: src/pages/Chat/components/ChatInput/index.tsx:158
+msgid "Welcome,<0> {userName}</0>"
+msgstr "欢迎您，<0> {userName}</0>"
 
 #: src/pages/Chat/components/Shortcuts/index.tsx:497
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:150
@@ -1464,6 +1468,10 @@ msgstr "我的组合"
 msgid "Created by:"
 msgstr "创建者:"
 
+#: src/components/Header/index.tsx:286
+msgid "No strategy"
+msgstr "暂无策略"
+
 #: src/pages/AgentDetail/components/AgentDescription/index.tsx:353
 msgid "Minimum trigger interval: "
 msgstr "最小触发周期："
@@ -1711,7 +1719,7 @@ msgid "Running"
 msgstr "运行"
 
 #: src/pages/Vaults/components/Leaderboard/components/LeaderboardItem/index.tsx:93
-#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:295
+#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:293
 msgid "All-time APR:"
 msgstr "年化收益率："
 
@@ -1793,6 +1801,10 @@ msgstr "错误"
 #: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:203
 msgid "Are you sure you want to discontinue the strategy?"
 msgstr "确定要下架该策略吗？"
+
+#: src/components/Header/index.tsx:287
+msgid "You need to create a strategy first"
+msgstr "您需要先创建一个策略"
 
 #: src/pages/MyAgent/index.tsx:74
 #: src/pages/Mobile/MobileMyAgent/index.tsx:100
@@ -2419,7 +2431,7 @@ msgstr "可用"
 #: src/pages/Chat/components/ContentItem/index.tsx:169
 #: src/pages/Chat/components/AiThreadsList/index.tsx:424
 #: src/components/Header/components/Preference/index.tsx:238
-#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:223
+#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:229
 msgid "Cancel"
 msgstr "取消"
 
@@ -2516,7 +2528,7 @@ msgstr "暂无策略"
 #~ msgid "Anything"
 #~ msgstr "任何"
 
-#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:214
+#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:220
 msgid "Please enter your new nickname"
 msgstr "请输入您的新昵称"
 
@@ -2664,7 +2676,7 @@ msgstr "星期一"
 msgid "How many times has BTC surged more than 5% in a single day over the past 10 years?"
 msgstr "在过去 10 年中，BTC 有多少次单日涨幅超过 5%？"
 
-#: src/components/Header/index.tsx:275
+#: src/components/Header/index.tsx:305
 msgid "Home"
 msgstr "首页"
 
@@ -2890,6 +2902,10 @@ msgstr "下载"
 msgid "The strategy has been delisted."
 msgstr "该策略已下架。"
 
+#: src/pages/Chat/components/ChatInput/index.tsx:154
+msgid "Welcome to <0> starchild</0>"
+msgstr "欢迎来到 <0> starchild</0>"
+
 #: src/pages/Insights/components/LiveChat/components/ChatDetail/index.tsx:87
 msgid "AI chat"
 msgstr "AI 聊天"
@@ -3038,7 +3054,7 @@ msgstr "新聊天"
 msgid "My Fund"
 msgstr "我的资金"
 
-#: src/pages/Chat/components/ChatInput/index.tsx:141
+#: src/pages/Chat/components/ChatInput/index.tsx:170
 msgid "What's the move today?"
 msgstr "今天怎么操作？"
 
@@ -3180,7 +3196,9 @@ msgstr "执行层"
 msgid "This strategy is private and can only be viewed by its owner."
 msgstr "该策略为私有，仅限所有者查看。"
 
-#: src/components/Header/index.tsx:286
+#: src/pages/Vaults/components/StrategyTable/index.tsx:283
+#: src/pages/VaultDetail/components/VaultDetailNavigation/index.tsx:53
+#: src/components/Header/index.tsx:316
 msgid "Leaderboard"
 msgstr "排行榜"
 
@@ -3300,7 +3318,6 @@ msgstr "AI 体验"
 #~ msgstr "比例"
 
 #: src/pages/Connect/index.tsx:343
-#: src/pages/Chat/components/ChatInput/index.tsx:130
 msgid "Welcome to <0>starchild</0>"
 msgstr "欢迎来到 <0>starchild</0>"
 
@@ -3345,7 +3362,7 @@ msgstr "价值"
 
 #: src/pages/CreateStrategy/components/StrategyInfo/components/StrategyName/index.tsx:200
 msgid "Exceed the character limit (20)"
-msgstr ""
+msgstr "超出字符限制（20）"
 
 #: src/pages/Home/components/HomeContent/components/NftMintAndBind/components/BindSuccess/index.tsx:73
 #~ msgid "Please join our early access group on Telegram:"
@@ -3377,7 +3394,7 @@ msgstr "关注"
 msgid "Expand details"
 msgstr "展开细节"
 
-#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:277
+#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:275
 msgid "Continue"
 msgstr "继续"
 
@@ -3411,8 +3428,8 @@ msgstr "24小时年化收益率"
 
 #: src/pages/Vaults/components/StrategyTable/index.tsx:283
 #: src/pages/VaultDetail/components/VaultDetailNavigation/index.tsx:53
-msgid "Strategy hub"
-msgstr "策略广场"
+#~ msgid "Strategy hub"
+#~ msgstr "策略广场"
 
 #: src/components/AgentActions/translations.tsx:22
 msgid "Copy link"
@@ -3484,7 +3501,7 @@ msgstr "策略信息"
 msgid "Close"
 msgstr "关闭"
 
-#: src/pages/Chat/components/ChatInput/index.tsx:145
+#: src/pages/Chat/components/ChatInput/index.tsx:174
 #: src/components/ConnectWalletModal/index.tsx:109
 msgid "Login"
 msgstr "登录"

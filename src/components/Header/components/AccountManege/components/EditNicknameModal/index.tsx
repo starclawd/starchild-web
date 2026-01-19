@@ -5,7 +5,12 @@ import Modal, {
   CommonModalFooter,
   CommonModalHeader,
 } from 'components/Modal'
-import { useIsMobile, useModalOpen, useAccountManegeModalToggle } from 'store/application/hooks'
+import {
+  useIsMobile,
+  useModalOpen,
+  useAccountManegeModalToggle,
+  useEditNicknameModalToggle,
+} from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
 import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import { Trans } from '@lingui/react/macro'
@@ -131,7 +136,8 @@ export function EditNicknameModal() {
   const changeNickname = useChangeNickname()
   const triggerGetUserInfo = useGetUserInfo()
   const editNicknameModalOpen = useModalOpen(ApplicationModal.EDIT_NICKNAME_MODAL)
-  const toggleAccountManegeModal = useAccountManegeModalToggle()
+  // const toggleAccountManegeModal = useAccountManegeModalToggle()
+  const toggleEditNicknameModal = useEditNicknameModalToggle()
   const maxNicknameLength = 20
   const currentNicknameLength = useMemo(() => {
     // 中文字符计为2个长度，英文字符计为1个长度
@@ -175,7 +181,7 @@ export function EditNicknameModal() {
         iconTheme: theme.black0,
       })
       if (editNicknameModalOpen) {
-        toggleAccountManegeModal()
+        toggleEditNicknameModal()
       }
     }
     setIsLoading(false)
@@ -186,7 +192,7 @@ export function EditNicknameModal() {
     currentNicknameLength,
     maxNicknameLength,
     editNicknameModalOpen,
-    toggleAccountManegeModal,
+    toggleEditNicknameModal,
     toast,
     triggerGetUserInfo,
     changeNickname,
@@ -219,7 +225,7 @@ export function EditNicknameModal() {
           </NicknameInput>
         </Content>
         <CommonModalFooter>
-          <ButtonCancel onClick={toggleAccountManegeModal}>
+          <ButtonCancel onClick={toggleEditNicknameModal}>
             <Trans>Cancel</Trans>
           </ButtonCancel>
           <ButtonConfirm $disabled={isLoading || !nickname.trim()} onClick={handleConfirm}>
@@ -237,12 +243,12 @@ export function EditNicknameModal() {
       hideDragHandle
       isOpen={editNicknameModalOpen}
       rootStyle={{ overflowY: 'hidden', height: `auto` }}
-      onClose={toggleAccountManegeModal}
+      onClose={toggleEditNicknameModal}
     >
       <AccountManegeMobileWrapper>{renderContent()}</AccountManegeMobileWrapper>
     </BottomSheet>
   ) : (
-    <Modal useDismiss isOpen={editNicknameModalOpen} onDismiss={toggleAccountManegeModal}>
+    <Modal useDismiss isOpen={editNicknameModalOpen} onDismiss={toggleEditNicknameModal}>
       <CommonModalContentWrapper>{renderContent()}</CommonModalContentWrapper>
     </Modal>
   )

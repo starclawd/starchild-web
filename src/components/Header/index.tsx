@@ -3,7 +3,12 @@ import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { ROUTER } from 'pages/router'
 import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
-import { useCurrentRouter, useSetCurrentRouter, useIsPopoverOpen } from 'store/application/hooks'
+import {
+  useCurrentRouter,
+  useSetCurrentRouter,
+  useIsPopoverOpen,
+  useConnectWalletModalToggle,
+} from 'store/application/hooks'
 import { IconBase } from 'components/Icons'
 import { useUserInfo, useIsLogin } from 'store/login/hooks'
 import { ANI_DURATION } from 'constants/index'
@@ -16,6 +21,9 @@ import LoginButton from './components/LoginButton'
 import Language from './components/Language'
 import Tooltip from 'components/Tooltip'
 import { isPro } from 'utils/url'
+import { useMyStrategies } from 'store/mystrategy/hooks'
+import useToast, { TOAST_STATUS } from 'components/Toast'
+import { useTheme } from 'store/themecache/hooks'
 
 const HeaderWrapper = styled.header<{
   $isFixMenu: boolean
@@ -161,6 +169,9 @@ const BottomSection = styled.div`
 `
 
 export const Header = () => {
+  const toast = useToast()
+  const isLogin = useIsLogin()
+  const theme = useTheme()
   const [{ userInfoId }] = useUserInfo()
   const addNewThread = useAddNewThread()
   const [, setChatTabIndex] = useChatTabIndex()
@@ -174,8 +185,8 @@ export const Header = () => {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null)
   const [isHoverNavTabs, setIsHoverNavTabs] = useState(false)
   const [isPopoverOpen] = useIsPopoverOpen()
-  const isNetlifyDomain = window.location.hostname.includes('netlify.app')
-
+  const { myStrategies } = useMyStrategies()
+  const toggleConnectWalletModal = useConnectWalletModalToggle()
   const isShowMenu = useMemo(() => {
     return isMatchCurrentRouter(currentHoverMenuKey, ROUTER.CHAT)
   }, [currentHoverMenuKey])
@@ -264,6 +275,25 @@ export const Header = () => {
       setCurrentHoverMenuKey(currentRouter)
     }, 2000)
   }, [currentRouter, isFixMenu])
+
+  const goCreateStrategyPage = useCallback(() => {
+    if (!isLogin) {
+      toggleConnectWalletModal()
+      return
+    }
+    if (myStrategies.length === 0) {
+      toast({
+        title: <Trans>No strategy</Trans>,
+        description: <Trans>You need to create a strategy first</Trans>,
+        status: TOAST_STATUS.ERROR,
+        typeIcon: 'icon-create-strategy',
+        iconTheme: theme.black0,
+      })
+      return
+    }
+    const data = myStrategies[0]
+    setCurrentRouter(`${ROUTER.CREATE_STRATEGY}?strategyId=${data.strategy_id}`)
+  }, [setCurrentRouter, myStrategies, isLogin, toggleConnectWalletModal, toast, theme])
   // const isInsightsPage = useMemo(() => {
   //   return isMatchCurrentRouter(currentRouter, ROUTER.SIGNALS)
   // }, [currentRouter])
@@ -291,12 +321,12 @@ export const Header = () => {
         text: <Trans>My</Trans>,
         icon: <IconBase className='icon-menu-my' />,
         value: ROUTER.MY_PORTFOLIO,
-        tooltip: <Trans>Coming soon</Trans>,
+        tooltip: <Trans>My</Trans>,
         // mainnet limited
-        clickCallback: isPro && !isNetlifyDomain ? undefined : goOtherPage,
+        clickCallback: isPro ? goCreateStrategyPage : goOtherPage,
       },
     ]
-  }, [isNetlifyDomain, goOtherPage])
+  }, [goCreateStrategyPage, goOtherPage])
 
   const getThreadsList = useCallback(async () => {
     try {

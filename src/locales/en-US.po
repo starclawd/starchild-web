@@ -299,7 +299,7 @@ msgstr "Deposited in Vault"
 #: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:87
 #: src/pages/Chat/components/ChatInput/components/TabList/index.tsx:40
 #: src/pages/Chat/components/ChatInput/components/ModeSelect/index.tsx:78
-#: src/components/Header/index.tsx:278
+#: src/components/Header/index.tsx:308
 msgid "Create strategy"
 msgstr "Create strategy"
 
@@ -331,7 +331,7 @@ msgid "Friday"
 msgstr "Friday"
 
 #: src/pages/MyPortfolio/index.tsx:136
-#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:274
+#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:272
 #: src/components/Header/components/MenuContent/index.tsx:74
 msgid "My strategies"
 msgstr "My strategies"
@@ -404,7 +404,7 @@ msgstr "Have there been any unusual moves in funding rates over the past hour?"
 #~ msgid " Total PnL"
 #~ msgstr " Total PnL"
 
-#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:204
+#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:210
 msgid "Nickname"
 msgstr "Nickname"
 
@@ -442,7 +442,7 @@ msgstr "No current agent data or agentId found"
 #~ msgid "Strategy summary"
 #~ msgstr "Strategy summary"
 
-#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:199
+#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:205
 msgid "Change Nickname"
 msgstr "Change nickname"
 
@@ -587,8 +587,8 @@ msgstr "Never miss a critical move again. Create your own agent or subscribe to 
 #~ msgstr "Create strategies"
 
 #: src/pages/Chat/components/ChatInput/index.tsx:134
-msgid "Welcome, <0>{userName}</0>"
-msgstr "Welcome, <0>{userName}</0>"
+#~ msgid "Welcome, <0>{userName}</0>"
+#~ msgstr "Welcome, <0>{userName}</0>"
 
 #: src/pages/VaultDetail/components/StrategyMarket/index.tsx:143
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Backtest/components/DataList/index.tsx:219
@@ -597,7 +597,7 @@ msgstr "Welcome, <0>{userName}</0>"
 msgid "APR"
 msgstr "APR"
 
-#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:171
+#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:177
 msgid "Change succesfully"
 msgstr "Change succesfully"
 
@@ -629,7 +629,7 @@ msgstr "Add question"
 #: src/pages/MyAgent/components/CreateModal/index.tsx:323
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/components/EditStrategyInfoModal/index.tsx:266
 #: src/components/Header/components/Preference/index.tsx:241
-#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:226
+#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:232
 msgid "Confirm"
 msgstr "Confirm"
 
@@ -744,7 +744,7 @@ msgstr "Est. receiving"
 msgid "You must claim funds afterward"
 msgstr "You must claim funds afterward"
 
-#: src/components/Header/index.tsx:283
+#: src/components/Header/index.tsx:313
 msgid "Vibe trading"
 msgstr "Vibe trading"
 
@@ -824,7 +824,6 @@ msgid "Thinking"
 msgstr "Thinking"
 
 #: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:137
-#: src/components/Header/index.tsx:294
 msgid "Coming soon"
 msgstr "Coming soon"
 
@@ -995,7 +994,8 @@ msgstr "{description}"
 #~ msgstr "You can proceed to log in."
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:318
-#: src/components/Header/index.tsx:291
+#: src/components/Header/index.tsx:321
+#: src/components/Header/index.tsx:324
 #: src/components/Header/components/MenuContent/index.tsx:112
 msgid "My"
 msgstr "My"
@@ -1233,6 +1233,10 @@ msgstr "User ID"
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:117
 msgid "On which day did BTC record its biggest single-day gain, and by how much?"
 msgstr "On which day did BTC record its biggest single-day gain, and by how much?"
+
+#: src/pages/Chat/components/ChatInput/index.tsx:158
+msgid "Welcome,<0> {userName}</0>"
+msgstr "Welcome,<0> {userName}</0>"
 
 #: src/pages/Chat/components/Shortcuts/index.tsx:497
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:150
@@ -1645,6 +1649,10 @@ msgstr "My portfolio"
 msgid "Created by:"
 msgstr "Created by:"
 
+#: src/components/Header/index.tsx:286
+msgid "No strategy"
+msgstr "No strategy"
+
 #: src/pages/AgentDetail/components/AgentDescription/index.tsx:353
 msgid "Minimum trigger interval: "
 msgstr "Minimum trigger interval: "
@@ -1923,7 +1931,7 @@ msgid "Running"
 msgstr "Running"
 
 #: src/pages/Vaults/components/Leaderboard/components/LeaderboardItem/index.tsx:93
-#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:295
+#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:293
 msgid "All-time APR:"
 msgstr "All-time APR:"
 
@@ -2009,6 +2017,10 @@ msgstr "Error"
 #: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:203
 msgid "Are you sure you want to discontinue the strategy?"
 msgstr "Are you sure you want to discontinue the strategy?"
+
+#: src/components/Header/index.tsx:287
+msgid "You need to create a strategy first"
+msgstr "You need to create a strategy first"
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:310
 #: src/pages/Chat/components/AiInput/components/CreateStrategy/index.tsx:127
@@ -2697,7 +2709,7 @@ msgstr "Available"
 #: src/pages/Chat/components/ContentItem/index.tsx:169
 #: src/pages/Chat/components/AiThreadsList/index.tsx:424
 #: src/components/Header/components/Preference/index.tsx:238
-#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:223
+#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:229
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -2814,7 +2826,7 @@ msgstr "No strategies"
 #~ msgid "Anything"
 #~ msgstr "Anything"
 
-#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:214
+#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:220
 msgid "Please enter your new nickname"
 msgstr "Please enter your new nickname"
 
@@ -2983,7 +2995,7 @@ msgstr "Monday"
 msgid "How many times has BTC surged more than 5% in a single day over the past 10 years?"
 msgstr "How many times has BTC surged more than 5% in a single day over the past 10 years?"
 
-#: src/components/Header/index.tsx:275
+#: src/components/Header/index.tsx:305
 msgid "Home"
 msgstr "Home"
 
@@ -3259,6 +3271,10 @@ msgstr "The strategy has been delisted."
 #~ msgid "Insufficient USDC balance, required: {requiredUsdc} USDC, current balance: {currentUsdc} USDC"
 #~ msgstr "Insufficient USDC balance, required: {requiredUsdc} USDC, current balance: {currentUsdc} USDC"
 
+#: src/pages/Chat/components/ChatInput/index.tsx:154
+msgid "Welcome to <0> starchild</0>"
+msgstr "Welcome to <0> starchild</0>"
+
 #: src/pages/Insights/components/LiveChat/components/ChatDetail/index.tsx:87
 msgid "AI chat"
 msgstr "AI chat"
@@ -3419,7 +3435,7 @@ msgstr "New chat"
 msgid "My Fund"
 msgstr "My fund"
 
-#: src/pages/Chat/components/ChatInput/index.tsx:141
+#: src/pages/Chat/components/ChatInput/index.tsx:170
 msgid "What's the move today?"
 msgstr "What's the move today?"
 
@@ -3565,7 +3581,9 @@ msgstr "Execution"
 msgid "This strategy is private and can only be viewed by its owner."
 msgstr "This strategy is private and can only be viewed by its owner."
 
-#: src/components/Header/index.tsx:286
+#: src/pages/Vaults/components/StrategyTable/index.tsx:283
+#: src/pages/VaultDetail/components/VaultDetailNavigation/index.tsx:53
+#: src/components/Header/index.tsx:316
 msgid "Leaderboard"
 msgstr "Leaderboard"
 
@@ -3697,7 +3715,6 @@ msgstr "AI experience"
 #~ msgstr "Proportion"
 
 #: src/pages/Connect/index.tsx:343
-#: src/pages/Chat/components/ChatInput/index.tsx:130
 msgid "Welcome to <0>starchild</0>"
 msgstr "Welcome to <0>starchild</0>"
 
@@ -3778,7 +3795,7 @@ msgstr "Followers"
 msgid "Expand details"
 msgstr "Expand details"
 
-#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:277
+#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:275
 msgid "Continue"
 msgstr "Continue"
 
@@ -3812,8 +3829,8 @@ msgstr "24H APR"
 
 #: src/pages/Vaults/components/StrategyTable/index.tsx:283
 #: src/pages/VaultDetail/components/VaultDetailNavigation/index.tsx:53
-msgid "Strategy hub"
-msgstr "Strategy hub"
+#~ msgid "Strategy hub"
+#~ msgstr "Strategy hub"
 
 #: src/components/AgentActions/translations.tsx:22
 msgid "Copy link"
@@ -3889,7 +3906,7 @@ msgstr "Strategy info"
 msgid "Close"
 msgstr "Close"
 
-#: src/pages/Chat/components/ChatInput/index.tsx:145
+#: src/pages/Chat/components/ChatInput/index.tsx:174
 #: src/components/ConnectWalletModal/index.tsx:109
 msgid "Login"
 msgstr "Login"

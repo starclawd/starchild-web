@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components'
 import { memo, useCallback, useMemo } from 'react'
 import { useChatTabIndex, useIsAiContentEmpty } from 'store/chat/hooks'
 import { vm } from 'pages/helper'
-import { useConnectWalletModalToggle, useIsMobile } from 'store/application/hooks'
+import { useConnectWalletModalToggle, useEditNicknameModalToggle, useIsMobile } from 'store/application/hooks'
 import { Trans } from '@lingui/react/macro'
 import CreateStrategy from './components/CreateStrategy'
 import Research from './components/Research'
@@ -10,6 +10,7 @@ import { useIsLogin, useUserInfo } from 'store/login/hooks'
 import { ANI_DURATION } from 'constants/index'
 import StrategyInfo from './components/StrategyInfo'
 import { ButtonBorder } from 'components/Button'
+import { IconBase } from 'components/Icons'
 
 const ChatInputWrapper = styled.div<{ $isEmpty: boolean }>`
   position: relative;
@@ -25,7 +26,9 @@ const ChatInputWrapper = styled.div<{ $isEmpty: boolean }>`
     `}
 `
 
-const Title = styled.div`
+const Title = styled.div<{ $isUserName: boolean }>`
+  display: flex;
+  align-items: center;
   font-size: 64px;
   font-style: normal;
   font-weight: 250;
@@ -37,11 +40,31 @@ const Title = styled.div`
     color: ${({ theme }) => theme.white};
     font-weight: 400;
   }
+  &:hover {
+    .edit-button {
+      opacity: 1;
+    }
+  }
+  ${({ $isUserName }) =>
+    $isUserName &&
+    css`
+      cursor: pointer;
+    `}
   ${({ theme }) =>
     theme.isMobile &&
     css`
       font-size: ${vm(42)};
     `}
+`
+
+const EditButton = styled(ButtonBorder)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-left: 12px;
+  opacity: 0;
 `
 
 const Description = styled.div`
@@ -107,6 +130,7 @@ export default memo(function ChatInput() {
   const [{ userName }] = useUserInfo()
   const [chatTabIndex] = useChatTabIndex()
   const isEmpty = useIsAiContentEmpty()
+  const toggleEditNicknameModal = useEditNicknameModalToggle()
   const toggleConnectWalletModal = useConnectWalletModalToggle()
   const showCreateStrategy = useMemo(() => {
     return chatTabIndex === 0 && isEmpty
@@ -125,15 +149,20 @@ export default memo(function ChatInput() {
     >
       {isEmpty && (
         <ChatInputEmptyContent>
-          <Title>
+          <Title $isUserName={!!userName} onClick={userName ? toggleEditNicknameModal : undefined}>
             {!userName ? (
               <Trans>
-                Welcome to <span>starchild</span>
+                Welcome to <span>&nbsp;starchild</span>
               </Trans>
             ) : (
               <Trans>
-                Welcome, <span>{userName}</span>
+                Welcome,<span>&nbsp;{userName}</span>
               </Trans>
+            )}
+            {userName && (
+              <EditButton className='edit-button'>
+                <IconBase className='icon-edit' />
+              </EditButton>
             )}
           </Title>
           <Description>
