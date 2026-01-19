@@ -1,28 +1,27 @@
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import Input, { InputType } from 'components/Input'
-import { ChangeEvent, useCallback, useState, ReactNode } from 'react'
+import { ChangeEvent, useCallback, useState, ReactNode, useMemo, memo } from 'react'
 import styled from 'styled-components'
 import Strategies from './components/Strategies'
 import { useSort, useSortableHeader, SortDirection } from 'components/TableSortableColumn'
 import { ANI_DURATION } from 'constants/index'
-import { IconBase } from 'components/Icons'
 import Tooltip from 'components/Tooltip'
+import tagBg from 'assets/vaults/tag-bg.png'
+import { useAllStrategiesOverview } from 'store/vaults/hooks'
+import { useUserInfo, useIsLogin } from 'store/login/hooks'
+import StrategyItem from './components/StrategyItem'
 
 const StrategyTableWrapper = styled.div`
   display: flex;
   flex-direction: column;
 `
 
-// Title + TableHeader 一起 sticky
-const StickyHeader = styled.div`
+const Title = styled.div`
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 11;
   background-color: ${({ theme }) => theme.black1000};
-`
-
-const Title = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -49,7 +48,11 @@ const InputWrapper = styled.div`
 `
 
 const TableHeaderWrapper = styled.div`
-  padding: 12px 40px 0;
+  position: sticky;
+  top: 88px;
+  z-index: 10;
+  background-color: ${({ theme }) => theme.black1000};
+  padding: 0 40px;
   transition: all ${ANI_DURATION}s;
   ${({ theme }) => theme.mediaMaxWidth.width1280`
     padding: 12px 20px 0;
@@ -108,6 +111,46 @@ const TableContent = styled.div`
   `}
 `
 
+const MyStrategiesSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding: 12px 40px 0;
+  transition: all ${ANI_DURATION}s;
+  ${({ theme }) => theme.mediaMaxWidth.width1280`
+    padding: 0 20px;
+  `}
+`
+
+const MyStrategiesTable = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  --name-column-width: 20%;
+
+  ${({ theme }) => theme.mediaMaxWidth.width1920`
+    --name-column-width: 280px;
+  `}
+  ${({ theme }) => theme.mediaMaxWidth.width1440`
+    --name-column-width: 260px;
+  `}
+  ${({ theme }) => theme.mediaMaxWidth.width1280`
+    --name-column-width: 240px;
+  `}
+`
+
+const SectionDivider = styled.div`
+  position: relative;
+  width: 100%;
+  height: 32px;
+  background-image: url(${tagBg});
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  padding-left: 16px;
+`
+
 const MaxDrawdown = styled.div`
   display: flex;
   align-items: center;
@@ -142,15 +185,51 @@ export const COLUMN_WIDTHS = [
   '80px', // Snapshot - 固定宽度
 ]
 
-export default function StrategyTable() {
+export default memo(function StrategyTable() {
   const [searchValue, setSearchValue] = useState('')
   const { sortState, handleSort } = useSort('all_time_apr', SortDirection.DESC)
   const createSortableHeader = useSortableHeader(sortState, handleSort)
+
+  const { allStrategies } = useAllStrategiesOverview()
+  const [{ userInfoId }] = useUserInfo()
+  const isLogin = useIsLogin()
 
   const changeSearchValue = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setSearchValue(value)
   }, [])
+
+  // 计算基于 all_time_apr 倒序的排名 Map
+  const aprRankMap = useMemo(() => {
+    const sorted = [...allStrategies].sort((a, b) => (b.all_time_apr || 0) - (a.all_time_apr || 0))
+    const rankMap = new Map<string, number>()
+    sorted.forEach((strategy, index) => {
+      if (strategy.strategy_id) {
+        rankMap.set(String(strategy.strategy_id), index + 1)
+      }
+    })
+    return rankMap
+  }, [allStrategies])
+
+  // 筛选出当前用户创建的策略
+  const myStrategies = useMemo(() => {
+    if (!isLogin || !userInfoId) return []
+    return allStrategies.filter((strategy) => strategy.user_info?.user_info_id === Number(userInfoId))
+  }, [allStrategies, userInfoId, isLogin])
+
+  // 通过 searchValue 筛选用户自己的策略
+  const filteredMyStrategies = useMemo(() => {
+    if (!searchValue.trim()) {
+      return myStrategies
+    }
+
+    const lowerSearchValue = searchValue.toLowerCase().trim()
+    return myStrategies.filter((strategy) => {
+      const userName = strategy.user_info?.user_name?.toLowerCase() || ''
+      const strategyName = strategy.strategy_name?.toLowerCase() || ''
+      return userName.includes(lowerSearchValue) || strategyName.includes(lowerSearchValue)
+    })
+  }, [myStrategies, searchValue])
 
   const headers: HeaderConfig[] = [
     { key: 'rank', title: '#', align: 'left' },
@@ -188,43 +267,65 @@ export default function StrategyTable() {
 
   return (
     <StrategyTableWrapper>
-      <StickyHeader>
-        <Title>
-          <span>
-            <Trans>Strategy hub</Trans>
-          </span>
-          <InputWrapper>
-            <Input
-              inputValue={searchValue}
-              onChange={changeSearchValue}
-              placeholder={t`Search by name or leader...`}
-              inputType={InputType.SEARCH}
-              onResetValue={() => setSearchValue('')}
-            />
-          </InputWrapper>
-        </Title>
-        <TableHeaderWrapper>
-          <HeaderTable>
+      <Title>
+        <span>
+          <Trans>Strategy hub</Trans>
+        </span>
+        <InputWrapper>
+          <Input
+            inputValue={searchValue}
+            onChange={changeSearchValue}
+            placeholder={t`Search by name or leader...`}
+            inputType={InputType.SEARCH}
+            onResetValue={() => setSearchValue('')}
+          />
+        </InputWrapper>
+      </Title>
+
+      {/* 用户自己创建的策略 - 在 Title 下面，TableHeader 上面，随页面滚动 */}
+      {filteredMyStrategies.length > 0 && (
+        <MyStrategiesSection>
+          <MyStrategiesTable>
             <colgroup>
               {COLUMN_WIDTHS.map((width, index) => (
                 <col key={index} style={{ width }} />
               ))}
             </colgroup>
-            <thead>
-              <HeaderRow>
-                {headers.map((header) => (
-                  <TableHeaderCell key={header.key} $align={header.align}>
-                    {header.title}
-                  </TableHeaderCell>
-                ))}
-              </HeaderRow>
-            </thead>
-          </HeaderTable>
-        </TableHeaderWrapper>
-      </StickyHeader>
+            {filteredMyStrategies.map((record, index) => (
+              <StrategyItem
+                key={record.strategy_id || `my-${index}`}
+                record={record}
+                aprRank={record.strategy_id ? aprRankMap.get(String(record.strategy_id)) || 0 : 0}
+              />
+            ))}
+          </MyStrategiesTable>
+          {/* 分割区域 */}
+          <SectionDivider />
+        </MyStrategiesSection>
+      )}
+
+      <TableHeaderWrapper>
+        <HeaderTable>
+          <colgroup>
+            {COLUMN_WIDTHS.map((width, index) => (
+              <col key={index} style={{ width }} />
+            ))}
+          </colgroup>
+          <thead>
+            <HeaderRow>
+              {headers.map((header) => (
+                <TableHeaderCell key={header.key} $align={header.align}>
+                  {header.title}
+                </TableHeaderCell>
+              ))}
+            </HeaderRow>
+          </thead>
+        </HeaderTable>
+      </TableHeaderWrapper>
+
       <TableContent>
         <Strategies searchValue={searchValue} sortState={sortState} />
       </TableContent>
     </StrategyTableWrapper>
   )
-}
+})
