@@ -199,7 +199,6 @@ export default memo(function TvfSection() {
     fetchIsFollowed,
     fetchStrategyInfo,
   ])
-  console.log('showUserBalance', showUserBalance, onchainBalance, onchainBalance?.total_balance_usd)
   return (
     <TvfSectionWrapper>
       <TopContent $isFollowedStrategy={isFollowedStrategy}>
