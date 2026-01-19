@@ -293,7 +293,7 @@ msgid "Friday"
 msgstr "星期五"
 
 #: src/pages/MyPortfolio/index.tsx:136
-#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:274
+#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:272
 #: src/components/Header/components/MenuContent/index.tsx:74
 msgid "My strategies"
 msgstr "我的策略"
@@ -503,8 +503,8 @@ msgid "Never miss a critical move again. Create your own agent or subscribe to e
 msgstr "再也不要错过关键行情。创建自己的智能体，或在市场中订阅现有智能体。"
 
 #: src/pages/Chat/components/ChatInput/index.tsx:134
-msgid "Welcome, <0>{userName}</0>"
-msgstr "欢迎您，<0>{userName}</0>"
+#~ msgid "Welcome, <0>{userName}</0>"
+#~ msgstr "欢迎您，<0>{userName}</0>"
 
 #: src/pages/VaultDetail/components/StrategyMarket/index.tsx:143
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Backtest/components/DataList/index.tsx:219
@@ -1101,6 +1101,10 @@ msgstr "用户 ID"
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:117
 msgid "On which day did BTC record its biggest single-day gain, and by how much?"
 msgstr "BTC 在哪一天创下单日最大涨幅，涨幅有多大？"
+
+#: src/pages/Chat/components/ChatInput/index.tsx:147
+msgid "Welcome,<0> {userName}</0>"
+msgstr ""
 
 #: src/pages/Chat/components/Shortcuts/index.tsx:497
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:150
@@ -1711,7 +1715,7 @@ msgid "Running"
 msgstr "运行"
 
 #: src/pages/Vaults/components/Leaderboard/components/LeaderboardItem/index.tsx:93
-#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:295
+#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:293
 msgid "All-time APR:"
 msgstr "年化收益率："
 
@@ -2890,6 +2894,10 @@ msgstr "下载"
 msgid "The strategy has been delisted."
 msgstr "该策略已下架。"
 
+#: src/pages/Chat/components/ChatInput/index.tsx:143
+msgid "Welcome to <0> starchild</0>"
+msgstr ""
+
 #: src/pages/Insights/components/LiveChat/components/ChatDetail/index.tsx:87
 msgid "AI chat"
 msgstr "AI 聊天"
@@ -3038,7 +3046,7 @@ msgstr "新聊天"
 msgid "My Fund"
 msgstr "我的资金"
 
-#: src/pages/Chat/components/ChatInput/index.tsx:141
+#: src/pages/Chat/components/ChatInput/index.tsx:159
 msgid "What's the move today?"
 msgstr "今天怎么操作？"
 
@@ -3300,7 +3308,6 @@ msgstr "AI 体验"
 #~ msgstr "比例"
 
 #: src/pages/Connect/index.tsx:343
-#: src/pages/Chat/components/ChatInput/index.tsx:130
 msgid "Welcome to <0>starchild</0>"
 msgstr "欢迎来到 <0>starchild</0>"
 
@@ -3377,7 +3384,7 @@ msgstr "关注"
 msgid "Expand details"
 msgstr "展开细节"
 
-#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:277
+#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:275
 msgid "Continue"
 msgstr "继续"
 
@@ -3484,7 +3491,7 @@ msgstr "策略信息"
 msgid "Close"
 msgstr "关闭"
 
-#: src/pages/Chat/components/ChatInput/index.tsx:145
+#: src/pages/Chat/components/ChatInput/index.tsx:163
 #: src/components/ConnectWalletModal/index.tsx:109
 msgid "Login"
 msgstr "登录"

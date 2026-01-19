@@ -40,7 +40,7 @@ const StrategyApr = styled.div`
 
 const AprItem = styled.div<{ $isPositive: boolean; $invalidVaule: boolean }>`
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: 4px;
   span:first-child {
     font-size: 11px;

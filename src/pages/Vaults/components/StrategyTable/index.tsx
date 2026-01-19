@@ -280,7 +280,7 @@ export default memo(function StrategyTable() {
     <StrategyTableWrapper>
       <Title>
         <span>
-          <Trans>Strategy hub</Trans>
+          <Trans>Leaderboard</Trans>
         </span>
         <InputWrapper>
           <Input

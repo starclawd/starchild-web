@@ -331,7 +331,7 @@ msgid "Friday"
 msgstr "Friday"
 
 #: src/pages/MyPortfolio/index.tsx:136
-#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:274
+#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:272
 #: src/components/Header/components/MenuContent/index.tsx:74
 msgid "My strategies"
 msgstr "My strategies"
@@ -587,8 +587,8 @@ msgstr "Never miss a critical move again. Create your own agent or subscribe to 
 #~ msgstr "Create strategies"
 
 #: src/pages/Chat/components/ChatInput/index.tsx:134
-msgid "Welcome, <0>{userName}</0>"
-msgstr "Welcome, <0>{userName}</0>"
+#~ msgid "Welcome, <0>{userName}</0>"
+#~ msgstr "Welcome, <0>{userName}</0>"
 
 #: src/pages/VaultDetail/components/StrategyMarket/index.tsx:143
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Backtest/components/DataList/index.tsx:219
@@ -1233,6 +1233,10 @@ msgstr "User ID"
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:117
 msgid "On which day did BTC record its biggest single-day gain, and by how much?"
 msgstr "On which day did BTC record its biggest single-day gain, and by how much?"
+
+#: src/pages/Chat/components/ChatInput/index.tsx:147
+msgid "Welcome,<0> {userName}</0>"
+msgstr "Welcome,<0> {userName}</0>"
 
 #: src/pages/Chat/components/Shortcuts/index.tsx:497
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:150
@@ -1923,7 +1927,7 @@ msgid "Running"
 msgstr "Running"
 
 #: src/pages/Vaults/components/Leaderboard/components/LeaderboardItem/index.tsx:93
-#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:295
+#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:293
 msgid "All-time APR:"
 msgstr "All-time APR:"
 
@@ -3259,6 +3263,10 @@ msgstr "The strategy has been delisted."
 #~ msgid "Insufficient USDC balance, required: {requiredUsdc} USDC, current balance: {currentUsdc} USDC"
 #~ msgstr "Insufficient USDC balance, required: {requiredUsdc} USDC, current balance: {currentUsdc} USDC"
 
+#: src/pages/Chat/components/ChatInput/index.tsx:143
+msgid "Welcome to <0> starchild</0>"
+msgstr "Welcome to <0> starchild</0>"
+
 #: src/pages/Insights/components/LiveChat/components/ChatDetail/index.tsx:87
 msgid "AI chat"
 msgstr "AI chat"
@@ -3419,7 +3427,7 @@ msgstr "New chat"
 msgid "My Fund"
 msgstr "My fund"
 
-#: src/pages/Chat/components/ChatInput/index.tsx:141
+#: src/pages/Chat/components/ChatInput/index.tsx:159
 msgid "What's the move today?"
 msgstr "What's the move today?"
 
@@ -3697,7 +3705,6 @@ msgstr "AI experience"
 #~ msgstr "Proportion"
 
 #: src/pages/Connect/index.tsx:343
-#: src/pages/Chat/components/ChatInput/index.tsx:130
 msgid "Welcome to <0>starchild</0>"
 msgstr "Welcome to <0>starchild</0>"
 
@@ -3778,7 +3785,7 @@ msgstr "Followers"
 msgid "Expand details"
 msgstr "Expand details"
 
-#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:277
+#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:275
 msgid "Continue"
 msgstr "Continue"
 
@@ -3889,7 +3896,7 @@ msgstr "Strategy info"
 msgid "Close"
 msgstr "Close"
 
-#: src/pages/Chat/components/ChatInput/index.tsx:145
+#: src/pages/Chat/components/ChatInput/index.tsx:163
 #: src/components/ConnectWalletModal/index.tsx:109
 msgid "Login"
 msgstr "Login"

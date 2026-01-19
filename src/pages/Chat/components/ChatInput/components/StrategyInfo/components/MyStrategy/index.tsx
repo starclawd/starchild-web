@@ -247,9 +247,7 @@ export default memo(function MyStrategy() {
       document.removeEventListener('fullscreenchange', handleFullscreenChange)
     }
   }, [])
-  const isShowDefaultStyle = useMemo(() => {
-    return (myStrategies.length === 0 && !isLoadingMyStrategies) || !isLogin
-  }, [myStrategies, isLogin, isLoadingMyStrategies])
+  const isShowDefaultStyle = true
 
   const goCreateStrategyPage = useCallback(
     (strategyId: string) => {
