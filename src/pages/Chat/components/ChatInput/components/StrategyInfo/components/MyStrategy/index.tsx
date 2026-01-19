@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/react/macro'
 import { ANI_DURATION } from 'constants/index'
 import { IconBase, IconChatStrategyBg } from 'components/Icons'
-import { memo, useCallback, useMemo, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
@@ -231,6 +231,21 @@ export default memo(function MyStrategy() {
 
     video.muted = !video.muted
     setIsMuted(video.muted)
+  }, [])
+
+  // 监听全屏变化，同步 video 的 muted 状态到 React 状态
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      const video = videoRef.current
+      if (video) {
+        setIsMuted(video.muted)
+      }
+    }
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange)
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange)
+    }
   }, [])
   const isShowDefaultStyle = useMemo(() => {
     return (myStrategies.length === 0 && !isLoadingMyStrategies) || !isLogin
