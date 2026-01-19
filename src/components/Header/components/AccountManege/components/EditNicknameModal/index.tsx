@@ -174,7 +174,7 @@ export function EditNicknameModal() {
     if (result.isSuccess) {
       await triggerGetUserInfo()
       toast({
-        title: <Trans>Change succesfully</Trans>,
+        title: <Trans>Updated successfully</Trans>,
         description: nickname,
         status: TOAST_STATUS.SUCCESS,
         typeIcon: 'icon-account',

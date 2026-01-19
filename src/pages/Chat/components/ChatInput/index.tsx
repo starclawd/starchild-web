@@ -152,7 +152,7 @@ export default memo(function ChatInput() {
           <Title $isUserName={!!userName} onClick={userName ? toggleEditNicknameModal : undefined}>
             {!userName ? (
               <Trans>
-                Welcome to <span>&nbsp;starchild</span>
+                Welcome to <span>&nbsp;Starchild</span>
               </Trans>
             ) : (
               <Trans>

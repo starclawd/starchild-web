@@ -341,7 +341,7 @@ export default function Connect() {
         <LeftWrapper>
           <span>
             <Trans>
-              Welcome to <span>starchild</span>
+              Welcome to <span>Starchild</span>
             </Trans>
           </span>
           <span>
