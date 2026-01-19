@@ -90,7 +90,7 @@ const Vaults = memo(() => {
           <VaultsHeaderTop>
             <VaultsTitleWrapper>
               <VaultsTitleLine1>
-                <Trans>Vibe more, earn more.</Trans>
+                <Trans>Vibe it, Earn it.</Trans>
               </VaultsTitleLine1>
             </VaultsTitleWrapper>
 

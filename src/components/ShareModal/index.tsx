@@ -404,14 +404,14 @@ export default memo(function ShareModal() {
 
   // 分享到 Telegram
   const handleShareToTelegram = useCallback(() => {
-    const shareText = t`Vibe more, earn more on Starchild.`
+    const shareText = t`Vibe it, Earn it on Starchild.`
     const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`
     window.open(telegramUrl, '_blank')
   }, [shareUrl])
 
   // 分享到 X (Twitter)
   const handleShareToX = useCallback(() => {
-    const shareText = t`Vibe more, earn more on Starchild.`
+    const shareText = t`Vibe it, Earn it on Starchild.`
     const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`
     window.open(xUrl, '_blank')
   }, [shareUrl])
@@ -445,7 +445,7 @@ export default memo(function ShareModal() {
               <ShareText>
                 <span className='share-text-title'>STARCHILD</span>
                 <span className='share-text-content'>
-                  <Trans>Vibe more, Earn more</Trans>
+                  <Trans>Vibe it, Earn it</Trans>
                 </span>
               </ShareText>
             </ShareQrCode>
