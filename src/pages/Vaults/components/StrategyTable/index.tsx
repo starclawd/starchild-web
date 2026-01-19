@@ -52,7 +52,7 @@ const TableHeaderWrapper = styled.div`
   top: 88px;
   z-index: 10;
   background-color: ${({ theme }) => theme.black1000};
-  padding: 0 40px;
+  padding: 12px 40px 0;
   transition: all ${ANI_DURATION}s;
   ${({ theme }) => theme.mediaMaxWidth.width1280`
     padding: 12px 20px 0;
@@ -115,7 +115,7 @@ const MyStrategiesSection = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  padding: 12px 40px 0;
+  padding: 0 40px;
   transition: all ${ANI_DURATION}s;
   ${({ theme }) => theme.mediaMaxWidth.width1280`
     padding: 0 20px;
@@ -288,6 +288,25 @@ export default memo(function StrategyTable() {
         </InputWrapper>
       </Title>
 
+      <TableHeaderWrapper>
+        <HeaderTable>
+          <colgroup>
+            {COLUMN_WIDTHS.map((width, index) => (
+              <col key={index} style={{ width }} />
+            ))}
+          </colgroup>
+          <thead>
+            <HeaderRow>
+              {headers.map((header) => (
+                <TableHeaderCell key={header.key} $align={header.align}>
+                  {header.title}
+                </TableHeaderCell>
+              ))}
+            </HeaderRow>
+          </thead>
+        </HeaderTable>
+      </TableHeaderWrapper>
+
       {/* 用户自己创建的策略 - 在 Title 下面，TableHeader 上面，随页面滚动 */}
       {filteredMyStrategies.length > 0 && (
         <MyStrategiesSection>
@@ -309,25 +328,6 @@ export default memo(function StrategyTable() {
           <SectionDivider />
         </MyStrategiesSection>
       )}
-
-      <TableHeaderWrapper>
-        <HeaderTable>
-          <colgroup>
-            {COLUMN_WIDTHS.map((width, index) => (
-              <col key={index} style={{ width }} />
-            ))}
-          </colgroup>
-          <thead>
-            <HeaderRow>
-              {headers.map((header) => (
-                <TableHeaderCell key={header.key} $align={header.align}>
-                  {header.title}
-                </TableHeaderCell>
-              ))}
-            </HeaderRow>
-          </thead>
-        </HeaderTable>
-      </TableHeaderWrapper>
 
       <TableContent>
         <Strategies searchValue={searchValue} sortState={sortState} />
