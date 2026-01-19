@@ -254,12 +254,12 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
       resetAllState()
     }
     setTimeout(() => {
-      sendChatUserContent({
-        value,
-      })
       if (!isMatchCurrentRouter(currentRouter, ROUTER.CREATE_STRATEGY)) {
         setCurrentRouter(ROUTER.CREATE_STRATEGY)
       }
+      sendChatUserContent({
+        value,
+      })
     }, 0)
   }, [
     value,
