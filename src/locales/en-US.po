@@ -59,7 +59,7 @@ msgstr "Suspend"
 msgid "Receive a daily report including market overview, top news highlights, and BTC technical analysis — delivered every day at 00:00 UTC."
 msgstr "Receive a daily report including market overview, top news highlights, and BTC technical analysis — delivered every day at 00:00 UTC."
 
-#: src/pages/Vaults/components/CreateStrategy/index.tsx:127
+#: src/pages/Vaults/components/CreateStrategy/index.tsx:163
 #: src/pages/MyPortfolio/components/MyStrategies/index.tsx:454
 #: src/pages/MyPortfolio/components/MyStrategies/components/VaultDetail/index.tsx:146
 msgid "Commission"
@@ -80,6 +80,11 @@ msgstr "liquidity BTC"
 #: src/pages/VaultDetail/components/DepositAndWithdraw/components/Process/components/WithdrawProcess/index.tsx:12
 msgid "Up to 6 hours"
 msgstr "Up to 6 hours"
+
+#: src/components/ShareModal/index.tsx:407
+#: src/components/ShareModal/index.tsx:414
+msgid "Vibe it, Earn it on Starchild."
+msgstr "Vibe it, Earn it on Starchild."
 
 #: src/pages/Chat/components/AiThreadsList/index.tsx:378
 msgid "Current Session"
@@ -234,7 +239,7 @@ msgstr "Positions"
 msgid "Collapse details"
 msgstr "Collapse details"
 
-#: src/pages/Vaults/components/CreateStrategy/index.tsx:116
+#: src/pages/Vaults/components/CreateStrategy/index.tsx:152
 #: src/pages/CreateStrategy/components/StrategyInfo/components/DeployModal/components/DeployForm/index.tsx:188
 msgid "Launch your<0/> Strategy Agent"
 msgstr "Launch your<0/> Strategy Agent"
@@ -290,11 +295,11 @@ msgid "Deposited in Vault"
 msgstr "Deposited in Vault"
 
 #: src/pages/Vaults/components/MyStrateyStats/index.tsx:593
-#: src/pages/Vaults/components/CreateStrategy/index.tsx:138
+#: src/pages/Vaults/components/CreateStrategy/index.tsx:174
 #: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:87
 #: src/pages/Chat/components/ChatInput/components/TabList/index.tsx:40
 #: src/pages/Chat/components/ChatInput/components/ModeSelect/index.tsx:78
-#: src/components/Header/index.tsx:277
+#: src/components/Header/index.tsx:278
 msgid "Create strategy"
 msgstr "Create strategy"
 
@@ -326,7 +331,7 @@ msgid "Friday"
 msgstr "Friday"
 
 #: src/pages/MyPortfolio/index.tsx:136
-#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:259
+#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:274
 #: src/components/Header/components/MenuContent/index.tsx:74
 msgid "My strategies"
 msgstr "My strategies"
@@ -739,7 +744,7 @@ msgstr "Est. receiving"
 msgid "You must claim funds afterward"
 msgstr "You must claim funds afterward"
 
-#: src/components/Header/index.tsx:282
+#: src/components/Header/index.tsx:283
 msgid "Vibe trading"
 msgstr "Vibe trading"
 
@@ -819,7 +824,7 @@ msgid "Thinking"
 msgstr "Thinking"
 
 #: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:137
-#: src/components/Header/index.tsx:293
+#: src/components/Header/index.tsx:294
 msgid "Coming soon"
 msgstr "Coming soon"
 
@@ -990,7 +995,7 @@ msgstr "{description}"
 #~ msgstr "You can proceed to log in."
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:318
-#: src/components/Header/index.tsx:290
+#: src/components/Header/index.tsx:291
 #: src/components/Header/components/MenuContent/index.tsx:112
 msgid "My"
 msgstr "My"
@@ -1119,6 +1124,10 @@ msgstr "TVL"
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/index.tsx:213
 #~ msgid "Execution layer"
 #~ msgstr "Execution layer"
+
+#: src/pages/Vaults/index.tsx:93
+msgid "Vibe it, Earn it."
+msgstr "Vibe it, Earn it."
 
 #: src/pages/MyVault/components/MyAssets/index.tsx:101
 #: src/pages/MyPortfolio/components/MyStrategies/index.tsx:414
@@ -1424,10 +1433,6 @@ msgstr "Hot"
 #~ msgid "My Agent"
 #~ msgstr "My agent"
 
-#: src/components/ShareModal/index.tsx:448
-msgid "Vibe more, Earn more"
-msgstr "Vibe more, Earn more"
-
 #: src/pages/VaultDetail/components/StrategyRadarChart/index.tsx:124
 msgid "Profit"
 msgstr "Profit"
@@ -1460,10 +1465,6 @@ msgstr "Market movements"
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Backtest/components/Workflow/components/ParamsContent/index.tsx:108
 msgid "Leverage"
 msgstr "Leverage"
-
-#: src/pages/Vaults/index.tsx:93
-msgid "Vibe more, earn more."
-msgstr "Vibe more, earn more."
 
 #: src/components/AgentShare/index.tsx:298
 #~ msgid "Copy Successful"
@@ -1519,6 +1520,10 @@ msgstr "Trend check or quick trade idea? Your call!"
 msgid "Scan code to log in"
 msgstr "Scan code to log in"
 
+#: src/components/ShareModal/index.tsx:448
+msgid "Vibe it, Earn it"
+msgstr "Vibe it, Earn it"
+
 #: src/pages/VaultDetail/components/VaultPositionsOrders/components/VaultOrderHistory/index.tsx:144
 #: src/pages/VaultDetail/components/VaultPositionsOrders/components/VaultOpenOrders/index.tsx:146
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Backtest/components/BuySellTable/index.tsx:92
@@ -1541,19 +1546,14 @@ msgstr "Positions{0}"
 msgid "Risk Management"
 msgstr "Risk management"
 
-#: src/pages/Vaults/components/StrategyTable/components/StrategyItem/index.tsx:343
-#: src/pages/VaultDetail/components/VaultInfo/components/TvfSection/index.tsx:159
+#: src/pages/Vaults/components/StrategyTable/components/StrategyItem/index.tsx:344
+#: src/pages/VaultDetail/components/VaultInfo/components/TvfSection/index.tsx:226
 msgid "Follow"
 msgstr "Follow"
 
 #: src/components/Header/components/WalletAdressModal/index.tsx:215
 #~ msgid "Arbitrum One address"
 #~ msgstr "Arbitrum one address"
-
-#: src/components/ShareModal/index.tsx:407
-#: src/components/ShareModal/index.tsx:414
-msgid "Vibe more, earn more on Starchild."
-msgstr "Vibe more, earn more on Starchild."
 
 #: src/hooks/useSubErrorInfo.tsx:29
 #~ msgid " User has been identified. Please claim your Early Access Pass and link your telegram."
@@ -1907,8 +1907,8 @@ msgstr "My wallet"
 msgid "Every Sunday, receive a crypto market sentiment summary based on social trends, funding rates, and the fear & greed index."
 msgstr "Every Sunday, receive a crypto market sentiment summary based on social trends, funding rates, and the fear & greed index."
 
-#: src/pages/Vaults/components/StrategyTable/components/StrategyItem/index.tsx:343
-#: src/pages/VaultDetail/components/VaultInfo/components/TvfSection/index.tsx:159
+#: src/pages/Vaults/components/StrategyTable/components/StrategyItem/index.tsx:344
+#: src/pages/VaultDetail/components/VaultInfo/components/TvfSection/index.tsx:226
 msgid "Followed"
 msgstr "Followed"
 
@@ -1923,7 +1923,7 @@ msgid "Running"
 msgstr "Running"
 
 #: src/pages/Vaults/components/Leaderboard/components/LeaderboardItem/index.tsx:93
-#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:280
+#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:295
 msgid "All-time APR:"
 msgstr "All-time APR:"
 
@@ -2478,7 +2478,7 @@ msgstr "Please enter the Agent description"
 msgid "Withdraw from Vault"
 msgstr "Withdraw from Vault"
 
-#: src/pages/Vaults/components/CreateStrategy/index.tsx:133
+#: src/pages/Vaults/components/CreateStrategy/index.tsx:169
 msgid "How to create a strategy?"
 msgstr "How to create a strategy?"
 
@@ -2983,7 +2983,7 @@ msgstr "Monday"
 msgid "How many times has BTC surged more than 5% in a single day over the past 10 years?"
 msgstr "How many times has BTC surged more than 5% in a single day over the past 10 years?"
 
-#: src/components/Header/index.tsx:274
+#: src/components/Header/index.tsx:275
 msgid "Home"
 msgstr "Home"
 
@@ -3565,7 +3565,7 @@ msgstr "Execution"
 msgid "This strategy is private and can only be viewed by its owner."
 msgstr "This strategy is private and can only be viewed by its owner."
 
-#: src/components/Header/index.tsx:285
+#: src/components/Header/index.tsx:286
 msgid "Leaderboard"
 msgstr "Leaderboard"
 
@@ -3778,7 +3778,7 @@ msgstr "Followers"
 msgid "Expand details"
 msgstr "Expand details"
 
-#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:262
+#: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:277
 msgid "Continue"
 msgstr "Continue"
 
