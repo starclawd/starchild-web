@@ -1,7 +1,7 @@
 import { IconBase } from 'components/Icons'
 import { memo, useMemo } from 'react'
 import styled from 'styled-components'
-import { URL, X } from 'utils/url'
+import { URL, TELEGRAM, X } from 'utils/url'
 import { ANI_DURATION } from 'constants/index'
 
 const SocialWrapper = styled.div`
@@ -37,7 +37,7 @@ export default memo(function Social() {
     return [
       {
         key: 'telegram',
-        href: '',
+        href: URL[TELEGRAM],
         icon: 'icon-telegram',
       },
       {

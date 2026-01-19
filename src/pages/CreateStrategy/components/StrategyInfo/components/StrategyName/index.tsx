@@ -171,12 +171,9 @@ export default memo(function StrategyName({
   const changeName = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       if (isLoading) return
-      const value = e.target.value
-      // 限制20个字符（中文算2个，英文算1个）
-      if (getCharacterLength(value) > 20) return
-      setName(value)
+      setName(e.target.value)
     },
-    [isLoading, getCharacterLength],
+    [isLoading],
   )
 
   const openEdit = useCallback(() => {
@@ -194,6 +191,17 @@ export default memo(function StrategyName({
 
   const handleConfirm = useCallback(async () => {
     if (!name.trim() || isLoading) {
+      return
+    }
+    // 校验字符长度限制（中文算2个，英文算1个）
+    if (getCharacterLength(name) > 20) {
+      toast({
+        title: <Trans>Error</Trans>,
+        description: <Trans>Exceed the character limit (20)</Trans>,
+        status: TOAST_STATUS.ERROR,
+        typeIcon: 'icon-edit',
+        iconTheme: theme.black0,
+      })
       return
     }
     setIsLoading(true)
@@ -215,7 +223,17 @@ export default memo(function StrategyName({
     } finally {
       setIsLoading(false)
     }
-  }, [name, isLoading, descriptionProp, strategyId, theme.black0, toast, refetchStrategyDetail, triggerEditStrategy])
+  }, [
+    name,
+    isLoading,
+    getCharacterLength,
+    descriptionProp,
+    strategyId,
+    theme.black0,
+    toast,
+    refetchStrategyDetail,
+    triggerEditStrategy,
+  ])
 
   // ESC 和 Enter 键绑定到 document
   useEffect(() => {
@@ -290,7 +308,6 @@ export default memo(function StrategyName({
                 onChange={changeName}
                 disabled={isLoading}
                 placeholder='Strategy Name'
-                maxLength={20}
               />
             </StrategyNameInputWrapper>
           ) : (

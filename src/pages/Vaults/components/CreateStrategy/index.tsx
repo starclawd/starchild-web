@@ -1,11 +1,14 @@
 import { Trans } from '@lingui/react/macro'
-import { memo, useCallback } from 'react'
+import { memo, useCallback, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { ButtonCommon } from 'components/Button'
 import { IconBase } from 'components/Icons'
+import Modal from 'components/Modal'
 import createStrategyBg from 'assets/vaults/create-strategy-bg.svg'
 import { useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
+import { ANI_DURATION } from 'constants/index'
+import createStrateVideo from 'assets/createstrategy/create-stratygy.mp4'
 
 const CreateStrategyWrapper = styled.div`
   position: relative;
@@ -86,7 +89,12 @@ const BottomContent = styled.div`
     font-style: normal;
     font-weight: 500;
     line-height: 20px;
+    cursor: pointer;
+    transition: color ${ANI_DURATION}s;
     color: ${({ theme }) => theme.black300};
+    &:hover {
+      color: ${({ theme }) => theme.black0};
+    }
   }
 `
 
@@ -103,11 +111,39 @@ const ButtonCreate = styled(ButtonCommon)`
   }
 `
 
+const VideoWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  video {
+    max-width: 90vw;
+    max-height: 90vh;
+    border-radius: 8px;
+  }
+`
+
 export default memo(function CreateStrategy() {
   const setCurrentRouter = useSetCurrentRouter()
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const [showVideo, setShowVideo] = useState(false)
+
   const goCreateStrategyPage = useCallback(() => {
     setCurrentRouter(ROUTER.CHAT)
   }, [setCurrentRouter])
+
+  const handleOpenVideo = useCallback(() => {
+    setShowVideo(true)
+  }, [])
+
+  const handleCloseVideo = useCallback(() => {
+    setShowVideo(false)
+    if (videoRef.current) {
+      videoRef.current.pause()
+      videoRef.current.currentTime = 0
+    }
+  }, [])
+
   return (
     <CreateStrategyWrapper>
       <img src={createStrategyBg} alt='create-strategy-bg' />
@@ -129,7 +165,7 @@ export default memo(function CreateStrategy() {
         </TopRight>
       </TopContent>
       <BottomContent>
-        <span className='bottom-content-text'>
+        <span className='bottom-content-text' onClick={handleOpenVideo}>
           <Trans>How to create a strategy?</Trans>
         </span>
         <ButtonCreate onClick={goCreateStrategyPage}>
@@ -139,6 +175,11 @@ export default memo(function CreateStrategy() {
           </span>
         </ButtonCreate>
       </BottomContent>
+      <Modal isOpen={showVideo} onDismiss={handleCloseVideo} useDismiss>
+        <VideoWrapper>
+          <video ref={videoRef} src={createStrateVideo} controls autoPlay />
+        </VideoWrapper>
+      </Modal>
     </CreateStrategyWrapper>
   )
 })
