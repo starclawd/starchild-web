@@ -108,7 +108,7 @@ export default memo(function TabList() {
           (codeGenerated || isGeneratingCode || isGeneratingCodeFrontend || (hasPaperTrading && !hasCreateStrategy)) &&
           isLogin
         ),
-        intervalDuration: 30000,
+        intervalDuration: 120000,
         isLoading: isGeneratingCodeFrontend || isGeneratingCode,
         clickCallback: handleTabClick(STRATEGY_TAB_INDEX.CODE),
       },
