@@ -260,7 +260,7 @@ msgstr "Est. claimable in {estClaimMinutes} mins."
 msgid "Finish defining your strategy in Step 1 first."
 msgstr "Finish defining your strategy in Step 1 first."
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:268
+#: src/pages/Vaults/components/StrategyTable/index.tsx:262
 #: src/components/ShareModal/index.tsx:281
 msgid "TVF"
 msgstr "TVF"
@@ -484,7 +484,7 @@ msgstr "Oops! Something went wrong!"
 msgid "Launched"
 msgstr "Launched"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:248
+#: src/pages/Vaults/components/StrategyTable/index.tsx:242
 msgid "Leader"
 msgstr "Leader"
 
@@ -524,7 +524,7 @@ msgstr "Google SDK failed to load. Please refresh the page and try again."
 msgid "Hour"
 msgstr "Hour"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:247
+#: src/pages/Vaults/components/StrategyTable/index.tsx:241
 #: src/pages/VaultDetail/components/StrategyMarket/index.tsx:139
 #: src/pages/MyPortfolio/components/MyVaults/index.tsx:210
 #: src/pages/MyPortfolio/components/MyStrategies/index.tsx:382
@@ -598,8 +598,8 @@ msgid "APR"
 msgstr "APR"
 
 #: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:177
-msgid "Change succesfully"
-msgstr "Change succesfully"
+#~ msgid "Change succesfully"
+#~ msgstr "Change succesfully"
 
 #: src/pages/Chat/components/ChatInput/components/Robot/index.tsx:136
 msgid "Type a coin or strategy, let's see what AI cooks up!"
@@ -1248,8 +1248,8 @@ msgstr "What's the BTC ETF net inflow over the past 24 hours?"
 #~ msgstr "Once deleted:"
 
 #: src/pages/VaultDetail/components/PaperTradingPerformance/components/StrategyChartStats.tsx:96
-msgid "Day"
-msgstr "Day"
+#~ msgid "Day"
+#~ msgstr "Day"
 
 #: src/pages/VaultDetail/components/VaultDepositWithdraw/index.tsx:154
 msgid "This will allow you to deposit USDC into the vault"
@@ -1298,8 +1298,8 @@ msgstr "Create strategy failed"
 #~ msgstr "Your Starchild early access pass has been consumed. <0/>A Starchild Gen:0 Builders NFT has been sent to your wallet."
 
 #: src/pages/VaultDetail/components/PaperTradingPerformance/components/StrategyChartStats.tsx:96
-msgid "Days"
-msgstr "Days"
+#~ msgid "Days"
+#~ msgstr "Days"
 
 #: src/pages/Chat/components/Shortcuts/index.tsx:513
 #: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:187
@@ -1314,7 +1314,7 @@ msgstr "Safety"
 #~ msgid "Deploy to Production"
 #~ msgstr "Deploy to Production"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:249
+#: src/pages/Vaults/components/StrategyTable/index.tsx:243
 #: src/pages/MyPortfolio/components/MyVaults/index.tsx:220
 #: src/components/ShareModal/index.tsx:272
 msgid "All time APR"
@@ -1874,7 +1874,7 @@ msgstr "What new crypto projects launched last week or are launching next week?"
 msgid "You do not have permission to access, please login first."
 msgstr "You do not have permission to access, please login first."
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:255
+#: src/pages/Vaults/components/StrategyTable/index.tsx:249
 msgid "The biggest drop from the peak. Lower means less risk."
 msgstr "The biggest drop from the peak. Lower means less risk."
 
@@ -1998,6 +1998,10 @@ msgstr "Login error"
 #: src/components/Header/components/AccountManege/index.tsx:147
 #~ msgid "Telegram"
 #~ msgstr "Telegram"
+
+#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:177
+msgid "Updated successfully"
+msgstr "Updated successfully"
 
 #: src/components/Header/components/MenuContent/index.tsx:98
 msgid "Chat history"
@@ -2332,7 +2336,7 @@ msgstr "Did any exchange see a sudden spike in long positions or short positions
 #~ msgid "{vault_age} days"
 #~ msgstr "{vault_age} days"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:250
+#: src/pages/Vaults/components/StrategyTable/index.tsx:244
 #: src/pages/VaultDetail/components/PaperTradingPerformance/components/StrategyChartStats.tsx:94
 #: src/pages/MyPortfolio/components/MyVaults/index.tsx:255
 #: src/pages/MyPortfolio/components/MyStrategies/index.tsx:431
@@ -2514,7 +2518,7 @@ msgstr "Price"
 #~ msgid "AI knows before you do."
 #~ msgstr "AI knows before you do."
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:267
+#: src/pages/Vaults/components/StrategyTable/index.tsx:261
 msgid "Total follower assets. Higher TVF means more interest."
 msgstr "Total follower assets. Higher TVF means more interest."
 
@@ -2542,8 +2546,8 @@ msgid "View all vaults"
 msgstr "View all vaults"
 
 #: src/pages/Connect/index.tsx:343
-#~ msgid "Welcome to <0>Starchild</0>"
-#~ msgstr "Welcome to <0>Starchild</0>"
+msgid "Welcome to <0>Starchild</0>"
+msgstr "Welcome to <0>Starchild</0>"
 
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Backtest/components/Workflow/components/ParamsContent/index.tsx:102
 msgid "Position Size"
@@ -3027,6 +3031,10 @@ msgstr "The strategy could not be discontinued. Please try again."
 #~ msgid "Express your strategy in natural language."
 #~ msgstr "Express your strategy in natural language."
 
+#: src/pages/Chat/components/ChatInput/index.tsx:154
+msgid "Welcome to <0> Starchild</0>"
+msgstr "Welcome to <0> Starchild</0>"
+
 #: src/pages/Home/components/HomeContent/components/SocialLoginModal/index.tsx:199
 #: src/components/Header/components/AccountManege/components/BindWalletModal/index.tsx:101
 #~ msgid "Connect"
@@ -3271,10 +3279,6 @@ msgstr "The strategy has been delisted."
 #~ msgid "Insufficient USDC balance, required: {requiredUsdc} USDC, current balance: {currentUsdc} USDC"
 #~ msgstr "Insufficient USDC balance, required: {requiredUsdc} USDC, current balance: {currentUsdc} USDC"
 
-#: src/pages/Chat/components/ChatInput/index.tsx:154
-msgid "Welcome to <0> starchild</0>"
-msgstr "Welcome to <0> starchild</0>"
-
 #: src/pages/Insights/components/LiveChat/components/ChatDetail/index.tsx:87
 msgid "AI chat"
 msgstr "AI chat"
@@ -3329,7 +3333,7 @@ msgstr "Transferred"
 msgid "What major Web3 conferences or summits are happening next month?"
 msgstr "What major Web3 conferences or summits are happening next month?"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:289
+#: src/pages/Vaults/components/StrategyTable/index.tsx:283
 msgid "Search by name or leader..."
 msgstr "Search by name or leader..."
 
@@ -3581,7 +3585,7 @@ msgstr "Execution"
 msgid "This strategy is private and can only be viewed by its owner."
 msgstr "This strategy is private and can only be viewed by its owner."
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:283
+#: src/pages/Vaults/components/StrategyTable/index.tsx:277
 #: src/pages/VaultDetail/components/VaultDetailNavigation/index.tsx:53
 #: src/components/Header/index.tsx:316
 msgid "Leaderboard"
@@ -3714,10 +3718,6 @@ msgstr "AI experience"
 #~ msgid "Proportion"
 #~ msgstr "Proportion"
 
-#: src/pages/Connect/index.tsx:343
-msgid "Welcome to <0>starchild</0>"
-msgstr "Welcome to <0>starchild</0>"
-
 #: src/constants/agentHub.ts:53
 msgid "KOL Radar"
 msgstr "KOL radar"
@@ -3780,13 +3780,13 @@ msgstr "Novice"
 #~ msgid "24h change"
 #~ msgstr "24h change"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:256
+#: src/pages/Vaults/components/StrategyTable/index.tsx:250
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Backtest/components/DataList/index.tsx:200
 #: src/pages/AgentDetail/components/Preview/components/DataList/index.tsx:165
 msgid "Max drawdown"
 msgstr "Max drawdown"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:275
+#: src/pages/Vaults/components/StrategyTable/index.tsx:269
 #: src/components/ShareModal/index.tsx:286
 msgid "Followers"
 msgstr "Followers"
@@ -3856,7 +3856,7 @@ msgstr "Update time"
 #~ msgid "Indicators"
 #~ msgstr "Indicators"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:276
+#: src/pages/Vaults/components/StrategyTable/index.tsx:270
 msgid "Snapshot"
 msgstr "Snapshot"
 
