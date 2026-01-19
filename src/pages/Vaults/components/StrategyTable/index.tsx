@@ -142,10 +142,11 @@ const MyStrategiesTable = styled.table`
 const SectionDivider = styled.div`
   position: relative;
   width: 100%;
-  height: 32px;
+  height: 24px;
   background-image: url(${tagBg});
-  background-size: 100% 100%;
+  background-size: auto 100%;
   background-repeat: no-repeat;
+  background-position: center;
   display: flex;
   align-items: center;
   padding-left: 16px;
