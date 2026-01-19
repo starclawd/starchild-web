@@ -310,8 +310,11 @@ const StrategyItem = memo(({ record, aprRank }: StrategyItemProps) => {
           </LeaderWrapper>
         </TableCell>
         <TableCell>
-          <PercentageText $isPositive={record.all_time_apr > 0} $isNegative={record.all_time_apr < 0}>
-            {formatPercent(record.all_time_apr)}
+          <PercentageText
+            $isPositive={record.all_time_apr != null && record.all_time_apr > 0}
+            $isNegative={record.all_time_apr != null && record.all_time_apr < 0}
+          >
+            {record.all_time_apr != null ? formatPercent(record.all_time_apr) : '--'}
           </PercentageText>
         </TableCell>
         <TableCell>{Math.floor(record.age_days)}</TableCell>

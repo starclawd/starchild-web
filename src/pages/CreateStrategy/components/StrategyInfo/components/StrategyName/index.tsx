@@ -55,7 +55,7 @@ const ButtonConfirm = styled(ButtonEdit)``
 
 const StrategyTitle = styled.div`
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   gap: 20px;
 `
 
