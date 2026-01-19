@@ -334,14 +334,16 @@ const StrategyItem = memo(({ record, aprRank }: StrategyItemProps) => {
               )}
               <span>{followers ? followers : '0'}</span>
             </FollowText>
-            <FollowButton
-              onClick={handleFollowClick}
-              $disabled={isLoading}
-              $isFollowed={isFollowed}
-              className='follow-button'
-            >
-              {isLoading ? <Pending /> : <>{isFollowed ? <Trans>Followed</Trans> : <Trans>Follow</Trans>}</>}
-            </FollowButton>
+            {isLogin && (
+              <FollowButton
+                onClick={handleFollowClick}
+                $disabled={isLoading}
+                $isFollowed={isFollowed}
+                className='follow-button'
+              >
+                {isLoading ? <Pending /> : <>{isFollowed ? <Trans>Followed</Trans> : <Trans>Follow</Trans>}</>}
+              </FollowButton>
+            )}
           </FollowWrapper>
         </TableCell>
         <TableCell $align='right'>
