@@ -9,7 +9,7 @@ import {
   useStrategyCode,
   useIsShowExpandCode,
 } from 'store/createstrategy/hooks/useCode'
-import { useCurrentStrategyTabIndex } from 'store/createstrategy/hooks/useCreateStrategyDetail'
+import { useCurrentStrategyTabIndex, useCreateStrategyDetail } from 'store/createstrategy/hooks/useCreateStrategyDetail'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import MemoizedHighlight from 'components/MemoizedHighlight'
 import { IconBase } from 'components/Icons'
@@ -185,6 +185,10 @@ export default memo(function Code() {
   const [isShowExpandCode, setIsShowExpandCode] = useIsShowExpandCode()
   const [currentStrategyTabIndex] = useCurrentStrategyTabIndex()
   const { external_code, generation_status } = strategyCode || { external_code: '', generation_status: null }
+
+  // 获取策略配置数据（用于可视化，比解析代码更准确）
+  const { strategyDetail } = useCreateStrategyDetail({ strategyId: strategyId || '' })
+  const strategyConfig = strategyDetail?.strategy_config
   const { copyWithCustomProcessor } = useCopyContent({
     mode: 'custom',
     customProcessor: extractExecutableCode,
@@ -494,9 +498,13 @@ export default memo(function Code() {
       </CodeContentWrapper>
 
       {/* 流程图视图 - 使用 CSS 控制显示，避免重新挂载 */}
-      {external_code && (
+      {(external_code || strategyConfig) && (
         <FlowContentWrapper $visible={viewMode === ViewMode.FLOW}>
-          <StrategyCodeVisualizer code={external_code} visible={viewMode === ViewMode.FLOW} />
+          <StrategyCodeVisualizer
+            code={external_code || undefined}
+            visible={viewMode === ViewMode.FLOW}
+            strategyConfig={strategyConfig}
+          />
         </FlowContentWrapper>
       )}
     </CodeWrapper>

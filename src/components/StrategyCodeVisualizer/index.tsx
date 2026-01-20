@@ -12,7 +12,8 @@ import {
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import styled, { css, useTheme } from 'styled-components'
-import { parseStrategyCode, ParsedStrategy } from 'utils/parseStrategyCode'
+import { ParsedStrategy } from 'utils/parseStrategyCode'
+import { strategyConfigToVisualization, StrategyConfig } from 'utils/strategyConfigToVisualization'
 import { isNewCodeFormat } from 'utils/extractExecutableCode'
 import { vm } from 'pages/helper'
 
@@ -114,10 +115,19 @@ function generateFlowElements(
   // 检测是否为新版代码格式
   const isNewFormat = code ? isNewCodeFormat(code) : !!strategy.candlePattern
 
+  // 优化列间距，避免节点重叠
   const COLUMN_X = {
     left: 50,
-    center: 350,
-    right: 650,
+    center: 480,
+    right: 910,
+  }
+
+  // 节点垂直间距配置
+  const SPACING = {
+    dataSource: 100, // 数据源节点间距
+    indicator: 90, // 指标节点间距
+    entryCondition: 120, // 入场条件节点间距
+    exitCondition: 110, // 退出条件节点间距
   }
 
   let currentY = 20
@@ -138,7 +148,7 @@ function generateFlowElements(
     },
   })
 
-  currentY += 120
+  currentY += 130
 
   // ============================================
   // 新版代码格式 - 增加轮询和状态管理节点
@@ -173,7 +183,7 @@ function generateFlowElements(
     nodes.push({
       id: ds.id,
       type: 'datasource',
-      position: { x: COLUMN_X.left, y: dsStartY + i * 90 },
+      position: { x: COLUMN_X.left, y: dsStartY + i * SPACING.dataSource },
       data: { api: ds.api, fields: ds.fields },
     })
   })
@@ -188,7 +198,7 @@ function generateFlowElements(
       nodes.push({
         id: ind.id,
         type: 'indicator',
-        position: { x: COLUMN_X.center, y: indStartY + i * 80 },
+        position: { x: COLUMN_X.center, y: indStartY + i * SPACING.indicator },
         data: { name: ind.name, params: ind.params },
       })
     })
@@ -211,9 +221,9 @@ function generateFlowElements(
   }
 
   // Calculate max Y from data sources and indicators
-  const dsMaxY = dsStartY + strategy.dataSources.length * 90
-  const indMaxY = hasTraditionalIndicators ? indStartY + strategy.indicators.length * 80 : dsMaxY
-  currentY = Math.max(dsMaxY, indMaxY) + 40
+  const dsMaxY = dsStartY + strategy.dataSources.length * SPACING.dataSource
+  const indMaxY = hasTraditionalIndicators ? indStartY + strategy.indicators.length * SPACING.indicator : dsMaxY
+  currentY = Math.max(dsMaxY, indMaxY) + 50
 
   // ============================================
   // 新版代码格式 - K线模式节点
@@ -226,7 +236,7 @@ function generateFlowElements(
     nodes.push({
       id: candlePatternNodeId,
       type: 'candlePattern',
-      position: { x: COLUMN_X.center - 40, y: currentY },
+      position: { x: COLUMN_X.center - 60, y: currentY },
       data: {
         type: strategy.candlePattern.type,
         name: strategy.candlePattern.name,
@@ -262,7 +272,7 @@ function generateFlowElements(
   nodes.push({
     id: processNodeId,
     type: 'analyzeDetail',
-    position: { x: COLUMN_X.center - 40, y: currentY },
+    position: { x: COLUMN_X.center - 60, y: currentY },
     data: { steps: strategy.analyzeSteps },
   })
 
@@ -343,7 +353,7 @@ function generateFlowElements(
   nodes.push({
     id: decisionNodeId,
     type: 'decisionDetail',
-    position: { x: COLUMN_X.center - 60, y: currentY },
+    position: { x: COLUMN_X.center - 80, y: currentY },
     data: {
       hasPosition: strategy.decisionLogic.hasPosition,
       noPosition: strategy.decisionLogic.noPosition,
@@ -381,7 +391,7 @@ function generateFlowElements(
     nodes.push({
       id: cond.id,
       type: 'condition',
-      position: { x: COLUMN_X.left - 20, y: conditionStartY + i * 100 },
+      position: { x: COLUMN_X.left, y: conditionStartY + i * SPACING.entryCondition },
       data: {
         direction: cond.direction,
         category: 'entry',
@@ -412,7 +422,7 @@ function generateFlowElements(
     nodes.push({
       id: cond.id,
       type: 'condition',
-      position: { x: COLUMN_X.right + 20, y: conditionStartY + i * 90 },
+      position: { x: COLUMN_X.right, y: conditionStartY + i * SPACING.exitCondition },
       data: {
         direction: cond.direction,
         category: 'exit',
@@ -439,9 +449,9 @@ function generateFlowElements(
   })
 
   // Calculate max Y
-  const entryMaxY = conditionStartY + Math.max(1, strategy.entryConditions.length) * 100
-  const exitMaxY = conditionStartY + Math.max(1, strategy.exitConditions.length) * 90
-  currentY = Math.max(entryMaxY, exitMaxY) + 30
+  const entryMaxY = conditionStartY + Math.max(1, strategy.entryConditions.length) * SPACING.entryCondition
+  const exitMaxY = conditionStartY + Math.max(1, strategy.exitConditions.length) * SPACING.exitCondition
+  currentY = Math.max(entryMaxY, exitMaxY) + 40
 
   // ============================================
   // 7. Action Nodes - BUY / SELL
@@ -451,8 +461,8 @@ function generateFlowElements(
   const sellNodeId = 'action-sell'
 
   // 根据是否有对应的条件来决定 Action 节点的位置
-  const buyNodeX = hasEntryConditions ? COLUMN_X.left + 30 : COLUMN_X.center - 150
-  const sellNodeX = hasExitConditions ? COLUMN_X.right - 30 : COLUMN_X.center + 50
+  const buyNodeX = hasEntryConditions ? COLUMN_X.left + 50 : COLUMN_X.center - 180
+  const sellNodeX = hasExitConditions ? COLUMN_X.right + 50 : COLUMN_X.center + 80
 
   nodes.push({
     id: buyNodeId,
@@ -591,7 +601,7 @@ function generateFlowElements(
   nodes.push({
     id: riskNodeId,
     type: 'risk',
-    position: { x: COLUMN_X.center - 50, y: currentY },
+    position: { x: COLUMN_X.center - 100, y: currentY },
     data: {
       takeProfit: strategy.riskParams.takeProfit,
       stopLoss: strategy.riskParams.stopLoss,
@@ -636,9 +646,14 @@ function generateFlowElements(
 // ============================================
 
 interface Props {
-  code: string
+  code?: string
   className?: string
   visible?: boolean
+  /**
+   * 策略配置数据（优先使用，比解析代码更准确）
+   * 通过 useCreateStrategyDetail 获取: strategyDetail.strategy_config
+   */
+  strategyConfig?: StrategyConfig
 }
 
 // 内部组件
@@ -698,8 +713,14 @@ function StrategyFlowInner({ strategy, visible, code }: { strategy: ParsedStrate
   )
 }
 
-function StrategyCodeVisualizer({ code, className, visible = true }: Props) {
-  const strategy = useMemo(() => parseStrategyCode(code), [code])
+function StrategyCodeVisualizer({ code, className, visible = true, strategyConfig }: Props) {
+  // 直接使用 strategyConfig（有 external_code 就一定有 strategy_config）
+  const strategy = useMemo(() => {
+    if (strategyConfig) {
+      return strategyConfigToVisualization(strategyConfig)
+    }
+    return null
+  }, [strategyConfig])
 
   if (!strategy) return null
 
