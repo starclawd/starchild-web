@@ -73,6 +73,10 @@ export interface StrategyConfig {
   take_profit: string
   stop_loss: string
   polling_mode: string
+  // 多币种支持
+  symbols?: string[]
+  // 保证金类型
+  margin_type?: string
   // 非对称仓位配置
   long_margin_pct?: number
   short_margin_pct?: number
