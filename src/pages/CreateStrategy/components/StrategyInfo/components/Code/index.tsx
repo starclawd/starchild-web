@@ -498,13 +498,9 @@ export default memo(function Code() {
       </CodeContentWrapper>
 
       {/* 流程图视图 - 使用 CSS 控制显示，避免重新挂载 */}
-      {(external_code || strategyConfig) && (
+      {strategyConfig && currentStrategyTabIndex === STRATEGY_TAB_INDEX.CODE && (
         <FlowContentWrapper $visible={viewMode === ViewMode.FLOW}>
-          <StrategyCodeVisualizer
-            code={external_code || undefined}
-            visible={viewMode === ViewMode.FLOW}
-            strategyConfig={strategyConfig}
-          />
+          <StrategyCodeVisualizer strategyConfig={strategyConfig} />
         </FlowContentWrapper>
       )}
     </CodeWrapper>

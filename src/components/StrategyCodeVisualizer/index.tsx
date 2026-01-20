@@ -107,13 +107,9 @@ const nodeTypes = {
 function generateFlowElements(
   strategy: ParsedStrategy,
   theme: ReturnType<typeof useTheme>,
-  code?: string,
 ): { nodes: Node[]; edges: Edge[] } {
   const nodes: Node[] = []
   const edges: Edge[] = []
-
-  // 检测是否为新版代码格式
-  const isNewFormat = code ? isNewCodeFormat(code) : !!strategy.candlePattern
 
   // 优化列间距，避免节点重叠
   const COLUMN_X = {
@@ -657,39 +653,21 @@ interface Props {
 }
 
 // 内部组件
-function StrategyFlowInner({ strategy, visible, code }: { strategy: ParsedStrategy; visible: boolean; code?: string }) {
+function StrategyFlowInner({ strategy }: { strategy: ParsedStrategy }) {
   const theme = useTheme()
-  const reactFlowInstance = useRef<any>(null)
 
   const { initialNodes, initialEdges } = useMemo(() => {
-    const { nodes, edges } = generateFlowElements(strategy, theme, code)
+    const { nodes, edges } = generateFlowElements(strategy, theme)
     return { initialNodes: nodes, initialEdges: edges }
-  }, [strategy, theme, code])
+  }, [strategy, theme])
 
   const [nodes, , onNodesChange] = useNodesState(initialNodes)
   const [edges, , onEdgesChange] = useEdgesState(initialEdges)
 
   const proOptions = { hideAttribution: true }
 
-  // 保存 ReactFlow 实例
-  const handleInit = useCallback((instance: any) => {
-    reactFlowInstance.current = instance
-  }, [])
-
-  // 当组件变为可见时，调用 fitView
-  // useEffect(() => {
-  //   if (visible && reactFlowInstance.current) {
-  //     // 延迟执行确保容器尺寸正确
-  //     setTimeout(() => {
-  //       reactFlowInstance.current?.fitView({
-  //         padding: 0.1,
-  //         duration: 200,
-  //         maxZoom: 1,
-  //         minZoom: 0.4,
-  //       })
-  //     }, 50)
-  //   }
-  // }, [visible])
+  // 设置初始视口为 (0, 0) zoom 0.6，然后让 fitView 自动调整
+  const defaultViewport = { x: 0, y: 0, zoom: 0.55 }
 
   return (
     <ReactFlow
@@ -698,22 +676,28 @@ function StrategyFlowInner({ strategy, visible, code }: { strategy: ParsedStrate
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       nodeTypes={nodeTypes}
-      onInit={handleInit}
-      minZoom={0.4}
-      maxZoom={1}
+      defaultViewport={defaultViewport}
+      minZoom={0.3}
+      maxZoom={1.5}
       proOptions={proOptions}
       nodesDraggable={true}
       nodesConnectable={false}
       elementsSelectable={true}
       panOnDrag={true}
       zoomOnScroll={true}
+      fitView
+      fitViewOptions={{
+        padding: 0.1,
+        minZoom: 0.3,
+        maxZoom: 0.7,
+      }}
     >
       <Background variant={BackgroundVariant.Dots} gap={20} size={1} color={theme.black700} />
     </ReactFlow>
   )
 }
 
-function StrategyCodeVisualizer({ code, className, visible = true, strategyConfig }: Props) {
+function StrategyCodeVisualizer({ className, strategyConfig }: Props) {
   // 直接使用 strategyConfig（有 external_code 就一定有 strategy_config）
   const strategy = useMemo(() => {
     if (strategyConfig) {
@@ -727,7 +711,7 @@ function StrategyCodeVisualizer({ code, className, visible = true, strategyConfi
   return (
     <FlowWrapper className={className}>
       <ReactFlowProvider>
-        <StrategyFlowInner strategy={strategy} visible={visible} code={code} />
+        <StrategyFlowInner strategy={strategy} />
       </ReactFlowProvider>
     </FlowWrapper>
   )
