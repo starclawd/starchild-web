@@ -15,6 +15,7 @@ import DepositSection from './components/DepositSection'
 import TvfSection from './components/TvfSection'
 import { ANI_DURATION } from 'constants/index'
 import { useIsShowStrategyMarket } from 'store/vaultsdetailcache/hooks'
+import Avatar from 'boring-avatars'
 
 const VaultInfoContainer = styled.div<{ $isShowStrategyMarket: boolean }>`
   position: relative;
@@ -210,7 +211,11 @@ export default memo(function VaultInfo() {
               <VaultTitle>{strategyName}</VaultTitle>
               <RightStatuswrapper>
                 <ProvideInfo>
-                  {userAvatar && <img src={userAvatar} alt='userAvatar' />}
+                  {userAvatar ? (
+                    <img src={userAvatar} alt='userAvatar' />
+                  ) : (
+                    <Avatar size={18} avatar={userAvatar} name={userName} />
+                  )}
                   {userName && <span>{userName}</span>}
                 </ProvideInfo>
                 <StrategyStatus status={paperTradingPublicData?.status} />

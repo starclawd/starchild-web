@@ -4,6 +4,18 @@
 
 ---
 
+## ⚡ 执行权限
+
+执行终端命令时，**必须使用完整权限**以避免沙盒环境的权限限制：
+
+- 执行任何 shell 命令前，确保禁用沙盒限制
+- 涉及 git 操作（checkout、pull、commit 等）需要写权限
+- 涉及网络请求（yarn install、git fetch 等）需要网络权限
+
+> ⚠️ 默认沙盒环境会限制文件写入、网络访问和 git 操作，导致命令失败。
+
+---
+
 ## 🚀 启动项目前的必要检查
 
 在帮助用户启动项目之前，**必须**按顺序执行以下检查：
@@ -109,6 +121,10 @@ yarn start
 - 使用 `store/` 中的自定义 hooks 进行状态管理
 - 对昂贵的计算和回调函数使用 `useMemo` 和 `useCallback`
 - 遵循 `src/hooks/` 和 `src/store/*/hooks/` 中的现有 hook 模式
+- API hooks 命名规范：
+  - RTK Query 生成的 hook: `useGet[Resource]Query`（如 `useGetAllStrategiesOverviewQuery`）
+  - 封装业务逻辑的 hook: `use[Resource]`（如 `useAllStrategiesOverview`）
+  - 业务 hook 应封装 API 调用、状态管理和数据处理逻辑
 
 ### Internationalization
 

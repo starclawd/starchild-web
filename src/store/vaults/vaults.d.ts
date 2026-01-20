@@ -1,5 +1,5 @@
 // Vault相关的类型定义
-import { VaultInfo, VaultOverallStats, UserOverallStats, VaultTransactionHistory } from 'api/vaults'
+import { VaultInfo, VaultOverallStats, UserOverallStats, VaultTransactionHistory, OrderlyAvailableSymbolsDataType } from 'api/vaults'
 import { StrategiesOverviewDataType } from 'api/strategy'
 
 // 用于UI显示的格式化数据类型
@@ -50,6 +50,9 @@ export interface VaultsState {
   // 所有策略概览数据
   allStrategies: StrategiesOverviewDataType[]
 
+  // Orderly 可用交易对数据
+  orderlyAvailableSymbols: OrderlyAvailableSymbolsDataType[]
+
   // 当前选中的tab类型
   vaultsTabIndex: number
 
@@ -63,6 +66,7 @@ export interface VaultsState {
   isLoadingMyStats: boolean
   isLoadingVaults: boolean
   isLoadingAllStrategies: boolean
+  isLoadingOrderlySymbols: boolean
 }
 
 export enum WALLET_CONNECT_MODE {

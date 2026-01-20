@@ -5,97 +5,126 @@ import { IconBase } from 'components/Icons'
 import { DecisionBranch } from 'utils/parseStrategyCode'
 
 const NodeWrapper = styled.div`
-  min-width: 220px;
-  max-width: 300px;
-  padding: 12px 16px;
-  border-radius: 12px;
+  min-width: 200px;
+  max-width: 280px;
+  padding: 14px 16px;
+  border-radius: 14px;
   background: linear-gradient(135deg, #bd4d00 0%, #5e2600 100%);
   border: 2px solid #ffa940;
-  box-shadow: 0 4px 20px rgba(255, 169, 64, 0.3);
+  box-shadow: 0 4px 24px rgba(255, 169, 64, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 `
 
 const Header = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-bottom: 10px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(255, 169, 64, 0.3);
+  margin-bottom: 12px;
 `
 
 const IconWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
   background-color: #ffa940;
   color: #000;
-  font-size: 16px;
+  font-size: 18px;
 `
 
 const Title = styled.div`
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
   color: #ffa940;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 `
 
-const Section = styled.div`
-  margin-bottom: 8px;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-`
-
-const SectionTitle = styled.div`
-  font-size: 10px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.5);
-  text-transform: uppercase;
-  margin-bottom: 4px;
-`
-
-const BranchList = styled.div`
+const BranchesContainer = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 10px;
+`
+
+const BranchSection = styled.div<{ $type: 'entry' | 'exit' }>`
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.35);
+  border-left: 4px solid ${({ $type }) => ($type === 'entry' ? '#00DE73' : '#FF375B')};
+`
+
+const BranchHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+`
+
+const BranchTitle = styled.div<{ $type: 'entry' | 'exit' }>`
+  font-size: 11px;
+  font-weight: 700;
+  color: ${({ $type }) => ($type === 'entry' ? '#00DE73' : '#FF375B')};
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+`
+
+const BranchCount = styled.div`
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+`
+
+const BranchItems = styled.div`
+  display: flex;
+  flex-wrap: wrap;
   gap: 4px;
 `
 
-const BranchItem = styled.div<{ $action: string }>`
-  display: flex;
+const BranchTag = styled.span<{ $action: string }>`
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 4px 8px;
+  gap: 3px;
+  padding: 3px 8px;
   border-radius: 4px;
-  background-color: rgba(0, 0, 0, 0.3);
-  border-left: 3px solid ${({ $action }) => ($action === 'BUY' || $action === 'OPEN' ? '#00DE73' : '#FF375B')};
-`
-
-const BranchCondition = styled.div`
-  flex: 1;
-  font-size: 10px;
-  color: #fff;
-`
-
-const BranchAction = styled.div<{ $action: string }>`
   font-size: 9px;
-  font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 3px;
-  background-color: ${({ $action }) => ($action === 'BUY' || $action === 'OPEN' ? '#00DE73' : '#FF375B')};
-  color: #000;
+  font-weight: 600;
+  background-color: ${({ $action }) =>
+    $action === 'BUY' || $action === 'OPEN' || $action.includes('LONG')
+      ? 'rgba(0, 222, 115, 0.2)'
+      : 'rgba(255, 55, 91, 0.2)'};
+  color: ${({ $action }) =>
+    $action === 'BUY' || $action === 'OPEN' || $action.includes('LONG') ? '#00DE73' : '#FF375B'};
+  border: 1px solid
+    ${({ $action }) =>
+      $action === 'BUY' || $action === 'OPEN' || $action.includes('LONG')
+        ? 'rgba(0, 222, 115, 0.3)'
+        : 'rgba(255, 55, 91, 0.3)'};
 `
 
 interface DecisionDetailNodeData {
   hasPosition: DecisionBranch[]
   noPosition: DecisionBranch[]
+  // 实际的条件节点数量
+  entryConditionsCount?: number
+  exitConditionsCount?: number
 }
 
 function DecisionDetailNode({ data }: NodeProps) {
   const nodeData = data as unknown as DecisionDetailNodeData
+
+  // 提取简化的分支动作
+  const getSimplifiedActions = (branches: DecisionBranch[]) => {
+    const actions = branches.map((b) => b.action)
+    // 去重并限制显示数量
+    return [...new Set(actions)].slice(0, 3)
+  }
+
+  const noPositionActions = getSimplifiedActions(nodeData.noPosition || [])
+  const hasPositionActions = getSimplifiedActions(nodeData.hasPosition || [])
+
+  // 使用实际的条件数量（如果传递了的话），否则使用 decisionLogic 的数量
+  const entryCount = nodeData.entryConditionsCount ?? nodeData.noPosition?.length ?? 0
+  const exitCount = nodeData.exitConditionsCount ?? nodeData.hasPosition?.length ?? 0
 
   return (
     <NodeWrapper>
@@ -107,33 +136,39 @@ function DecisionDetailNode({ data }: NodeProps) {
         <Title>DECIDE</Title>
       </Header>
 
-      {nodeData.hasPosition && nodeData.hasPosition.length > 0 && (
-        <Section>
-          <SectionTitle>If Has Position</SectionTitle>
-          <BranchList>
-            {nodeData.hasPosition.map((branch, index) => (
-              <BranchItem key={`has-${index}`} $action={branch.action}>
-                <BranchCondition>{branch.condition}</BranchCondition>
-                <BranchAction $action={branch.action}>{branch.action}</BranchAction>
-              </BranchItem>
-            ))}
-          </BranchList>
-        </Section>
-      )}
+      <BranchesContainer>
+        {(nodeData.noPosition?.length > 0 || entryCount > 0) && (
+          <BranchSection $type="entry">
+            <BranchHeader>
+              <BranchTitle $type="entry">IF NO POSITION</BranchTitle>
+              <BranchCount>{entryCount} condition{entryCount !== 1 ? 's' : ''}</BranchCount>
+            </BranchHeader>
+            <BranchItems>
+              {noPositionActions.map((action, i) => (
+                <BranchTag key={i} $action={action}>
+                  → {action}
+                </BranchTag>
+              ))}
+            </BranchItems>
+          </BranchSection>
+        )}
 
-      {nodeData.noPosition && nodeData.noPosition.length > 0 && (
-        <Section>
-          <SectionTitle>If No Position</SectionTitle>
-          <BranchList>
-            {nodeData.noPosition.map((branch, index) => (
-              <BranchItem key={`no-${index}`} $action={branch.action}>
-                <BranchCondition>{branch.condition}</BranchCondition>
-                <BranchAction $action={branch.action}>{branch.action}</BranchAction>
-              </BranchItem>
-            ))}
-          </BranchList>
-        </Section>
-      )}
+        {(nodeData.hasPosition?.length > 0 || exitCount > 0) && (
+          <BranchSection $type="exit">
+            <BranchHeader>
+              <BranchTitle $type="exit">IF HAS POSITION</BranchTitle>
+              <BranchCount>{exitCount} condition{exitCount !== 1 ? 's' : ''}</BranchCount>
+            </BranchHeader>
+            <BranchItems>
+              {hasPositionActions.map((action, i) => (
+                <BranchTag key={i} $action={action}>
+                  → {action}
+                </BranchTag>
+              ))}
+            </BranchItems>
+          </BranchSection>
+        )}
+      </BranchesContainer>
 
       <Handle type="source" position={Position.Bottom} style={{ background: '#FFA940' }} />
     </NodeWrapper>

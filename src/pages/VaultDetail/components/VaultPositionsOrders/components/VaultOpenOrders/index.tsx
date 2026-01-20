@@ -13,6 +13,7 @@ import NoData from 'components/NoData'
 import { VaultPositionsOrdersProps } from '../..'
 import { DETAIL_TYPE } from 'store/vaultsdetail/vaultsdetail'
 import { StyledTable, LoadingWrapper } from '../../styles'
+import { useSymbolPrecision } from 'store/vaults/hooks'
 
 // Symbol 显示组件
 const SymbolCell = styled.div`
@@ -82,6 +83,7 @@ const CommonValue = styled.div`
 const VaultOpenOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, strategyId }) => {
   const vaultOpenOrdersPaginated = useVaultOpenOrdersPaginated(vaultId || '')
   const strategyOpenOrdersPaginated = useStrategyOpenOrdersPaginated(strategyId || '')
+  const { formatPrice } = useSymbolPrecision()
 
   // Orders 表格列定义
   // 根据activeTab选择对应的数据
@@ -130,7 +132,7 @@ const VaultOpenOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, s
         key: 'price',
         title: <Trans>Price</Trans>,
         width: '120px',
-        render: (order) => <CommonValue>{formatNumber(order.price)}</CommonValue>,
+        render: (order) => <CommonValue>{formatNumber(formatPrice(order.price, order.symbol))}</CommonValue>,
       },
       {
         key: 'value',
@@ -149,7 +151,7 @@ const VaultOpenOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, s
         render: (order) => <CommonValue>{dayjs(order.created_time).format('YYYY-MM-DD HH:mm:ss')}</CommonValue>,
       },
     ],
-    [],
+    [formatPrice],
   )
 
   if (currentData.isLoading && currentData.orders.length === 0) {

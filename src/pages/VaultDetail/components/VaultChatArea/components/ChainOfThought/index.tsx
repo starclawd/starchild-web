@@ -24,11 +24,11 @@ const Right = styled.div`
 `
 
 const Title = styled.div`
-  font-size: 14px;
+  font-size: 12px;
   font-style: normal;
   font-weight: 400;
-  line-height: 20px;
-  color: ${({ theme }) => theme.black100};
+  line-height: 18px;
+  color: ${({ theme }) => theme.black200};
 `
 
 const MarkdownContainer = styled.div<{ $expanded: boolean }>`

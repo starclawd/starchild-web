@@ -135,8 +135,8 @@ export default function Preference() {
         if ((data as any).data.status === 'success') {
           await triggerGetPreference()
           toast({
-            title: <Trans>Preference Modified</Trans>,
-            description: <Trans>Preference modified</Trans>,
+            title: <Trans>Preferences updated</Trans>,
+            description: <Trans>Preferences updated</Trans>,
             status: TOAST_STATUS.SUCCESS,
             typeIcon: 'icon-preference',
             iconTheme: theme.black0,
