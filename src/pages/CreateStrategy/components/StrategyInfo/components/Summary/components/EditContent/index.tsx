@@ -123,11 +123,56 @@ const formatJsonForDisplay = (content: string): FormattedItem[] | null => {
   }
 }
 
-// 格式化 JSON 字符串用于编辑（带缩进）
+// 递归格式化值，去掉所有 {} 和 []
+const formatValueWithoutBrackets = (value: unknown, indent: number = 0): string => {
+  const indentStr = '    '.repeat(indent)
+  const nextIndentStr = '    '.repeat(indent + 1)
+
+  if (value === null) return 'null'
+  if (typeof value === 'string') return `"${value}"`
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value)
+
+  if (Array.isArray(value)) {
+    // 数组：每个元素一行，不显示 []
+    if (value.length === 0) return ''
+    return value
+      .map((item) => {
+        if (typeof item === 'object' && item !== null) {
+          return formatValueWithoutBrackets(item, indent)
+        }
+        return formatValueWithoutBrackets(item, indent)
+      })
+      .join(',\n' + indentStr)
+  }
+
+  if (typeof value === 'object') {
+    // 对象：每个键值对一行，不显示 {}
+    const entries = Object.entries(value as Record<string, unknown>)
+    if (entries.length === 0) return ''
+    return entries
+      .map(([key, val]) => {
+        const formattedVal = formatValueWithoutBrackets(val, indent + 1)
+        // 如果值是对象或数组（多行），换行显示
+        if (
+          typeof val === 'object' &&
+          val !== null &&
+          (Array.isArray(val) ? val.length > 0 : Object.keys(val).length > 0)
+        ) {
+          return `"${key}":\n${nextIndentStr}${formattedVal}`
+        }
+        return `"${key}": ${formattedVal}`
+      })
+      .join(',\n' + indentStr)
+  }
+
+  return String(value)
+}
+
+// 格式化 JSON 字符串用于编辑（去掉所有 {} 和 [] 括号）
 const formatJsonForEdit = (content: string): string => {
   try {
     const parsed = JSON.parse(content)
-    return JSON.stringify(parsed, null, 4)
+    return formatValueWithoutBrackets(parsed, 0)
   } catch {
     return content
   }
@@ -159,25 +204,124 @@ const tryFixJson = (content: string): string => {
   return fixed
 }
 
-// 压缩 JSON 字符串，如果格式错误则尝试修复
-const compressJson = (content: string): string => {
-  // 先尝试直接解析
+// 解析单个值
+const parseJsonValue = (value: string): unknown => {
+  const trimmed = value.trim().replace(/,$/, '') // 移除尾部逗号
+  if (!trimmed) return ''
+
+  // 尝试作为 JSON 值解析
   try {
-    const parsed = JSON.parse(content)
-    return JSON.stringify(parsed)
+    return JSON.parse(trimmed)
   } catch {
-    // 解析失败，尝试修复
+    // 如果是没有引号的字符串，返回原值
+    return trimmed
+  }
+}
+
+// 智能重建 JSON：根据缩进结构将去掉括号的内容恢复为有效 JSON
+const rebuildJsonFromIndent = (content: string): string => {
+  const lines = content.split('\n')
+  const result: Record<string, unknown> = {}
+
+  let currentKey: string | null = null
+  let currentValues: string[] = []
+
+  const saveCurrentKey = () => {
+    if (currentKey !== null && currentValues.length > 0) {
+      if (currentValues.length === 1) {
+        // 单个值
+        result[currentKey] = parseJsonValue(currentValues[0])
+      } else {
+        // 多个值 -> 数组
+        result[currentKey] = currentValues.map((v) => parseJsonValue(v))
+      }
+    }
   }
 
-  // 尝试修复后再解析
+  for (const line of lines) {
+    if (!line.trim()) continue
+
+    const trimmed = line.trim()
+
+    // 匹配 "key": 或 "key": value 格式
+    const keyMatch = trimmed.match(/^"([^"]+)":\s*(.*)$/)
+
+    if (keyMatch) {
+      // 找到新的 key
+      saveCurrentKey()
+
+      currentKey = keyMatch[1]
+      const valueAfterColon = keyMatch[2].trim()
+      currentValues = []
+
+      if (valueAfterColon) {
+        // 值在同一行，如 "key": "value" 或 "key": 123
+        currentValues.push(valueAfterColon)
+      }
+    } else if (currentKey !== null) {
+      // 不是 key 行，检查是否是当前 key 的值（缩进更深或等于）
+      // 这是数组元素或者嵌套内容
+      currentValues.push(trimmed)
+    }
+  }
+
+  // 保存最后一个 key
+  saveCurrentKey()
+
+  return JSON.stringify(result)
+}
+
+// 压缩 JSON 字符串，如果格式错误则尝试修复
+// 由于编辑时去掉了所有括号，这里需要智能补回
+const compressJson = (content: string): string => {
+  const trimmed = content.trim()
+
+  // 1. 先尝试直接解析（可能用户手动加了括号，或者是有效 JSON）
   try {
-    const fixed = tryFixJson(content)
+    const parsed = JSON.parse(trimmed)
+    return JSON.stringify(parsed)
+  } catch {
+    // 解析失败，继续尝试
+  }
+
+  // 2. 使用智能重建（根据缩进识别数组）
+  try {
+    const rebuilt = rebuildJsonFromIndent(trimmed)
+    const parsed = JSON.parse(rebuilt)
+    return JSON.stringify(parsed)
+  } catch {
+    // 智能重建失败
+  }
+
+  // 3. 尝试简单包裹 {}
+  try {
+    const wrapped = `{${trimmed}}`
+    const parsed = JSON.parse(wrapped)
+    return JSON.stringify(parsed)
+  } catch {
+    // 包裹为对象失败
+  }
+
+  // 4. 尝试修复后包裹
+  try {
+    const fixed = tryFixJson(`{${trimmed}}`)
     const parsed = JSON.parse(fixed)
     return JSON.stringify(parsed)
   } catch {
-    // 修复失败，返回原内容
-    return content
+    // 修复失败
   }
+
+  // 5. 尝试作为数组内容包裹 []
+  try {
+    const wrapped = `[${trimmed}]`
+    const parsed = JSON.parse(wrapped)
+    return JSON.stringify(parsed)
+  } catch {
+    // 包裹为数组失败
+  }
+
+  // 6. 修复失败，返回原内容
+  return content
 }
 
 // 递归渲染格式化后的内容（只读模式）
@@ -229,7 +373,7 @@ export default memo(function EditContent({
   if (isEdit) {
     return (
       <EditContentWrapper>
-        <JsonTextarea defaultValue={editableContent} onBlur={handleChange} placeholder='{\n  "key": "value"\n}' />
+        <JsonTextarea defaultValue={editableContent} onBlur={handleChange} placeholder='"key": "value"' />
       </EditContentWrapper>
     )
   }
