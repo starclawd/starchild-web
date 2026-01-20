@@ -347,6 +347,9 @@ function generateFlowElements(
     data: {
       hasPosition: strategy.decisionLogic.hasPosition,
       noPosition: strategy.decisionLogic.noPosition,
+      // 传递实际的条件数量，用于显示
+      entryConditionsCount: strategy.entryConditions.length,
+      exitConditionsCount: strategy.exitConditions.length,
     },
   })
 
@@ -364,13 +367,21 @@ function generateFlowElements(
   const decisionNodeHeight = Math.max(120, decisionBranches * 30 + 80)
   currentY += decisionNodeHeight
 
-  // 6. Entry Conditions (Left side)
-  const entryStartY = currentY
+  // ============================================
+  // 6. Entry & Exit Conditions - 优化布局
+  // ============================================
+
+  // 计算条件节点的起始位置
+  const conditionStartY = currentY
+  const hasEntryConditions = strategy.entryConditions.length > 0
+  const hasExitConditions = strategy.exitConditions.length > 0
+
+  // 6a. Entry Conditions (Left side) - 只有无持仓时触发
   strategy.entryConditions.forEach((cond, i) => {
     nodes.push({
       id: cond.id,
       type: 'condition',
-      position: { x: COLUMN_X.left, y: entryStartY + i * 120 },
+      position: { x: COLUMN_X.left - 20, y: conditionStartY + i * 100 },
       data: {
         direction: cond.direction,
         category: 'entry',
@@ -380,26 +391,28 @@ function generateFlowElements(
       },
     })
 
+    // 每条连接线都显示 "No Position" 标签
     edges.push({
       id: `edge-decision-${cond.id}`,
       source: decisionNodeId,
       target: cond.id,
       type: 'smoothstep',
       label: 'No Position',
-      labelStyle: { fill: theme.black100, fontSize: 10 },
-      labelBgStyle: { fill: '#121315' },
+      labelStyle: { fill: '#00DE73', fontSize: 11, fontWeight: 600 },
+      labelBgStyle: { fill: '#121315', fillOpacity: 0.9 },
+      labelBgPadding: [4, 6] as [number, number],
+      labelBgBorderRadius: 4,
       style: { stroke: '#00DE73', strokeWidth: 2 },
       markerEnd: { type: MarkerType.ArrowClosed, color: '#00DE73' },
     })
   })
 
-  // 7. Exit Conditions (Right side)
-  const exitStartY = currentY
+  // 6b. Exit Conditions (Right side) - 持仓时触发
   strategy.exitConditions.forEach((cond, i) => {
     nodes.push({
       id: cond.id,
       type: 'condition',
-      position: { x: COLUMN_X.right, y: exitStartY + i * 100 },
+      position: { x: COLUMN_X.right + 20, y: conditionStartY + i * 90 },
       data: {
         direction: cond.direction,
         category: 'exit',
@@ -409,74 +422,143 @@ function generateFlowElements(
       },
     })
 
+    // 每条连接线都显示 "Has Position" 标签
     edges.push({
       id: `edge-decision-${cond.id}`,
       source: decisionNodeId,
       target: cond.id,
       type: 'smoothstep',
       label: 'Has Position',
-      labelStyle: { fill: theme.black100, fontSize: 10 },
-      labelBgStyle: { fill: '#121315' },
+      labelStyle: { fill: '#FF375B', fontSize: 11, fontWeight: 600 },
+      labelBgStyle: { fill: '#121315', fillOpacity: 0.9 },
+      labelBgPadding: [4, 6] as [number, number],
+      labelBgBorderRadius: 4,
       style: { stroke: '#FF375B', strokeWidth: 2 },
       markerEnd: { type: MarkerType.ArrowClosed, color: '#FF375B' },
     })
   })
 
   // Calculate max Y
-  const entryMaxY = entryStartY + strategy.entryConditions.length * 120
-  const exitMaxY = exitStartY + strategy.exitConditions.length * 100
-  currentY = Math.max(entryMaxY, exitMaxY) + 40
+  const entryMaxY = conditionStartY + Math.max(1, strategy.entryConditions.length) * 100
+  const exitMaxY = conditionStartY + Math.max(1, strategy.exitConditions.length) * 90
+  currentY = Math.max(entryMaxY, exitMaxY) + 30
 
-  // 8. Action Nodes
-  // Buy action
+  // ============================================
+  // 7. Action Nodes - BUY / SELL
+  // ============================================
+
   const buyNodeId = 'action-buy'
+  const sellNodeId = 'action-sell'
+
+  // 根据是否有对应的条件来决定 Action 节点的位置
+  const buyNodeX = hasEntryConditions ? COLUMN_X.left + 30 : COLUMN_X.center - 150
+  const sellNodeX = hasExitConditions ? COLUMN_X.right - 30 : COLUMN_X.center + 50
+
   nodes.push({
     id: buyNodeId,
     type: 'action',
-    position: { x: COLUMN_X.left + 50, y: currentY },
-    data: { action: 'buy', description: 'Open Long / Close Short' },
+    position: { x: buyNodeX, y: currentY },
+    data: { action: 'buy', description: 'Triggered when conditions above are met' },
   })
 
-  // Sell action
-  const sellNodeId = 'action-sell'
   nodes.push({
     id: sellNodeId,
     type: 'action',
-    position: { x: COLUMN_X.right - 50, y: currentY },
-    data: { action: 'sell', description: 'Open Short / Close Long' },
+    position: { x: sellNodeX, y: currentY },
+    data: { action: 'sell', description: 'Triggered when conditions above are met' },
   })
 
-  // Connect entry conditions to buy
-  strategy.entryConditions
-    .filter((c) => c.direction === 'long')
-    .forEach((cond) => {
-      edges.push({
-        id: `edge-${cond.id}-buy`,
-        source: cond.id,
-        target: buyNodeId,
-        type: 'smoothstep',
-        style: { stroke: '#00DE73', strokeWidth: 2 },
-        markerEnd: { type: MarkerType.ArrowClosed, color: '#00DE73' },
-      })
-    })
+  // ============================================
+  // 连接逻辑 - 入场条件 → BUY
+  // ============================================
 
-  // Connect entry conditions to sell
-  strategy.entryConditions
-    .filter((c) => c.direction === 'short')
-    .forEach((cond) => {
-      edges.push({
-        id: `edge-${cond.id}-sell`,
-        source: cond.id,
-        target: sellNodeId,
-        type: 'smoothstep',
-        style: { stroke: '#FF375B', strokeWidth: 2 },
-        markerEnd: { type: MarkerType.ArrowClosed, color: '#FF375B' },
-      })
-    })
+  const longEntryConditions = strategy.entryConditions.filter((c) => c.direction === 'long')
+  const shortEntryConditions = strategy.entryConditions.filter((c) => c.direction === 'short')
 
-  // Connect exit conditions
+  // 连接 long 入场条件到 BUY
+  longEntryConditions.forEach((cond) => {
+    edges.push({
+      id: `edge-${cond.id}-buy`,
+      source: cond.id,
+      target: buyNodeId,
+      type: 'smoothstep',
+      style: { stroke: '#00DE73', strokeWidth: 2 },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#00DE73' },
+    })
+  })
+
+  // 连接 short 入场条件到 SELL
+  shortEntryConditions.forEach((cond) => {
+    edges.push({
+      id: `edge-${cond.id}-sell`,
+      source: cond.id,
+      target: sellNodeId,
+      type: 'smoothstep',
+      style: { stroke: '#FF375B', strokeWidth: 2 },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#FF375B' },
+    })
+  })
+
+  // ============================================
+  // Fallback 连接 - 当没有明确的入场条件时
+  // ============================================
+
+  const hasBuyConnection = edges.some((e) => e.target === buyNodeId)
+  const hasBuyInNoPosition = strategy.decisionLogic.noPosition.some(
+    (branch) => branch.action === 'BUY' || branch.action.includes('BUY') || branch.action === 'OPEN',
+  )
+
+  // 如果没有边连接到 BUY 节点，直接从 decision 连接
+  if (!hasBuyConnection && hasBuyInNoPosition) {
+    edges.push({
+      id: 'edge-decision-buy-direct',
+      source: decisionNodeId,
+      target: buyNodeId,
+      type: 'smoothstep',
+      label: 'Entry Signal',
+      labelStyle: { fill: '#00DE73', fontSize: 11, fontWeight: 600 },
+      labelBgStyle: { fill: '#121315', fillOpacity: 0.9 },
+      labelBgPadding: [4, 6] as [number, number],
+      labelBgBorderRadius: 4,
+      style: { stroke: '#00DE73', strokeWidth: 2 },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#00DE73' },
+    })
+  }
+
+  const hasSellConnectionFromEntry = edges.some((e) => e.target === sellNodeId && e.source.startsWith('entry-'))
+  const hasSellInNoPosition = strategy.decisionLogic.noPosition.some(
+    (branch) => branch.action === 'SELL' || branch.action.includes('SELL'),
+  )
+
+  // 如果没有从入场条件连接到 SELL 节点，直接从 decision 连接
+  if (!hasSellConnectionFromEntry && hasSellInNoPosition) {
+    edges.push({
+      id: 'edge-decision-sell-direct',
+      source: decisionNodeId,
+      target: sellNodeId,
+      type: 'smoothstep',
+      label: 'Entry Signal',
+      labelStyle: { fill: '#FF375B', fontSize: 11, fontWeight: 600 },
+      labelBgStyle: { fill: '#121315', fillOpacity: 0.9 },
+      labelBgPadding: [4, 6] as [number, number],
+      labelBgBorderRadius: 4,
+      style: { stroke: '#FF375B', strokeWidth: 2 },
+      markerEnd: { type: MarkerType.ArrowClosed, color: '#FF375B' },
+    })
+  }
+
+  // ============================================
+  // 连接逻辑 - 退出条件 → SELL
+  // ============================================
+
   strategy.exitConditions.forEach((cond) => {
-    if (cond.triggerType === 'take_profit' || cond.direction === 'long') {
+    // TP、SL、direction=long 或 both 的退出条件都连接到 SELL
+    if (
+      cond.triggerType === 'take_profit' ||
+      cond.triggerType === 'stop_loss' ||
+      cond.direction === 'long' ||
+      cond.direction === 'both'
+    ) {
       edges.push({
         id: `edge-${cond.id}-sell`,
         source: cond.id,
@@ -486,6 +568,7 @@ function generateFlowElements(
         markerEnd: { type: MarkerType.ArrowClosed, color: '#FF375B' },
       })
     }
+    // reversal 类型可能连接到 BUY（平空开多）
     if (cond.triggerType === 'reversal') {
       edges.push({
         id: `edge-${cond.id}-buy`,
@@ -498,11 +581,15 @@ function generateFlowElements(
     }
   })
 
-  currentY += 120
+  currentY += 100
 
-  // 9. Risk Management Node
+  // ============================================
+  // 8. Risk Management Node - 风控参数总览
+  // ============================================
+
+  const riskNodeId = 'risk'
   nodes.push({
-    id: 'risk',
+    id: riskNodeId,
     type: 'risk',
     position: { x: COLUMN_X.center - 50, y: currentY },
     data: {
@@ -520,6 +607,25 @@ function generateFlowElements(
       // 新版 - hard stops
       hardStops: strategy.riskParams.hardStops,
     },
+  })
+
+  // 连接 BUY 和 SELL 到 Risk Management
+  edges.push({
+    id: 'edge-buy-risk',
+    source: buyNodeId,
+    target: riskNodeId,
+    type: 'smoothstep',
+    style: { stroke: '#FFA940', strokeWidth: 1, strokeDasharray: '4,4' },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#FFA940', width: 12, height: 12 },
+  })
+
+  edges.push({
+    id: 'edge-sell-risk',
+    source: sellNodeId,
+    target: riskNodeId,
+    type: 'smoothstep',
+    style: { stroke: '#FFA940', strokeWidth: 1, strokeDasharray: '4,4' },
+    markerEnd: { type: MarkerType.ArrowClosed, color: '#FFA940', width: 12, height: 12 },
   })
 
   return { nodes, edges }

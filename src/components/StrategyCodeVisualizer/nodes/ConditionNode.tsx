@@ -1,30 +1,32 @@
 import { memo } from 'react'
 import { Handle, Position, NodeProps } from '@xyflow/react'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 
 const NodeWrapper = styled.div<{ $direction: string; $category: string }>`
   display: flex;
   flex-direction: column;
-  min-width: 200px;
-  max-width: 240px;
-  padding: 12px 14px;
+  min-width: 180px;
+  max-width: 220px;
+  padding: 10px 12px;
   border-radius: 10px;
   background: ${({ $direction, $category }) => {
     if ($category === 'exit') {
-      return 'linear-gradient(135deg, #A21E39 0%, #501020 100%)'
+      return 'linear-gradient(135deg, #6B1226 0%, #3D0A15 100%)'
     }
     return $direction === 'long'
-      ? 'linear-gradient(135deg, #00763B 0%, #003820 100%)'
-      : 'linear-gradient(135deg, #A21E39 0%, #501020 100%)'
+      ? 'linear-gradient(135deg, #005E30 0%, #002E18 100%)'
+      : 'linear-gradient(135deg, #6B1226 0%, #3D0A15 100%)'
   }};
-  border: 2px solid ${({ $direction, $category }) => {
-    if ($category === 'exit') return '#FF375B'
-    return $direction === 'long' ? '#00DE73' : '#FF375B'
-  }};
-  box-shadow: 0 4px 20px ${({ $direction, $category }) => {
-    if ($category === 'exit') return 'rgba(255, 55, 91, 0.3)'
-    return $direction === 'long' ? 'rgba(0, 222, 115, 0.3)' : 'rgba(255, 55, 91, 0.3)'
-  }};
+  border: 2px solid
+    ${({ $direction, $category }) => {
+      if ($category === 'exit') return '#FF375B'
+      return $direction === 'long' ? '#00DE73' : '#FF375B'
+    }};
+  box-shadow: 0 4px 16px
+    ${({ $direction, $category }) => {
+      if ($category === 'exit') return 'rgba(255, 55, 91, 0.25)'
+      return $direction === 'long' ? 'rgba(0, 222, 115, 0.25)' : 'rgba(255, 55, 91, 0.25)'
+    }};
 `
 
 const Header = styled.div`
@@ -32,53 +34,76 @@ const Header = styled.div`
   align-items: center;
   gap: 6px;
   margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 `
 
 const DirectionBadge = styled.span<{ $direction: string }>`
   display: inline-flex;
-  padding: 2px 8px;
+  padding: 3px 8px;
   border-radius: 4px;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
   background-color: ${({ $direction }) => ($direction === 'long' ? '#00DE73' : '#FF375B')};
   color: #000;
 `
 
-const CategoryBadge = styled.span`
-  display: inline-flex;
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 9px;
-  font-weight: 500;
-  background-color: rgba(255, 255, 255, 0.15);
-  color: rgba(255, 255, 255, 0.8);
-`
-
 const TriggerBadge = styled.span<{ $type: string }>`
   display: inline-flex;
-  padding: 2px 6px;
+  padding: 3px 6px;
   border-radius: 4px;
-  font-size: 9px;
-  font-weight: 500;
+  font-size: 10px;
+  font-weight: 600;
   background-color: ${({ $type }) => {
     switch ($type) {
-      case 'take_profit': return 'rgba(0, 222, 115, 0.3)'
-      case 'stop_loss': return 'rgba(255, 55, 91, 0.3)'
-      case 'crossover': return 'rgba(168, 127, 255, 0.3)'
-      case 'reversal': return 'rgba(255, 169, 64, 0.3)'
-      default: return 'rgba(255, 255, 255, 0.15)'
+      case 'take_profit':
+        return 'rgba(0, 222, 115, 0.25)'
+      case 'stop_loss':
+        return 'rgba(255, 55, 91, 0.25)'
+      case 'crossover':
+        return 'rgba(168, 127, 255, 0.25)'
+      case 'reversal':
+        return 'rgba(255, 169, 64, 0.25)'
+      case 'indicator':
+        return 'rgba(0, 169, 222, 0.25)'
+      default:
+        return 'rgba(255, 255, 255, 0.1)'
     }
   }};
   color: ${({ $type }) => {
     switch ($type) {
-      case 'take_profit': return '#00DE73'
-      case 'stop_loss': return '#FF375B'
-      case 'crossover': return '#A87FFF'
-      case 'reversal': return '#FFA940'
-      default: return 'rgba(255, 255, 255, 0.8)'
+      case 'take_profit':
+        return '#00DE73'
+      case 'stop_loss':
+        return '#FF375B'
+      case 'crossover':
+        return '#A87FFF'
+      case 'reversal':
+        return '#FFA940'
+      case 'indicator':
+        return '#00A9DE'
+      default:
+        return 'rgba(255, 255, 255, 0.7)'
     }
   }};
+  border: 1px solid
+    ${({ $type }) => {
+      switch ($type) {
+        case 'take_profit':
+          return 'rgba(0, 222, 115, 0.3)'
+        case 'stop_loss':
+          return 'rgba(255, 55, 91, 0.3)'
+        case 'crossover':
+          return 'rgba(168, 127, 255, 0.3)'
+        case 'reversal':
+          return 'rgba(255, 169, 64, 0.3)'
+        case 'indicator':
+          return 'rgba(0, 169, 222, 0.3)'
+        default:
+          return 'rgba(255, 255, 255, 0.15)'
+      }
+    }};
 `
 
 const ConditionsList = styled.div`
@@ -91,13 +116,13 @@ const ConditionItem = styled.div`
   display: flex;
   align-items: flex-start;
   gap: 6px;
-  font-size: 10px;
-  line-height: 14px;
-  color: rgba(255, 255, 255, 0.85);
+  font-size: 11px;
+  line-height: 15px;
+  color: rgba(255, 255, 255, 0.9);
 
   &::before {
     content: '•';
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.4);
     flex-shrink: 0;
   }
 `
@@ -115,30 +140,44 @@ function ConditionNode({ data }: NodeProps) {
 
   const getTriggerLabel = (type: string) => {
     switch (type) {
-      case 'take_profit': return 'TP'
-      case 'stop_loss': return 'SL'
-      case 'crossover': return 'Cross'
-      case 'reversal': return 'Rev'
-      default: return 'Signal'
+      case 'take_profit':
+        return 'TP'
+      case 'stop_loss':
+        return 'SL'
+      case 'crossover':
+        return 'Cross'
+      case 'reversal':
+        return 'Reversal'
+      case 'indicator':
+        return 'IND'
+      default:
+        return 'Signal'
     }
   }
 
   return (
     <NodeWrapper $direction={nodeData.direction} $category={nodeData.category}>
-      <Handle type="target" position={Position.Top} style={{ background: nodeData.direction === 'long' ? '#00DE73' : '#FF375B' }} />
+      <Handle
+        type="target"
+        position={Position.Top}
+        style={{ background: nodeData.direction === 'long' ? '#00DE73' : '#FF375B' }}
+      />
       <Header>
         <DirectionBadge $direction={nodeData.direction}>
-          {nodeData.direction === 'both' ? 'ALL' : nodeData.direction}
+          {nodeData.category.toUpperCase()}
         </DirectionBadge>
-        <CategoryBadge>{nodeData.category}</CategoryBadge>
         <TriggerBadge $type={nodeData.triggerType}>{getTriggerLabel(nodeData.triggerType)}</TriggerBadge>
       </Header>
       <ConditionsList>
-        {nodeData.conditions.slice(0, 4).map((cond, i) => (
+        {nodeData.conditions.map((cond, i) => (
           <ConditionItem key={i}>{cond}</ConditionItem>
         ))}
       </ConditionsList>
-      <Handle type="source" position={Position.Bottom} style={{ background: nodeData.direction === 'long' ? '#00DE73' : '#FF375B' }} />
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        style={{ background: nodeData.direction === 'long' ? '#00DE73' : '#FF375B' }}
+      />
     </NodeWrapper>
   )
 }

@@ -75,7 +75,7 @@ export interface ConditionNode {
   type: 'condition'
   direction: 'long' | 'short' | 'both'
   category: 'entry' | 'exit'
-  triggerType: 'signal' | 'take_profit' | 'stop_loss' | 'reversal' | 'crossover'
+  triggerType: 'signal' | 'take_profit' | 'stop_loss' | 'reversal' | 'crossover' | 'indicator'
   conditions: string[]
   description: string
 }
@@ -405,20 +405,31 @@ function extractDataSources(code: string): DataSourceNode[] {
   }
 
   // Orderly Network - 检测 API URL 或关键字
-  if (code.includes('orderly.org') || code.includes('orderly.network') || code.includes('ORDERLY')) {
+  const hasOrderly =
+    code.includes('orderly.org') ||
+    code.includes('orderly.network') ||
+    code.includes('api-evm.orderly') ||
+    code.includes('ORDERLY') ||
+    code.includes('PERP_') ||
+    code.includes('_USDC')
+
+  if (hasOrderly) {
     const fields: string[] = []
-    if (code.includes('mark_price') || code.includes('futures')) fields.push('Price')
+    if (code.includes('mark_price') || code.includes('futures') || code.includes('/futures/')) fields.push('Price')
     // 增强 klines 检测
     if (
       code.includes('kline') ||
       code.includes('klines') ||
       code.includes('ohlc') ||
-      code.includes('/v1/public/klines')
+      code.includes('/v1/public/kline') ||
+      code.includes('last_3_candles')
     ) {
       fields.push('Klines')
     }
     // 检测 24h ticker
     if (code.includes('ticker/24hr') || code.includes('24h_')) fields.push('24h Stats')
+    // 检测保证金
+    if (code.includes('margin') || code.includes('available_margin')) fields.push('Margin')
     sources.push({ id: 'ds-orderly', type: 'datasource', api: 'Orderly', fields: fields.length ? fields : ['Price'] })
   }
 
@@ -489,18 +500,29 @@ function extractIndicators(code: string): IndicatorNode[] {
     code.includes('current_rsi') ||
     code.includes('previous_rsi') ||
     code.includes('oversold_crossover') ||
-    code.includes('overbought_crossover')
+    code.includes('overbought_crossover') ||
+    code.includes('rsi_long_threshold') ||
+    code.includes('rsi_short_threshold') ||
+    code.includes('rsi_long_exit') ||
+    code.includes('rsi_short_exit')
   if (hasRsiLogic) {
-    const period = code.match(/rsi.*?period["\s:]*(\d+)/i)?.[1] || '14'
-    // 提取 RSI 阈值
-    const oversoldLevel = code.match(/rsi_oversold["\s:]*(\d+)/i)?.[1] || '30'
-    const overboughtLevel = code.match(/rsi_overbought["\s:]*(\d+)/i)?.[1] || '70'
-    const hasThresholds = code.includes('rsi_oversold') || code.includes('rsi_overbought')
+    const period = code.match(/rsi.*?period["\s:]*(\d+)/i)?.[1] ||
+      code.match(/["']rsi_period["']\s*:\s*(\d+)/)?.[1] ||
+      '14'
+    // 提取 RSI 阈值 - 支持多种格式
+    const oversoldLevel = code.match(/rsi_oversold["\s:]*(\d+)/i)?.[1] ||
+      code.match(/["']rsi_short_threshold["']\s*:\s*(\d+)/)?.[1] ||
+      '30'
+    const overboughtLevel = code.match(/rsi_overbought["\s:]*(\d+)/i)?.[1] ||
+      code.match(/["']rsi_long_threshold["']\s*:\s*(\d+)/)?.[1] ||
+      '70'
+    const hasThresholds = code.includes('rsi_oversold') || code.includes('rsi_overbought') ||
+      code.includes('rsi_long_threshold') || code.includes('rsi_short_threshold')
     indicators.push({
       id: 'ind-rsi',
       type: 'indicator',
       name: 'RSI',
-      params: hasThresholds ? `Period: ${period}, Levels: ${oversoldLevel}/${overboughtLevel}` : `Period: ${period}`,
+      params: hasThresholds ? `Period: ${period}` : `Period: ${period}`,
     })
   }
 
@@ -531,10 +553,14 @@ function extractIndicators(code: string): IndicatorNode[] {
     code.includes('avg_volume') ||
     code.includes('current_volume') ||
     code.includes('volume_ratio') ||
+    code.includes('volume_ma') ||
+    code.includes('volume_multiplier') ||
     (code.includes('volume') && code.includes('average'))
   if (hasVolumeLogic) {
     // 尝试提取 volume 周期
-    const volumePeriod = code.match(/volumes?\[-(\d+):\]/)?.[1] || '20'
+    const volumePeriod = code.match(/volumes?\[-(\d+):\]/)?.[1] ||
+      code.match(/["']volume_ma_period["']\s*:\s*(\d+)/)?.[1] ||
+      '20'
     indicators.push({ id: 'ind-volume', type: 'indicator', name: 'Volume', params: `${volumePeriod}-period average` })
   }
 
@@ -606,6 +632,61 @@ function extractEntryConditions(code: string, docstring: string): ConditionNode[
 
   // 如果没有从文档提取到，从代码推断
   if (conditions.length === 0) {
+    // ============================================
+    // K 线颜色模式 - 3-Green Momentum 等
+    // ============================================
+    const hasConsecutiveGreens =
+      code.includes('consecutive_greens') ||
+      code.includes('current_has_3_greens') ||
+      code.includes('3_green') ||
+      code.includes('3-green') ||
+      (code.includes('candle_colors') && code.includes('green'))
+
+    const hasLastCandleRed =
+      code.includes('last_candle_red') ||
+      (code.includes('candle_colors[-1]') && code.includes('red'))
+
+    if (hasConsecutiveGreens) {
+      // 提取连续绿线数量
+      const countMatch = code.match(/consecutive_greens\s*>=?\s*(\d+)/i) ||
+        code.match(/(\d+)[_-]?green/i) ||
+        code.match(/(\d+)\s*consecutive\s*green/i)
+      const count = countMatch ? countMatch[1] : '3'
+
+      conditions.push({
+        id: 'entry-long-green',
+        type: 'condition',
+        direction: 'long',
+        category: 'entry',
+        triggerType: 'signal',
+        conditions: [`${count} consecutive green candles (Close > Open)`],
+        description: `${count}-Green Momentum entry`,
+      })
+    }
+
+    // 连续红线入场（做空策略）
+    const hasConsecutiveReds =
+      code.includes('consecutive_reds') ||
+      code.includes('current_has_3_reds') ||
+      code.includes('3_red') ||
+      code.includes('3-red')
+
+    if (hasConsecutiveReds) {
+      const countMatch = code.match(/consecutive_reds?\s*>=?\s*(\d+)/i) ||
+        code.match(/(\d+)[_-]?red/i)
+      const count = countMatch ? countMatch[1] : '3'
+
+      conditions.push({
+        id: 'entry-short-red',
+        type: 'condition',
+        direction: 'short',
+        category: 'entry',
+        triggerType: 'signal',
+        conditions: [`${count} consecutive red candles (Close < Open)`],
+        description: `${count}-Red Reversal entry`,
+      })
+    }
+
     // MA Crossover - 检测各种格式 (ma5_above_ma10, ma9_above_ma21, golden_cross 等)
     const maCrossPattern = /(?:ma|sma|ema)(\d+)_above_(?:ma|sma|ema)(\d+)/i
     const maCrossMatch = code.match(maCrossPattern)
@@ -699,7 +780,12 @@ function extractEntryConditions(code: string, docstring: string): ConditionNode[
     }
 
     // Momentum / Price Change Scalper - 多种检测模式
-    const hasMomentumLogic = code.includes('momentum_pct') || code.includes('price_change') || code.includes('bullish_signal')
+    const hasMomentumLogic =
+      code.includes('momentum_pct') ||
+      code.includes('price_change_pct') ||
+      code.includes('price_change') ||
+      code.includes('bullish_signal') ||
+      code.includes('abs_change_pct')
 
     if (hasMomentumLogic) {
       // 提取阈值
@@ -709,17 +795,28 @@ function extractEntryConditions(code: string, docstring: string): ConditionNode[
       // 检测多种入场条件模式
       const hasBullishEntry =
         code.includes('>= threshold') ||
+        code.includes('>= momentum_threshold') ||
+        code.includes('abs_change_pct >= momentum_threshold') ||
         code.includes('bullish_signal') ||
         code.includes('price_change >= threshold') ||
+        code.includes('price_change_pct > 0') ||
         code.includes(`>= ${threshold}`)
 
       const hasBearishEntry =
         code.includes('<= -threshold') ||
+        code.includes('<= -momentum_threshold') ||
         code.includes('bearish_signal') ||
         code.includes('price_change <= -threshold') ||
+        code.includes('price_change_pct < 0') ||
         code.includes(`<= -${threshold}`)
 
-      if (hasBullishEntry) {
+      // 检测双向入场（同时有 long 和 short 入场）
+      const hasBidirectionalEntry =
+        code.includes('abs_change_pct >= momentum_threshold') ||
+        (code.includes('OPEN_LONG') && code.includes('OPEN_SHORT'))
+
+      if (hasBidirectionalEntry) {
+        // 双向动量策略
         conditions.push({
           id: 'entry-long-mom',
           type: 'condition',
@@ -729,8 +826,6 @@ function extractEntryConditions(code: string, docstring: string): ConditionNode[
           conditions: [`Price change >= +${threshold}%`],
           description: `Bullish momentum entry (+${threshold}%)`,
         })
-      }
-      if (hasBearishEntry) {
         conditions.push({
           id: 'entry-short-mom',
           type: 'condition',
@@ -740,7 +835,114 @@ function extractEntryConditions(code: string, docstring: string): ConditionNode[
           conditions: [`Price change <= -${threshold}%`],
           description: `Bearish momentum entry (-${threshold}%)`,
         })
+      } else {
+        if (hasBullishEntry) {
+          conditions.push({
+            id: 'entry-long-mom',
+            type: 'condition',
+            direction: 'long',
+            category: 'entry',
+            triggerType: 'signal',
+            conditions: [`Price change >= +${threshold}%`],
+            description: `Bullish momentum entry (+${threshold}%)`,
+          })
+        }
+        if (hasBearishEntry) {
+          conditions.push({
+            id: 'entry-short-mom',
+            type: 'condition',
+            direction: 'short',
+            category: 'entry',
+            triggerType: 'signal',
+            conditions: [`Price change <= -${threshold}%`],
+            description: `Bearish momentum entry (-${threshold}%)`,
+          })
+        }
       }
+    }
+
+    // RSI 超卖入场策略 - 检测 RSI < threshold 的单向入场
+    const hasRsiOversoldEntry =
+      code.includes('rsi_oversold') ||
+      code.includes('rsi < CONFIG["rsi_threshold"]') ||
+      code.includes("rsi < CONFIG['rsi_threshold']") ||
+      code.includes('RSI oversold') ||
+      (code.includes('rsi <') && code.includes('rsi_threshold'))
+
+    if (hasRsiOversoldEntry) {
+      // 提取 RSI 阈值
+      const rsiThresholdMatch = code.match(/["']rsi_threshold["']\s*:\s*(\d+)/)?.[1] ||
+        code.match(/rsi\s*<\s*(\d+)/)?.[1]
+      const rsiThreshold = rsiThresholdMatch || '30'
+
+      conditions.push({
+        id: 'entry-long-rsi-oversold',
+        type: 'condition',
+        direction: 'long',
+        category: 'entry',
+        triggerType: 'signal',
+        conditions: [`RSI < ${rsiThreshold} (oversold)`],
+        description: `Long when RSI drops into oversold zone`,
+      })
+    }
+
+    // RSI 超买入场策略（做空）- 检测 RSI > threshold 的单向入场
+    const hasRsiOverboughtEntry =
+      code.includes('rsi_overbought') ||
+      code.includes('rsi > CONFIG["rsi_threshold"]') ||
+      code.includes("rsi > CONFIG['rsi_threshold']") ||
+      code.includes('RSI overbought')
+
+    if (hasRsiOverboughtEntry && !hasRsiOversoldEntry) {
+      const rsiThresholdMatch = code.match(/["']rsi_threshold["']\s*:\s*(\d+)/)?.[1] ||
+        code.match(/rsi\s*>\s*(\d+)/)?.[1]
+      const rsiThreshold = rsiThresholdMatch || '70'
+
+      conditions.push({
+        id: 'entry-short-rsi-overbought',
+        type: 'condition',
+        direction: 'short',
+        category: 'entry',
+        triggerType: 'signal',
+        conditions: [`RSI > ${rsiThreshold} (overbought)`],
+        description: `Short when RSI rises into overbought zone`,
+      })
+    }
+
+    // RSI 区间策略 - 检测 RSI Oscillator 等基于 RSI 区间的双向策略
+    const hasRsiZoneStrategy =
+      code.includes('should_be_long') ||
+      code.includes('should_be_short') ||
+      code.includes('REVERSE_TO_SHORT') ||
+      code.includes('REVERSE_TO_LONG') ||
+      code.includes('rsi_reversal') ||
+      (code.includes('rsi <=') && code.includes('rsi >'))
+
+    if (hasRsiZoneStrategy && !hasRsiOversoldEntry && !hasRsiOverboughtEntry) {
+      // 提取 RSI 阈值（默认 50 为分界点）
+      const rsiThresholdMatch = code.match(/rsi\s*[<>=]+\s*(\d+)/)?.[1]
+      const rsiThreshold = rsiThresholdMatch || '50'
+
+      // RSI 区间入场
+      conditions.push({
+        id: 'entry-long-rsi-zone',
+        type: 'condition',
+        direction: 'long',
+        category: 'entry',
+        triggerType: 'signal',
+        conditions: [`RSI <= ${rsiThreshold} (oversold/neutral zone)`],
+        description: `Long when RSI in oversold zone`,
+      })
+
+      conditions.push({
+        id: 'entry-short-rsi-zone',
+        type: 'condition',
+        direction: 'short',
+        category: 'entry',
+        triggerType: 'signal',
+        conditions: [`RSI > ${rsiThreshold} (overbought zone)`],
+        description: `Short when RSI in overbought zone`,
+      })
     }
 
     // RSI Crossover - 检测超卖/超买反弹
@@ -749,7 +951,7 @@ function extractEntryConditions(code: string, docstring: string): ConditionNode[
       code.includes('overbought_crossover') ||
       (code.includes('previous_rsi') && code.includes('current_rsi'))
 
-    if (hasRsiCrossover) {
+    if (hasRsiCrossover && !hasRsiZoneStrategy) {
       // 提取 RSI 阈值
       const oversoldLevel = code.match(/rsi_oversold["\s:]*(\d+)/i)?.[1] || '30'
       const overboughtLevel = code.match(/rsi_overbought["\s:]*(\d+)/i)?.[1] || '70'
@@ -797,6 +999,113 @@ function extractEntryConditions(code: string, docstring: string): ConditionNode[
         if (cond.category === 'entry' && !cond.conditions.includes('Volume confirmation')) {
           cond.conditions.push('Volume > Average')
         }
+      })
+    }
+
+    // RSI + MA + Volume 组合入场策略 (Momentum Wave Rider 类型)
+    const hasRsiMaVolumeCombo =
+      (code.includes('rsi_long_threshold') || code.includes('rsi_short_threshold')) &&
+      (code.includes('ma20') || code.includes('sma') || code.includes('price > ma')) &&
+      (code.includes('volume_multiplier') || code.includes('volume_ma') || code.includes('volume >'))
+
+    if (hasRsiMaVolumeCombo) {
+      // 提取 RSI 阈值
+      const rsiLongThreshold = code.match(/["']rsi_long_threshold["']\s*:\s*(\d+)/)?.[1] || '60'
+      const rsiShortThreshold = code.match(/["']rsi_short_threshold["']\s*:\s*(\d+)/)?.[1] || '40'
+      // 提取 MA 周期
+      const maPeriod = code.match(/["']ma_period["']\s*:\s*(\d+)/)?.[1] || '20'
+      // 提取 Volume 乘数
+      const volumeMultiplier = code.match(/["']volume_multiplier["']\s*:\s*([\d.]+)/)?.[1] || '1.5'
+
+      // Long Entry: RSI > threshold + Price > MA + Volume
+      conditions.push({
+        id: 'entry-long-rsi-ma-vol',
+        type: 'condition',
+        direction: 'long',
+        category: 'entry',
+        triggerType: 'signal',
+        conditions: [
+          `RSI > ${rsiLongThreshold}`,
+          `Price > MA${maPeriod}`,
+          `Volume > ${volumeMultiplier}x avg`,
+        ],
+        description: `Long when RSI strong + price above MA + high volume`,
+      })
+
+      // Short Entry: RSI < threshold + Price < MA + Volume
+      conditions.push({
+        id: 'entry-short-rsi-ma-vol',
+        type: 'condition',
+        direction: 'short',
+        category: 'entry',
+        triggerType: 'signal',
+        conditions: [
+          `RSI < ${rsiShortThreshold}`,
+          `Price < MA${maPeriod}`,
+          `Volume > ${volumeMultiplier}x avg`,
+        ],
+        description: `Short when RSI weak + price below MA + high volume`,
+      })
+    }
+
+    // Momentum Breakout / MA Breakout 策略 - 检测价格突破 MA + 成交量确认模式
+    const hasMaBreakout =
+      code.includes('ma_breakout') ||
+      code.includes('price_above_ma') ||
+      code.includes('price_above_sma') ||
+      (code.includes('current_price > sma') && code.includes('prev_price_above_ma'))
+
+    const hasVolumeConfirmation =
+      code.includes('volume_confirmation') ||
+      code.includes('buy_volume_ratio') ||
+      code.includes('mfi') // Money Flow Index
+
+    const hasTrendStrength =
+      code.includes('consecutive_rises') ||
+      code.includes('trend_strength') ||
+      code.includes('trend_confirmed')
+
+    // 检测是否有明确的 buy action 在无持仓逻辑中
+    const hasBuyAction =
+      code.includes('"action": "buy"') ||
+      code.includes("'action': 'buy'") ||
+      code.includes('"action":"buy"')
+
+    if (hasMaBreakout && (hasVolumeConfirmation || hasTrendStrength || hasBuyAction)) {
+      const entryConditions: string[] = []
+
+      // 提取 MA 周期
+      const smaPeriodMatch = code.match(/sma[_\s]*(\d+)/i)
+      const maPeriod = smaPeriodMatch ? smaPeriodMatch[1] : '24'
+
+      entryConditions.push(`Price breaks above ${maPeriod}H MA`)
+
+      if (code.includes('seven_day_high') || code.includes('above_7d_high') || code.includes('price_above_7d_high')) {
+        entryConditions.push('Price > 7-day high')
+      }
+
+      if (hasVolumeConfirmation) {
+        if (code.includes('buy_volume_ratio') || code.includes('mfi')) {
+          entryConditions.push('Volume confirmation (MFI > 60)')
+        } else {
+          entryConditions.push('Volume confirmation')
+        }
+      }
+
+      if (hasTrendStrength) {
+        const risesMatch = code.match(/consecutive_rises\s*>=?\s*(\d+)/i)
+        const rises = risesMatch ? risesMatch[1] : '3'
+        entryConditions.push(`${rises}+ consecutive price rises`)
+      }
+
+      conditions.push({
+        id: 'entry-long-breakout',
+        type: 'condition',
+        direction: 'long',
+        category: 'entry',
+        triggerType: 'signal',
+        conditions: entryConditions,
+        description: 'Momentum breakout entry',
       })
     }
   }
@@ -864,6 +1173,56 @@ function extractExitConditions(code: string, config: StrategyConfig): ConditionN
     })
   }
 
+  // ============================================
+  // K 线颜色退出条件 - 红蜡烛退出等
+  // ============================================
+  const hasRedCandleExit =
+    code.includes('last_candle_red') ||
+    code.includes('CLOSE_LONG') ||
+    (code.includes('candle_colors[-1]') && code.includes('red'))
+
+  // 检测是否是 K 线颜色策略
+  const isCandleColorStrategy =
+    code.includes('candle_colors') ||
+    code.includes('consecutive_greens') ||
+    code.includes('3_green') ||
+    code.includes('3-green')
+
+  if (hasRedCandleExit && isCandleColorStrategy) {
+    conditions.push({
+      id: 'exit-red-candle',
+      type: 'condition',
+      direction: 'long',
+      category: 'exit',
+      triggerType: 'indicator',
+      conditions: ['First red candle (Close <= Open)'],
+      description: 'Exit on red candle reversal',
+    })
+  }
+
+  // 绿蜡烛退出（做空策略）
+  const hasGreenCandleExit =
+    code.includes('last_candle_green') ||
+    code.includes('CLOSE_SHORT') ||
+    (code.includes('candle_colors[-1]') && code.includes('green') && code.includes('SHORT'))
+
+  const isShortCandleStrategy =
+    code.includes('consecutive_reds') ||
+    code.includes('3_red') ||
+    code.includes('3-red')
+
+  if (hasGreenCandleExit && isShortCandleStrategy) {
+    conditions.push({
+      id: 'exit-green-candle',
+      type: 'condition',
+      direction: 'short',
+      category: 'exit',
+      triggerType: 'indicator',
+      conditions: ['First green candle (Close >= Open)'],
+      description: 'Exit on green candle reversal',
+    })
+  }
+
   // Fibonacci break
   if (code.includes('fibonacci_break') || code.includes('triggered_fib_level')) {
     conditions.push({
@@ -894,18 +1253,64 @@ function extractExitConditions(code: string, config: StrategyConfig): ConditionN
   if (
     code.includes('reverse') ||
     code.includes('momentum_reversal') ||
+    code.includes('momentum_reverse') ||
     code.includes('CLOSE_LONG_OPEN_SHORT') ||
     code.includes('CLOSE_SHORT_OPEN_LONG') ||
     code.includes('CLOSE_LONG') ||
     code.includes('CLOSE_SHORT')
   ) {
+    // 提取具体的反转条件
+    const reversalConditions: string[] = []
+
+    // 动量策略 - 提取具体阈值（支持多种变量名）
+    const hasMomentumReverse =
+      code.includes('momentum_pct') ||
+      code.includes('momentum_reversal') ||
+      code.includes('momentum_reverse') ||
+      code.includes('price_change_pct')
+
+    if (hasMomentumReverse) {
+      const thresholdMatch = code.match(/["']momentum_threshold["']\s*:\s*([\d.]+)/)?.[1] ||
+        code.match(/momentum_pct\s*[<>=]+\s*-?([\d.]+)/)?.[1]
+      const threshold = thresholdMatch || '0.5'
+
+      // LONG 持仓的退出条件
+      if (code.includes('CLOSE_LONG') || code.includes('CLOSE_LONG_OPEN_SHORT')) {
+        reversalConditions.push(`LONG: Momentum <= -${threshold}%`)
+      }
+      // SHORT 持仓的退出条件
+      if (code.includes('CLOSE_SHORT') || code.includes('CLOSE_SHORT_OPEN_LONG')) {
+        reversalConditions.push(`SHORT: Momentum >= +${threshold}%`)
+      }
+      // 如果没有具体检测到，显示通用条件
+      if (reversalConditions.length === 0) {
+        reversalConditions.push(`Momentum reverses ±${threshold}%`)
+      }
+    }
+    // MA 交叉策略
+    else if (code.includes('golden_cross') || code.includes('death_cross')) {
+      reversalConditions.push('LONG: Death cross (MA短 < MA长)')
+      reversalConditions.push('SHORT: Golden cross (MA短 > MA长)')
+    }
+    // RSI 策略
+    else if (code.includes('rsi') && (code.includes('oversold') || code.includes('overbought'))) {
+      const oversoldLevel = code.match(/rsi_oversold["\s:]*(\d+)/i)?.[1] || '30'
+      const overboughtLevel = code.match(/rsi_overbought["\s:]*(\d+)/i)?.[1] || '70'
+      reversalConditions.push(`LONG: RSI < ${overboughtLevel} (overbought exit)`)
+      reversalConditions.push(`SHORT: RSI > ${oversoldLevel} (oversold exit)`)
+    }
+    // 通用反转
+    else {
+      reversalConditions.push('Opposite entry signal triggered')
+    }
+
     conditions.push({
       id: 'exit-reverse',
       type: 'condition',
       direction: 'both',
       category: 'exit',
       triggerType: 'reversal',
-      conditions: ['Opposite signal triggered'],
+      conditions: reversalConditions,
       description: 'Exit on reversal signal',
     })
   }
@@ -923,6 +1328,37 @@ function extractExitConditions(code: string, config: StrategyConfig): ConditionN
         triggerType: 'reversal',
         conditions: ['RSI reversal signal'],
         description: 'Exit on RSI crossover reversal',
+      })
+    }
+  }
+
+  // RSI + MA 组合退出条件 (Momentum Wave Rider 类型)
+  const hasRsiMaExit =
+    (code.includes('rsi_long_exit') || code.includes('rsi_short_exit')) &&
+    (code.includes('price < ma') || code.includes('price > ma') || code.includes('should_exit'))
+
+  if (hasRsiMaExit) {
+    // 提取 RSI 退出阈值
+    const rsiLongExit = code.match(/["']rsi_long_exit["']\s*:\s*(\d+)/)?.[1] || '50'
+    const rsiShortExit = code.match(/["']rsi_short_exit["']\s*:\s*(\d+)/)?.[1] || '50'
+    // 提取 MA 周期
+    const maPeriod = code.match(/["']ma_period["']\s*:\s*(\d+)/)?.[1] || '20'
+
+    // 检查是否已经添加了 reversal 条件
+    const hasReversalExit = conditions.some((c) => c.triggerType === 'reversal')
+
+    if (!hasReversalExit) {
+      conditions.push({
+        id: 'exit-rsi-ma-reversal',
+        type: 'condition',
+        direction: 'both',
+        category: 'exit',
+        triggerType: 'reversal',
+        conditions: [
+          `LONG: RSI < ${rsiLongExit} OR Price < MA${maPeriod}`,
+          `SHORT: RSI > ${rsiShortExit} OR Price > MA${maPeriod}`,
+        ],
+        description: 'Exit on RSI/MA reversal',
       })
     }
   }
@@ -957,6 +1393,46 @@ function extractExitConditions(code: string, config: StrategyConfig): ConditionN
       triggerType: 'stop_loss',
       conditions: [`ROE Loss >= ${roeLossMatch ? `${parseFloat(roeLossMatch) * 100}%` : '80%'}`],
       description: 'Hard stop on ROE loss',
+    })
+  }
+
+  // MA Breakdown 退出 - 价格跌破 MA (技术指标触发，非传统止损)
+  const hasMaBreakdown =
+    code.includes('MA_BREAKDOWN') ||
+    code.includes('ma_breakdown') ||
+    (code.includes('price_above_ma') && code.includes('not price_above_ma')) ||
+    (code.includes('prev_price_above_ma') && code.includes('not price_above_ma'))
+
+  if (hasMaBreakdown) {
+    const smaPeriodMatch = code.match(/sma[_\s]*(\d+)/i)
+    const maPeriod = smaPeriodMatch ? smaPeriodMatch[1] : '24'
+    conditions.push({
+      id: 'exit-ma-breakdown',
+      type: 'condition',
+      direction: 'long',
+      category: 'exit',
+      triggerType: 'indicator',
+      conditions: [`Price drops below ${maPeriod}H MA`],
+      description: `MA Breakdown: Price < ${maPeriod}H SMA`,
+    })
+  }
+
+  // Volume Weakness 退出 - 成交量/买盘力度减弱 (技术指标触发，非传统止损)
+  const hasVolumeWeakness =
+    code.includes('VOLUME_WEAKNESS') ||
+    code.includes('volume_weakness') ||
+    code.includes('buy_volume_ratio < 0.4') ||
+    (code.includes('buy_volume_ratio') && code.includes('< 0.4'))
+
+  if (hasVolumeWeakness) {
+    conditions.push({
+      id: 'exit-volume-weakness',
+      type: 'condition',
+      direction: 'long',
+      category: 'exit',
+      triggerType: 'indicator',
+      conditions: ['Buy volume ratio < 0.4'],
+      description: 'Weak buying pressure exit',
     })
   }
 
@@ -1340,13 +1816,19 @@ function extractDecisionLogic(
   // ============================================
 
   // 检测 K 线模式入场逻辑 (3-green momentum 等)
-  const hasGreenMomentum = code.includes('current_has_3_greens') ||
+  const hasGreenMomentum =
+    code.includes('current_has_3_greens') ||
     code.includes('consecutive_greens >= 3') ||
-    code.includes('3 consecutive green')
+    code.includes('consecutive_greens >=') ||
+    code.includes('3 consecutive green') ||
+    code.includes('3_green') ||
+    code.includes('3-green') ||
+    (code.includes('OPEN_LONG') && code.includes('candle_colors'))
 
   if (hasGreenMomentum) {
     // 提取连续绿线数量
-    const countMatch = code.match(/consecutive_greens?\s*>=?\s*(\d+)/i)
+    const countMatch = code.match(/consecutive_greens?\s*>=?\s*(\d+)/i) ||
+      code.match(/(\d+)[_-]?green/i)
     const count = countMatch ? countMatch[1] : '3'
 
     noPosition.push({
@@ -1356,10 +1838,33 @@ function extractDecisionLogic(
     })
   }
 
+  // 检测红线模式入场（做空）
+  const hasRedMomentum =
+    code.includes('current_has_3_reds') ||
+    code.includes('consecutive_reds >= 3') ||
+    code.includes('consecutive_reds >=') ||
+    code.includes('3 consecutive red') ||
+    code.includes('3_red') ||
+    code.includes('3-red')
+
+  if (hasRedMomentum) {
+    const countMatch = code.match(/consecutive_reds?\s*>=?\s*(\d+)/i) ||
+      code.match(/(\d+)[_-]?red/i)
+    const count = countMatch ? countMatch[1] : '3'
+
+    noPosition.push({
+      condition: `${count} consecutive red candles`,
+      action: 'SELL',
+      description: `Open short on ${count}-red reversal signal`,
+    })
+  }
+
   // 检测红线退出逻辑
-  const hasRedExit = code.includes('last_candle_red') ||
+  const hasRedExit =
+    code.includes('last_candle_red') ||
     code.includes('candle_colors[-1] == "red"') ||
-    code.includes('red candle')
+    code.includes('red candle') ||
+    (code.includes('CLOSE_LONG') && code.includes('candle'))
 
   // 检测持仓变量的各种格式
   const hasLongPosition =
@@ -1382,6 +1887,33 @@ function extractDecisionLogic(
       condition: 'LONG + Red candle detected',
       action: 'SELL',
       description: 'Exit long on first red candle',
+    })
+  }
+
+  // Momentum Breakout 策略 - LONG 持仓退出条件
+  const hasMaBreakdownExit =
+    code.includes('MA_BREAKDOWN') ||
+    code.includes('ma_breakdown') ||
+    (code.includes('prev_price_above_ma') && code.includes('not price_above_ma'))
+
+  const hasVolumeWeaknessExit =
+    code.includes('VOLUME_WEAKNESS') ||
+    code.includes('volume_weakness') ||
+    code.includes('buy_volume_ratio < 0.4')
+
+  if (hasLongPosition && hasMaBreakdownExit) {
+    hasPosition.push({
+      condition: 'LONG + Price < MA',
+      action: 'SELL',
+      description: 'Exit long on MA breakdown',
+    })
+  }
+
+  if (hasLongPosition && hasVolumeWeaknessExit) {
+    hasPosition.push({
+      condition: 'LONG + Weak volume',
+      action: 'SELL',
+      description: 'Exit long on volume weakness',
     })
   }
 
@@ -1423,7 +1955,9 @@ function extractDecisionLogic(
       code.includes('momentum_pct <= -') ||
       code.includes('CLOSE_LONG') ||
       code.includes('death_cross') ||
-      code.includes('overbought_crossover')
+      code.includes('overbought_crossover') ||
+      code.includes('REVERSE_TO_SHORT') ||
+      code.includes('should_be_short')
     ) {
       hasPosition.push({
         condition: 'LONG + Bearish signal',
@@ -1458,7 +1992,9 @@ function extractDecisionLogic(
       code.includes('momentum_pct >=') ||
       code.includes('CLOSE_SHORT') ||
       code.includes('golden_cross') ||
-      code.includes('oversold_crossover')
+      code.includes('oversold_crossover') ||
+      code.includes('REVERSE_TO_LONG') ||
+      code.includes('should_be_long')
     ) {
       hasPosition.push({
         condition: 'SHORT + Bullish signal',
@@ -1469,19 +2005,145 @@ function extractDecisionLogic(
   }
 
   // 无持仓时的入场逻辑
-  // Momentum strategy
-  if (code.includes('momentum_pct >= threshold') || code.includes('momentum_pct >=')) {
-    const thresholdMatch = code.match(/["']momentum_threshold["']\s*:\s*([\d.]+)/)?.[1]
+
+  // RSI 超卖入场策略
+  const hasRsiOversoldEntry =
+    code.includes('rsi_oversold') ||
+    code.includes('rsi < CONFIG["rsi_threshold"]') ||
+    code.includes("rsi < CONFIG['rsi_threshold']") ||
+    code.includes('RSI oversold') ||
+    (code.includes('rsi <') && code.includes('rsi_threshold') && !code.includes('should_be_short'))
+
+  if (hasRsiOversoldEntry) {
+    const rsiThresholdMatch = code.match(/["']rsi_threshold["']\s*:\s*(\d+)/)?.[1] ||
+      code.match(/rsi\s*<\s*(\d+)/)?.[1]
+    const rsiThreshold = rsiThresholdMatch || '30'
+
     noPosition.push({
-      condition: `Momentum ≥ +${thresholdMatch || '0.5'}%`,
+      condition: `RSI < ${rsiThreshold}`,
+      action: 'BUY',
+      description: 'Open long when RSI oversold',
+    })
+  }
+
+  // RSI 超买入场策略（做空）
+  const hasRsiOverboughtEntry =
+    code.includes('rsi_overbought') ||
+    code.includes('rsi > CONFIG["rsi_threshold"]') ||
+    code.includes("rsi > CONFIG['rsi_threshold']") ||
+    code.includes('RSI overbought')
+
+  if (hasRsiOverboughtEntry && !hasRsiOversoldEntry) {
+    const rsiThresholdMatch = code.match(/["']rsi_threshold["']\s*:\s*(\d+)/)?.[1] ||
+      code.match(/rsi\s*>\s*(\d+)/)?.[1]
+    const rsiThreshold = rsiThresholdMatch || '70'
+
+    noPosition.push({
+      condition: `RSI > ${rsiThreshold}`,
+      action: 'SELL',
+      description: 'Open short when RSI overbought',
+    })
+  }
+
+  // RSI 区间双向策略入场逻辑
+  const hasRsiZoneEntry =
+    code.includes('should_be_long') ||
+    code.includes('should_be_short') ||
+    code.includes('REVERSE_TO_SHORT') ||
+    code.includes('REVERSE_TO_LONG') ||
+    code.includes('rsi_reversal')
+
+  if (hasRsiZoneEntry && !hasRsiOversoldEntry && !hasRsiOverboughtEntry) {
+    // 提取 RSI 阈值
+    const rsiThresholdMatch = code.match(/rsi\s*[<>=]+\s*(\d+)/)?.[1]
+    const rsiThreshold = rsiThresholdMatch || '50'
+
+    noPosition.push({
+      condition: `RSI <= ${rsiThreshold}`,
+      action: 'BUY',
+      description: 'Open long in oversold/neutral zone',
+    })
+    noPosition.push({
+      condition: `RSI > ${rsiThreshold}`,
+      action: 'SELL',
+      description: 'Open short in overbought zone',
+    })
+  }
+
+  // RSI + MA + Volume 组合策略入场 (Momentum Wave Rider 类型)
+  const hasRsiMaVolumeEntry =
+    (code.includes('rsi_long_threshold') || code.includes('rsi_short_threshold')) &&
+    (code.includes('ma20') || code.includes('price > ma') || code.includes('price < ma')) &&
+    (code.includes('volume_multiplier') || code.includes('volume_ma') || code.includes('volume >'))
+
+  if (hasRsiMaVolumeEntry) {
+    const rsiLongThreshold = code.match(/["']rsi_long_threshold["']\s*:\s*(\d+)/)?.[1] || '60'
+    const rsiShortThreshold = code.match(/["']rsi_short_threshold["']\s*:\s*(\d+)/)?.[1] || '40'
+    const volumeMultiplier = code.match(/["']volume_multiplier["']\s*:\s*([\d.]+)/)?.[1] || '1.5'
+
+    noPosition.push({
+      condition: `RSI > ${rsiLongThreshold} + Price > MA + Vol > ${volumeMultiplier}x`,
+      action: 'BUY',
+      description: 'Open long on momentum confirmation',
+    })
+    noPosition.push({
+      condition: `RSI < ${rsiShortThreshold} + Price < MA + Vol > ${volumeMultiplier}x`,
+      action: 'SELL',
+      description: 'Open short on weakness confirmation',
+    })
+  }
+
+  // RSI + MA 组合策略退出
+  const hasRsiMaExit =
+    (code.includes('rsi_long_exit') || code.includes('rsi_short_exit')) &&
+    (code.includes('should_exit') || code.includes('price < ma') || code.includes('price > ma'))
+
+  if (hasRsiMaExit && hasLongPosition) {
+    const rsiLongExit = code.match(/["']rsi_long_exit["']\s*:\s*(\d+)/)?.[1] || '50'
+    hasPosition.push({
+      condition: `LONG + (RSI < ${rsiLongExit} OR Price < MA)`,
+      action: 'SELL',
+      description: 'Exit long on weakness signal',
+    })
+  }
+
+  if (hasRsiMaExit && hasShortPosition) {
+    const rsiShortExit = code.match(/["']rsi_short_exit["']\s*:\s*(\d+)/)?.[1] || '50'
+    hasPosition.push({
+      condition: `SHORT + (RSI > ${rsiShortExit} OR Price > MA)`,
+      action: 'BUY',
+      description: 'Exit short on strength signal',
+    })
+  }
+
+  // Momentum strategy - 多种检测模式
+  const hasMomentumEntry =
+    code.includes('momentum_pct >= threshold') ||
+    code.includes('momentum_pct >=') ||
+    code.includes('abs_change_pct >= momentum_threshold') ||
+    code.includes('OPEN_LONG') ||
+    code.includes('price_change_pct > 0')
+
+  const hasMomentumShortEntry =
+    code.includes('momentum_pct <= -threshold') ||
+    code.includes('momentum_pct <= -') ||
+    code.includes('OPEN_SHORT') ||
+    code.includes('price_change_pct < 0')
+
+  const thresholdMatch = code.match(/["']momentum_threshold["']\s*:\s*([\d.]+)/)?.[1]
+  const threshold = thresholdMatch || '0.5'
+
+  // 只有在没有 RSI 区间策略时才添加动量入场
+  if (hasMomentumEntry && !hasRsiZoneEntry && !hasRsiMaVolumeEntry) {
+    noPosition.push({
+      condition: `Momentum ≥ +${threshold}%`,
       action: 'BUY',
       description: 'Open long on bullish momentum',
     })
   }
-  if (code.includes('momentum_pct <= -threshold') || code.includes('momentum_pct <= -')) {
-    const thresholdMatch = code.match(/["']momentum_threshold["']\s*:\s*([\d.]+)/)?.[1]
+  if (hasMomentumShortEntry && !hasRsiZoneEntry && !hasRsiMaVolumeEntry) {
     noPosition.push({
-      condition: `Momentum ≤ -${thresholdMatch || '0.5'}%`,
+      condition: `Momentum ≤ -${threshold}%`,
       action: 'SELL',
       description: 'Open short on bearish momentum',
     })
@@ -1549,6 +2211,39 @@ function extractDecisionLogic(
       condition: `Price touches Fib level (${fibLevels.join(', ') || '38.2%, 50%, 61.8%'})`,
       action: 'BUY',
       description: 'Enter long at Fibonacci support',
+    })
+  }
+
+  // Momentum Breakout 策略入场 - MA 突破 + 成交量确认 + 趋势强度
+  const hasMaBreakoutEntry =
+    code.includes('ma_breakout') ||
+    (code.includes('price_above_ma') && code.includes('prev_price_above_ma'))
+
+  const hasBreakoutVolumeConfirm =
+    code.includes('volume_confirmation') ||
+    code.includes('buy_volume_ratio > 0.6') ||
+    code.includes('volume_confirmed')
+
+  const hasBreakoutTrendConfirm =
+    code.includes('trend_strength') ||
+    code.includes('trend_confirmed') ||
+    code.includes('consecutive_rises >= 3')
+
+  if (hasMaBreakoutEntry && (hasBreakoutVolumeConfirm || hasBreakoutTrendConfirm)) {
+    const entryDesc: string[] = ['MA breakout']
+    if (code.includes('seven_day_high') || code.includes('above_7d_high')) {
+      entryDesc.push('7D high')
+    }
+    if (hasBreakoutVolumeConfirm) {
+      entryDesc.push('volume')
+    }
+    if (hasBreakoutTrendConfirm) {
+      entryDesc.push('momentum')
+    }
+    noPosition.push({
+      condition: entryDesc.join(' + '),
+      action: 'BUY',
+      description: 'Open long on momentum breakout',
     })
   }
 

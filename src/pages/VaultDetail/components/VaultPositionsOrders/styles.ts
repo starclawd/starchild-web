@@ -27,7 +27,7 @@ export const StyledTable = styled(Table)`
       line-height: 20px;
       color: ${({ theme }) => theme.black200};
       &:first-child {
-        padding-left: 46px; // 12px + 24px(logo) + 4px(margin) = 40px，与竖线对齐
+        padding-left: 12px; // 12px + 24px(logo) + 4px(margin) = 40px，与竖线对齐
       }
       &:last-child {
         padding-right: 12px;

@@ -33,7 +33,7 @@ const TextArea = styled.textarea`
   }
   &::placeholder {
     font-size: 16px;
-    font-weight: 500;
+    font-weight: 400;
     line-height: 24px;
     color: ${({ theme }) => theme.black300};
   }

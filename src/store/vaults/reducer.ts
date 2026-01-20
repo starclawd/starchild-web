@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { VaultsState, VaultLibraryStats, MyVaultStats, LeaderboardBalanceData } from './vaults'
-import { VaultInfo } from 'api/vaults'
+import { VaultInfo, OrderlyAvailableSymbolsDataType } from 'api/vaults'
 import { StrategiesOverviewDataType } from 'api/strategy'
 
 const initialState: VaultsState = {
@@ -12,6 +12,9 @@ const initialState: VaultsState = {
 
   // 所有策略概览数据
   allStrategies: [],
+
+  // Orderly 可用交易对数据
+  orderlyAvailableSymbols: [],
 
   vaultsTabIndex: 0,
 
@@ -25,6 +28,7 @@ const initialState: VaultsState = {
   isLoadingMyStats: false,
   isLoadingVaults: false,
   isLoadingAllStrategies: false,
+  isLoadingOrderlySymbols: false,
 }
 
 export const vaultsSlice = createSlice({
@@ -70,6 +74,15 @@ export const vaultsSlice = createSlice({
       state.isLoadingAllStrategies = action.payload
     },
 
+    // Orderly 可用交易对相关
+    updateOrderlyAvailableSymbols: (state, action: PayloadAction<OrderlyAvailableSymbolsDataType[]>) => {
+      state.orderlyAvailableSymbols = action.payload
+    },
+
+    setLoadingOrderlySymbols: (state, action: PayloadAction<boolean>) => {
+      state.isLoadingOrderlySymbols = action.payload
+    },
+
     updateVaultsTabIndex: (state, action: PayloadAction<number>) => {
       state.vaultsTabIndex = action.payload
     },
@@ -110,6 +123,8 @@ export const {
   setLoadingMyStats,
   setLoadingVaults,
   setLoadingAllStrategies,
+  updateOrderlyAvailableSymbols,
+  setLoadingOrderlySymbols,
   updateVaultsTabIndex,
   updateCurrentDepositAndWithdrawVault,
   updateLeaderboardBalances,

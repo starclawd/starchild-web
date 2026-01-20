@@ -71,6 +71,7 @@ const ButtonCancel = styled(ButtonEdit)``
 
 const ButtonConfirm = styled(ButtonEdit)`
   border-left: none;
+  color: ${({ theme }) => theme.green100};
 `
 
 const LayerList = styled.div<{ $isEdit: boolean }>`

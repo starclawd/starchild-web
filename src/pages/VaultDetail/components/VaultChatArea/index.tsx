@@ -152,7 +152,7 @@ const VaultChatArea = memo(() => {
           <SignalList className='scroll-style'>
             {displaySignalList.map((data, index) => {
               if (data.type === SIGNAL_TYPE.LOG) {
-                return <LogItem key={data.decision_id} log={data} />
+                return <LogItem key={`${data.decision_id}-${index}`} log={data} />
               }
               const { decision, timestamp, thought, signal, signal_event_id, decision_id, deployment_id } = data
               return (

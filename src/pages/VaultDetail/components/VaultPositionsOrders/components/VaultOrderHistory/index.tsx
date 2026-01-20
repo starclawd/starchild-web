@@ -13,6 +13,7 @@ import NoData from 'components/NoData'
 import { VaultPositionsOrdersProps } from '../..'
 import { DETAIL_TYPE } from 'store/vaultsdetail/vaultsdetail'
 import { StyledTable, LoadingWrapper } from '../../styles'
+import { useSymbolPrecision } from 'store/vaults/hooks'
 
 // Symbol 显示组件
 const SymbolCell = styled.div`
@@ -82,6 +83,7 @@ const CommonValue = styled.div`
 const VaultOrderHistory = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, strategyId }) => {
   const vaultOrderHistoryPaginated = useVaultOrderHistoryPaginated(vaultId || '')
   const strategyOrderHistoryPaginated = useStrategyOrderHistoryPaginated(strategyId || '')
+  const { formatPrice } = useSymbolPrecision()
 
   // Orders 表格列定义
   // 根据activeTab选择对应的数据
@@ -128,7 +130,7 @@ const VaultOrderHistory = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId,
         key: 'price',
         title: <Trans>Executed Price</Trans>,
         width: '120px',
-        render: (order) => <CommonValue>{formatNumber(order.price || 0)}</CommonValue>,
+        render: (order) => <CommonValue>{formatNumber(formatPrice(order.price || 0, order.symbol))}</CommonValue>,
       },
       {
         key: 'value',
@@ -149,7 +151,7 @@ const VaultOrderHistory = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId,
         ),
       },
     ],
-    [],
+    [formatPrice],
   )
 
   if (currentData.isLoading && currentData.orders.length === 0) {

@@ -13,6 +13,7 @@ import { useSort, useSortableHeader, SortDirection } from 'components/TableSorta
 import { VaultPositionsOrdersProps } from '../..'
 import { DETAIL_TYPE } from 'store/vaultsdetail/vaultsdetail'
 import { StyledTable, LoadingWrapper } from '../../styles'
+import { useSymbolPrecision } from 'store/vaults/hooks'
 
 // Symbol 显示组件
 const SymbolCell = styled.div`
@@ -120,6 +121,7 @@ const VaultPositions = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, st
   // 获取positions数据
   const { positions: vaultPositions, isLoading: isLoadingPositions } = useVaultPositions(vaultId || '')
   const { positions: strategyPositions, isLoading: isLoadingStrategyPositions } = useStrategyPositions(strategyId || '')
+  const { formatPrice, getPricePrecision } = useSymbolPrecision()
 
   const rawPositions = useMemo(() => {
     return activeTab === DETAIL_TYPE.VAULT ? vaultPositions : strategyPositions
@@ -219,13 +221,17 @@ const VaultPositions = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, st
         key: 'entry_price',
         title: <Trans>Entry price</Trans>,
         width: '120px',
-        render: (position) => <PriceValue>{formatNumber(position.average_open_price)}</PriceValue>,
+        render: (position) => (
+          <PriceValue>{formatNumber(formatPrice(position.average_open_price, position.symbol))}</PriceValue>
+        ),
       },
       {
         key: 'mark_price',
         title: <Trans>Mark price</Trans>,
         width: '120px',
-        render: (position) => <PriceValue>{formatNumber(position.mark_price)}</PriceValue>,
+        render: (position) => (
+          <PriceValue>{formatNumber(formatPrice(position.mark_price, position.symbol))}</PriceValue>
+        ),
       },
     ]
 
@@ -257,7 +263,7 @@ const VaultPositions = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, st
           width: '150px',
           render: (position) => (
             <LiqPriceValue>
-              {position.est_liq_price ? formatNumber(toPrecision(position.est_liq_price, 6)) : '--'}
+              {position.est_liq_price ? formatNumber(formatPrice(position.est_liq_price, position.symbol)) : '--'}
             </LiqPriceValue>
           ),
         },
@@ -278,7 +284,7 @@ const VaultPositions = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, st
       // 金库模式：只显示 PnL (ROE%)
       return [...baseColumns, pnlColumn]
     }
-  }, [activeTab, createSortableHeader])
+  }, [activeTab, createSortableHeader, formatPrice])
 
   if ((isLoadingPositions || isLoadingStrategyPositions) && positions.length === 0) {
     return (

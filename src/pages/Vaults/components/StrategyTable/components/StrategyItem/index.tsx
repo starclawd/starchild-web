@@ -327,11 +327,7 @@ const StrategyItem = memo(({ record, aprRank }: StrategyItemProps) => {
         <TableCell>
           <FollowWrapper>
             <FollowText $isFollowed={isFollowed}>
-              {isFollowed && (
-                <Tooltip content={<Trans>My followed</Trans>} placement='top'>
-                  <BoostIcon className='icon-boost' />
-                </Tooltip>
-              )}
+              {isFollowed && <BoostIcon className='icon-boost' />}
               <span>{followers ? followers : '0'}</span>
             </FollowText>
             {isLogin && (
