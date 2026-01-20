@@ -1,7 +1,7 @@
 import styled, { keyframes } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { GENERATION_STATUS } from 'store/createstrategy/createstrategy'
+import { GENERATION_STATUS, STRATEGY_TAB_INDEX } from 'store/createstrategy/createstrategy'
 import {
   useHandleGenerateCode,
   useIsGeneratingCode,
@@ -9,6 +9,7 @@ import {
   useStrategyCode,
   useIsShowExpandCode,
 } from 'store/createstrategy/hooks/useCode'
+import { useCurrentStrategyTabIndex } from 'store/createstrategy/hooks/useCreateStrategyDetail'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import MemoizedHighlight from 'components/MemoizedHighlight'
 import { IconBase } from 'components/Icons'
@@ -182,6 +183,7 @@ export default memo(function Code() {
   const [isGeneratingCodeFrontend] = useIsGeneratingCode()
   const handleGenerateCode = useHandleGenerateCode()
   const [isShowExpandCode, setIsShowExpandCode] = useIsShowExpandCode()
+  const [currentStrategyTabIndex] = useCurrentStrategyTabIndex()
   const { external_code, generation_status } = strategyCode || { external_code: '', generation_status: null }
   const { copyWithCustomProcessor } = useCopyContent({
     mode: 'custom',
@@ -382,6 +384,43 @@ export default memo(function Code() {
       }
     }
   }, [external_code, generation_status, isGeneratingCodeStatus, isGeneratingCodeFrontend, isTypewriting])
+
+  // 用于记录上一次的 tab index
+  const prevTabIndexRef = useRef<STRATEGY_TAB_INDEX | null>(null)
+
+  // 监听 currentStrategyTabIndex 变化
+  // 1. 当切换 tab 后，如果正在打字机效果中，停止打字机效果并切换到 flow
+  // 2. 切换到 CODE tab 时，如果有 external_code 且已完成，默认显示 flow
+  useEffect(() => {
+    const prevTabIndex = prevTabIndexRef.current
+    prevTabIndexRef.current = currentStrategyTabIndex
+
+    // 首次渲染时不处理
+    if (prevTabIndex === null) return
+
+    // 当 tab 发生切换时
+    if (prevTabIndex !== currentStrategyTabIndex) {
+      // 如果正在打字机效果中，停止打字机并切换到 flow
+      if (isTypewriting) {
+        // 停止打字机效果，直接显示完整代码
+        setIsTypewriting(false)
+        setTypewriterCode(external_code || '')
+        // 切换到 flow 视图
+        setViewMode(ViewMode.FLOW)
+        // 隐藏流程图提示
+        setShowFlowHint(false)
+        return
+      }
+
+      // 切换到 CODE tab 时
+      if (currentStrategyTabIndex === STRATEGY_TAB_INDEX.CODE) {
+        // 如果有 external_code 且 generation_status 是完成状态，默认切换到 flow
+        if (external_code && generation_status === GENERATION_STATUS.COMPLETED) {
+          setViewMode(ViewMode.FLOW)
+        }
+      }
+    }
+  }, [currentStrategyTabIndex, isTypewriting, external_code, generation_status, setIsTypewriting])
 
   const handleCopyCode = useCallback(() => {
     if (external_code) {
