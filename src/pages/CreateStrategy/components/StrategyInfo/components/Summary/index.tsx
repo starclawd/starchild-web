@@ -16,6 +16,7 @@ import TypewriterCursor from 'components/TypewriterCursor'
 import { useIsLogin } from 'store/login/hooks'
 import { MEDIA_WIDTHS } from 'theme/styled'
 import { useWindowSize } from 'hooks/useWindowSize'
+import LayerFlowModal from './components/LayerFlowModal'
 
 // 光标闪烁动画
 const cursorBlink = keyframes`
@@ -43,10 +44,34 @@ const LayerTitle = styled.div`
   }
 `
 
+const LeftContent = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
+`
+
 const ButtonWrapper = styled.div`
   display: flex;
   align-items: center;
   height: 100%;
+`
+
+const ButtonFlow = styled(ButtonBorder)`
+  width: fit-content;
+  gap: 4px;
+  height: 100%;
+  font-size: 13px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  border-radius: 0;
+  border: none;
+  padding: 0;
+  color: ${({ theme }) => theme.brand100};
+  .icon-flow {
+    font-size: 18px;
+    color: ${({ theme }) => theme.brand100};
+  }
 `
 
 const ButtonEdit = styled(ButtonBorder)`
@@ -205,6 +230,7 @@ export default memo(function Summary() {
   const isStep3Deploying = useIsStep3Deploying(strategyId || '')
   const { strategyDetail } = useCreateStrategyDetail({ strategyId: strategyId || '' })
   const [isEdit, setIsEdit] = useState(false)
+  const [isFlowModalOpen, setIsFlowModalOpen] = useState(false)
   const sendChatUserContent = useSendChatUserContent()
   const [isCreateStrategyFrontend] = useIsCreateStrategy()
   const [dataLayerContent, setDataLayerContent] = useState<string>('')
@@ -661,6 +687,63 @@ export default memo(function Summary() {
     sendChatUserContent,
   ])
 
+  // Flow Modal 相关
+  const openFlowModal = useCallback(() => {
+    if (isStep3Deploying || !strategy_config) {
+      return
+    }
+    setIsFlowModalOpen(true)
+  }, [isStep3Deploying, strategy_config])
+
+  const closeFlowModal = useCallback(() => {
+    setIsFlowModalOpen(false)
+  }, [])
+
+  const handleFlowSave = useCallback(
+    (layers: {
+      data_layer: Record<string, string | object>
+      signal_layer: Record<string, string | object>
+      capital_layer: Record<string, string | object>
+      risk_layer: Record<string, string | object>
+      execution_layer: Record<string, string | object>
+    }) => {
+      const updates: string[] = []
+
+      if (JSON.stringify(layers.data_layer) !== dataLayerString) {
+        updates.push(`Update Data Layer: ${JSON.stringify(layers.data_layer)}`)
+      }
+      if (JSON.stringify(layers.signal_layer) !== signalLayerString) {
+        updates.push(`Update Signal Layer: ${JSON.stringify(layers.signal_layer)}`)
+      }
+      if (JSON.stringify(layers.capital_layer) !== capitalLayerString) {
+        updates.push(`Update Capital Layer: ${JSON.stringify(layers.capital_layer)}`)
+      }
+      if (JSON.stringify(layers.risk_layer) !== riskLayerString) {
+        updates.push(`Update Risk Layer: ${JSON.stringify(layers.risk_layer)}`)
+      }
+      if (JSON.stringify(layers.execution_layer) !== executionLayerString) {
+        updates.push(`Update Execution Layer: ${JSON.stringify(layers.execution_layer)}`)
+      }
+
+      // 如果没有任何变化，直接跳过
+      if (updates.length === 0) {
+        return
+      }
+
+      sendChatUserContent({
+        value: `Edit Strategy:\n${updates.join('\n')}`,
+      })
+    },
+    [
+      dataLayerString,
+      signalLayerString,
+      capitalLayerString,
+      riskLayerString,
+      executionLayerString,
+      sendChatUserContent,
+    ],
+  )
+
   const handleScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
     // 如果是点击 tab 导致的滚动，不处理
     if (isClickScrollingRef.current) return
@@ -699,7 +782,15 @@ export default memo(function Summary() {
   return (
     <SummaryWrapper>
       <LayerTitle>
-        <MoveTabList gap={20} moveType={MoveType.LINE} tabKey={activeTab} tabList={tabList} />
+        <LeftContent>
+          {!typewriterState.isTyping && isLogin && (
+            <ButtonFlow $disabled={isStep3Deploying || !strategy_config} onClick={openFlowModal}>
+              <IconBase className='icon-flow icon-chart-5' />
+              <Trans>Flow</Trans>
+            </ButtonFlow>
+          )}
+          <MoveTabList gap={20} moveType={MoveType.LINE} tabKey={activeTab} tabList={tabList} />
+        </LeftContent>
         {!typewriterState.isTyping && (
           <ButtonWrapper>
             {!isEdit ? (
@@ -759,6 +850,18 @@ export default memo(function Summary() {
             )
           })}
       </LayerList>
+
+      {/* Layer Flow Modal */}
+      <LayerFlowModal
+        isOpen={isFlowModalOpen}
+        onClose={closeFlowModal}
+        dataLayerString={dataLayerString}
+        signalLayerString={signalLayerString}
+        capitalLayerString={capitalLayerString}
+        riskLayerString={riskLayerString}
+        executionLayerString={executionLayerString}
+        onSave={handleFlowSave}
+      />
     </SummaryWrapper>
   )
 })
