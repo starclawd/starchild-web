@@ -43,7 +43,7 @@ export default function MarketItem({ decision }: { decision: StrategyDecisionTyp
       <IconBase className='icon-decision' />
       <Right>
         <Decision>
-          <Trans>Decision:</Trans>
+          <Trans>Decision</Trans>
         </Decision>
         <Des>{description}</Des>
       </Right>

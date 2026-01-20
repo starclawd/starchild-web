@@ -64,7 +64,7 @@ export default function ChainOfThought({ thought }: { thought: StrategyThoughtTy
       <IconBase className='icon-chain-of-thought' />
       <Right>
         <Title>
-          <Trans>Chain of Thought:</Trans>
+          <Trans>Chain of Thought</Trans>
         </Title>
         <MarkdownContainer $expanded={showReasoning}>
           <Markdown>{showReasoning ? reasoning : summary}</Markdown>

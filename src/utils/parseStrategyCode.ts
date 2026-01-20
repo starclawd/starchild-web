@@ -1,7 +1,68 @@
 /**
  * 解析 Python 策略代码，提取关键信息用于 React Flow 可视化
  * 支持新旧两种代码生成格式，保持向下兼容
+ *
+ * ============================================
+ * 推荐方案：在代码生成时嵌入标准化元数据
+ * ============================================
+ *
+ * 在生成的 Python 代码 docstring 中嵌入以下格式的 JSON：
+ *
+ * ```python
+ * """
+ * Strategy Name
+ * ...
+ *
+ * # VISUALIZATION_CONFIG_START
+ * {
+ *   "strategy_type": "RSI Oscillator",
+ *   "indicators": [...],
+ *   "entry_conditions": [...],
+ *   "exit_conditions": [...],
+ *   "risk": {...},
+ *   "data_sources": [...]
+ * }
+ * # VISUALIZATION_CONFIG_END
+ * """
+ * ```
+ *
+ * 解析器会优先读取这个元数据，如果不存在则回退到智能解析。
  */
+
+// ============================================
+// 可视化元数据接口 - 用于代码生成器嵌入
+// ============================================
+export interface VisualizationConfig {
+  strategy_type: string
+  indicators: {
+    name: string
+    period?: number
+    params?: string
+  }[]
+  entry_conditions: {
+    direction: 'long' | 'short' | 'both'
+    condition: string
+    trigger_type: 'signal' | 'crossover' | 'indicator' | 'reversal'
+    description?: string
+  }[]
+  exit_conditions: {
+    direction: 'long' | 'short' | 'both'
+    condition: string
+    trigger_type: 'take_profit' | 'stop_loss' | 'reversal' | 'indicator' | 'signal'
+    description?: string
+  }[]
+  risk: {
+    take_profit: string | null
+    stop_loss: string | null
+    leverage: string
+    position_size: string
+  }
+  data_sources: string[]
+  decision_logic?: {
+    has_position: { condition: string; action: string; description?: string }[]
+    no_position: { condition: string; action: string; description?: string }[]
+  }
+}
 
 export interface StrategyConfig {
   name: string
@@ -165,6 +226,431 @@ function extractDocstring(code: string): string {
 }
 
 /**
+ * ============================================
+ * 从代码中提取嵌入的可视化配置（优先方案）
+ * ============================================
+ *
+ * 查找格式：
+ * # VISUALIZATION_CONFIG_START
+ * { ... JSON ... }
+ * # VISUALIZATION_CONFIG_END
+ *
+ * 或者简化格式：
+ * VISUALIZATION_CONFIG = { ... }
+ */
+function extractVisualizationConfig(code: string): VisualizationConfig | null {
+  try {
+    // 方法 1: 查找标记块格式
+    const blockMatch = code.match(/#\s*VISUALIZATION_CONFIG_START\s*\n([\s\S]*?)\n\s*#\s*VISUALIZATION_CONFIG_END/)
+    if (blockMatch) {
+      const jsonStr = blockMatch[1].trim()
+      return JSON.parse(jsonStr)
+    }
+
+    // 方法 2: 查找变量赋值格式 VISUALIZATION_CONFIG = {...}
+    const varMatch = code.match(/VISUALIZATION_CONFIG\s*=\s*(\{[\s\S]*?\n\})/)
+    if (varMatch) {
+      // Python 字典转 JSON (简单替换)
+      const jsonStr = varMatch[1]
+        .replace(/'/g, '"') // 单引号转双引号
+        .replace(/True/g, 'true')
+        .replace(/False/g, 'false')
+        .replace(/None/g, 'null')
+        .replace(/,\s*\}/g, '}') // 移除尾随逗号
+        .replace(/,\s*\]/g, ']')
+      return JSON.parse(jsonStr)
+    }
+
+    return null
+  } catch (e) {
+    console.warn('Failed to parse embedded visualization config:', e)
+    return null
+  }
+}
+
+/**
+ * 从可视化配置转换为 ParsedStrategy
+ */
+function convertVisualizationConfigToStrategy(config: VisualizationConfig, code: string): Partial<ParsedStrategy> {
+  const strategyConfig = extractConfig(code)
+
+  return {
+    strategyType: config.strategy_type,
+    indicators: config.indicators.map((ind, i) => ({
+      id: `ind-${i}`,
+      type: 'indicator' as const,
+      name: ind.name,
+      params: ind.params || (ind.period ? `Period: ${ind.period}` : ''),
+    })),
+    entryConditions: config.entry_conditions.map((cond, i) => ({
+      id: `entry-${i}`,
+      type: 'condition' as const,
+      direction: cond.direction,
+      category: 'entry' as const,
+      triggerType: cond.trigger_type,
+      conditions: [cond.condition],
+      description: cond.description || cond.condition,
+    })),
+    exitConditions: config.exit_conditions.map((cond, i) => ({
+      id: `exit-${i}`,
+      type: 'condition' as const,
+      direction: cond.direction,
+      category: 'exit' as const,
+      triggerType: cond.trigger_type,
+      conditions: [cond.condition],
+      description: cond.description || cond.condition,
+    })),
+    riskParams: {
+      takeProfit: config.risk.take_profit || 'Dynamic',
+      stopLoss: config.risk.stop_loss || 'Dynamic',
+      leverage: config.risk.leverage || strategyConfig.leverage?.toString() || '1x',
+      positionSize: config.risk.position_size || strategyConfig.position_size || '10%',
+    },
+    dataSources: config.data_sources.map((src, i) => ({
+      id: `ds-${i}`,
+      type: 'datasource' as const,
+      api: src.split(' ')[0] || src,
+      fields: [src],
+    })),
+    decisionLogic: config.decision_logic
+      ? {
+          noPosition: config.decision_logic.no_position.map((d) => ({
+            condition: d.condition,
+            action: d.action,
+            description: d.description || '',
+          })),
+          hasPosition: config.decision_logic.has_position.map((d) => ({
+            condition: d.condition,
+            action: d.action,
+            description: d.description || '',
+          })),
+        }
+      : undefined,
+  }
+}
+
+/**
+ * 智能提取 - 从 docstring 中解析入场/出场条件
+ * 支持格式：
+ * - Entry: xxx
+ * - Exit: xxx
+ * - Long Entry: xxx
+ * - Short Entry: xxx
+ */
+function parseDocstringConditions(docstring: string): {
+  entryConditions: { direction: 'long' | 'short' | 'both'; condition: string }[]
+  exitConditions: { direction: 'long' | 'short' | 'both'; condition: string }[]
+} {
+  const entryConditions: { direction: 'long' | 'short' | 'both'; condition: string }[] = []
+  const exitConditions: { direction: 'long' | 'short' | 'both'; condition: string }[] = []
+
+  const lines = docstring.split('\n')
+
+  for (const line of lines) {
+    const trimmed = line.trim()
+
+    // 入场条件检测
+    const entryMatch = trimmed.match(/^(?:Long\s+)?Entry[:\s]+(.+)$/i)
+    if (entryMatch) {
+      const condition = entryMatch[1].trim()
+      const direction = trimmed.toLowerCase().includes('short')
+        ? 'short'
+        : trimmed.toLowerCase().includes('long')
+          ? 'long'
+          : 'both'
+      entryConditions.push({ direction, condition })
+      continue
+    }
+
+    // 做空入场
+    const shortEntryMatch = trimmed.match(/^Short\s+Entry[:\s]+(.+)$/i)
+    if (shortEntryMatch) {
+      entryConditions.push({ direction: 'short', condition: shortEntryMatch[1].trim() })
+      continue
+    }
+
+    // 出场条件检测
+    const exitMatch = trimmed.match(/^(?:Long\s+|Short\s+)?Exit[:\s]+(.+)$/i)
+    if (exitMatch) {
+      const condition = exitMatch[1].trim()
+      const direction = trimmed.toLowerCase().includes('short')
+        ? 'short'
+        : trimmed.toLowerCase().includes('long')
+          ? 'long'
+          : 'both'
+      exitConditions.push({ direction, condition })
+    }
+  }
+
+  return { entryConditions, exitConditions }
+}
+
+/**
+ * 智能提取 - 从 analyze() 函数中提取所有信号名称和触发条件
+ * 支持两种格式：
+ * 1. 赋值格式: signal["content"]["name"] = "XXX"
+ * 2. 字典内联格式: "name": "XXX" (在 return 语句中)
+ */
+function extractSignalDefinitions(code: string): {
+  name: string
+  triggerCondition: string | null
+  description: string | null
+  direction: string | null
+  action: string | null
+  rationale: string | null
+}[] {
+  const signals: {
+    name: string
+    triggerCondition: string | null
+    description: string | null
+    direction: string | null
+    action: string | null
+    rationale: string | null
+  }[] = []
+
+  // ============================================
+  // 新方法: 先找所有 return 语句块，然后在每个块中提取信号信息
+  // ============================================
+
+  // 分割代码，找到所有 return 语句块
+  // 匹配 return { ... } 的完整块（处理嵌套字典）
+  const returnBlocks: string[] = []
+  let match
+
+  // 方法 A: 使用自定义逻辑匹配嵌套字典
+  // 找到所有 return { 的位置，然后手动匹配括号
+  const returnStartRegex = /return\s*\{/g
+  while ((match = returnStartRegex.exec(code)) !== null) {
+    const startIdx = match.index
+    let braceCount = 0
+    let endIdx = startIdx + match[0].length - 1 // 指向第一个 {
+
+    // 从第一个 { 开始计数括号
+    for (let i = endIdx; i < code.length; i++) {
+      if (code[i] === '{') {
+        braceCount++
+      } else if (code[i] === '}') {
+        braceCount--
+        if (braceCount === 0) {
+          endIdx = i + 1
+          break
+        }
+      }
+    }
+
+    if (braceCount === 0) {
+      returnBlocks.push(code.substring(startIdx, endIdx))
+    }
+  }
+
+  // 从每个 return 块中提取信号信息
+  for (const block of returnBlocks) {
+    // 提取 name - 支持 "name": "XXX" 格式
+    const nameMatch = block.match(/["']name["']\s*:\s*["']([A-Z_]+)["']/)
+    if (!nameMatch) continue
+
+    const name = nameMatch[1]
+
+    // 跳过非信号名称 (如 NO_DATA, NO_SIGNAL 等)
+    if (name === 'NO_DATA' || name === 'NO_SIGNAL') continue
+
+    // 检查是否已经处理过这个信号
+    if (signals.some((s) => s.name === name)) continue
+
+    let triggerCondition: string | null = null
+    let description: string | null = null
+    let direction: string | null = null
+    let action: string | null = null
+    let rationale: string | null = null
+
+    // 提取 trigger_condition - "trigger_condition": f"..." 或 "trigger_condition": "..."
+    const tcMatch = block.match(/["']trigger_condition["']\s*:\s*f?["']([^"']+)["']/)
+    if (tcMatch) {
+      triggerCondition = tcMatch[1]
+      // 清理 f-string 变量 {xxx} -> ...
+      triggerCondition = triggerCondition
+        .replace(/\{[^}]+\}/g, '...')
+        .replace(/\s+/g, ' ')
+        .trim()
+    }
+
+    // 提取 description
+    const descMatch = block.match(/["']description["']\s*:\s*f?["']([^"']+)["']/)
+    if (descMatch) {
+      description = descMatch[1]
+      description = description
+        .replace(/\{[^}]+\}/g, '...')
+        .replace(/\s+/g, ' ')
+        .trim()
+    }
+
+    // 提取 rationale (在 content 外部)
+    // 需要从整个 return 块查找
+    const rationaleMatch = block.match(/["']rationale["']\s*:\s*f?["']([^"']+)["']/)
+    if (rationaleMatch) {
+      rationale = rationaleMatch[1]
+      rationale = rationale
+        .replace(/\{[^}]+\}/g, '...')
+        .replace(/\s+/g, ' ')
+        .trim()
+    }
+
+    // 提取 direction
+    const dirMatch = block.match(/["']direction["']\s*:\s*["']([^"']+)["']/)
+    if (dirMatch) {
+      direction = dirMatch[1]
+    }
+
+    // 提取 action
+    const actMatch = block.match(/["']action["']\s*:\s*["']([^"']+)["']/)
+    if (actMatch) {
+      action = actMatch[1]
+    }
+
+    signals.push({
+      name,
+      triggerCondition: triggerCondition || description || rationale,
+      description,
+      direction,
+      action,
+      rationale,
+    })
+  }
+
+  // ============================================
+  // 备用方法: 匹配赋值格式 signal["content"]["name"] = "XXX"
+  // ============================================
+  const nameRegex1 = /signal\[["']content["']\]\[["']name["']\]\s*=\s*["']([^"']+)["']/g
+  while ((match = nameRegex1.exec(code)) !== null) {
+    const name = match[1]
+    if (signals.some((s) => s.name === name)) continue
+
+    // 找到对应的代码块
+    const blockPattern = new RegExp(
+      `signal\\[["']content["']\\]\\[["']name["']\\]\\s*=\\s*["']${name}["'][\\s\\S]*?(?=signal\\[["']content["']\\]\\[["']name["']\\]|return signal|$)`,
+    )
+    const blockMatch = code.match(blockPattern)
+    if (!blockMatch) continue
+
+    const block = blockMatch[0]
+    let triggerCondition: string | null = null
+    let description: string | null = null
+    let direction: string | null = null
+    let action: string | null = null
+    let rationale: string | null = null
+
+    // 提取属性
+    const tcMatch = block.match(/\[["']trigger_condition["']\]\s*=\s*f?["']([^"']+)["']/)
+    if (tcMatch) {
+      triggerCondition = tcMatch[1]
+        .replace(/\{[^}]+\}/g, '...')
+        .replace(/\s+/g, ' ')
+        .trim()
+    }
+
+    const descMatch = block.match(/\[["']description["']\]\s*=\s*f?["']([^"']+)["']/)
+    if (descMatch) {
+      description = descMatch[1]
+        .replace(/\{[^}]+\}/g, '...')
+        .replace(/\s+/g, ' ')
+        .trim()
+    }
+
+    const rationaleMatch = block.match(/signal\[["']rationale["']\]\s*=\s*f?["']([^"']+)["']/)
+    if (rationaleMatch) {
+      rationale = rationaleMatch[1]
+        .replace(/\{[^}]+\}/g, '...')
+        .replace(/\s+/g, ' ')
+        .trim()
+    }
+
+    const dirMatch = block.match(/\[["']direction["']\]\s*=\s*["']([^"']+)["']/)
+    if (dirMatch) {
+      direction = dirMatch[1]
+    }
+
+    const actMatch = block.match(/\[["']action["']\]\s*=\s*["']([^"']+)["']/)
+    if (actMatch) {
+      action = actMatch[1]
+    }
+
+    signals.push({
+      name,
+      triggerCondition: triggerCondition || description || rationale,
+      description,
+      direction,
+      action,
+      rationale,
+    })
+  }
+
+  return signals
+}
+
+/**
+ * 从信号名称推断条件类型
+ */
+function inferConditionFromSignalName(
+  name: string,
+  triggerCondition: string | null,
+): {
+  category: 'entry' | 'exit'
+  direction: 'long' | 'short' | 'both'
+  triggerType: 'signal' | 'take_profit' | 'stop_loss' | 'reversal' | 'crossover' | 'indicator'
+} {
+  const nameLower = name.toLowerCase()
+  const condLower = (triggerCondition || '').toLowerCase()
+
+  // 判断 category
+  let category: 'entry' | 'exit' = 'entry'
+  if (
+    nameLower.includes('close') ||
+    nameLower.includes('exit') ||
+    nameLower.includes('cover') ||
+    nameLower.includes('reverse') // REVERSE_TO_* 是退出+反转
+  ) {
+    category = 'exit'
+  } else if (nameLower.includes('open') || nameLower.includes('entry')) {
+    category = 'entry'
+  }
+
+  // 判断 direction
+  // 对于 REVERSE_TO_LONG，目标方向是 long，但当前是在平 short
+  // 对于 REVERSE_TO_SHORT，目标方向是 short，但当前是在平 long
+  let direction: 'long' | 'short' | 'both' = 'both'
+  if (nameLower.includes('reverse_to_long') || nameLower.includes('to_long')) {
+    // 反转到 long = 平掉 short
+    direction = 'short'
+  } else if (nameLower.includes('reverse_to_short') || nameLower.includes('to_short')) {
+    // 反转到 short = 平掉 long
+    direction = 'long'
+  } else if (nameLower.includes('long') || condLower.includes('bullish')) {
+    direction = 'long'
+  } else if (nameLower.includes('short') || condLower.includes('bearish')) {
+    direction = 'short'
+  }
+
+  // 判断 triggerType
+  let triggerType: 'signal' | 'take_profit' | 'stop_loss' | 'reversal' | 'crossover' | 'indicator' = 'signal'
+  if (condLower.includes('profit') || condLower.includes('take')) {
+    triggerType = 'take_profit'
+  } else if (condLower.includes('stop') || condLower.includes('loss')) {
+    triggerType = 'stop_loss'
+  } else if (condLower.includes('cross') && !condLower.includes('crossover')) {
+    triggerType = 'crossover'
+  } else if (
+    category === 'exit' ||
+    nameLower.includes('reverse') ||
+    condLower.includes('reverse') ||
+    condLower.includes('opposite')
+  ) {
+    triggerType = 'reversal'
+  }
+
+  return { category, direction, triggerType }
+}
+
+/**
  * 推断策略类型
  * 支持新旧两种代码格式
  */
@@ -196,11 +682,7 @@ function inferStrategyType(code: string): string {
   }
 
   // 连续红线策略
-  if (
-    lower.includes('consecutive_red') ||
-    lower.includes('3_red') ||
-    lower.includes('3-red')
-  ) {
+  if (lower.includes('consecutive_red') || lower.includes('3_red') || lower.includes('3-red')) {
     const countMatch = code.match(/(\d+)[\s_-]*red/i)
     const count = countMatch ? countMatch[1] : '3'
     return `${count}-Red Reversal`
@@ -214,6 +696,22 @@ function inferStrategyType(code: string): string {
   // ============================================
   // 旧版代码格式 - 保持向下兼容
   // ============================================
+
+  // Bollinger Bands 突破策略
+  if (
+    (lower.includes('bb_upper') || lower.includes('bb_lower') || lower.includes('bollinger')) &&
+    (lower.includes('breakout') ||
+      lower.includes('breakdown') ||
+      lower.includes('> bb_upper') ||
+      lower.includes('< bb_lower'))
+  ) {
+    return 'BB Breakout'
+  }
+
+  // 波动率策略
+  if (lower.includes('volatility') && (lower.includes('surfer') || lower.includes('breakout'))) {
+    return 'Volatility Breakout'
+  }
 
   if (lower.includes('fibonacci') || lower.includes('fib_level') || lower.includes('fib_retracement'))
     return 'Fibonacci Retracement'
@@ -264,11 +762,29 @@ function extractConfig(code: string): StrategyConfig {
     return items.map((item) => item.replace(/"/g, ''))
   }
 
-  // 从代码中提取 TP/SL 数值（如 pnl_pct >= 4.0）
+  // 从代码中提取 TP/SL 数值
+  // 1. 先尝试字符串格式 (如 "+7%", "-2%")
   let takeProfit = extractStr('take_profit')
   let stopLoss = extractStr('stop_loss')
 
-  // 如果 CONFIG 中没有具体值，尝试从代码逻辑中提取
+  // 2. 尝试数字格式 (如 0.07, 0.02)
+  if (!takeProfit || takeProfit.trim() === '') {
+    const tpNum = extractNum('take_profit')
+    if (tpNum !== null) {
+      // 数字格式，转换为百分比字符串
+      takeProfit = `+${(tpNum * 100).toFixed(0)}%`
+    }
+  }
+
+  if (!stopLoss || stopLoss.trim() === '') {
+    const slNum = extractNum('stop_loss')
+    if (slNum !== null) {
+      // 数字格式，转换为百分比字符串
+      stopLoss = `-${(slNum * 100).toFixed(0)}%`
+    }
+  }
+
+  // 3. 如果 CONFIG 中没有具体值，尝试从代码逻辑中提取
   if (!takeProfit || takeProfit.trim() === '') {
     // 检测 pnl_pct >= X.X 格式
     const tpMatch = code.match(/pnl_pct\s*>=\s*(\d+\.?\d*)/)?.[1]
@@ -334,7 +850,8 @@ function extractConfig(code: string): StrategyConfig {
   const scheduleCron = extractStr('schedule_cron')
 
   // 新版代码格式 - 状态管理
-  const needsStateReset = configMatch.includes('"needs_state_reset": true') || configMatch.includes('"needs_state_reset": True')
+  const needsStateReset =
+    configMatch.includes('"needs_state_reset": true') || configMatch.includes('"needs_state_reset": True')
   const resetTrigger = extractStr('reset_trigger')
 
   // 新版代码格式 - 仓位大小字符串
@@ -506,18 +1023,20 @@ function extractIndicators(code: string): IndicatorNode[] {
     code.includes('rsi_long_exit') ||
     code.includes('rsi_short_exit')
   if (hasRsiLogic) {
-    const period = code.match(/rsi.*?period["\s:]*(\d+)/i)?.[1] ||
-      code.match(/["']rsi_period["']\s*:\s*(\d+)/)?.[1] ||
-      '14'
+    const period =
+      code.match(/rsi.*?period["\s:]*(\d+)/i)?.[1] || code.match(/["']rsi_period["']\s*:\s*(\d+)/)?.[1] || '14'
     // 提取 RSI 阈值 - 支持多种格式
-    const oversoldLevel = code.match(/rsi_oversold["\s:]*(\d+)/i)?.[1] ||
-      code.match(/["']rsi_short_threshold["']\s*:\s*(\d+)/)?.[1] ||
-      '30'
-    const overboughtLevel = code.match(/rsi_overbought["\s:]*(\d+)/i)?.[1] ||
+    const oversoldLevel =
+      code.match(/rsi_oversold["\s:]*(\d+)/i)?.[1] || code.match(/["']rsi_short_threshold["']\s*:\s*(\d+)/)?.[1] || '30'
+    const overboughtLevel =
+      code.match(/rsi_overbought["\s:]*(\d+)/i)?.[1] ||
       code.match(/["']rsi_long_threshold["']\s*:\s*(\d+)/)?.[1] ||
       '70'
-    const hasThresholds = code.includes('rsi_oversold') || code.includes('rsi_overbought') ||
-      code.includes('rsi_long_threshold') || code.includes('rsi_short_threshold')
+    const hasThresholds =
+      code.includes('rsi_oversold') ||
+      code.includes('rsi_overbought') ||
+      code.includes('rsi_long_threshold') ||
+      code.includes('rsi_short_threshold')
     indicators.push({
       id: 'ind-rsi',
       type: 'indicator',
@@ -558,9 +1077,8 @@ function extractIndicators(code: string): IndicatorNode[] {
     (code.includes('volume') && code.includes('average'))
   if (hasVolumeLogic) {
     // 尝试提取 volume 周期
-    const volumePeriod = code.match(/volumes?\[-(\d+):\]/)?.[1] ||
-      code.match(/["']volume_ma_period["']\s*:\s*(\d+)/)?.[1] ||
-      '20'
+    const volumePeriod =
+      code.match(/volumes?\[-(\d+):\]/)?.[1] || code.match(/["']volume_ma_period["']\s*:\s*(\d+)/)?.[1] || '20'
     indicators.push({ id: 'ind-volume', type: 'indicator', name: 'Volume', params: `${volumePeriod}-period average` })
   }
 
@@ -573,6 +1091,60 @@ function extractIndicators(code: string): IndicatorNode[] {
       type: 'indicator',
       name: 'Momentum',
       params: `${timeframe.toUpperCase()} change %`,
+    })
+  }
+
+  // Bollinger Bands - 检测 BB 指标
+  const hasBBLogic =
+    code.includes('bb_upper') ||
+    code.includes('bb_lower') ||
+    code.includes('bb_middle') ||
+    code.includes('bbands') ||
+    code.includes('bollinger')
+
+  if (hasBBLogic) {
+    const period =
+      code.match(/bbands.*?period["\s:]*(\d+)/i)?.[1] || code.match(/"period":\s*(\d+).*?bbands/i)?.[1] || '20'
+    const stddev = code.match(/stddev["\s:]*(\d+)/i)?.[1] || '2'
+    indicators.push({
+      id: 'ind-bb',
+      type: 'indicator',
+      name: 'Bollinger Bands',
+      params: `Period: ${period}, StdDev: ${stddev}`,
+    })
+  }
+
+  // ATR - 检测 ATR 指标
+  const hasAtrLogic = code.includes('atr') || code.includes('atr_threshold') || code.includes('atr_pct')
+
+  if (hasAtrLogic) {
+    const period = code.match(/atr.*?period["\s:]*(\d+)/i)?.[1] || '14'
+    indicators.push({
+      id: 'ind-atr',
+      type: 'indicator',
+      name: 'ATR',
+      params: `Period: ${period}`,
+    })
+  }
+
+  // MACD - 检测 MACD 指标
+  const hasMacdLogic =
+    code.includes('macd_line') ||
+    code.includes('signal_line') ||
+    code.includes('macd_fast') ||
+    code.includes('macd_slow') ||
+    code.includes('"macd"') ||
+    code.includes("'macd'")
+
+  if (hasMacdLogic) {
+    const fast = code.match(/["']macd_fast["']\s*:\s*(\d+)/)?.[1] || '12'
+    const slow = code.match(/["']macd_slow["']\s*:\s*(\d+)/)?.[1] || '26'
+    const signal = code.match(/["']macd_signal["']\s*:\s*(\d+)/)?.[1] || '9'
+    indicators.push({
+      id: 'ind-macd',
+      type: 'indicator',
+      name: 'MACD',
+      params: `Fast: ${fast}, Slow: ${slow}, Signal: ${signal}`,
     })
   }
 
@@ -603,16 +1175,87 @@ function extractConditionsFromDocstring(docstring: string): { entry: string[]; e
 }
 
 /**
- * 提取入场条件
+ * 提取入场条件 - 通用智能提取
  */
 function extractEntryConditions(code: string, docstring: string): ConditionNode[] {
   const conditions: ConditionNode[] = []
-  const docConditions = extractConditionsFromDocstring(docstring)
 
-  // 从文档中提取
+  // ============================================
+  // 方法 1: 从 signal definitions 智能提取入场条件（最高优先级）
+  // ============================================
+  const signalDefs = extractSignalDefinitions(code)
+
+  signalDefs.forEach((sig, i) => {
+    // 只处理入场信号 (OPEN_*, ENTRY_* 等)
+    const nameLower = sig.name.toLowerCase()
+    const isEntrySignal = nameLower.includes('open') || nameLower.includes('entry')
+    if (!isEntrySignal) return
+    if (!sig.triggerCondition) return
+
+    // 从信号名称判断方向
+    let direction: 'long' | 'short' | 'both' = 'both'
+    if (nameLower.includes('long')) {
+      direction = 'long'
+    } else if (nameLower.includes('short')) {
+      direction = 'short'
+    }
+
+    // 检查是否已存在相似条件
+    const exists = conditions.some((c) => c.direction === direction && c.category === 'entry')
+    if (exists) return
+
+    // 判断 triggerType
+    const condLower = sig.triggerCondition.toLowerCase()
+    let triggerType: ConditionNode['triggerType'] = 'signal'
+    if (condLower.includes('cross')) {
+      triggerType = 'crossover'
+    }
+
+    conditions.push({
+      id: `entry-sig-${i}`,
+      type: 'condition',
+      direction,
+      category: 'entry',
+      triggerType,
+      conditions: [sig.triggerCondition],
+      description: sig.triggerCondition,
+    })
+  })
+
+  // ============================================
+  // 方法 2: 从 docstring 智能提取入场条件
+  // ============================================
+  const parsedDocstring = parseDocstringConditions(docstring)
+  parsedDocstring.entryConditions.forEach((entry, i) => {
+    // 检查是否已存在相似条件
+    const exists = conditions.some((c) => c.direction === entry.direction && c.category === 'entry')
+    if (exists) return
+
+    let triggerType: ConditionNode['triggerType'] = 'signal'
+    if (entry.condition.toLowerCase().includes('cross')) triggerType = 'crossover'
+
+    conditions.push({
+      id: `entry-doc-${i}`,
+      type: 'condition',
+      direction: entry.direction,
+      category: 'entry',
+      triggerType,
+      conditions: [entry.condition],
+      description: entry.condition,
+    })
+  })
+
+  // ============================================
+  // 方法 3: 旧版 - 从文档字符串提取（兼容性）
+  // ============================================
+  const docConditions = extractConditionsFromDocstring(docstring)
   docConditions.entry.forEach((desc, i) => {
     const isLong = desc.toLowerCase().includes('long') || desc.toLowerCase().includes('buy')
     const isShort = desc.toLowerCase().includes('short') || desc.toLowerCase().includes('sell')
+
+    // 检查是否已存在相似条件
+    const exists = conditions.some((c) => (isLong && c.direction === 'long') || (isShort && c.direction === 'short'))
+    if (exists) return
 
     let triggerType: ConditionNode['triggerType'] = 'signal'
     if (desc.toLowerCase().includes('cross')) triggerType = 'crossover'
@@ -643,12 +1286,12 @@ function extractEntryConditions(code: string, docstring: string): ConditionNode[
       (code.includes('candle_colors') && code.includes('green'))
 
     const hasLastCandleRed =
-      code.includes('last_candle_red') ||
-      (code.includes('candle_colors[-1]') && code.includes('red'))
+      code.includes('last_candle_red') || (code.includes('candle_colors[-1]') && code.includes('red'))
 
     if (hasConsecutiveGreens) {
       // 提取连续绿线数量
-      const countMatch = code.match(/consecutive_greens\s*>=?\s*(\d+)/i) ||
+      const countMatch =
+        code.match(/consecutive_greens\s*>=?\s*(\d+)/i) ||
         code.match(/(\d+)[_-]?green/i) ||
         code.match(/(\d+)\s*consecutive\s*green/i)
       const count = countMatch ? countMatch[1] : '3'
@@ -672,8 +1315,7 @@ function extractEntryConditions(code: string, docstring: string): ConditionNode[
       code.includes('3-red')
 
     if (hasConsecutiveReds) {
-      const countMatch = code.match(/consecutive_reds?\s*>=?\s*(\d+)/i) ||
-        code.match(/(\d+)[_-]?red/i)
+      const countMatch = code.match(/consecutive_reds?\s*>=?\s*(\d+)/i) || code.match(/(\d+)[_-]?red/i)
       const count = countMatch ? countMatch[1] : '3'
 
       conditions.push({
@@ -871,8 +1513,8 @@ function extractEntryConditions(code: string, docstring: string): ConditionNode[
 
     if (hasRsiOversoldEntry) {
       // 提取 RSI 阈值
-      const rsiThresholdMatch = code.match(/["']rsi_threshold["']\s*:\s*(\d+)/)?.[1] ||
-        code.match(/rsi\s*<\s*(\d+)/)?.[1]
+      const rsiThresholdMatch =
+        code.match(/["']rsi_threshold["']\s*:\s*(\d+)/)?.[1] || code.match(/rsi\s*<\s*(\d+)/)?.[1]
       const rsiThreshold = rsiThresholdMatch || '30'
 
       conditions.push({
@@ -894,8 +1536,8 @@ function extractEntryConditions(code: string, docstring: string): ConditionNode[
       code.includes('RSI overbought')
 
     if (hasRsiOverboughtEntry && !hasRsiOversoldEntry) {
-      const rsiThresholdMatch = code.match(/["']rsi_threshold["']\s*:\s*(\d+)/)?.[1] ||
-        code.match(/rsi\s*>\s*(\d+)/)?.[1]
+      const rsiThresholdMatch =
+        code.match(/["']rsi_threshold["']\s*:\s*(\d+)/)?.[1] || code.match(/rsi\s*>\s*(\d+)/)?.[1]
       const rsiThreshold = rsiThresholdMatch || '70'
 
       conditions.push({
@@ -1002,6 +1644,55 @@ function extractEntryConditions(code: string, docstring: string): ConditionNode[
       })
     }
 
+    // Bollinger Bands 突破策略 (Volatility Surfer 类型)
+    const hasBBBreakout =
+      (code.includes('bb_upper') || code.includes('bb_lower')) &&
+      (code.includes('current_price > bb_upper') ||
+        code.includes('current_price < bb_lower') ||
+        code.includes('price > bb_upper') ||
+        code.includes('price < bb_lower'))
+
+    if (hasBBBreakout) {
+      // 提取参数
+      const volumeThreshold = code.match(/["']volume_threshold["']\s*:\s*([\d.]+)/)?.[1] || '1.5'
+      const atrThreshold = code.match(/["']atr_threshold["']\s*:\s*([\d.]+)/)?.[1]
+      const atrPct = atrThreshold ? `${parseFloat(atrThreshold) * 100}%` : '1%'
+
+      const longConditions = ['Price > BB Upper (breakout)']
+      const shortConditions = ['Price < BB Lower (breakdown)']
+
+      if (code.includes('volume_ratio') || code.includes('volume_threshold')) {
+        longConditions.push(`Volume > ${volumeThreshold}x avg`)
+        shortConditions.push(`Volume > ${volumeThreshold}x avg`)
+      }
+      if (code.includes('atr') || code.includes('atr_threshold')) {
+        longConditions.push(`ATR > ${atrPct} (volatility)`)
+        shortConditions.push(`ATR > ${atrPct} (volatility)`)
+      }
+
+      // Long Entry: Price > BB Upper + Volume + ATR
+      conditions.push({
+        id: 'entry-long-bb',
+        type: 'condition',
+        direction: 'long',
+        category: 'entry',
+        triggerType: 'signal',
+        conditions: longConditions,
+        description: `Long on upper BB breakout with confirmation`,
+      })
+
+      // Short Entry: Price < BB Lower + Volume + ATR
+      conditions.push({
+        id: 'entry-short-bb',
+        type: 'condition',
+        direction: 'short',
+        category: 'entry',
+        triggerType: 'signal',
+        conditions: shortConditions,
+        description: `Short on lower BB breakdown with confirmation`,
+      })
+    }
+
     // RSI + MA + Volume 组合入场策略 (Momentum Wave Rider 类型)
     const hasRsiMaVolumeCombo =
       (code.includes('rsi_long_threshold') || code.includes('rsi_short_threshold')) &&
@@ -1024,11 +1715,7 @@ function extractEntryConditions(code: string, docstring: string): ConditionNode[
         direction: 'long',
         category: 'entry',
         triggerType: 'signal',
-        conditions: [
-          `RSI > ${rsiLongThreshold}`,
-          `Price > MA${maPeriod}`,
-          `Volume > ${volumeMultiplier}x avg`,
-        ],
+        conditions: [`RSI > ${rsiLongThreshold}`, `Price > MA${maPeriod}`, `Volume > ${volumeMultiplier}x avg`],
         description: `Long when RSI strong + price above MA + high volume`,
       })
 
@@ -1039,11 +1726,7 @@ function extractEntryConditions(code: string, docstring: string): ConditionNode[
         direction: 'short',
         category: 'entry',
         triggerType: 'signal',
-        conditions: [
-          `RSI < ${rsiShortThreshold}`,
-          `Price < MA${maPeriod}`,
-          `Volume > ${volumeMultiplier}x avg`,
-        ],
+        conditions: [`RSI < ${rsiShortThreshold}`, `Price < MA${maPeriod}`, `Volume > ${volumeMultiplier}x avg`],
         description: `Short when RSI weak + price below MA + high volume`,
       })
     }
@@ -1056,20 +1739,14 @@ function extractEntryConditions(code: string, docstring: string): ConditionNode[
       (code.includes('current_price > sma') && code.includes('prev_price_above_ma'))
 
     const hasVolumeConfirmation =
-      code.includes('volume_confirmation') ||
-      code.includes('buy_volume_ratio') ||
-      code.includes('mfi') // Money Flow Index
+      code.includes('volume_confirmation') || code.includes('buy_volume_ratio') || code.includes('mfi') // Money Flow Index
 
     const hasTrendStrength =
-      code.includes('consecutive_rises') ||
-      code.includes('trend_strength') ||
-      code.includes('trend_confirmed')
+      code.includes('consecutive_rises') || code.includes('trend_strength') || code.includes('trend_confirmed')
 
     // 检测是否有明确的 buy action 在无持仓逻辑中
     const hasBuyAction =
-      code.includes('"action": "buy"') ||
-      code.includes("'action': 'buy'") ||
-      code.includes('"action":"buy"')
+      code.includes('"action": "buy"') || code.includes("'action': 'buy'") || code.includes('"action":"buy"')
 
     if (hasMaBreakout && (hasVolumeConfirmation || hasTrendStrength || hasBuyAction)) {
       const entryConditions: string[] = []
@@ -1114,63 +1791,188 @@ function extractEntryConditions(code: string, docstring: string): ConditionNode[
 }
 
 /**
- * 提取出场条件
+ * 提取出场条件 - 通用智能提取
  */
 function extractExitConditions(code: string, config: StrategyConfig): ConditionNode[] {
   const conditions: ConditionNode[] = []
 
-  // Take Profit - 检查是否有实际的 TP 逻辑
-  const hasTpLogic = code.includes('profit_target') || code.includes('Take profit') || /pnl_pct\s*>=/.test(code)
-  if (config.take_profit && config.take_profit.trim() !== '') {
+  // ============================================
+  // 方法 1: 从 signal definitions 智能提取退出条件（最高优先级）
+  // ============================================
+  const signalDefs = extractSignalDefinitions(code)
+
+  signalDefs.forEach((sig, i) => {
+    // 处理退出信号 (CLOSE_*, EXIT_*, COVER_*, REVERSE_TO_*)
+    const nameLower = sig.name.toLowerCase()
+    const isExitSignal =
+      nameLower.includes('close') ||
+      nameLower.includes('exit') ||
+      nameLower.includes('cover') ||
+      nameLower.includes('reverse')
+
+    if (!isExitSignal) return
+    if (!sig.triggerCondition) return
+
+    // 从 trigger_condition 判断是否是 TP/SL
+    const condLower = sig.triggerCondition.toLowerCase()
+    const isTpSl =
+      condLower.includes('profit') ||
+      condLower.includes('loss') ||
+      condLower.includes('take') ||
+      condLower.includes('stop')
+    if (isTpSl) return // TP/SL 后面单独处理
+
+    // 从信号名称判断方向
+    // REVERSE_TO_LONG = 平掉 SHORT，方向是 short
+    // REVERSE_TO_SHORT = 平掉 LONG，方向是 long
+    // CLOSE_LONG = 平掉 LONG，方向是 long
+    let direction: 'long' | 'short' | 'both' = 'both'
+    if (nameLower.includes('reverse_to_long') || nameLower.includes('to_long')) {
+      direction = 'short' // 平掉 short
+    } else if (nameLower.includes('reverse_to_short') || nameLower.includes('to_short')) {
+      direction = 'long' // 平掉 long
+    } else if (nameLower.includes('long')) {
+      direction = 'long'
+    } else if (nameLower.includes('short')) {
+      direction = 'short'
+    }
+
+    // 检查是否已存在相似条件
+    const exists = conditions.some(
+      (c) => c.category === 'exit' && c.direction === direction && c.triggerType === 'reversal',
+    )
+    if (exists) return
+
     conditions.push({
-      id: 'exit-tp',
+      id: `exit-sig-${i}`,
       type: 'condition',
-      direction: 'both',
+      direction,
       category: 'exit',
-      triggerType: 'take_profit',
-      conditions: [`Profit >= ${config.take_profit}`],
-      description: `Take Profit: ${config.take_profit}`,
+      triggerType: 'reversal',
+      conditions: [sig.triggerCondition],
+      description: sig.triggerCondition,
     })
-  } else if (hasTpLogic) {
-    // 尝试从代码中提取具体数值
-    const tpMatch = code.match(/pnl_pct\s*>=\s*(\d+\.?\d*)/)?.[1]
-    const tpValue = tpMatch ? `+${tpMatch}%` : 'Dynamic'
+  })
+
+  // ============================================
+  // 方法 2: 从 docstring 提取退出条件
+  // ============================================
+  const docstring = extractDocstring(code)
+  const parsedDocstring = parseDocstringConditions(docstring)
+  parsedDocstring.exitConditions.forEach((exit, i) => {
+    // 检查是否已存在相似条件
+    const exists = conditions.some(
+      (c) => c.category === 'exit' && c.direction === exit.direction && c.triggerType === 'reversal',
+    )
+    if (exists) return
+
+    conditions.push({
+      id: `exit-doc-${i}`,
+      type: 'condition',
+      direction: exit.direction,
+      category: 'exit',
+      triggerType: 'reversal',
+      conditions: [exit.condition],
+      description: exit.condition,
+    })
+  })
+
+  // 检测 TP/SL 是否被显式设置为 None
+  const tpIsNone = /["']take_profit["']\s*:\s*None/i.test(code)
+  const slIsNone = /["']stop_loss["']\s*:\s*None/i.test(code)
+
+  // Take Profit - 检查是否有实际的 TP 逻辑
+  const hasTpLogic =
+    !tpIsNone &&
+    (code.includes('profit_target') ||
+      code.includes('Take profit') ||
+      code.includes('TAKE_PROFIT') ||
+      /pnl_pct\s*>=/.test(code))
+
+  // 提取 TP 值 - 支持数字格式和字符串格式
+  let tpValue = config.take_profit
+  if (!tpValue || tpValue.trim() === '' || tpValue === 'Dynamic') {
+    // 尝试从 CONFIG 数字格式提取（排除 None）
+    const tpNumMatch = code.match(/["']take_profit["']\s*:\s*(0?\.\d+|\d+\.?\d*)/)?.[1]
+    if (tpNumMatch) {
+      const tpNum = parseFloat(tpNumMatch)
+      tpValue = tpNum < 1 ? `+${(tpNum * 100).toFixed(0)}%` : `+${tpNum}%`
+    }
+  }
+
+  // 只有当 TP 不是 None 且有值时才添加
+  if (!tpIsNone && tpValue && tpValue.trim() !== '' && tpValue !== 'Dynamic') {
     conditions.push({
       id: 'exit-tp',
       type: 'condition',
       direction: 'both',
       category: 'exit',
       triggerType: 'take_profit',
-      conditions: [tpMatch ? `Profit >= ${tpValue}` : 'Profit target reached'],
+      conditions: [`Profit >= ${tpValue}`],
       description: `Take Profit: ${tpValue}`,
     })
+  } else if (hasTpLogic) {
+    // 尝试从代码逻辑中提取具体数值
+    const tpMatch = code.match(/pnl_pct\s*>=\s*(\d+\.?\d*)/)?.[1]
+    if (tpMatch) {
+      const extractedTp = `+${tpMatch}%`
+      conditions.push({
+        id: 'exit-tp',
+        type: 'condition',
+        direction: 'both',
+        category: 'exit',
+        triggerType: 'take_profit',
+        conditions: [`Profit >= ${extractedTp}`],
+        description: `Take Profit: ${extractedTp}`,
+      })
+    }
   }
 
   // Stop Loss - 检查是否有实际的 SL 逻辑
-  const hasSlLogic = code.includes('Stop loss') || code.includes('stop_loss_price') || /pnl_pct\s*<=\s*-/.test(code)
-  if (config.stop_loss && config.stop_loss.trim() !== '') {
+  const hasSlLogic =
+    !slIsNone &&
+    (code.includes('Stop loss') ||
+      code.includes('stop_loss_price') ||
+      code.includes('STOP_LOSS') ||
+      /pnl_pct\s*<=\s*-/.test(code))
+
+  // 提取 SL 值 - 支持数字格式和字符串格式
+  let slValue = config.stop_loss
+  if (!slValue || slValue.trim() === '' || slValue === 'Dynamic') {
+    // 尝试从 CONFIG 数字格式提取（排除 None）
+    const slNumMatch = code.match(/["']stop_loss["']\s*:\s*(0?\.\d+|\d+\.?\d*)/)?.[1]
+    if (slNumMatch) {
+      const slNum = parseFloat(slNumMatch)
+      slValue = slNum < 1 ? `-${(slNum * 100).toFixed(0)}%` : `-${slNum}%`
+    }
+  }
+
+  // 只有当 SL 不是 None 且有值时才添加
+  if (!slIsNone && slValue && slValue.trim() !== '' && slValue !== 'Dynamic') {
     conditions.push({
       id: 'exit-sl',
       type: 'condition',
       direction: 'both',
       category: 'exit',
       triggerType: 'stop_loss',
-      conditions: [`Loss >= ${config.stop_loss.replace('-', '')}`],
-      description: `Stop Loss: ${config.stop_loss}`,
-    })
-  } else if (hasSlLogic) {
-    // 尝试从代码中提取具体数值
-    const slMatch = code.match(/pnl_pct\s*<=\s*-(\d+\.?\d*)/)?.[1]
-    const slValue = slMatch ? `-${slMatch}%` : 'Dynamic'
-    conditions.push({
-      id: 'exit-sl',
-      type: 'condition',
-      direction: 'both',
-      category: 'exit',
-      triggerType: 'stop_loss',
-      conditions: [slMatch ? `Loss >= ${slMatch}%` : 'Stop loss triggered'],
+      conditions: [`Loss >= ${slValue.replace('-', '')}`],
       description: `Stop Loss: ${slValue}`,
     })
+  } else if (hasSlLogic) {
+    // 尝试从代码逻辑中提取具体数值
+    const slMatch = code.match(/pnl_pct\s*<=\s*-(\d+\.?\d*)/)?.[1]
+    if (slMatch) {
+      const extractedSl = `-${slMatch}%`
+      conditions.push({
+        id: 'exit-sl',
+        type: 'condition',
+        direction: 'both',
+        category: 'exit',
+        triggerType: 'stop_loss',
+        conditions: [`Loss >= ${slMatch}%`],
+        description: `Stop Loss: ${extractedSl}`,
+      })
+    }
   }
 
   // ============================================
@@ -1206,10 +2008,7 @@ function extractExitConditions(code: string, config: StrategyConfig): ConditionN
     code.includes('CLOSE_SHORT') ||
     (code.includes('candle_colors[-1]') && code.includes('green') && code.includes('SHORT'))
 
-  const isShortCandleStrategy =
-    code.includes('consecutive_reds') ||
-    code.includes('3_red') ||
-    code.includes('3-red')
+  const isShortCandleStrategy = code.includes('consecutive_reds') || code.includes('3_red') || code.includes('3-red')
 
   if (hasGreenCandleExit && isShortCandleStrategy) {
     conditions.push({
@@ -1249,58 +2048,44 @@ function extractExitConditions(code: string, config: StrategyConfig): ConditionN
     })
   }
 
-  // Reverse signal - 检测各种关闭仓位的变体
-  if (
-    code.includes('reverse') ||
-    code.includes('momentum_reversal') ||
-    code.includes('momentum_reverse') ||
-    code.includes('CLOSE_LONG_OPEN_SHORT') ||
-    code.includes('CLOSE_SHORT_OPEN_LONG') ||
-    code.includes('CLOSE_LONG') ||
-    code.includes('CLOSE_SHORT')
-  ) {
-    // 提取具体的反转条件
+  // Reverse signal - 通用反转退出条件
+  // 检查是否已经从 signal definitions 中提取了具体的退出条件
+  const hasSignalExitConditions = conditions.some(
+    (c) =>
+      c.category === 'exit' &&
+      c.triggerType === 'reversal' &&
+      !c.conditions.some((cond) => cond.includes('Opposite entry')),
+  )
+
+  // 如果没有从智能提取中获得退出条件，尝试从代码中提取
+  if (!hasSignalExitConditions && (code.includes('CLOSE_LONG') || code.includes('CLOSE_SHORT'))) {
     const reversalConditions: string[] = []
+    const signalDefs = extractSignalDefinitions(code)
 
-    // 动量策略 - 提取具体阈值（支持多种变量名）
-    const hasMomentumReverse =
-      code.includes('momentum_pct') ||
-      code.includes('momentum_reversal') ||
-      code.includes('momentum_reverse') ||
-      code.includes('price_change_pct')
+    // 通用方法：从 signal definitions 获取具体条件
+    const closeLong = signalDefs.find(
+      (s) => s.name === 'CLOSE_LONG' || (s.name.includes('CLOSE') && s.name.includes('LONG')),
+    )
+    const closeShort = signalDefs.find(
+      (s) => s.name === 'CLOSE_SHORT' || (s.name.includes('CLOSE') && s.name.includes('SHORT')),
+    )
 
-    if (hasMomentumReverse) {
-      const thresholdMatch = code.match(/["']momentum_threshold["']\s*:\s*([\d.]+)/)?.[1] ||
-        code.match(/momentum_pct\s*[<>=]+\s*-?([\d.]+)/)?.[1]
-      const threshold = thresholdMatch || '0.5'
-
-      // LONG 持仓的退出条件
-      if (code.includes('CLOSE_LONG') || code.includes('CLOSE_LONG_OPEN_SHORT')) {
-        reversalConditions.push(`LONG: Momentum <= -${threshold}%`)
-      }
-      // SHORT 持仓的退出条件
-      if (code.includes('CLOSE_SHORT') || code.includes('CLOSE_SHORT_OPEN_LONG')) {
-        reversalConditions.push(`SHORT: Momentum >= +${threshold}%`)
-      }
-      // 如果没有具体检测到，显示通用条件
-      if (reversalConditions.length === 0) {
-        reversalConditions.push(`Momentum reverses ±${threshold}%`)
+    if (closeLong?.triggerCondition) {
+      // 排除 TP/SL 条件
+      const condLower = closeLong.triggerCondition.toLowerCase()
+      if (!condLower.includes('profit') && !condLower.includes('loss') && !condLower.includes('stop')) {
+        reversalConditions.push(`LONG: ${closeLong.triggerCondition}`)
       }
     }
-    // MA 交叉策略
-    else if (code.includes('golden_cross') || code.includes('death_cross')) {
-      reversalConditions.push('LONG: Death cross (MA短 < MA长)')
-      reversalConditions.push('SHORT: Golden cross (MA短 > MA长)')
+    if (closeShort?.triggerCondition) {
+      const condLower = closeShort.triggerCondition.toLowerCase()
+      if (!condLower.includes('profit') && !condLower.includes('loss') && !condLower.includes('stop')) {
+        reversalConditions.push(`SHORT: ${closeShort.triggerCondition}`)
+      }
     }
-    // RSI 策略
-    else if (code.includes('rsi') && (code.includes('oversold') || code.includes('overbought'))) {
-      const oversoldLevel = code.match(/rsi_oversold["\s:]*(\d+)/i)?.[1] || '30'
-      const overboughtLevel = code.match(/rsi_overbought["\s:]*(\d+)/i)?.[1] || '70'
-      reversalConditions.push(`LONG: RSI < ${overboughtLevel} (overbought exit)`)
-      reversalConditions.push(`SHORT: RSI > ${oversoldLevel} (oversold exit)`)
-    }
-    // 通用反转
-    else {
+
+    // 如果没有从信号中提取到，使用通用描述
+    if (reversalConditions.length === 0) {
       reversalConditions.push('Opposite entry signal triggered')
     }
 
@@ -1361,6 +2146,46 @@ function extractExitConditions(code: string, config: StrategyConfig): ConditionN
         description: 'Exit on RSI/MA reversal',
       })
     }
+  }
+
+  // Bollinger Bands 回归中轨退出条件 (Volatility Surfer 类型)
+  const hasBBMiddleExit =
+    code.includes('bb_middle') &&
+    (code.includes('BB_MIDDLE_RETURN') ||
+      code.includes('current_price <= bb_middle') ||
+      code.includes('current_price >= bb_middle'))
+
+  if (hasBBMiddleExit) {
+    // 检查是否已经添加了 reversal 条件
+    const hasReversalExit = conditions.some((c) => c.triggerType === 'reversal')
+
+    if (!hasReversalExit) {
+      conditions.push({
+        id: 'exit-bb-middle',
+        type: 'condition',
+        direction: 'both',
+        category: 'exit',
+        triggerType: 'reversal',
+        conditions: ['LONG: Price returns to BB Middle', 'SHORT: Price returns to BB Middle'],
+        description: 'Exit when price returns to middle BB',
+      })
+    }
+  }
+
+  // 最大持仓时间退出条件
+  const hasMaxHoldingTime = code.includes('max_holding_hours') || code.includes('MAX_TIME_EXIT')
+
+  if (hasMaxHoldingTime) {
+    const maxHours = code.match(/["']max_holding_hours["']\s*:\s*(\d+)/)?.[1] || '48'
+    conditions.push({
+      id: 'exit-time-limit',
+      type: 'condition',
+      direction: 'both',
+      category: 'exit',
+      triggerType: 'indicator',
+      conditions: [`Position held > ${maxHours} hours`],
+      description: `Time-based exit (max ${maxHours}h)`,
+    })
   }
 
   // Fibonacci 退出 - 检测 profit target (如 entry_price * 1.05)
@@ -1445,7 +2270,8 @@ function extractExitConditions(code: string, config: StrategyConfig): ConditionN
  */
 function extractCandlePattern(code: string, docstring: string): CandlePatternInfo | undefined {
   // 检测连续绿线模式 (如 3-green momentum)
-  const consecutiveGreenMatch = code.match(/consecutive_greens?\s*>=?\s*(\d+)/i) ||
+  const consecutiveGreenMatch =
+    code.match(/consecutive_greens?\s*>=?\s*(\d+)/i) ||
     code.match(/(\d+)\s*consecutive\s*green/i) ||
     docstring.match(/(\d+)\s*consecutive\s*green/i) ||
     code.match(/last_(\d+)_candles_green/i)
@@ -1464,7 +2290,8 @@ function extractCandlePattern(code: string, docstring: string): CandlePatternInf
   }
 
   // 检测连续红线模式
-  const consecutiveRedMatch = code.match(/consecutive_reds?\s*>=?\s*(\d+)/i) ||
+  const consecutiveRedMatch =
+    code.match(/consecutive_reds?\s*>=?\s*(\d+)/i) ||
     code.match(/(\d+)\s*consecutive\s*red/i) ||
     docstring.match(/(\d+)\s*consecutive\s*red/i)
 
@@ -1505,7 +2332,8 @@ function extractCandlePattern(code: string, docstring: string): CandlePatternInf
  */
 function extractStateManagement(code: string): StateManagementInfo | undefined {
   // 检测 state 使用
-  const hasState = code.includes('state = state or {}') ||
+  const hasState =
+    code.includes('state = state or {}') ||
     code.includes('state.get(') ||
     code.includes('"state":') ||
     code.includes('needs_state_reset')
@@ -1727,8 +2555,14 @@ function extractAnalyzeSteps(code: string, docstring: string): AnalyzeStep[] {
 
   // Fibonacci 状态管理 (used_levels) - 只在 Fibonacci 策略中添加
   // 注意：triggered_level 作为输出字段名在其他策略中也可能出现，需要更精确检测
-  const isFibonacciStrategy = code.includes('fibonacci') || code.includes('fib_level') || code.includes('calculate_fibonacci')
-  if (isFibonacciStrategy && (code.includes('used_levels') || code.includes('state["triggered_level"]') || code.includes('state.get("triggered_level")'))) {
+  const isFibonacciStrategy =
+    code.includes('fibonacci') || code.includes('fib_level') || code.includes('calculate_fibonacci')
+  if (
+    isFibonacciStrategy &&
+    (code.includes('used_levels') ||
+      code.includes('state["triggered_level"]') ||
+      code.includes('state.get("triggered_level")'))
+  ) {
     steps.push({
       id: 'step-fib-state',
       label: 'Track Used Levels',
@@ -1812,7 +2646,85 @@ function extractDecisionLogic(
   const noPosition: DecisionBranch[] = []
 
   // ============================================
-  // 新版代码格式 - K线模式决策逻辑
+  // 智能方法: 从 signal definitions 提取决策逻辑（最高优先级）
+  // ============================================
+  const signalDefs = extractSignalDefinitions(code)
+
+  signalDefs.forEach((sig) => {
+    if (!sig.triggerCondition) return
+
+    const nameLower = sig.name.toLowerCase()
+    const condLower = sig.triggerCondition.toLowerCase()
+
+    // 入场信号 -> noPosition (OPEN_*, ENTRY_*)
+    const isEntrySignal = nameLower.includes('open') || nameLower.includes('entry')
+    if (isEntrySignal) {
+      let action = 'BUY'
+      let direction = 'long'
+      if (nameLower.includes('short')) {
+        action = 'SELL'
+        direction = 'short'
+      }
+
+      const exists = noPosition.some((n) => n.action === action)
+      if (!exists) {
+        noPosition.push({
+          condition: sig.triggerCondition,
+          action,
+          description: `Open ${direction}: ${sig.triggerCondition}`,
+        })
+      }
+    }
+
+    // 退出信号 -> hasPosition (CLOSE_*, EXIT_*, REVERSE_TO_*)
+    const isExitSignal =
+      nameLower.includes('close') ||
+      nameLower.includes('exit') ||
+      nameLower.includes('cover') ||
+      nameLower.includes('reverse')
+
+    if (isExitSignal) {
+      // 排除 TP/SL
+      const isTpSl =
+        condLower.includes('profit') ||
+        condLower.includes('loss') ||
+        condLower.includes('take') ||
+        condLower.includes('stop')
+      if (isTpSl) return
+
+      // 判断方向和动作
+      let action = 'SELL'
+      let positionType = 'LONG'
+
+      if (nameLower.includes('reverse_to_long') || nameLower.includes('to_long')) {
+        // 反转到 long = 平掉 short
+        action = 'BUY'
+        positionType = 'SHORT'
+      } else if (nameLower.includes('reverse_to_short') || nameLower.includes('to_short')) {
+        // 反转到 short = 平掉 long
+        action = 'SELL'
+        positionType = 'LONG'
+      } else if (nameLower.includes('long')) {
+        action = 'SELL'
+        positionType = 'LONG'
+      } else if (nameLower.includes('short')) {
+        action = 'BUY'
+        positionType = 'SHORT'
+      }
+
+      const exists = hasPosition.some((h) => h.condition.includes(positionType))
+      if (!exists) {
+        hasPosition.push({
+          condition: `${positionType} + ${sig.triggerCondition}`,
+          action,
+          description: `Exit ${positionType.toLowerCase()}: ${sig.triggerCondition}`,
+        })
+      }
+    }
+  })
+
+  // ============================================
+  // 旧版代码格式 - K线模式决策逻辑
   // ============================================
 
   // 检测 K 线模式入场逻辑 (3-green momentum 等)
@@ -1827,8 +2739,7 @@ function extractDecisionLogic(
 
   if (hasGreenMomentum) {
     // 提取连续绿线数量
-    const countMatch = code.match(/consecutive_greens?\s*>=?\s*(\d+)/i) ||
-      code.match(/(\d+)[_-]?green/i)
+    const countMatch = code.match(/consecutive_greens?\s*>=?\s*(\d+)/i) || code.match(/(\d+)[_-]?green/i)
     const count = countMatch ? countMatch[1] : '3'
 
     noPosition.push({
@@ -1848,8 +2759,7 @@ function extractDecisionLogic(
     code.includes('3-red')
 
   if (hasRedMomentum) {
-    const countMatch = code.match(/consecutive_reds?\s*>=?\s*(\d+)/i) ||
-      code.match(/(\d+)[_-]?red/i)
+    const countMatch = code.match(/consecutive_reds?\s*>=?\s*(\d+)/i) || code.match(/(\d+)[_-]?red/i)
     const count = countMatch ? countMatch[1] : '3'
 
     noPosition.push({
@@ -1897,9 +2807,7 @@ function extractDecisionLogic(
     (code.includes('prev_price_above_ma') && code.includes('not price_above_ma'))
 
   const hasVolumeWeaknessExit =
-    code.includes('VOLUME_WEAKNESS') ||
-    code.includes('volume_weakness') ||
-    code.includes('buy_volume_ratio < 0.4')
+    code.includes('VOLUME_WEAKNESS') || code.includes('volume_weakness') || code.includes('buy_volume_ratio < 0.4')
 
   if (hasLongPosition && hasMaBreakdownExit) {
     hasPosition.push({
@@ -2015,8 +2923,7 @@ function extractDecisionLogic(
     (code.includes('rsi <') && code.includes('rsi_threshold') && !code.includes('should_be_short'))
 
   if (hasRsiOversoldEntry) {
-    const rsiThresholdMatch = code.match(/["']rsi_threshold["']\s*:\s*(\d+)/)?.[1] ||
-      code.match(/rsi\s*<\s*(\d+)/)?.[1]
+    const rsiThresholdMatch = code.match(/["']rsi_threshold["']\s*:\s*(\d+)/)?.[1] || code.match(/rsi\s*<\s*(\d+)/)?.[1]
     const rsiThreshold = rsiThresholdMatch || '30'
 
     noPosition.push({
@@ -2034,8 +2941,7 @@ function extractDecisionLogic(
     code.includes('RSI overbought')
 
   if (hasRsiOverboughtEntry && !hasRsiOversoldEntry) {
-    const rsiThresholdMatch = code.match(/["']rsi_threshold["']\s*:\s*(\d+)/)?.[1] ||
-      code.match(/rsi\s*>\s*(\d+)/)?.[1]
+    const rsiThresholdMatch = code.match(/["']rsi_threshold["']\s*:\s*(\d+)/)?.[1] || code.match(/rsi\s*>\s*(\d+)/)?.[1]
     const rsiThreshold = rsiThresholdMatch || '70'
 
     noPosition.push({
@@ -2067,6 +2973,59 @@ function extractDecisionLogic(
       condition: `RSI > ${rsiThreshold}`,
       action: 'SELL',
       description: 'Open short in overbought zone',
+    })
+  }
+
+  // Bollinger Bands 突破策略入场 (Volatility Surfer 类型)
+  const hasBBBreakoutEntry =
+    (code.includes('bb_upper') || code.includes('bb_lower')) &&
+    (code.includes('current_price > bb_upper') || code.includes('current_price < bb_lower'))
+
+  if (hasBBBreakoutEntry) {
+    const volumeThreshold = code.match(/["']volume_threshold["']\s*:\s*([\d.]+)/)?.[1] || '1.5'
+
+    noPosition.push({
+      condition: `Price > BB Upper + Vol > ${volumeThreshold}x`,
+      action: 'BUY',
+      description: 'Open long on upper band breakout',
+    })
+    noPosition.push({
+      condition: `Price < BB Lower + Vol > ${volumeThreshold}x`,
+      action: 'SELL',
+      description: 'Open short on lower band breakdown',
+    })
+  }
+
+  // BB 回归中轨退出
+  const hasBBMiddleExitLogic =
+    code.includes('bb_middle') &&
+    (code.includes('BB_MIDDLE_RETURN') || code.includes('<= bb_middle') || code.includes('>= bb_middle'))
+
+  if (hasBBMiddleExitLogic && hasLongPosition) {
+    hasPosition.push({
+      condition: 'LONG + Price <= BB Middle',
+      action: 'SELL',
+      description: 'Exit long on middle band return',
+    })
+  }
+
+  if (hasBBMiddleExitLogic && hasShortPosition) {
+    hasPosition.push({
+      condition: 'SHORT + Price >= BB Middle',
+      action: 'BUY',
+      description: 'Exit short on middle band return',
+    })
+  }
+
+  // 最大持仓时间退出
+  const hasMaxHoldingLogic = code.includes('max_holding_hours') || code.includes('MAX_TIME_EXIT')
+
+  if (hasMaxHoldingLogic) {
+    const maxHours = code.match(/["']max_holding_hours["']\s*:\s*(\d+)/)?.[1] || '48'
+    hasPosition.push({
+      condition: `Position > ${maxHours}h`,
+      action: 'CLOSE',
+      description: 'Time-based exit triggered',
     })
   }
 
@@ -2216,18 +3175,13 @@ function extractDecisionLogic(
 
   // Momentum Breakout 策略入场 - MA 突破 + 成交量确认 + 趋势强度
   const hasMaBreakoutEntry =
-    code.includes('ma_breakout') ||
-    (code.includes('price_above_ma') && code.includes('prev_price_above_ma'))
+    code.includes('ma_breakout') || (code.includes('price_above_ma') && code.includes('prev_price_above_ma'))
 
   const hasBreakoutVolumeConfirm =
-    code.includes('volume_confirmation') ||
-    code.includes('buy_volume_ratio > 0.6') ||
-    code.includes('volume_confirmed')
+    code.includes('volume_confirmation') || code.includes('buy_volume_ratio > 0.6') || code.includes('volume_confirmed')
 
   const hasBreakoutTrendConfirm =
-    code.includes('trend_strength') ||
-    code.includes('trend_confirmed') ||
-    code.includes('consecutive_rises >= 3')
+    code.includes('trend_strength') || code.includes('trend_confirmed') || code.includes('consecutive_rises >= 3')
 
   if (hasMaBreakoutEntry && (hasBreakoutVolumeConfirm || hasBreakoutTrendConfirm)) {
     const entryDesc: string[] = ['MA breakout']
@@ -2284,11 +3238,53 @@ function extractDecisionLogic(
 
 /**
  * 主解析函数
+ *
+ * 解析优先级：
+ * 1. 首先检查是否存在嵌入的 VISUALIZATION_CONFIG（推荐方案）
+ * 2. 如果没有，则回退到智能解析（兼容旧代码）
  */
 export function parseStrategyCode(code: string): ParsedStrategy | null {
   if (!code || typeof code !== 'string') return null
 
   try {
+    // ============================================
+    // 优先方案：检查嵌入的可视化配置
+    // ============================================
+    const visualizationConfig = extractVisualizationConfig(code)
+    if (visualizationConfig) {
+      console.log('[parseStrategyCode] Using embedded VISUALIZATION_CONFIG')
+      const partial = convertVisualizationConfigToStrategy(visualizationConfig, code)
+      const docstring = extractDocstring(code)
+      const config = extractConfig(code)
+
+      // 补充从代码中提取的其他信息
+      const analyzeSteps = extractAnalyzeSteps(code, docstring)
+
+      return {
+        name: config.name || visualizationConfig.strategy_type,
+        strategyType: partial.strategyType || visualizationConfig.strategy_type,
+        config,
+        dataSources: partial.dataSources || [],
+        indicators: partial.indicators || [],
+        entryConditions: partial.entryConditions || [],
+        exitConditions: partial.exitConditions || [],
+        riskParams: partial.riskParams || {
+          takeProfit: config.take_profit || 'Dynamic',
+          stopLoss: config.stop_loss || 'Dynamic',
+          leverage: String(config.leverage) || '1x',
+          positionSize: config.position_size || '10%',
+        },
+        analyzeSteps,
+        decisionLogic: partial.decisionLogic || extractDecisionLogic(code, config),
+        vibe: docstring.split('\n')[0]?.trim(),
+      }
+    }
+
+    // ============================================
+    // 回退方案：智能解析（兼容旧代码格式）
+    // ============================================
+    console.log('[parseStrategyCode] Falling back to smart parsing')
+
     const docstring = extractDocstring(code)
     const config = extractConfig(code)
     const strategyType = inferStrategyType(code)
@@ -2364,8 +3360,7 @@ export function parseStrategyCode(code: string): ParsedStrategy | null {
     const calculations = extractCalculations(code, docstring)
 
     // 策略 vibe/描述 (从 docstring 提取)
-    const vibeMatch = docstring.match(/vibe[:\s]*(.*?)(?=\n|$)/i)?.[1]?.trim() ||
-      docstring.split('\n')[0]?.trim()
+    const vibeMatch = docstring.match(/vibe[:\s]*(.*?)(?=\n|$)/i)?.[1]?.trim() || docstring.split('\n')[0]?.trim()
 
     // 轮询配置
     let pollingConfig: ParsedStrategy['pollingConfig'] = undefined
