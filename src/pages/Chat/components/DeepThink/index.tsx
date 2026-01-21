@@ -286,7 +286,7 @@ export default memo(function DeepThink({
         />
       </DeepThinkContent>
       <TabWrapper>
-        <MoveTabList moveType={MoveType.LINE} tabKey={tabIndex} tabList={tabList} />
+        <MoveTabList tabKey={tabIndex} tabList={tabList} />
       </TabWrapper>
       <TabContent>
         <Left />

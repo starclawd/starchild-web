@@ -92,7 +92,11 @@ const CopyButton = styled(ButtonCommon)`
   }
 `
 
-const ExitButton = styled(CopyButton)``
+const ExitButton = styled(CopyButton)`
+  i {
+    transform: rotate(180deg);
+  }
+`
 
 export function AccountManegeModal() {
   const isMobile = useIsMobile()

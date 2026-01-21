@@ -458,7 +458,7 @@ export default memo(function Code() {
       <Header>
         <Left>
           {/* 视图切换 */}
-          {showViewToggle && <MoveTabList tabKey={viewMode} moveType={MoveType.LINE} gap={20} tabList={tabList} />}
+          {showViewToggle && <MoveTabList tabKey={viewMode} gap={20} tabList={tabList} />}
           {!isGeneratingCodeStatus && !isGeneratingCodeFrontend && (
             <>
               <IconBase className='icon-circle-success' />

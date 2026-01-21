@@ -14,21 +14,40 @@ const UserInfoWrapper = styled.div`
   align-items: center;
   height: 48px;
   gap: 12px;
+`
+
+const AvatarWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
   .user-avatar {
     width: 40px;
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
   }
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(12)};
-      .user-avatar {
-        width: ${vm(40)};
-        height: ${vm(40)};
-      }
-    `}
+  .icon-upload {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    color: ${({ theme }) => theme.black0};
+    transition: all ${ANI_DURATION}s;
+    opacity: 0;
+    z-index: 2;
+  }
+  &:hover {
+    .icon-upload {
+      opacity: 1;
+    }
+  }
 `
 
 const RightContent = styled.div`
@@ -136,11 +155,14 @@ export default function UserInfo() {
   }, [copyRawContent, formatUserId])
   return (
     <UserInfoWrapper>
-      {userAvatar ? (
-        <img className='user-avatar' src={userAvatar} alt='userAvatar' />
-      ) : (
-        <Avatar size={40} name={userName} />
-      )}
+      <AvatarWrapper>
+        {userAvatar ? (
+          <img className='user-avatar' src={userAvatar} alt='userAvatar' />
+        ) : (
+          <Avatar size={40} name={userName} />
+        )}
+        <IconBase className='icon-upload' />
+      </AvatarWrapper>
       <RightContent>
         <UserName>
           <span>{userName}</span>

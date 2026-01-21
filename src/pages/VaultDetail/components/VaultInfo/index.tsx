@@ -225,7 +225,7 @@ export default memo(function VaultInfo() {
           </VaultHeader>
 
           {/* <TabsWrapper>
-            <MoveTabList gap={20} tabKey={activeTab} tabList={tabList} moveType={MoveType.LINE} />
+            <MoveTabList gap={20} tabKey={activeTab} tabList={tabList} />
           </TabsWrapper> */}
         </LeftWrapper>
         {activeTab === DETAIL_TYPE.STRATEGY && <TvfSection />}

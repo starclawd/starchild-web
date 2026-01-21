@@ -26,9 +26,8 @@ export const CommonModalHeader = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
   width: 100%;
-  padding: 16px 0 8px;
+  padding: 16px 20px 8px;
   font-size: 18px;
   font-style: normal;
   font-weight: 400;
@@ -160,7 +159,7 @@ const CloseWrapper = styled.div`
   right: 12px;
   z-index: 10;
   .icon-close {
-    font-size: 18px;
+    font-size: 20px;
     color: ${({ theme }) => theme.black0};
     transition: color ${ANI_DURATION}s;
 

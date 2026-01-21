@@ -5,7 +5,7 @@ import { useCurrentAiContentDeepThinkData, useIsShowDeepThink, useIsShowDeepThin
 import ThinkList from '../DeepThink/components/ThinkList'
 import Sources from '../DeepThink/components/Sources'
 import { Trans } from '@lingui/react/macro'
-import MoveTabList from 'components/MoveTabList'
+import MoveTabList, { MoveType } from 'components/MoveTabList'
 import { vm } from 'pages/helper'
 import { useIsMobile } from 'store/application/hooks'
 import { ANI_DURATION } from 'constants/index'
@@ -135,7 +135,7 @@ export default function DeepThinkDetail() {
   return (
     <DeepThinkInnerContent className='deep-think-inner-content'>
       <TabWrapper>
-        <MoveTabList tabKey={tabIndex} tabList={tabList} />
+        <MoveTabList moveType={MoveType.BG} tabKey={tabIndex} tabList={tabList} />
         {!isMobile && (
           <IconWrapper onClick={() => setIsShowDeepThink(false)}>
             <IconBase className='icon-chat-delete' />

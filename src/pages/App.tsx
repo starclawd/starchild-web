@@ -36,7 +36,6 @@ import { trackEvent } from 'utils/common'
 import { useIsFixMenu } from 'store/headercache/hooks'
 import useWindowVisible from 'hooks/useWindowVisible'
 import { isLocalEnv, isPro } from 'utils/url'
-import { CreateAgentModal } from './MyAgent/components/CreateModal'
 import { ApplicationModal } from 'store/application/application'
 import { TgLogin } from 'components/Header/components/TgLogin'
 import { useTelegramWebAppLogin } from 'hooks/useTelegramWebAppLogin'
@@ -56,6 +55,9 @@ import { STRATEGY_SIGNAL_SUB_ID, STRATEGY_SIGNAL_UNSUB_ID } from 'store/websocke
 import PromptModal from './CreateStrategy/components/Chat/components/PromptModal'
 import ShareModal from 'components/ShareModal'
 import { useGenerateGuestUser } from 'store/login/hooks/useGenerateGuestUser'
+import PauseStrategyModal from './MyPortfolio/components/MyStrategies/components/PauseStrategyModal'
+import DelistStrategyModal from './MyPortfolio/components/MyStrategies/components/DelistStrategyModal'
+import DeleteStrategyModal from './MyPortfolio/components/MyStrategies/components/DeleteStrategyModal'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -149,7 +151,6 @@ function App() {
   const triggerGetPreference = useGetPreference()
   const generateGuestUser = useGenerateGuestUser()
   const isChatPage = isMatchCurrentRouter(currentRouter, ROUTER.CHAT)
-  const createAgentModalOpen = useModalOpen(ApplicationModal.CREATE_AGENT_MODAL)
   const deleteAgentModalOpen = useModalOpen(ApplicationModal.DELETE_MY_AGENT_MODAL)
   const preferenceModalOpen = useModalOpen(ApplicationModal.PREFERENCE_MODAL)
   const accountManegeModalOpen = useModalOpen(ApplicationModal.ACCOUNT_MANEGE_MODAL)
@@ -160,6 +161,9 @@ function App() {
   const deployModalOpen = useModalOpen(ApplicationModal.DEPLOY_MODAL)
   const promptModalOpen = useModalOpen(ApplicationModal.PROMPT_MODAL)
   const shareStrategyModalOpen = useModalOpen(ApplicationModal.SHARE_STRATEGY_MODAL)
+  const pauseStrategyModalOpen = useModalOpen(ApplicationModal.PAUSE_STRATEGY_MODAL)
+  const delistStrategyModalOpen = useModalOpen(ApplicationModal.DELIST_STRATEGY_MODAL)
+  const deleteStrategyModalOpen = useModalOpen(ApplicationModal.DELETE_STRATEGY_MODAL)
   // const isSignalsPage = isMatchCurrentRouter(currentRouter, ROUTER.SIGNALS)
   const isBackTestPage = isMatchCurrentRouter(currentRouter, ROUTER.BACK_TEST)
   const { userInfoId } = userInfo
@@ -311,7 +315,6 @@ function App() {
           </AppWrapper>
         )}
         <StyledToastContent newestOnTop />
-        {createAgentModalOpen && <CreateAgentModal />}
         {deleteAgentModalOpen && <DeleteMyAgentModal />}
         {preferenceModalOpen && <Preference />}
         {accountManegeModalOpen && <AccountManegeModal />}
@@ -322,6 +325,9 @@ function App() {
         {deployModalOpen && <DeployModal />}
         {promptModalOpen && <PromptModal />}
         {shareStrategyModalOpen && <ShareModal />}
+        {pauseStrategyModalOpen && <PauseStrategyModal />}
+        {delistStrategyModalOpen && <DelistStrategyModal />}
+        {deleteStrategyModalOpen && <DeleteStrategyModal />}
         <TgLogin />
       </ThemeProvider>
     </ErrorBoundary>

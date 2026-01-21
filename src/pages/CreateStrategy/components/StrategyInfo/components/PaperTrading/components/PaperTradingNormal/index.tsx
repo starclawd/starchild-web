@@ -12,7 +12,7 @@ import VaultChatArea from 'pages/VaultDetail/components/VaultChatArea'
 import { useStrategyPositions } from 'store/vaultsdetail/hooks/useStrategyPositions'
 import { useStrategyOpenOrdersPaginated } from 'store/vaultsdetail/hooks/useStrategyOpenOrders'
 import { useStrategyOrderHistoryPaginated } from 'store/vaultsdetail/hooks/useStrategyOrderHistory'
-import MoveTabList, { MoveType } from 'components/MoveTabList'
+import MoveTabList from 'components/MoveTabList'
 import { DETAIL_TYPE } from 'store/vaultsdetail/vaultsdetail'
 import { PAPER_TRADING_TAB_KEY } from 'store/createstrategy/createstrategy'
 import { useWindowSize } from 'hooks/useWindowSize'
@@ -146,7 +146,7 @@ export default memo(function PaperTradingTabs() {
   return (
     <PaperTradingTabsWrapper>
       <Header>
-        <MoveTabList gap={20} moveType={MoveType.LINE} tabKey={activeTab} tabList={tabList} />
+        <MoveTabList gap={20} tabKey={activeTab} tabList={tabList} />
         <PaperTradingButtonWrapper />
       </Header>
       <TabContent className='scroll-style'>

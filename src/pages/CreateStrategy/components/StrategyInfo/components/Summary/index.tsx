@@ -789,7 +789,7 @@ export default memo(function Summary() {
               <Trans>Flow</Trans>
             </ButtonFlow>
           )}
-          <MoveTabList gap={20} moveType={MoveType.LINE} tabKey={activeTab} tabList={tabList} />
+          <MoveTabList gap={20} tabKey={activeTab} tabList={tabList} />
         </LeftContent>
         {!typewriterState.isTyping && (
           <ButtonWrapper>

@@ -5,12 +5,7 @@ import Modal, {
   CommonModalFooter,
   CommonModalHeader,
 } from 'components/Modal'
-import {
-  useIsMobile,
-  useModalOpen,
-  useAccountManegeModalToggle,
-  useEditNicknameModalToggle,
-} from 'store/application/hooks'
+import { useIsMobile, useModalOpen, useEditNicknameModalToggle } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
 import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import { Trans } from '@lingui/react/macro'

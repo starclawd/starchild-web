@@ -11,6 +11,10 @@ import tagBg from 'assets/vaults/tag-bg.png'
 import { useAllStrategiesOverview } from 'store/vaults/hooks'
 import { useUserInfo, useIsLogin } from 'store/login/hooks'
 import StrategyItem from './components/StrategyItem'
+import MoveTabList, { MoveType } from 'components/MoveTabList'
+import { useAllFollowedStrategiesOverview } from 'store/mystrategy/hooks/useAllFollowedStrategiesOverview'
+import { useMyStrategies } from 'store/mystrategy/hooks/useMyStrategies'
+import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy.d'
 
 const StrategyTableWrapper = styled.div`
   display: flex;
@@ -29,17 +33,25 @@ const Title = styled.div`
   height: 88px;
   padding: 20px 40px;
   border-bottom: 1px solid ${({ theme }) => theme.black800};
-  > span {
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 28px;
-    color: ${({ theme }) => theme.black0};
-  }
   transition: all ${ANI_DURATION}s;
   ${({ theme }) => theme.mediaMaxWidth.width1280`
     padding: 20px 20px;
   `}
+`
+
+const StyledMoveTabList = styled(MoveTabList)`
+  height: 48px;
+  .move-tab-item {
+    gap: 8px;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 26px;
+    padding: 0;
+    i {
+      font-size: 20px;
+    }
+  }
 `
 
 const InputWrapper = styled.div`
@@ -186,14 +198,73 @@ export const COLUMN_WIDTHS = [
   '80px', // Snapshot - 固定宽度
 ]
 
+// My strategy tab 下的列宽配置（最后一列需要更宽以容纳操作按钮）
+export const MY_STRATEGY_COLUMN_WIDTHS = [
+  '50px', // #
+  'var(--name-column-width)', // name - 响应式宽度，最小 280px
+  '200px', // leader
+  'auto', // All time APR - 自适应
+  'auto', // Age - 自适应
+  'auto', // Max drawdown - 自适应
+  'auto', // TVF - 自适应
+  'auto', // Followers - 自适应
+  '180px', // Actions - 操作按钮需要更宽
+]
+
+export enum TabKey {
+  LEADERBOARD = 'leaderboard',
+  WATCHLIST = 'watchlist',
+  MY_STRATEGY = 'my_strategy',
+}
+
 export default memo(function StrategyTable() {
   const [searchValue, setSearchValue] = useState('')
+  const [activeTab, setActiveTab] = useState<TabKey>(TabKey.LEADERBOARD)
   const { sortState, handleSort } = useSort('all_time_apr', SortDirection.DESC)
   const createSortableHeader = useSortableHeader(sortState, handleSort)
 
-  const { allStrategies } = useAllStrategiesOverview()
+  const { allStrategies, isLoading: isLoadingAllStrategies } = useAllStrategiesOverview()
+  const { allFollowedStrategies, isLoading: isLoadingFollowed } = useAllFollowedStrategiesOverview()
+  const { myStrategies: myOwnStrategies, isLoadingMyStrategies } = useMyStrategies()
   const [{ userInfoId }] = useUserInfo()
   const isLogin = useIsLogin()
+
+  // 根据 tab 获取当前列宽配置
+  const currentColumnWidths = useMemo(() => {
+    return activeTab === TabKey.MY_STRATEGY ? MY_STRATEGY_COLUMN_WIDTHS : COLUMN_WIDTHS
+  }, [activeTab])
+
+  // 过滤 My strategy 只显示 isUnreleased 状态的数据
+  const filteredMyStrategiesForTab = useMemo(() => {
+    return myOwnStrategies.filter(
+      (strategy) =>
+        strategy.status === STRATEGY_STATUS.DRAFT ||
+        strategy.status === STRATEGY_STATUS.DRAFT_READY ||
+        strategy.status === STRATEGY_STATUS.DEPLOYING ||
+        strategy.status === STRATEGY_STATUS.PAPER_TRADING,
+    )
+  }, [myOwnStrategies])
+
+  // 根据 tab 获取当前数据源和加载状态
+  const { currentStrategies, currentLoading } = useMemo(() => {
+    switch (activeTab) {
+      case TabKey.WATCHLIST:
+        return { currentStrategies: allFollowedStrategies, currentLoading: isLoadingFollowed }
+      case TabKey.MY_STRATEGY:
+        return { currentStrategies: filteredMyStrategiesForTab, currentLoading: isLoadingMyStrategies }
+      case TabKey.LEADERBOARD:
+      default:
+        return { currentStrategies: allStrategies, currentLoading: isLoadingAllStrategies }
+    }
+  }, [
+    activeTab,
+    allStrategies,
+    allFollowedStrategies,
+    filteredMyStrategiesForTab,
+    isLoadingAllStrategies,
+    isLoadingFollowed,
+    isLoadingMyStrategies,
+  ])
 
   const changeSearchValue = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
@@ -237,46 +308,75 @@ export default memo(function StrategyTable() {
     })
   }, [myStrategies, searchValue])
 
-  const headers: HeaderConfig[] = [
-    { key: 'rank', title: '#', align: 'left' },
-    { key: 'name', title: <Trans>Name</Trans>, align: 'left' },
-    { key: 'leader', title: <Trans>Leader</Trans>, align: 'left' },
-    { key: 'allTimeApr', title: createSortableHeader(<Trans>All time APR</Trans>, 'all_time_apr'), align: 'left' },
-    { key: 'ageDays', title: createSortableHeader(<Trans>Age(days)</Trans>, 'age_days'), align: 'left' },
-    {
-      key: 'maxDrawdown',
-      title: createSortableHeader(
-        <MaxDrawdown>
-          <Tooltip placement='top' content={<Trans>The biggest drop from the peak. Lower means less risk.</Trans>}>
-            <Trans>Max drawdown</Trans>
-          </Tooltip>
-        </MaxDrawdown>,
-        'max_drawdown',
-      ),
-      align: 'left',
-    },
-    {
-      key: 'tvf',
-      title: createSortableHeader(
-        <TVF>
-          <Tooltip placement='top' content={<Trans>Total follower assets. Higher TVF means more interest.</Trans>}>
-            <Trans>TVF</Trans>
-          </Tooltip>
-        </TVF>,
-        'tvf',
-      ),
-      align: 'left',
-    },
-    { key: 'followers', title: createSortableHeader(<Trans>Followers</Trans>, 'followers'), align: 'left' },
-    { key: 'snapshot', title: <Trans>Snapshot</Trans>, align: 'right' },
-  ]
+  const headers: HeaderConfig[] = useMemo(
+    () => [
+      { key: 'rank', title: '#', align: 'left' },
+      { key: 'name', title: <Trans>Name</Trans>, align: 'left' },
+      { key: 'leader', title: <Trans>Leader</Trans>, align: 'left' },
+      { key: 'allTimeApr', title: createSortableHeader(<Trans>All time APR</Trans>, 'all_time_apr'), align: 'left' },
+      { key: 'ageDays', title: createSortableHeader(<Trans>Age(days)</Trans>, 'age_days'), align: 'left' },
+      {
+        key: 'maxDrawdown',
+        title: createSortableHeader(
+          <MaxDrawdown>
+            <Tooltip placement='top' content={<Trans>The biggest drop from the peak. Lower means less risk.</Trans>}>
+              <Trans>Max drawdown</Trans>
+            </Tooltip>
+          </MaxDrawdown>,
+          'max_drawdown',
+        ),
+        align: 'left',
+      },
+      {
+        key: 'tvf',
+        title: createSortableHeader(
+          <TVF>
+            <Tooltip placement='top' content={<Trans>Total follower assets. Higher TVF means more interest.</Trans>}>
+              <Trans>TVF</Trans>
+            </Tooltip>
+          </TVF>,
+          'tvf',
+        ),
+        align: 'left',
+      },
+      { key: 'followers', title: createSortableHeader(<Trans>Followers</Trans>, 'followers'), align: 'left' },
+      {
+        key: 'snapshot',
+        title: activeTab === TabKey.MY_STRATEGY ? '' : <Trans>Snapshot</Trans>,
+        align: 'right',
+      },
+    ],
+    [activeTab, createSortableHeader],
+  )
+
+  const tabList = useMemo(
+    () => [
+      {
+        key: TabKey.LEADERBOARD,
+        text: <Trans>Leaderboard</Trans>,
+        icon: <i className='icon-menu-vibe' />,
+        clickCallback: () => setActiveTab(TabKey.LEADERBOARD),
+      },
+      {
+        key: TabKey.WATCHLIST,
+        text: <Trans>Watchlist</Trans>,
+        icon: <i className='icon-watchlist' />,
+        clickCallback: () => setActiveTab(TabKey.WATCHLIST),
+      },
+      {
+        key: TabKey.MY_STRATEGY,
+        text: <Trans>My strategy</Trans>,
+        icon: <i className='icon-my-strategy' />,
+        clickCallback: () => setActiveTab(TabKey.MY_STRATEGY),
+      },
+    ],
+    [],
+  )
 
   return (
     <StrategyTableWrapper>
       <Title>
-        <span>
-          <Trans>Leaderboard</Trans>
-        </span>
+        <StyledMoveTabList tabKey={activeTab} tabList={tabList} moveType={MoveType.LINE} gap={32} />
         <InputWrapper>
           <Input
             inputValue={searchValue}
@@ -291,7 +391,7 @@ export default memo(function StrategyTable() {
       <TableHeaderWrapper>
         <HeaderTable>
           <colgroup>
-            {COLUMN_WIDTHS.map((width, index) => (
+            {currentColumnWidths.map((width, index) => (
               <col key={index} style={{ width }} />
             ))}
           </colgroup>
@@ -307,12 +407,12 @@ export default memo(function StrategyTable() {
         </HeaderTable>
       </TableHeaderWrapper>
 
-      {/* 用户自己创建的策略 - 在 Title 下面，TableHeader 上面，随页面滚动 */}
-      {filteredMyStrategies.length > 0 && (
+      {/* 用户自己创建的策略 - 仅在 Leaderboard tab 下显示 */}
+      {activeTab === TabKey.LEADERBOARD && filteredMyStrategies.length > 0 && (
         <MyStrategiesSection>
           <MyStrategiesTable>
             <colgroup>
-              {COLUMN_WIDTHS.map((width, index) => (
+              {currentColumnWidths.map((width, index) => (
                 <col key={index} style={{ width }} />
               ))}
             </colgroup>
@@ -330,7 +430,15 @@ export default memo(function StrategyTable() {
       )}
 
       <TableContent>
-        <Strategies searchValue={searchValue} sortState={sortState} />
+        <Strategies
+          searchValue={searchValue}
+          sortState={sortState}
+          strategies={currentStrategies}
+          isLoading={currentLoading}
+          aprRankMap={aprRankMap}
+          showActions={activeTab === TabKey.MY_STRATEGY}
+          columnWidths={currentColumnWidths}
+        />
       </TableContent>
     </StrategyTableWrapper>
   )

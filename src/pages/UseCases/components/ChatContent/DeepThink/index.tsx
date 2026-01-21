@@ -12,7 +12,7 @@ import { Trans } from '@lingui/react/macro'
 import ThinkList from './components/ThinkList'
 import Sources from './components/Sources'
 import { TempAiContentDataType } from 'store/chat/chat'
-import MoveTabList, { MoveType } from 'components/MoveTabList'
+import MoveTabList from 'components/MoveTabList'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { ANI_DURATION } from 'constants/index'
 import ThinkingProgress from 'pages/Chat/components/ThinkingProgress'
@@ -296,7 +296,7 @@ export default memo(function DeepThink({
         />
       </DeepThinkContent>
       <TabWrapper>
-        <MoveTabList moveType={MoveType.LINE} tabKey={tabIndex} tabList={tabList} />
+        <MoveTabList tabKey={tabIndex} tabList={tabList} />
       </TabWrapper>
       <TabContent>
         <Left />

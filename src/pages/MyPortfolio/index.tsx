@@ -179,13 +179,7 @@ export default memo(function MyPortfolio() {
             </Title>
             <Performance />
             <TabListWrapper>
-              <MoveTabList
-                className='tab-list-all'
-                gap={20}
-                moveType={MoveType.LINE}
-                tabKey={activeTab}
-                tabList={tabList}
-              />
+              <MoveTabList className='tab-list-all' gap={20} tabKey={activeTab} tabList={tabList} />
               {activeTab === MY_PORTFOLIO_TAB_KEY.STRATEGY && (
                 <TabList className='tab-list-strategy' tabKey={strategyTabKey} tabList={strategyTabList} />
               )}

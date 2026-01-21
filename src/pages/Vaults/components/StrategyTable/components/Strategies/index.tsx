@@ -54,51 +54,73 @@ const LoadingMore = styled.div`
 interface StrategiesProps {
   searchValue: string
   sortState: SortState
+  strategies?: StrategiesOverviewDataType[]
+  isLoading?: boolean
+  aprRankMap?: Map<string, number>
+  showActions?: boolean
+  columnWidths?: string[]
 }
 
-const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
-  const { allStrategies, isLoading: isLoadingAllStrategies } = useAllStrategiesOverview()
+const Strategies = memo(
+  ({
+    searchValue,
+    sortState,
+    strategies,
+    isLoading,
+    aprRankMap: externalAprRankMap,
+    showActions,
+    columnWidths,
+  }: StrategiesProps) => {
+    const { allStrategies, isLoading: isLoadingAllStrategies } = useAllStrategiesOverview()
 
-  const [displayCount, setDisplayCount] = useState(PAGE_SIZE)
-  const [isLoadingMore, setIsLoadingMore] = useState(false)
-  const loadMoreRef = useRef<HTMLDivElement>(null)
+    // 使用传入的数据或默认的 allStrategies
+    const dataSource = strategies ?? allStrategies
+    const loading = isLoading ?? isLoadingAllStrategies
 
-  // 计算基于 all_time_apr 倒序的排名 Map（与排序逻辑一致）
-  const aprRankMap = useMemo(() => {
-    const sorted = [...allStrategies].sort((a, b) => {
-      const aValue = a.all_time_apr
-      const bValue = b.all_time_apr
+    const [displayCount, setDisplayCount] = useState(PAGE_SIZE)
+    const [isLoadingMore, setIsLoadingMore] = useState(false)
+    const loadMoreRef = useRef<HTMLDivElement>(null)
 
-      // 处理 null 和 undefined 值，将它们排到最后
-      if (aValue == null && bValue == null) return 0
-      if (aValue == null) return 1
-      if (bValue == null) return -1
+    // 计算基于 all_time_apr 倒序的排名 Map（如果外部传入则使用外部的）
+    const internalAprRankMap = useMemo(() => {
+      if (externalAprRankMap) return externalAprRankMap
 
-      // 倒序排列（DESC），大的在前
-      return bValue - aValue
-    })
-    const rankMap = new Map<string, number>()
-    sorted.forEach((strategy, index) => {
-      if (strategy.strategy_id) {
-        rankMap.set(String(strategy.strategy_id), index + 1)
-      }
-    })
-    return rankMap
-  }, [allStrategies])
+      const sorted = [...dataSource].sort((a, b) => {
+        const aValue = a.all_time_apr
+        const bValue = b.all_time_apr
+
+        // 处理 null 和 undefined 值，将它们排到最后
+        if (aValue == null && bValue == null) return 0
+        if (aValue == null) return 1
+        if (bValue == null) return -1
+
+        // 倒序排列（DESC），大的在前
+        return bValue - aValue
+      })
+      const rankMap = new Map<string, number>()
+      sorted.forEach((strategy, index) => {
+        if (strategy.strategy_id) {
+          rankMap.set(String(strategy.strategy_id), index + 1)
+        }
+      })
+      return rankMap
+    }, [dataSource, externalAprRankMap])
+
+    const aprRankMap = externalAprRankMap ?? internalAprRankMap
 
   // 通过 searchValue 筛选数据
   const filteredStrategies = useMemo(() => {
     if (!searchValue.trim()) {
-      return allStrategies
+      return dataSource
     }
 
     const lowerSearchValue = searchValue.toLowerCase().trim()
-    return allStrategies.filter((strategy) => {
+    return dataSource.filter((strategy) => {
       const userName = strategy.user_info?.user_name?.toLowerCase() || ''
       const strategyName = strategy.strategy_name?.toLowerCase() || ''
       return userName.includes(lowerSearchValue) || strategyName.includes(lowerSearchValue)
     })
-  }, [allStrategies, searchValue])
+  }, [dataSource, searchValue])
 
   // 排序后的数据
   const sortedStrategies = useMemo(() => {
@@ -182,9 +204,9 @@ const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
         observer.unobserve(currentRef)
       }
     }
-  }, [hasNextPage, isLoadingMore, loadMore, isLoadingAllStrategies])
+  }, [hasNextPage, isLoadingMore, loadMore, loading])
 
-  if (isLoadingAllStrategies) {
+  if (loading) {
     return (
       <StrategiesContainer>
         <Pending isNotButtonLoading />
@@ -197,7 +219,7 @@ const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
       <TableScrollContainer>
         <StyledTable>
           <colgroup>
-            {COLUMN_WIDTHS.map((width, index) => (
+            {(columnWidths || COLUMN_WIDTHS).map((width, index) => (
               <col key={index} style={{ width }} />
             ))}
           </colgroup>
@@ -206,6 +228,7 @@ const Strategies = memo(({ searchValue, sortState }: StrategiesProps) => {
               key={record.strategy_id || index}
               record={record}
               aprRank={record.strategy_id ? aprRankMap.get(String(record.strategy_id)) || 0 : 0}
+              showActions={showActions}
             />
           ))}
         </StyledTable>

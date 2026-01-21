@@ -1393,20 +1393,62 @@
         "attrs": [],
         "grid": 0,
         "tags": [
-          "wallet"
+          "upload"
         ]
       },
       "attrs": [],
       "properties": {
         "order": 66,
         "id": 67,
+        "name": "upload",
+        "prevSize": 32,
+        "code": 61698
+      },
+      "setIdx": 0,
+      "setId": 0,
+      "iconIdx": 66
+    },
+    {
+      "icon": {
+        "paths": [],
+        "attrs": [],
+        "grid": 0,
+        "tags": [
+          "wallet"
+        ]
+      },
+      "attrs": [],
+      "properties": {
+        "order": 67,
+        "id": 68,
         "name": "wallet",
         "prevSize": 32,
         "code": 59713
       },
       "setIdx": 0,
       "setId": 0,
-      "iconIdx": 66
+      "iconIdx": 67
+    },
+    {
+      "icon": {
+        "paths": [],
+        "attrs": [],
+        "grid": 0,
+        "tags": [
+          "watchlist"
+        ]
+      },
+      "attrs": [],
+      "properties": {
+        "order": 68,
+        "id": 69,
+        "name": "watchlist",
+        "prevSize": 32,
+        "code": 61699
+      },
+      "setIdx": 0,
+      "setId": 0,
+      "iconIdx": 68
     },
     {
       "icon": {
@@ -1419,15 +1461,15 @@
       },
       "attrs": [],
       "properties": {
-        "order": 67,
-        "id": 68,
+        "order": 69,
+        "id": 70,
         "name": "x",
         "prevSize": 32,
         "code": 59714
       },
       "setIdx": 0,
       "setId": 0,
-      "iconIdx": 67
+      "iconIdx": 69
     },
     {
       "icon": {
@@ -1440,15 +1482,15 @@
       },
       "attrs": [],
       "properties": {
-        "order": 68,
-        "id": 69,
+        "order": 70,
+        "id": 71,
         "name": "zoom-in",
         "prevSize": 32,
         "code": 59715
       },
       "setIdx": 0,
       "setId": 0,
-      "iconIdx": 68
+      "iconIdx": 70
     },
     {
       "icon": {
@@ -1461,15 +1503,15 @@
       },
       "attrs": [],
       "properties": {
-        "order": 69,
-        "id": 70,
+        "order": 71,
+        "id": 72,
         "name": "zoom-out",
         "prevSize": 32,
         "code": 59716
       },
       "setIdx": 0,
       "setId": 0,
-      "iconIdx": 69
+      "iconIdx": 71
     }
   ],
   "height": 1024,

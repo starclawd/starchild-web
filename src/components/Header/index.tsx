@@ -33,7 +33,7 @@ const HeaderWrapper = styled.header<{
 }>`
   position: relative;
   display: flex;
-  width: 60px;
+  width: 49px;
   height: 100%;
   flex-shrink: 0;
   z-index: 101;
@@ -72,17 +72,10 @@ const Menu = styled.div`
   padding-right: 0 !important;
 `
 
-const TopSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`
-
 const CenterSection = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   flex-grow: 1;
   width: 100%;
 `
@@ -151,7 +144,7 @@ const IconWrapper = styled.div<{ $active?: boolean }>`
   border-radius: 4px;
   background-color: transparent;
   i {
-    font-size: 24px;
+    font-size: 16px;
     color: ${({ theme }) => theme.black0};
   }
   transition: all ${ANI_DURATION}s;
@@ -375,11 +368,9 @@ export const Header = () => {
       $isPopoverOpen={isPopoverOpen}
     >
       <Menu ref={scrollRef} className='scroll-style'>
-        <TopSection>
-          <LogoWrapper onClick={goHomePage}>
-            <img src={logoImg} alt='' />
-          </LogoWrapper>
-        </TopSection>
+        <LogoWrapper onClick={goHomePage}>
+          <img src={logoImg} alt='' />
+        </LogoWrapper>
         <CenterSection>
           <NavTabs onMouseEnter={() => setIsHoverNavTabs(true)} onMouseLeave={handleNavTabsLeave}>
             {menuList.map((tab) => {

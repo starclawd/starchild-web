@@ -36,19 +36,11 @@ const AvatarWrapper = styled.div`
   }
   .avatar-img {
     flex-shrink: 0;
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     object-fit: cover;
   }
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      width: ${vm(32)};
-      height: ${vm(32)};
-      font-size: 0.12rem;
-      line-height: 0.16rem;
-    `}
 `
 
 const LoginWrapper = styled.div`
@@ -58,16 +50,9 @@ const LoginWrapper = styled.div`
   width: 32px;
   height: 32px;
   .icon-menu-login {
-    font-size: 32px;
+    font-size: 20px;
     color: ${({ theme }) => theme.brand100};
   }
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      .icon-menu-login {
-        font-size: 0.32rem;
-      }
-    `}
 `
 
 const Customise = styled.div`
@@ -174,8 +159,8 @@ export default function LoginButton() {
         <Select
           usePortal
           hideExpand
-          offsetLeft={8}
-          offsetTop={8}
+          offsetLeft={32}
+          offsetTop={-32}
           triggerMethod={TriggerMethod.CLICK}
           placement='top-end'
           value=''

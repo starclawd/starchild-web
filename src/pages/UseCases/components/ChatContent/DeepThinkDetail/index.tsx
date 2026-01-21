@@ -8,7 +8,7 @@ import {
 import ThinkList from '../DeepThink/components/ThinkList'
 import Sources from '../DeepThink/components/Sources'
 import { Trans } from '@lingui/react/macro'
-import MoveTabList from 'components/MoveTabList'
+import MoveTabList, { MoveType } from 'components/MoveTabList'
 import { vm } from 'pages/helper'
 import { useIsMobile } from 'store/application/hooks'
 
@@ -115,7 +115,7 @@ export default function DeepThinkDetail() {
   return (
     <DeepThinkInnerContent className='deep-think-inner-content'>
       <TabWrapper>
-        <MoveTabList tabKey={tabIndex} tabList={tabList} />
+        <MoveTabList moveType={MoveType.BG} tabKey={tabIndex} tabList={tabList} />
       </TabWrapper>
       {tabIndex === 0 && <ThinkList thoughtList={thoughtContentList} />}
       {tabIndex === 1 && <Sources sourceList={sourceListDetails} />}
