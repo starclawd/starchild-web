@@ -10,6 +10,7 @@ import { isInvalidValue } from 'utils/calc'
 import { formatPercent } from 'utils/format'
 import Rank, { RANK_TYPE } from 'pages/Vaults/components/Leaderboard/components/Rank'
 import { StrategiesOverviewDataType } from 'api/strategy'
+import { useTheme } from 'store/themecache/hooks'
 
 const LeaderboardWrapper = styled.div<{ $gradientAngle: number; $isHovering: boolean }>`
   position: relative;
@@ -103,6 +104,9 @@ const LeftContent = styled.div`
 `
 
 const RightContent = styled.div<{ $isPositive: boolean; $invalidVaule: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 4px;
   font-size: 12px;
   font-style: normal;
   font-weight: 400;
@@ -154,6 +158,7 @@ const Footer = styled.div`
 `
 
 export default memo(function Leaderboard() {
+  const theme = useTheme()
   const setCurrentRouter = useSetCurrentRouter()
   const { allStrategies, isLoading } = useAllStrategiesOverview()
   const wrapperRef = useRef<HTMLDivElement>(null)
@@ -234,11 +239,8 @@ export default memo(function Leaderboard() {
                     <span>{strategy.user_info?.user_name}</span>
                   </StrategyName>
                 </LeftContent>
-                <RightContent
-                  $isPositive={Number(strategy.all_time_apr) > 0}
-                  $invalidVaule={isInvalidValue(strategy.all_time_apr)}
-                >
-                  {!isInvalidValue(strategy.all_time_apr) ? formatPercent({ value: strategy.all_time_apr }) : '--'}
+                <RightContent $isPositive={Number(strategy.roe) > 0} $invalidVaule={isInvalidValue(strategy.roe)}>
+                  {!isInvalidValue(strategy.roe) ? formatPercent({ value: strategy.roe }) : '--'}
                 </RightContent>
               </LeaderboardItemWrapper>
             ))

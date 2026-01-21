@@ -1,10 +1,11 @@
-import { memo, useMemo } from 'react'
+import { memo } from 'react'
 import styled, { css } from 'styled-components'
 import { StrategiesOverviewDataType } from 'api/strategy'
 import { Trans } from '@lingui/react/macro'
-import { formatPercent } from 'utils/format'
+import { formatPercent, shouldShowApr } from 'utils/format'
 import { isInvalidValue } from 'utils/calc'
 import Rank, { RANK_TYPE } from '../Rank'
+import { useTheme } from 'store/themecache/hooks'
 
 const LeaderboardItemWrapper = styled.div`
   display: flex;
@@ -42,19 +43,28 @@ const AprItem = styled.div<{ $isPositive: boolean; $invalidVaule: boolean }>`
   display: flex;
   align-items: center;
   gap: 4px;
-  span:first-child {
+  > span:first-child {
     font-size: 11px;
     font-style: normal;
     font-weight: 400;
     line-height: 16px;
     color: ${({ theme }) => theme.black300};
   }
-  span:last-child {
+  > span:last-child {
+    display: flex;
+    align-items: center;
+    gap: 4px;
     font-size: 14px;
     font-style: normal;
     font-weight: 500;
     line-height: 20px;
     color: ${({ theme }) => theme.black0};
+    span {
+      font-size: 13px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 20px;
+    }
   }
   &:last-child {
     justify-content: flex-end;
@@ -86,27 +96,30 @@ export default memo(function LeaderBoardItem({
   strategyData: StrategiesOverviewDataType
   rank: number
 }) {
-  const aprList = useMemo(() => {
-    return [
-      {
-        key: 'All-time APR',
-        text: <Trans>All-time APR:</Trans>,
-        value: strategyData.all_time_apr,
-      },
-    ]
-  }, [strategyData])
+  const theme = useTheme()
   return (
     <LeaderboardItemWrapper className='leaderboard-item'>
       <Rank type={RANK_TYPE.LEADERBOARD} rank={rank} />
       <StrategyContent className='strategy-content'>
         <StrategyName className='strategy-name'>{strategyData.strategy_name}</StrategyName>
         <StrategyApr>
-          {aprList.map((item) => (
-            <AprItem $isPositive={Number(item.value) > 0} $invalidVaule={isInvalidValue(item.value)} key={item.key}>
-              <span>{item.text}</span>
-              <span>{!isInvalidValue(item.value) ? formatPercent({ value: item.value }) : '--'}</span>
-            </AprItem>
-          ))}
+          <AprItem
+            $isPositive={Number(strategyData.roe) > 0}
+            $invalidVaule={isInvalidValue(strategyData.roe)}
+            key='ROE'
+          >
+            <span>
+              <Trans>ROE:</Trans>
+            </span>
+            <span>
+              {!isInvalidValue(strategyData.roe) ? formatPercent({ value: strategyData.roe }) : '--'}
+              {shouldShowApr(strategyData) && (
+                <span
+                  style={{ color: theme.green300 }}
+                >{` (APR: ${formatPercent({ value: strategyData.all_time_apr })})`}</span>
+              )}
+            </span>
+          </AprItem>
         </StrategyApr>
       </StrategyContent>
     </LeaderboardItemWrapper>

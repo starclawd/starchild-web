@@ -45,6 +45,7 @@ import Preference from 'components/Header/components/Preference'
 import { useGetPreference } from 'store/perference/hooks'
 import { AccountManegeModal } from 'components/Header/components/AccountManege'
 import { EditNicknameModal } from 'components/Header/components/AccountManege/components/EditNicknameModal'
+import AvatarEditModal from 'components/Header/components/AccountManege/components/AvatarEditModal'
 import DepositAndWithdraw from './VaultDetail/components/DepositAndWithdraw'
 import { useAppKitEventHandler } from 'hooks/useAppKitEventHandler'
 import { useLeaderboardWebSocketSubscription, useOnchainBalance } from 'store/vaults/hooks'
@@ -155,6 +156,7 @@ function App() {
   const preferenceModalOpen = useModalOpen(ApplicationModal.PREFERENCE_MODAL)
   const accountManegeModalOpen = useModalOpen(ApplicationModal.ACCOUNT_MANEGE_MODAL)
   const editNicknameModalOpen = useModalOpen(ApplicationModal.EDIT_NICKNAME_MODAL)
+  const editAvatarModalOpen = useModalOpen(ApplicationModal.EDIT_AVATAR_MODAL)
   const depositAndWithdrawModalOpen = useModalOpen(ApplicationModal.DEPOSIT_AND_WITHDRAW_MODAL)
   const connectWalletModalOpen = useModalOpen(ApplicationModal.CONNECT_WALLET_MODAL)
   const switchChainModalOpen = useModalOpen(ApplicationModal.SWITCH_CHAIN_MODAL)
@@ -319,6 +321,7 @@ function App() {
         {preferenceModalOpen && <Preference />}
         {accountManegeModalOpen && <AccountManegeModal />}
         {editNicknameModalOpen && <EditNicknameModal />}
+        {editAvatarModalOpen && <AvatarEditModal />}
         {depositAndWithdrawModalOpen && <DepositAndWithdraw />}
         {connectWalletModalOpen && <ConnectWalletModal />}
         {switchChainModalOpen && <SwitchChainModal />}

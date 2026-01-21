@@ -1,11 +1,11 @@
 import { Trans } from '@lingui/react/macro'
 import Avatar from 'boring-avatars'
 import { vm } from 'pages/helper'
-import { useEditNicknameModalToggle } from 'store/application/hooks'
+import { useEditNicknameModalToggle, useOpenAvatarEditModal } from 'store/application/hooks'
 import { useUserInfo } from 'store/login/hooks'
 import styled, { css } from 'styled-components'
 import useCopyContent from 'hooks/useCopyContent'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
 
@@ -143,19 +143,55 @@ const Primay = styled.div`
     `}
 `
 
+const HiddenInput = styled.input`
+  display: none;
+`
+
 export default function UserInfo() {
   const { copyRawContent } = useCopyContent()
   const [{ userName, userAvatar, userInfoId, primaryLoginType }] = useUserInfo()
   const toggleEditNicknameModal = useEditNicknameModalToggle()
+  const openAvatarEditModal = useOpenAvatarEditModal()
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const formatUserId = useMemo(() => {
     return userInfoId?.toString().padStart(8, '0')
   }, [userInfoId])
   const handleCopyUserId = useCallback(() => {
     copyRawContent(formatUserId)
   }, [copyRawContent, formatUserId])
+
+  const handleAvatarClick = useCallback(() => {
+    fileInputRef.current?.click()
+  }, [])
+
+  const handleFileSelect = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0]
+      if (file) {
+        // 验证文件类型
+        if (!file.type.startsWith('image/')) {
+          return
+        }
+        // 验证文件大小（最大 5MB）
+        if (file.size > 1 * 1024 * 1024) {
+          return
+        }
+        const reader = new FileReader()
+        reader.addEventListener('load', () => {
+          const imageSrc = reader.result as string
+          openAvatarEditModal(imageSrc)
+        })
+        reader.readAsDataURL(file)
+      }
+      // 重置 input 以便可以选择相同的文件
+      e.target.value = ''
+    },
+    [openAvatarEditModal],
+  )
+
   return (
     <UserInfoWrapper>
-      <AvatarWrapper>
+      <AvatarWrapper onClick={handleAvatarClick}>
         {userAvatar ? (
           <img className='user-avatar' src={userAvatar} alt='userAvatar' />
         ) : (
@@ -163,6 +199,7 @@ export default function UserInfo() {
         )}
         <IconBase className='icon-upload' />
       </AvatarWrapper>
+      <HiddenInput ref={fileInputRef} type='file' accept='image/*' onChange={handleFileSelect} />
       <RightContent>
         <UserName>
           <span>{userName}</span>

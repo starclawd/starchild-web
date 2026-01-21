@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo } from 'react'
 import { useGetVaultTradeHistoryQuery } from 'api/vaults'
 
-export function useVaultOrderHistoryPaginated(vaultId: string) {
+export function useVaultOrderHistoryPaginated(vaultId: string | undefined) {
   // 分页状态管理
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
@@ -14,7 +14,7 @@ export function useVaultOrderHistoryPaginated(vaultId: string) {
     refetch,
   } = useGetVaultTradeHistoryQuery(
     {
-      vault_id: vaultId,
+      vault_id: vaultId || '',
       page: currentPage,
       size: pageSize,
     },

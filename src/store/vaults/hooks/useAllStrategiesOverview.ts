@@ -25,7 +25,7 @@ export function useAllStrategiesOverview() {
 
   useEffect(() => {
     if (data?.strategies) {
-      // 按 all_time_apr 倒序排列
+      // 按 roe 倒序排列
       const sortedStrategies = [
         ...data.strategies.map((data) => {
           return {
@@ -34,9 +34,9 @@ export function useAllStrategiesOverview() {
           }
         }),
       ].sort((a, b) => {
-        const aprA = a.all_time_apr ?? 0
-        const aprB = b.all_time_apr ?? 0
-        return aprB - aprA
+        const roeA = a.roe ?? 0
+        const roeB = b.roe ?? 0
+        return roeB - roeA
       })
       dispatch(updateAllStrategies(sortedStrategies))
     }

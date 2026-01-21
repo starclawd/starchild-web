@@ -15,7 +15,7 @@ import { useUserInfo } from 'store/login/hooks'
 /**
  * 查询策略是否已关注hook
  */
-export function useIsFollowedStrategy({ strategyId }: { strategyId: string | null }) {
+export function useIsFollowedStrategy({ strategyId }: { strategyId: string | undefined }) {
   const dispatch = useDispatch()
   const isLogin = useIsLogin()
   const [{ userInfoId }] = useUserInfo()

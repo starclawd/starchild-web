@@ -190,7 +190,7 @@ export const COLUMN_WIDTHS = [
   '50px', // #
   'var(--name-column-width)', // name - 响应式宽度，最小 280px
   '200px', // leader
-  'auto', // All time APR - 自适应
+  'auto', // ROE - 自适应
   'auto', // Age - 自适应
   'auto', // Max drawdown - 自适应
   'auto', // TVF - 自适应
@@ -203,7 +203,7 @@ export const MY_STRATEGY_COLUMN_WIDTHS = [
   '50px', // #
   'var(--name-column-width)', // name - 响应式宽度，最小 280px
   '200px', // leader
-  'auto', // All time APR - 自适应
+  'auto', // ROE - 自适应
   'auto', // Age - 自适应
   'auto', // Max drawdown - 自适应
   'auto', // TVF - 自适应
@@ -220,7 +220,7 @@ export enum TabKey {
 export default memo(function StrategyTable() {
   const [searchValue, setSearchValue] = useState('')
   const [activeTab, setActiveTab] = useState<TabKey>(TabKey.LEADERBOARD)
-  const { sortState, handleSort } = useSort('all_time_apr', SortDirection.DESC)
+  const { sortState, handleSort } = useSort('roe', SortDirection.DESC)
   const createSortableHeader = useSortableHeader(sortState, handleSort)
 
   const { allStrategies, isLoading: isLoadingAllStrategies } = useAllStrategiesOverview()
@@ -271,11 +271,11 @@ export default memo(function StrategyTable() {
     setSearchValue(value)
   }, [])
 
-  // 计算基于 all_time_apr 倒序的排名 Map（与 Strategies 组件保持一致）
-  const aprRankMap = useMemo(() => {
+  // 计算基于 roe 倒序的排名 Map（与 Strategies 组件保持一致）
+  const roeRankMap = useMemo(() => {
     const sorted = [...allStrategies].sort((a, b) => {
-      const aValue = a.all_time_apr
-      const bValue = b.all_time_apr
+      const aValue = a.roe ?? 0
+      const bValue = b.roe ?? 0
       // 倒序排列（DESC），大的在前
       return bValue - aValue
     })
@@ -313,7 +313,7 @@ export default memo(function StrategyTable() {
       { key: 'rank', title: '#', align: 'left' },
       { key: 'name', title: <Trans>Name</Trans>, align: 'left' },
       { key: 'leader', title: <Trans>Leader</Trans>, align: 'left' },
-      { key: 'allTimeApr', title: createSortableHeader(<Trans>All time APR</Trans>, 'all_time_apr'), align: 'left' },
+      { key: 'roe', title: createSortableHeader(<Trans>ROE</Trans>, 'roe'), align: 'left' },
       { key: 'ageDays', title: createSortableHeader(<Trans>Age(days)</Trans>, 'age_days'), align: 'left' },
       {
         key: 'maxDrawdown',
@@ -420,7 +420,7 @@ export default memo(function StrategyTable() {
               <StrategyItem
                 key={record.strategy_id || `my-${index}`}
                 record={record}
-                aprRank={record.strategy_id ? aprRankMap.get(String(record.strategy_id)) || 0 : 0}
+                roeRank={record.strategy_id ? roeRankMap.get(String(record.strategy_id)) || 0 : 0}
               />
             ))}
           </MyStrategiesTable>
@@ -435,7 +435,7 @@ export default memo(function StrategyTable() {
           sortState={sortState}
           strategies={currentStrategies}
           isLoading={currentLoading}
-          aprRankMap={aprRankMap}
+          roeRankMap={roeRankMap}
           showActions={activeTab === TabKey.MY_STRATEGY}
           columnWidths={currentColumnWidths}
         />

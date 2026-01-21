@@ -15,6 +15,7 @@ import {
   setIsPopoverOpen,
   setBindWalletModalAddress,
   setDeployStrategyId,
+  setAvatarEditImageSrc,
 } from './reducer'
 import { useNavigate } from 'react-router-dom'
 import useParsedQueryString from 'hooks/useParsedQueryString'
@@ -87,6 +88,37 @@ export function useAccountManegeModalToggle(): () => void {
 export function useEditNicknameModalToggle(): () => void {
   return useToggleModal(ApplicationModal.EDIT_NICKNAME_MODAL)
 }
+
+export function useEditAvatarModalToggle(): () => void {
+  return useToggleModal(ApplicationModal.EDIT_AVATAR_MODAL)
+}
+
+// 获取头像编辑图片数据
+export function useAvatarEditImageSrc(): string | null {
+  return useSelector((state: RootState) => state.application.avatarEditImageSrc)
+}
+
+// 打开头像编辑弹窗，传入图片数据
+export function useOpenAvatarEditModal(): (imageSrc: string) => void {
+  const dispatch = useDispatch()
+  return useCallback(
+    (imageSrc: string) => {
+      dispatch(setAvatarEditImageSrc(imageSrc))
+      dispatch(updateOpenModal(ApplicationModal.EDIT_AVATAR_MODAL))
+    },
+    [dispatch],
+  )
+}
+
+// 关闭头像编辑弹窗时清理数据
+export function useCloseAvatarEditModal(): () => void {
+  const dispatch = useDispatch()
+  return useCallback(() => {
+    dispatch(setAvatarEditImageSrc(null))
+    dispatch(updateOpenModal(null))
+  }, [dispatch])
+}
+
 export function usePreferenceModalToggle(): () => void {
   return useToggleModal(ApplicationModal.PREFERENCE_MODAL)
 }

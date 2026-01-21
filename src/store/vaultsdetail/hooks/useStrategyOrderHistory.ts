@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react'
 import { useLazyGetStrategyOrderHistoryQuery } from 'api/strategy'
 
 // Strategy Order History 服务端分页hook (专为Table组件设计)
-export function useStrategyOrderHistoryPaginated(strategyId: string) {
+export function useStrategyOrderHistoryPaginated(strategyId: string | undefined) {
   // 分页状态管理
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
@@ -20,7 +20,7 @@ export function useStrategyOrderHistoryPaginated(strategyId: string) {
     async (page: number, size: number) => {
       if (!strategyId) return
       await triggerGetStrategyOrderHistory({
-        strategy_id: strategyId,
+        strategy_id: strategyId || '',
         page,
         page_size: size,
         status: 'COMPLETED',

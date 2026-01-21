@@ -26,7 +26,12 @@ export function useMyStrategies() {
   useEffect(() => {
     if (data) {
       const strategies = [...data.strategies]
-      strategies.sort((a, b) => b.created_time - a.created_time)
+      // 按 roe 倒序排列
+      strategies.sort((a, b) => {
+        const roeA = a.roe ?? 0
+        const roeB = b.roe ?? 0
+        return roeB - roeA
+      })
       dispatch(updateMyStrategies(strategies))
     } else {
       dispatch(updateMyStrategies([]))

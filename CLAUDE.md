@@ -14,6 +14,18 @@
 
 > ⚠️ 默认沙盒环境会限制文件写入、网络访问和 git 操作，导致命令失败。
 
+### 📦 安装依赖必须禁用沙盒
+
+以下命令**必须**在禁用沙盒的情况下执行：
+
+```bash
+yarn install        # 安装所有依赖
+yarn add <pkg>      # 添加依赖
+yarn add -D <pkg>   # 添加开发依赖
+```
+
+**原因：** 沙盒环境会限制 node_modules 目录的写入权限，导致安装失败。
+
 ---
 
 ## 🚀 启动项目前的必要检查
@@ -62,12 +74,12 @@ yarn start
 
 ### 使用方法
 
-| 操作 | 说明 |
-|------|------|
-| `Shift + Alt + C` | 开启/关闭检查模式 |
-| 鼠标悬停 | 查看组件名和文件路径 |
-| 点击元素 | 复制组件名，并自动在 Cursor 中打开对应文件 |
-| `ESC` | 退出检查模式 |
+| 操作              | 说明                                       |
+| ----------------- | ------------------------------------------ |
+| `Shift + Alt + C` | 开启/关闭检查模式                          |
+| 鼠标悬停          | 查看组件名和文件路径                       |
+| 点击元素          | 复制组件名，并自动在 Cursor 中打开对应文件 |
+| `ESC`             | 退出检查模式                               |
 
 ### 工作流程
 
@@ -147,13 +159,13 @@ yarn start
 
 ## 📛 Naming Conventions
 
-| 类型 | 命名规范 | 示例 |
-|------|----------|------|
-| 组件文件 | PascalCase | `VaultInfo`, `StrategyStatus` |
-| Hook 文件 | camelCase + `use` 前缀 | `useSignal.ts`, `usePaperTradingPublic.ts` |
-| Store 文件 | camelCase | `hooks.tsx`, `vaultsdetail.ts` |
-| Styled 组件 | PascalCase | `VaultInfoContainer`, `InnerContent` |
-| 常量 | SCREAMING_SNAKE_CASE | `DETAIL_TYPE`, `ANI_DURATION` |
+| 类型        | 命名规范               | 示例                                       |
+| ----------- | ---------------------- | ------------------------------------------ |
+| 组件文件    | PascalCase             | `VaultInfo`, `StrategyStatus`              |
+| Hook 文件   | camelCase + `use` 前缀 | `useSignal.ts`, `usePaperTradingPublic.ts` |
+| Store 文件  | camelCase              | `hooks.tsx`, `vaultsdetail.ts`             |
+| Styled 组件 | PascalCase             | `VaultInfoContainer`, `InnerContent`       |
+| 常量        | SCREAMING_SNAKE_CASE   | `DETAIL_TYPE`, `ANI_DURATION`              |
 
 ---
 
@@ -180,13 +192,16 @@ yarn start
 ## ⚠️ 常见问题
 
 ### 项目启动失败
+
 - 确保 Node.js 版本 >= 18
 - 删除 `node_modules` 和 `yarn.lock`，重新 `yarn install`
 
 ### Prettier 格式化不生效
+
 - 确保安装了 Prettier 扩展 (`esbenp.prettier-vscode`)
 - 检查 `.vscode/settings.json` 中的 `editor.formatOnSave` 是否为 `true`
 
 ### DevInspector 不工作
+
 - 确保在开发环境运行（`yarn start`）
 - 按 `Shift + Alt + C` 开启检查模式

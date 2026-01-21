@@ -72,9 +72,9 @@ export default memo(function PaperTradingTabs() {
   }, [isShowExpandPaperTrading, width])
 
   // 获取数据统计信息用于显示Tab标题
-  const { totalCount: totalStrategyPositions } = useStrategyPositions(strategyId || '')
-  const { totalCount: totalStrategyOrders } = useStrategyOpenOrdersPaginated(strategyId || '')
-  const { totalCount: totalStrategyHistory } = useStrategyOrderHistoryPaginated(strategyId || '')
+  const { totalCount: totalStrategyPositions } = useStrategyPositions(strategyId)
+  const { totalCount: totalStrategyOrders } = useStrategyOpenOrdersPaginated(strategyId)
+  const { totalCount: totalStrategyHistory } = useStrategyOrderHistoryPaginated(strategyId)
 
   const handleTabClick = useCallback((key: PAPER_TRADING_TAB_KEY) => {
     setActiveTab(key)
@@ -87,7 +87,7 @@ export default memo(function PaperTradingTabs() {
         icon: isShowIcon ? <IconBase className='icon-performance' /> : null,
         text: <Trans>Performance</Trans>,
         clickCallback: () => handleTabClick(PAPER_TRADING_TAB_KEY.PERFORMANCE),
-        content: <PaperTradingPerformance activeTab={DETAIL_TYPE.STRATEGY} vaultId='' strategyId={strategyId || ''} />,
+        content: <PaperTradingPerformance activeTab={DETAIL_TYPE.STRATEGY} vaultId='' strategyId={strategyId} />,
       },
       {
         key: PAPER_TRADING_TAB_KEY.SIGNALS,

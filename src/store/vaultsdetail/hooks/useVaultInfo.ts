@@ -7,13 +7,13 @@ import { useGetVaultInfoQuery } from 'api/vaults'
 /**
  * Hook for vault info - fetches and returns vault info
  */
-export function useVaultInfo({ vaultId }: { vaultId: string | null }) {
+export function useVaultInfo({ vaultId }: { vaultId: string | undefined }) {
   const dispatch = useDispatch()
   const vaultInfo = useSelector((state: RootState) => state.vaultsdetail.vaultInfo)
   const isLoadingVaultInfo = useSelector((state: RootState) => state.vaultsdetail.isLoadingVaultInfo)
 
   const { data, isLoading, error, refetch } = useGetVaultInfoQuery(
-    { vault_id: vaultId || undefined },
+    { vault_id: vaultId || '' },
     {
       skip: !vaultId,
     },

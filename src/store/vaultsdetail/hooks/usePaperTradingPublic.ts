@@ -4,13 +4,13 @@ import type { RootState } from 'store'
 import { useGetPaperTradingCurrentPublicQuery, useLazyGetPaperTradingCurrentPublicQuery } from 'api/createStrategy'
 import { updatePaperTradingPublicData, setLoadingPaperTradingPublic } from '../reducer'
 
-export function usePaperTradingPublic({ strategyId }: { strategyId: string }) {
+export function usePaperTradingPublic({ strategyId }: { strategyId: string | undefined }) {
   const dispatch = useDispatch()
   const paperTradingPublicData = useSelector((state: RootState) => state.vaultsdetail.paperTradingPublicData)
   const isLoadingPaperTradingPublic = useSelector((state: RootState) => state.vaultsdetail.isLoadingPaperTradingPublic)
 
   const { data, isLoading, error, refetch } = useGetPaperTradingCurrentPublicQuery(
-    { strategy_id: strategyId },
+    { strategy_id: strategyId || '' },
     {
       skip: !strategyId,
       refetchOnMountOrArgChange: true,

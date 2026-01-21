@@ -1,8 +1,7 @@
 import { memo, useCallback, useState, useMemo } from 'react'
 import styled, { css } from 'styled-components'
 import { useFollowStrategy, useUnfollowStrategy, useAllStrategiesOverview } from 'store/vaults/hooks'
-import { toFix } from 'utils/calc'
-import { formatKMBNumber } from 'utils/format'
+import { formatKMBNumber, formatPercent, shouldShowApr } from 'utils/format'
 import { useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import { ANI_DURATION } from 'constants/index'
@@ -101,8 +100,17 @@ const TagsCell = styled.td`
 `
 
 const PercentageText = styled.span<{ $isPositive?: boolean; $isNegative?: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 4px;
   color: ${({ theme, $isPositive, $isNegative }) =>
     $isPositive ? theme.green100 : $isNegative ? theme.red100 : theme.black100};
+  span {
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+  }
 `
 
 const MaxDrawdownText = styled.span`
@@ -413,11 +421,11 @@ function ActionButtons({ strategy }: { strategy: StrategiesOverviewDataType }) {
 
 interface StrategyItemProps {
   record: StrategiesOverviewDataType
-  aprRank: number
+  roeRank: number
   showActions?: boolean
 }
 
-const StrategyItem = memo(({ record, aprRank, showActions }: StrategyItemProps) => {
+const StrategyItem = memo(({ record, roeRank, showActions }: StrategyItemProps) => {
   const theme = useTheme()
   const isLogin = useIsLogin()
   const [{ userInfoId }] = useUserInfo()
@@ -435,8 +443,8 @@ const StrategyItem = memo(({ record, aprRank, showActions }: StrategyItemProps) 
   const followers = record.followers || 0
   const userName = record.user_info?.user_name || ''
   const columnCount = 9
-  // 根据 all_time_apr 倒序排名，前三名显示特殊样式
-  const showRank = aprRank >= 1 && aprRank <= 3
+  // 根据 roe 倒序排名，前三名显示特殊样式
+  const showRank = roeRank >= 1 && roeRank <= 3
   const isCurrentUser = record.user_info?.user_info_id === Number(userInfoId)
   const isFollowed = allFollowedStrategies.some((s) => s.strategy_id === record.strategy_id)
 
@@ -476,21 +484,15 @@ const StrategyItem = memo(({ record, aprRank, showActions }: StrategyItemProps) 
     ],
   )
 
-  // 格式化百分比显示
-  const formatPercent = (value: number) => {
-    const formatted = toFix(value * 100, 1)
-    return `${formatted}%`
-  }
-
   return (
     <StrategyTbody onClick={handleRowClick}>
       <DataRow>
         <TableCell>
-          {aprRank > 0 ? (
+          {roeRank > 0 ? (
             showRank ? (
-              <Rank type={RANK_TYPE.TABLE} rank={aprRank} />
+              <Rank type={RANK_TYPE.TABLE} rank={roeRank} />
             ) : (
-              <NormalRank>{aprRank}</NormalRank>
+              <NormalRank>{roeRank}</NormalRank>
             )
           ) : (
             <NormalRank>--</NormalRank>
@@ -510,15 +512,20 @@ const StrategyItem = memo(({ record, aprRank, showActions }: StrategyItemProps) 
         </TableCell>
         <TableCell>
           <PercentageText
-            $isPositive={record.all_time_apr != null && record.all_time_apr > 0}
-            $isNegative={record.all_time_apr != null && record.all_time_apr < 0}
+            $isPositive={record.roe != null && record.roe > 0}
+            $isNegative={record.roe != null && record.roe < 0}
           >
-            {record.all_time_apr != null ? formatPercent(record.all_time_apr) : '--'}
+            {record.roe != null ? formatPercent({ value: record.roe }) : '--'}
+            {shouldShowApr(record) && (
+              <span
+                style={{ color: theme.green300 }}
+              >{` (APR: ${formatPercent({ value: record.all_time_apr })})`}</span>
+            )}
           </PercentageText>
         </TableCell>
         <TableCell>{Math.floor(record.age_days)}</TableCell>
         <TableCell>
-          <MaxDrawdownText>{formatPercent(record.max_drawdown)}</MaxDrawdownText>
+          <MaxDrawdownText>{formatPercent({ value: record.max_drawdown })}</MaxDrawdownText>
         </TableCell>
         <TableCell>
           <TvfText $isFollowed={isFollowed}>{tvf ? formatKMBNumber(tvf, 2, { showDollar: true }) : '0'}</TvfText>

@@ -72,10 +72,10 @@ const PaperTradingRunning = memo(() => {
         <ScrollPageContent className='paper-trading-scroll'>
           <PaperTradingContentWrapper>
             {/* PnL图表区域 */}
-            <PaperTradingPerformance activeTab={activeTab} vaultId={''} strategyId={strategyId || ''} />
+            <PaperTradingPerformance activeTab={activeTab} vaultId={''} strategyId={strategyId} />
 
             {/* Positions/Orders表格区域 */}
-            <VaultPositionsOrders activeTab={activeTab} vaultId={''} strategyId={strategyId || ''} />
+            <VaultPositionsOrders activeTab={activeTab} vaultId={''} strategyId={strategyId} />
           </PaperTradingContentWrapper>
         </ScrollPageContent>
       </PaperTradingMainContent>

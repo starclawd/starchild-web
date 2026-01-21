@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import { mul, NumberType, toFix } from './calc'
+import { SHOW_APR_AGE_DAYS } from 'constants/index'
 
 export function formatNumber(value: NumberType, options?: { showDollar?: boolean }): string {
   const { showDollar = false } = options || {}
@@ -130,4 +131,14 @@ export function getStatValueColor(
   if (!showPnlColor) return theme.black0
   if (value === 0) return theme.black0
   return value > 0 ? theme.green100 : theme.red100
+}
+
+// 判断是否应该显示 APR（age >= SHOW_APR_AGE_DAYS 天且 roe > 0）
+export function shouldShowApr(strategy: {
+  roe: number | null | undefined
+  age_days: number
+  all_time_apr: number | null | undefined
+}): boolean {
+  const { roe, age_days, all_time_apr } = strategy
+  return age_days >= SHOW_APR_AGE_DAYS && roe != null && roe > 0 && all_time_apr != null
 }

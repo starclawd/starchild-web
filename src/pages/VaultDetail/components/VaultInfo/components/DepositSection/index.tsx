@@ -116,7 +116,7 @@ export default memo(function DepositSection() {
   const vaultId = useCurrentVaultId()
   const { vaultLpInfo } = useVaultLpInfo({ walletAddress: address as string, vaultId: vaultId || '' })
   const { vaultInfo } = useVaultInfo({ vaultId })
-  const { strategyInfo } = useVibeTradingStrategyInfo({ strategyId: strategyId || null })
+  const { strategyInfo } = useVibeTradingStrategyInfo({ strategyId })
   const depositDisabled = useMemo(() => {
     return (
       strategyInfo?.status === STRATEGY_STATUS.ARCHIVED ||

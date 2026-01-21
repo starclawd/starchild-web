@@ -23,8 +23,8 @@ export function useActiveTab(): [DETAIL_TYPE, ParamFun<DETAIL_TYPE>] {
 }
 
 // 当前vault ID - 从strategyInfo获取vault_id
-export function useCurrentVaultId(): string | null {
-  return useSelector((state: RootState) => state.vaultsdetail.strategyInfo?.vault_id || null)
+export function useCurrentVaultId(): string | undefined {
+  return useSelector((state: RootState) => state.vaultsdetail.strategyInfo?.vault_id)
 }
 
 // 图表类型状态管理
