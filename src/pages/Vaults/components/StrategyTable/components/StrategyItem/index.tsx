@@ -504,7 +504,7 @@ const StrategyItem = memo(({ record, aprRank, showActions }: StrategyItemProps) 
             <Avatar avatar={record.user_info?.user_avatar} name={userName} size={24} />
             <LeaderName>
               {userName}&nbsp;
-              <CurrentUser>{isCurrentUser ? `(you)` : ''}</CurrentUser>
+              <CurrentUser>{isCurrentUser && !showActions ? `(you)` : ''}</CurrentUser>
             </LeaderName>
           </LeaderWrapper>
         </TableCell>

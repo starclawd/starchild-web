@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/react/macro'
 import { ANI_DURATION } from 'constants/index'
 import { ROUTER } from 'pages/router'
-import { memo, useCallback, useMemo } from 'react'
+import { memo, useCallback, useMemo, useState, useRef } from 'react'
 import { useSetCurrentRouter } from 'store/application/hooks'
 import { useAllStrategiesOverview } from 'store/vaults/hooks'
 import styled, { css } from 'styled-components'
@@ -11,7 +11,7 @@ import { formatPercent } from 'utils/format'
 import Rank, { RANK_TYPE } from 'pages/Vaults/components/Leaderboard/components/Rank'
 import { StrategiesOverviewDataType } from 'api/strategy'
 
-const LeaderboardWrapper = styled.div`
+const LeaderboardWrapper = styled.div<{ $gradientAngle: number; $isHovering: boolean }>`
   position: relative;
   display: flex;
   justify-content: center;
@@ -23,14 +23,6 @@ const LeaderboardWrapper = styled.div`
   background: ${({ theme }) => theme.black900};
   box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
 
-  @keyframes angleRotateChange {
-    0% {
-      --gradientAngle: 0deg;
-    }
-    100% {
-      --gradientAngle: 360deg;
-    }
-  }
   &::before {
     position: absolute;
     left: 0;
@@ -40,23 +32,15 @@ const LeaderboardWrapper = styled.div`
     content: '';
     z-index: 1;
     border-radius: 8px;
-    opacity: 0;
+    opacity: ${({ $isHovering }) => ($isHovering ? 1 : 0)};
     transition: opacity ${ANI_DURATION}s;
-    animation-name: angleRotateChange;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-    animation-duration: 5s;
     background-image: conic-gradient(
-      from var(--gradientAngle),
+      from ${({ $gradientAngle }) => $gradientAngle}deg,
       rgba(18, 19, 21, 0),
       rgba(248, 70, 0, 1) 30deg,
       rgba(18, 19, 21, 0) 60deg,
       rgba(18, 19, 21, 0) 360deg
     );
-  }
-
-  &:hover::before {
-    opacity: 1;
   }
 `
 
@@ -172,6 +156,9 @@ const Footer = styled.div`
 export default memo(function Leaderboard() {
   const setCurrentRouter = useSetCurrentRouter()
   const { allStrategies, isLoading } = useAllStrategiesOverview()
+  const wrapperRef = useRef<HTMLDivElement>(null)
+  const [gradientAngle, setGradientAngle] = useState(0)
+  const [isHovering, setIsHovering] = useState(false)
 
   const sortedStrategies = useMemo(() => {
     return allStrategies.slice(0, 3)
@@ -190,8 +177,44 @@ export default memo(function Leaderboard() {
     [setCurrentRouter],
   )
 
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!wrapperRef.current) return
+
+    const rect = wrapperRef.current.getBoundingClientRect()
+    const centerX = rect.width / 2
+    const centerY = rect.height / 2
+    const mouseX = e.clientX - rect.left
+    const mouseY = e.clientY - rect.top
+
+    // 计算鼠标相对于中心的角度
+    // atan2 返回的是从 x 轴正方向逆时针的弧度
+    // CSS conic-gradient 从顶部顺时针，所以需要转换
+    const radians = Math.atan2(mouseY - centerY, mouseX - centerX)
+    // 转换为度数，并调整为从顶部开始（加90度）
+    let degrees = (radians * 180) / Math.PI + 90
+    // 确保角度在 0-360 范围内
+    if (degrees < 0) degrees += 360
+
+    setGradientAngle(degrees)
+  }, [])
+
+  const handleMouseEnter = useCallback(() => {
+    setIsHovering(true)
+  }, [])
+
+  const handleMouseLeave = useCallback(() => {
+    setIsHovering(false)
+  }, [])
+
   return (
-    <LeaderboardWrapper>
+    <LeaderboardWrapper
+      ref={wrapperRef}
+      $gradientAngle={gradientAngle}
+      $isHovering={isHovering}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       <InnerContent>
         <Title>
           <Trans>Top Performing Strategies</Trans>

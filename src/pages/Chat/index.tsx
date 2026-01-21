@@ -71,14 +71,6 @@ const ChatWrapper = styled.div<{
       flex-shrink: 1;
     }
   `}
-  ${({ theme }) => theme.mediaMinWidth.width1920`
-    #chatScrollContent,
-    #chatInputOutWrapper,
-    #recommendationsWrapper,
-    #createStrategyWrapper {
-      width: 800px;
-    }
-  `}
 `
 
 const InnerChatWrapper = styled.div`
