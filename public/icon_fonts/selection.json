@@ -1162,20 +1162,41 @@
         "attrs": [],
         "grid": 0,
         "tags": [
-          "share"
+          "send"
         ]
       },
       "attrs": [],
       "properties": {
         "order": 55,
         "id": 56,
+        "name": "send",
+        "prevSize": 32,
+        "code": 61700
+      },
+      "setIdx": 0,
+      "setId": 0,
+      "iconIdx": 55
+    },
+    {
+      "icon": {
+        "paths": [],
+        "attrs": [],
+        "grid": 0,
+        "tags": [
+          "share"
+        ]
+      },
+      "attrs": [],
+      "properties": {
+        "order": 56,
+        "id": 57,
         "name": "share",
         "prevSize": 32,
         "code": 59702
       },
       "setIdx": 0,
       "setId": 0,
-      "iconIdx": 55
+      "iconIdx": 56
     },
     {
       "icon": {
@@ -1188,15 +1209,15 @@
       },
       "attrs": [],
       "properties": {
-        "order": 56,
-        "id": 57,
+        "order": 57,
+        "id": 58,
         "name": "signal-layer",
         "prevSize": 32,
         "code": 59703
       },
       "setIdx": 0,
       "setId": 0,
-      "iconIdx": 56
+      "iconIdx": 57
     },
     {
       "icon": {
@@ -1209,15 +1230,15 @@
       },
       "attrs": [],
       "properties": {
-        "order": 57,
-        "id": 58,
+        "order": 58,
+        "id": 59,
         "name": "signal-log",
         "prevSize": 32,
         "code": 59704
       },
       "setIdx": 0,
       "setId": 0,
-      "iconIdx": 57
+      "iconIdx": 58
     },
     {
       "icon": {
@@ -1230,15 +1251,15 @@
       },
       "attrs": [],
       "properties": {
-        "order": 58,
-        "id": 59,
+        "order": 59,
+        "id": 60,
         "name": "signals",
         "prevSize": 32,
         "code": 59705
       },
       "setIdx": 0,
       "setId": 0,
-      "iconIdx": 58
+      "iconIdx": 59
     },
     {
       "icon": {
@@ -1251,15 +1272,15 @@
       },
       "attrs": [],
       "properties": {
-        "order": 59,
-        "id": 60,
+        "order": 60,
+        "id": 61,
         "name": "sorting",
         "prevSize": 32,
         "code": 59706
       },
       "setIdx": 0,
       "setId": 0,
-      "iconIdx": 59
+      "iconIdx": 60
     },
     {
       "icon": {
@@ -1272,15 +1293,15 @@
       },
       "attrs": [],
       "properties": {
-        "order": 60,
-        "id": 61,
+        "order": 61,
+        "id": 62,
         "name": "stratege-expand",
         "prevSize": 32,
         "code": 59707
       },
       "setIdx": 0,
       "setId": 0,
-      "iconIdx": 60
+      "iconIdx": 61
     },
     {
       "icon": {
@@ -1293,15 +1314,15 @@
       },
       "attrs": [],
       "properties": {
-        "order": 61,
-        "id": 62,
+        "order": 62,
+        "id": 63,
         "name": "switch",
         "prevSize": 32,
         "code": 59708
       },
       "setIdx": 0,
       "setId": 0,
-      "iconIdx": 61
+      "iconIdx": 62
     },
     {
       "icon": {
@@ -1314,15 +1335,15 @@
       },
       "attrs": [],
       "properties": {
-        "order": 62,
-        "id": 63,
+        "order": 63,
+        "id": 64,
         "name": "tag-border",
         "prevSize": 32,
         "code": 59709
       },
       "setIdx": 0,
       "setId": 0,
-      "iconIdx": 62
+      "iconIdx": 63
     },
     {
       "icon": {
@@ -1335,15 +1356,15 @@
       },
       "attrs": [],
       "properties": {
-        "order": 63,
-        "id": 64,
+        "order": 64,
+        "id": 65,
         "name": "telegram",
         "prevSize": 32,
         "code": 59710
       },
       "setIdx": 0,
       "setId": 0,
-      "iconIdx": 63
+      "iconIdx": 64
     },
     {
       "icon": {
@@ -1356,15 +1377,15 @@
       },
       "attrs": [],
       "properties": {
-        "order": 64,
-        "id": 65,
+        "order": 65,
+        "id": 66,
         "name": "tools",
         "prevSize": 32,
         "code": 59711
       },
       "setIdx": 0,
       "setId": 0,
-      "iconIdx": 64
+      "iconIdx": 65
     },
     {
       "icon": {
@@ -1377,15 +1398,15 @@
       },
       "attrs": [],
       "properties": {
-        "order": 65,
-        "id": 66,
+        "order": 66,
+        "id": 67,
         "name": "tooltip-arrow",
         "prevSize": 32,
         "code": 59712
       },
       "setIdx": 0,
       "setId": 0,
-      "iconIdx": 65
+      "iconIdx": 66
     },
     {
       "icon": {
@@ -1398,15 +1419,15 @@
       },
       "attrs": [],
       "properties": {
-        "order": 66,
-        "id": 67,
+        "order": 67,
+        "id": 68,
         "name": "upload",
         "prevSize": 32,
         "code": 61698
       },
       "setIdx": 0,
       "setId": 0,
-      "iconIdx": 66
+      "iconIdx": 67
     },
     {
       "icon": {
@@ -1419,15 +1440,15 @@
       },
       "attrs": [],
       "properties": {
-        "order": 67,
-        "id": 68,
+        "order": 68,
+        "id": 69,
         "name": "wallet",
         "prevSize": 32,
         "code": 59713
       },
       "setIdx": 0,
       "setId": 0,
-      "iconIdx": 67
+      "iconIdx": 68
     },
     {
       "icon": {
@@ -1440,15 +1461,15 @@
       },
       "attrs": [],
       "properties": {
-        "order": 68,
-        "id": 69,
+        "order": 69,
+        "id": 70,
         "name": "watchlist",
         "prevSize": 32,
         "code": 61699
       },
       "setIdx": 0,
       "setId": 0,
-      "iconIdx": 68
+      "iconIdx": 69
     },
     {
       "icon": {
@@ -1461,15 +1482,15 @@
       },
       "attrs": [],
       "properties": {
-        "order": 69,
-        "id": 70,
+        "order": 70,
+        "id": 71,
         "name": "x",
         "prevSize": 32,
         "code": 59714
       },
       "setIdx": 0,
       "setId": 0,
-      "iconIdx": 69
+      "iconIdx": 70
     },
     {
       "icon": {
@@ -1482,15 +1503,15 @@
       },
       "attrs": [],
       "properties": {
-        "order": 70,
-        "id": 71,
+        "order": 71,
+        "id": 72,
         "name": "zoom-in",
         "prevSize": 32,
         "code": 59715
       },
       "setIdx": 0,
       "setId": 0,
-      "iconIdx": 70
+      "iconIdx": 71
     },
     {
       "icon": {
@@ -1503,15 +1524,15 @@
       },
       "attrs": [],
       "properties": {
-        "order": 71,
-        "id": 72,
+        "order": 72,
+        "id": 73,
         "name": "zoom-out",
         "prevSize": 32,
         "code": 59716
       },
       "setIdx": 0,
       "setId": 0,
-      "iconIdx": 71
+      "iconIdx": 72
     }
   ],
   "height": 1024,

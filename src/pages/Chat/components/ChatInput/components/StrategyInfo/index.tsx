@@ -5,9 +5,8 @@ import MyStrategy from './components/MyStrategy'
 
 const StrategyInfoWrapper = styled.div`
   display: flex;
-  margin-top: 12px;
   gap: 12px;
-  width: 800px;
+  width: 100%;
   height: 200px;
 `
 

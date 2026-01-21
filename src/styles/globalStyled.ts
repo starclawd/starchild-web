@@ -2,6 +2,11 @@ import { createGlobalStyle, css } from 'styled-components'
 import { getTheme } from 'theme'
 
 export const GlobalStyle = createGlobalStyle<{ theme: ReturnType<typeof getTheme> }>`
+  @property --gradientAngle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
   input, textarea {
     caret-color: ${({ theme }) => theme.brand100};
   }

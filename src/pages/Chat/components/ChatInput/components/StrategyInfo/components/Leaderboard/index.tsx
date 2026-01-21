@@ -1,8 +1,6 @@
 import { Trans } from '@lingui/react/macro'
-import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
 import { ROUTER } from 'pages/router'
-import LeaderboardItem from 'pages/Vaults/components/Leaderboard/components/LeaderboardItem'
 import { memo, useCallback, useMemo } from 'react'
 import { useSetCurrentRouter } from 'store/application/hooks'
 import { useAllStrategiesOverview } from 'store/vaults/hooks'
@@ -16,19 +14,64 @@ import { StrategiesOverviewDataType } from 'api/strategy'
 const LeaderboardWrapper = styled.div`
   position: relative;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
   width: calc((100% - 12px) / 2);
   height: 100%;
-  padding: 16px;
+  padding: 2px;
   border-radius: 8px;
-  transition: all ${ANI_DURATION}s;
-  border: 1px solid ${({ theme }) => theme.black800};
-  background-color: ${({ theme }) => theme.black1000};
-  overflow: hidden;
-  &:hover {
-    border-color: ${({ theme }) => theme.black600};
+  background: ${({ theme }) => theme.black900};
+  box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+
+  @keyframes angleRotateChange {
+    0% {
+      --gradientAngle: 0deg;
+    }
+    100% {
+      --gradientAngle: 360deg;
+    }
   }
+  &::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    content: '';
+    z-index: 1;
+    border-radius: 8px;
+    opacity: 0;
+    transition: opacity ${ANI_DURATION}s;
+    animation-name: angleRotateChange;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    animation-duration: 5s;
+    background-image: conic-gradient(
+      from var(--gradientAngle),
+      rgba(18, 19, 21, 0),
+      rgba(248, 70, 0, 1) 30deg,
+      rgba(18, 19, 21, 0) 60deg,
+      rgba(18, 19, 21, 0) 360deg
+    );
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
+`
+
+const InnerContent = styled.div`
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  padding: 18px;
+  border-radius: 8px;
+  background: ${({ theme }) => theme.black900};
 `
 
 const Title = styled.div`
@@ -42,23 +85,9 @@ const Title = styled.div`
 const LeaderboardList = styled.div`
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;
-  width: 100%;
-  gap: 4px;
-`
-
-const Header = styled.div`
-  display: flex;
   justify-content: space-between;
-  align-items: center;
   width: 100%;
-  height: 16px;
-  padding-left: 22px;
-  font-size: 11px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 16px;
-  color: ${({ theme }) => theme.black300};
+  flex-grow: 1;
 `
 
 const PendingWrapper = styled.div`
@@ -69,19 +98,12 @@ const PendingWrapper = styled.div`
   height: 100%;
 `
 
-const ListWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 100%;
-`
-
 const LeaderboardItemWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  height: 18px;
+  height: 34px;
   cursor: pointer;
   &:hover {
     .strategy-name {
@@ -93,7 +115,7 @@ const LeaderboardItemWrapper = styled.div`
 const LeftContent = styled.div`
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
 `
 
 const RightContent = styled.div<{ $isPositive: boolean; $invalidVaule: boolean }>`
@@ -115,12 +137,21 @@ const RightContent = styled.div<{ $isPositive: boolean; $invalidVaule: boolean }
 `
 
 const StrategyName = styled.div`
+  display: flex;
+  flex-direction: column;
   font-size: 12px;
   font-style: normal;
   font-weight: 400;
   line-height: 18px;
   transition: all ${ANI_DURATION}s;
-  color: ${({ theme }) => theme.black100};
+  color: ${({ theme }) => theme.black0};
+  span:last-child {
+    font-size: 11px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 16px;
+    color: ${({ theme }) => theme.black300};
+  }
 `
 
 const Footer = styled.div`
@@ -161,46 +192,36 @@ export default memo(function Leaderboard() {
 
   return (
     <LeaderboardWrapper>
-      <Title>
-        <Trans>Top Performing Strategies</Trans>
-      </Title>
-      <LeaderboardList>
-        {isLoading ? (
-          <PendingWrapper>
-            <Pending />
-          </PendingWrapper>
-        ) : (
-          <>
-            <Header>
-              <span>
-                <Trans>Name</Trans>
-              </span>
-              <span>
-                <Trans>APR</Trans>
-              </span>
-            </Header>
-            <ListWrapper>
-              {sortedStrategies.map((strategy: StrategiesOverviewDataType, index: number) => (
-                <LeaderboardItemWrapper onClick={goVaultDetailPage(strategy.strategy_id)} key={strategy.strategy_id}>
-                  <LeftContent>
-                    <Rank type={RANK_TYPE.CHAT} rank={index + 1} />
-                    <StrategyName className='strategy-name'>{strategy.strategy_name}</StrategyName>
-                  </LeftContent>
-                  <RightContent
-                    $isPositive={Number(strategy.all_time_apr) > 0}
-                    $invalidVaule={isInvalidValue(strategy.all_time_apr)}
-                  >
-                    {!isInvalidValue(strategy.all_time_apr) ? formatPercent({ value: strategy.all_time_apr }) : '--'}
-                  </RightContent>
-                </LeaderboardItemWrapper>
-              ))}
-            </ListWrapper>
-          </>
-        )}
-      </LeaderboardList>
-      <Footer onClick={goVibePage}>
-        <Trans>View more</Trans>
-      </Footer>
+      <InnerContent>
+        <Title>
+          <Trans>Top Performing Strategies</Trans>
+        </Title>
+        <LeaderboardList>
+          {isLoading ? (
+            <PendingWrapper>
+              <Pending />
+            </PendingWrapper>
+          ) : (
+            sortedStrategies.map((strategy: StrategiesOverviewDataType, index: number) => (
+              <LeaderboardItemWrapper onClick={goVaultDetailPage(strategy.strategy_id)} key={strategy.strategy_id}>
+                <LeftContent>
+                  <Rank type={RANK_TYPE.CHAT} rank={index + 1} />
+                  <StrategyName className='strategy-name'>
+                    <span>{strategy.strategy_name}</span>
+                    <span>{strategy.user_info?.user_name}</span>
+                  </StrategyName>
+                </LeftContent>
+                <RightContent
+                  $isPositive={Number(strategy.all_time_apr) > 0}
+                  $invalidVaule={isInvalidValue(strategy.all_time_apr)}
+                >
+                  {!isInvalidValue(strategy.all_time_apr) ? formatPercent({ value: strategy.all_time_apr }) : '--'}
+                </RightContent>
+              </LeaderboardItemWrapper>
+            ))
+          )}
+        </LeaderboardList>
+      </InnerContent>
     </LeaderboardWrapper>
   )
 })
