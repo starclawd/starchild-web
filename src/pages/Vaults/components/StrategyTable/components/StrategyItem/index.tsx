@@ -434,6 +434,7 @@ const StrategyItem = memo(({ record, roeRank, showActions }: StrategyItemProps) 
   const unfollowStrategy = useUnfollowStrategy()
   const { allFollowedStrategies, refetch: refetchAllFollowedStrategies } = useAllFollowedStrategiesOverview()
   const { refetch: refetchAllStrategies } = useAllStrategiesOverview()
+  const { refetch: refetchMyStrategies } = useMyStrategies()
   const setCurrentRouter = useSetCurrentRouter()
 
   // 计算派生数据
@@ -466,6 +467,7 @@ const StrategyItem = memo(({ record, roeRank, showActions }: StrategyItemProps) 
         }
         await refetchAllStrategies()
         await refetchAllFollowedStrategies()
+        await refetchMyStrategies()
       } catch (err) {
         console.error('Follow strategy failed:', err)
       } finally {
@@ -479,6 +481,7 @@ const StrategyItem = memo(({ record, roeRank, showActions }: StrategyItemProps) 
       record.strategy_id,
       unfollowStrategy,
       followStrategy,
+      refetchMyStrategies,
       refetchAllStrategies,
       refetchAllFollowedStrategies,
     ],

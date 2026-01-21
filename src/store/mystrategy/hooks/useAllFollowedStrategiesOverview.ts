@@ -17,7 +17,6 @@ export function useAllFollowedStrategiesOverview() {
   )
 
   const { data, isLoading, error, refetch } = useGetAllFollowedStrategiesOverviewQuery(undefined, {
-    refetchOnMountOrArgChange: true,
     skip: !userInfoId,
   })
 

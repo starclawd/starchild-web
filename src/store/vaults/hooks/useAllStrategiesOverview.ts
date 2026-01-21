@@ -12,9 +12,7 @@ export function useAllStrategiesOverview() {
   const allStrategies = useSelector((state: RootState) => state.vaults.allStrategies)
   const isLoadingAllStrategies = useSelector((state: RootState) => state.vaults.isLoadingAllStrategies)
 
-  const { data, isLoading, error, refetch } = useGetAllStrategiesOverviewQuery(undefined, {
-    refetchOnMountOrArgChange: true,
-  })
+  const { data, isLoading, error, refetch } = useGetAllStrategiesOverviewQuery(undefined)
 
   const setAllStrategies = useCallback(
     (value: StrategiesOverviewDataType[]) => {

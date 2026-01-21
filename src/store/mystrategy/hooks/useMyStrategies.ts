@@ -20,7 +20,6 @@ export function useMyStrategies() {
   const isLoadingMyStrategies = useSelector((state: RootState) => state.mystrategy.isLoadingMyStrategies)
   const { data, isLoading, refetch } = useGetMyStrategiesQuery(undefined, {
     skip: !userInfoId || !isLogin,
-    refetchOnMountOrArgChange: true,
   })
 
   useEffect(() => {

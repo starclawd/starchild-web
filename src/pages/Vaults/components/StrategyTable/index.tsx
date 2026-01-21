@@ -190,7 +190,7 @@ export const COLUMN_WIDTHS = [
   '50px', // #
   'var(--name-column-width)', // name - 响应式宽度，最小 280px
   '200px', // leader
-  'auto', // ROE - 自适应
+  '180px', // ROE - 固定宽度
   'auto', // Age - 自适应
   'auto', // Max drawdown - 自适应
   'auto', // TVF - 自适应
@@ -203,12 +203,12 @@ export const MY_STRATEGY_COLUMN_WIDTHS = [
   '50px', // #
   'var(--name-column-width)', // name - 响应式宽度，最小 280px
   '200px', // leader
-  'auto', // ROE - 自适应
+  '180px', // ROE - 固定宽度
   'auto', // Age - 自适应
   'auto', // Max drawdown - 自适应
   'auto', // TVF - 自适应
   'auto', // Followers - 自适应
-  '180px', // Actions - 操作按钮需要更宽
+  '120px', // Actions - 操作按钮需要更宽
 ]
 
 export enum TabKey {
