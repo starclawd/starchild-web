@@ -719,14 +719,15 @@ export function strategyConfigToVisualization(config: StrategyConfig): ParsedStr
 
   // 添加紧急退出条件
   if (config.risk_layer?.emergency_exit) {
+    const emergencyExitValue = formatEmergencyExit(config.risk_layer.emergency_exit)
     exitConditions.push({
       id: 'exit-emergency',
       type: 'condition' as const,
       direction: 'both',
       category: 'exit' as const,
       triggerType: 'stop_loss',
-      conditions: [`Emergency Exit: ${config.risk_layer.emergency_exit}`],
-      description: `Emergency Exit: ${config.risk_layer.emergency_exit}`,
+      conditions: [`Emergency Exit: ${emergencyExitValue}`],
+      description: `Emergency Exit: ${emergencyExitValue}`,
     })
   }
 
@@ -1112,6 +1113,30 @@ function inferTriggerTypeFromConditions(conditions: string[]): ConditionNode['tr
   if (combined.includes('loss') || combined.includes('sl') || combined.includes('stop')) return 'stop_loss'
 
   return 'signal'
+}
+
+/**
+ * 格式化紧急退出条件（支持字符串和对象形式）
+ */
+function formatEmergencyExit(
+  value: string | { action?: string; account_risk_threshold?: number } | undefined,
+): string | undefined {
+  if (!value) return undefined
+
+  if (typeof value === 'string') {
+    return value
+  }
+
+  // 对象形式: { action?: string; account_risk_threshold?: number }
+  const parts: string[] = []
+  if (value.action) {
+    parts.push(value.action)
+  }
+  if (value.account_risk_threshold !== undefined) {
+    parts.push(`Account Risk Threshold: ${value.account_risk_threshold}%`)
+  }
+
+  return parts.length > 0 ? parts.join(', ') : 'Enabled'
 }
 
 /**
