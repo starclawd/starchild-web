@@ -18,6 +18,7 @@ import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useTheme } from 'store/themecache/hooks'
 import Cropper, { Area } from 'react-easy-crop'
 import { useGetUserInfo } from 'store/login/hooks'
+import { useUploadAvatar } from 'store/user/hooks'
 
 const AccountManegeMobileWrapper = styled(ModalSafeAreaWrapper)`
   display: flex;
@@ -95,6 +96,27 @@ const ZoomSlider = styled.div`
     `}
 `
 
+const GifNotice = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  color: ${({ theme }) => theme.autumn50};
+  background: ${({ theme }) => theme.black800};
+  border-radius: 4px;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      padding: ${vm(8)} ${vm(12)};
+      font-size: 0.12rem;
+      line-height: 0.18rem;
+      border-radius: ${vm(4)};
+    `}
+`
+
 const ButtonCancel = styled(ButtonBorder)`
   width: 50%;
   border: 1px solid ${({ theme }) => theme.black600};
@@ -114,8 +136,33 @@ const ButtonConfirm = styled(ButtonCommon)`
     `}
 `
 
-// 创建裁剪后的图片
-async function getCroppedImg(imageSrc: string, pixelCrop: Area): Promise<Blob | null> {
+// 从 base64 数据获取 MIME 类型
+function getContentTypeFromBase64(base64: string): string {
+  const match = base64.match(/^data:([^;]+);base64,/)
+  if (match) {
+    return match[1]
+  }
+  return 'image/jpeg' // 默认
+}
+
+// 将 base64 转换为 Blob
+function base64ToBlob(base64: string, contentType: string): Blob {
+  const base64Data = base64.split(',')[1]
+  const byteCharacters = atob(base64Data)
+  const byteNumbers = new Array(byteCharacters.length)
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i)
+  }
+  const byteArray = new Uint8Array(byteNumbers)
+  return new Blob([byteArray], { type: contentType })
+}
+
+// 创建裁剪后的图片（注意：GIF 会丢失动画，需要特殊处理）
+async function getCroppedImg(
+  imageSrc: string,
+  pixelCrop: Area,
+  contentType: string,
+): Promise<{ blob: Blob; contentType: string } | null> {
   const image = await createImage(imageSrc)
   const canvas = document.createElement('canvas')
   const ctx = canvas.getContext('2d')
@@ -139,10 +186,21 @@ async function getCroppedImg(imageSrc: string, pixelCrop: Area): Promise<Blob | 
     pixelCrop.height,
   )
 
+  // GIF 用 Canvas 处理会丢失动画，所以转为 PNG 输出
+  const outputType = contentType === 'image/gif' ? 'image/png' : contentType
+
   return new Promise((resolve) => {
-    canvas.toBlob((blob) => {
-      resolve(blob)
-    }, 'image/jpeg')
+    canvas.toBlob(
+      (blob) => {
+        if (blob) {
+          resolve({ blob, contentType: outputType })
+        } else {
+          resolve(null)
+        }
+      },
+      outputType,
+      0.9,
+    )
   })
 }
 
@@ -167,6 +225,7 @@ export default memo(function AvatarEditModal() {
   const editAvatarModalOpen = useModalOpen(ApplicationModal.EDIT_AVATAR_MODAL)
   const imageSrc = useAvatarEditImageSrc()
   const closeAvatarEditModal = useCloseAvatarEditModal()
+  const uploadAvatar = useUploadAvatar()
 
   const onCropComplete = useCallback((_croppedArea: Area, croppedAreaPixels: Area) => {
     setCroppedAreaPixels(croppedAreaPixels)
@@ -187,15 +246,30 @@ export default memo(function AvatarEditModal() {
 
     setIsLoading(true)
     try {
-      const croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels)
-      if (croppedImage) {
-        // TODO: 调用上传 API
-        // const formData = new FormData()
-        // formData.append('avatar', croppedImage, 'avatar.jpg')
-        // await uploadAvatar(formData)
+      // 获取原始图片的 contentType
+      const contentType = getContentTypeFromBase64(imageSrc)
 
-        console.log('Cropped image blob:', croppedImage)
+      let uploadBlob: Blob
+      let uploadContentType: string
 
+      // GIF 图片直接使用原图上传，保留动画
+      if (contentType === 'image/gif') {
+        uploadBlob = base64ToBlob(imageSrc, contentType)
+        uploadContentType = contentType
+      } else {
+        // 其他格式进行裁剪
+        const croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels, contentType)
+        if (!croppedImage) {
+          throw new Error('Failed to crop image')
+        }
+        uploadBlob = croppedImage.blob
+        uploadContentType = croppedImage.contentType
+      }
+
+      // 调用上传 API
+      const result = await uploadAvatar(uploadBlob, uploadContentType)
+
+      if (result.isSuccess) {
         await triggerGetUserInfo()
         toast({
           title: <Trans>Avatar updated successfully</Trans>,
@@ -205,22 +279,33 @@ export default memo(function AvatarEditModal() {
           iconTheme: theme.black0,
         })
         handleClose()
+      } else {
+        toast({
+          title: <Trans>Failed to update avatar</Trans>,
+          description: result.error || '',
+          status: TOAST_STATUS.ERROR,
+          typeIcon: 'icon-account',
+          iconTheme: theme.black0,
+        })
       }
     } catch (error) {
-      console.error('Error cropping image:', error)
+      console.error('Error uploading avatar:', error)
       toast({
         title: <Trans>Failed to update avatar</Trans>,
+        description: '',
         status: TOAST_STATUS.ERROR,
         typeIcon: 'icon-account',
         iconTheme: theme.black0,
-        description: '',
       })
     }
     setIsLoading(false)
-  }, [isLoading, imageSrc, croppedAreaPixels, triggerGetUserInfo, toast, theme.black0, handleClose])
+  }, [isLoading, imageSrc, croppedAreaPixels, uploadAvatar, triggerGetUserInfo, toast, theme.black0, handleClose])
 
   const renderContent = () => {
     if (!imageSrc) return null
+
+    const contentType = getContentTypeFromBase64(imageSrc)
+    const isGif = contentType === 'image/gif'
 
     return (
       <>
@@ -241,19 +326,25 @@ export default memo(function AvatarEditModal() {
               onCropComplete={onCropComplete}
             />
           </CropperContainer>
-          <ZoomSlider>
-            <span>
-              <Trans>Zoom</Trans>
-            </span>
-            <input
-              type='range'
-              min={1}
-              max={3}
-              step={0.1}
-              value={zoom}
-              onChange={(e) => setZoom(Number(e.target.value))}
-            />
-          </ZoomSlider>
+          {isGif ? (
+            <GifNotice>
+              <Trans>GIF images will be uploaded as original to preserve animation</Trans>
+            </GifNotice>
+          ) : (
+            <ZoomSlider>
+              <span>
+                <Trans>Zoom</Trans>
+              </span>
+              <input
+                type='range'
+                min={1}
+                max={3}
+                step={0.1}
+                value={zoom}
+                onChange={(e) => setZoom(Number(e.target.value))}
+              />
+            </ZoomSlider>
+          )}
         </Content>
         <CommonModalFooter>
           <ButtonCancel onClick={handleClose}>

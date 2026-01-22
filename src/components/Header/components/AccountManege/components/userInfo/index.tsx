@@ -8,6 +8,8 @@ import useCopyContent from 'hooks/useCopyContent'
 import { useCallback, useMemo, useRef } from 'react'
 import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
+import useToast, { TOAST_STATUS } from 'components/Toast'
+import { useTheme } from 'store/themecache/hooks'
 
 const UserInfoWrapper = styled.div`
   display: flex;
@@ -153,6 +155,8 @@ export default function UserInfo() {
   const toggleEditNicknameModal = useEditNicknameModalToggle()
   const openAvatarEditModal = useOpenAvatarEditModal()
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const toast = useToast()
+  const theme = useTheme()
   const formatUserId = useMemo(() => {
     return userInfoId?.toString().padStart(8, '0')
   }, [userInfoId])
@@ -168,12 +172,29 @@ export default function UserInfo() {
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0]
       if (file) {
-        // 验证文件类型
-        if (!file.type.startsWith('image/')) {
+        // 验证文件类型（只支持 JPEG、PNG、WebP、GIF）
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+        if (!allowedTypes.includes(file.type)) {
+          toast({
+            title: <Trans>Unsupported image format</Trans>,
+            description: <Trans>Please use JPG, PNG, WebP or GIF</Trans>,
+            status: TOAST_STATUS.ERROR,
+            typeIcon: 'icon-account',
+            iconTheme: theme.black0,
+          })
+          e.target.value = ''
           return
         }
-        // 验证文件大小（最大 5MB）
-        if (file.size > 1 * 1024 * 1024) {
+        // 验证文件大小（最大 2MB）
+        if (file.size > 2 * 1024 * 1024) {
+          toast({
+            title: <Trans>File too large</Trans>,
+            description: <Trans>Image size cannot exceed 2MB</Trans>,
+            status: TOAST_STATUS.ERROR,
+            typeIcon: 'icon-account',
+            iconTheme: theme.black0,
+          })
+          e.target.value = ''
           return
         }
         const reader = new FileReader()
@@ -186,7 +207,7 @@ export default function UserInfo() {
       // 重置 input 以便可以选择相同的文件
       e.target.value = ''
     },
-    [openAvatarEditModal],
+    [openAvatarEditModal, toast, theme.black0],
   )
 
   return (
@@ -199,7 +220,12 @@ export default function UserInfo() {
         )}
         <IconBase className='icon-upload' />
       </AvatarWrapper>
-      <HiddenInput ref={fileInputRef} type='file' accept='image/*' onChange={handleFileSelect} />
+      <HiddenInput
+        ref={fileInputRef}
+        type='file'
+        accept='image/jpeg,image/png,image/webp,image/gif'
+        onChange={handleFileSelect}
+      />
       <RightContent>
         <UserName>
           <span>{userName}</span>
