@@ -209,34 +209,14 @@ export default memo(function ChatItem({
   const responseContentRef = useRef<HTMLDivElement>(null)
   const { id, content, role, nextActions } = data
   const ContentItemWrapperRef = useRef<HTMLDivElement>(null)
-  const {
-    isShowGenerateCodeOperationWithoutTab,
-    isShowPaperTradingOperationWithoutTab,
-    isShowLaunchOperationWithoutTab,
-  } = useIsShowActionLayer()
   const [isLoadingChatStreamFrontend] = useIsLoadingChatStream()
   const [, setCurrentStrategyTabIndex] = useCurrentStrategyTabIndex()
   const actionData = useMemo(() => {
     if (!isLastChatResponseContent || !nextActions || nextActions.length === 0) {
       return null
     }
-    if (isShowGenerateCodeOperationWithoutTab) {
-      return nextActions.find((action) => action.action_type === ACTION_TYPE.GENERATE_CODE)
-    }
-    if (isShowPaperTradingOperationWithoutTab) {
-      return nextActions.find((action) => action.action_type === ACTION_TYPE.START_PAPER_TRADING)
-    }
-    // mainnet limit
-    if (isShowLaunchOperationWithoutTab && !isPro) {
-      return nextActions.find((action) => action.action_type === ACTION_TYPE.DEPLOY_LIVE)
-    }
-  }, [
-    nextActions,
-    isLastChatResponseContent,
-    isShowGenerateCodeOperationWithoutTab,
-    isShowPaperTradingOperationWithoutTab,
-    isShowLaunchOperationWithoutTab,
-  ])
+    return nextActions[0]
+  }, [nextActions, isLastChatResponseContent])
 
   const isEditStrategyContent = useMemo(() => {
     return content.startsWith('Edit Strategy:')

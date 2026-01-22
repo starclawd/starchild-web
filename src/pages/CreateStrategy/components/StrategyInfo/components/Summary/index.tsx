@@ -783,12 +783,12 @@ export default memo(function Summary() {
     <SummaryWrapper>
       <LayerTitle>
         <LeftContent>
-          {!typewriterState.isTyping && isLogin && (
+          {/* {!typewriterState.isTyping && isLogin && (
             <ButtonFlow $disabled={isStep3Deploying || !strategy_config} onClick={openFlowModal}>
               <IconBase className='icon-flow icon-chart-5' />
               <Trans>Flow</Trans>
             </ButtonFlow>
-          )}
+          )} */}
           <MoveTabList gap={20} tabKey={activeTab} tabList={tabList} />
         </LeftContent>
         {!typewriterState.isTyping && (
