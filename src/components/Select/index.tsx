@@ -34,10 +34,11 @@ import { nanoid } from '@reduxjs/toolkit'
 import { SelectWrapper, PopoverContainer, PopoverList, PopoverItem, ReferenceElement, InputWrapper } from './styles.ts'
 import { CommonFun } from 'types/global'
 import NoData from 'components/NoData'
-import { t } from '@lingui/core/macro'
+import { msg, t } from '@lingui/core/macro'
 import { useIsMobile } from 'store/application/hooks'
 import { ANI_DURATION } from 'constants/index'
 import { CSSProperties } from 'styled-components'
+import { useLingui } from '@lingui/react/macro'
 
 /**
  * 触发方式枚举
@@ -146,6 +147,7 @@ export default memo(function Select({
   disableDisappearAni = false,
 }: PopoverProps) {
   /* hooks调用 */
+  const { t } = useLingui()
   const isMobile = useIsMobile()
   const [begainToHide, setBegainToHide] = useState(false)
   const wrapper = useRef<HTMLDivElement>(null)
@@ -428,7 +430,7 @@ export default memo(function Select({
                 <Input
                   inputValue={searchValue}
                   inputType={InputType.SEARCH}
-                  placeholder={t`Search`}
+                  placeholder={t(msg`Search`)}
                   onChange={searchItem}
                   onResetValue={onSearchDelete}
                 />

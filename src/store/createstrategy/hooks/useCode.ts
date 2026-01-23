@@ -16,7 +16,8 @@ import { useIsLogin, useUserInfo } from 'store/login/hooks'
 import { ParamFun } from 'types/global'
 import { useCreateStrategyDetail } from './useCreateStrategyDetail'
 import { useSendChatUserContent } from './useStream'
-import { t } from '@lingui/core/macro'
+import { msg } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 
 export function useGenerateStrategyCode() {
   const [triggerGenerateStrategyCode] = useLazyGenerateStrategyCodeQuery()
@@ -99,6 +100,7 @@ export function useHandleGenerateCode() {
   const [isGeneratingCode] = useIsGeneratingCode()
   const { strategyDetail } = useCreateStrategyDetail({ strategyId: strategyId || '' })
   const sendChatUserContent = useSendChatUserContent()
+  const { t } = useLingui()
   const isCreateSuccess = useMemo(() => {
     return !!strategyDetail?.strategy_config
   }, [strategyDetail])
@@ -106,10 +108,10 @@ export function useHandleGenerateCode() {
     async (generateMsg?: string) => {
       if (!isCreateSuccess || isGeneratingCode) return
       sendChatUserContent({
-        value: generateMsg ? generateMsg : t`Generate Code`,
+        value: generateMsg ? generateMsg : t(msg`Generate Code`),
       })
     },
-    [sendChatUserContent, isCreateSuccess, isGeneratingCode],
+    [sendChatUserContent, isCreateSuccess, isGeneratingCode, t],
   )
   return handleGenerateCode
 }

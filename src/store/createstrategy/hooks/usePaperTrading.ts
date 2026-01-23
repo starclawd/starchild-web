@@ -10,7 +10,8 @@ import {
 } from '../reducer'
 import { ParamFun } from 'types/global'
 import { useSendChatUserContent } from './useStream'
-import { t } from '@lingui/core/macro'
+import { msg } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 
 export function useStartPaperTradingAction() {
   const [triggerStartPaperTrading] = useStartPaperTradingMutation()
@@ -73,13 +74,13 @@ export function useIsPausingPaperTrading(): [boolean, ParamFun<boolean>] {
 export function useHandleStartPaperTrading() {
   const [isStartingPaperTrading] = useIsStartingPaperTrading()
   const sendChatUserContent = useSendChatUserContent()
-
+  const { t } = useLingui()
   const handleStartPaperTrading = useCallback(async (startMsg?: string) => {
     if (isStartingPaperTrading) return
     sendChatUserContent({
-      value: startMsg ? startMsg : t`Start paper trading`,
+      value: startMsg ? startMsg : t(msg`Start paper trading`),
     })
-  }, [sendChatUserContent, isStartingPaperTrading])
+  }, [sendChatUserContent, isStartingPaperTrading, t])
 
   return handleStartPaperTrading
 }
@@ -87,13 +88,14 @@ export function useHandleStartPaperTrading() {
 export function useHandlePausePaperTrading() {
   const [isPausingPaperTrading] = useIsPausingPaperTrading()
   const sendChatUserContent = useSendChatUserContent()
+  const { t } = useLingui()
 
-  const handlePausePaperTrading = useCallback(async () => {
+  const handlePausePaperTrading = useCallback(async (pauseMsg?: string) => {
     if (isPausingPaperTrading) return
     sendChatUserContent({
-      value: t`Pause paper trading`,
+      value: pauseMsg ? pauseMsg : t(msg`Pause paper trading`),
     })
-  }, [sendChatUserContent, isPausingPaperTrading])
+  }, [sendChatUserContent, isPausingPaperTrading, t])
 
   return handlePausePaperTrading
 }

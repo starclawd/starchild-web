@@ -5,9 +5,10 @@ import { IconBase } from 'components/Icons'
 import InputArea from 'components/InputArea'
 import { vm } from 'pages/helper'
 import { useIsMobile } from 'store/application/hooks'
-import { t } from '@lingui/core/macro'
+import { msg, t } from '@lingui/core/macro'
 import { ButtonCommon } from 'components/Button'
 import ModeSelect from '../ModeSelect'
+import { useLingui } from '@lingui/react/macro'
 
 const ChatInputOutWrapper = styled.div`
   display: flex;
@@ -139,6 +140,7 @@ const Operator = styled.div<{ $isEmpty: boolean }>`
 `
 
 export default memo(function Research() {
+  const { t } = useLingui()
   const inputRef = useRef<HTMLTextAreaElement>(null)
   const sendAiContent = useSendAiContent()
   const [isFocus, setIsFocus] = useIsFocus()
@@ -209,7 +211,7 @@ export default memo(function Research() {
             onFocus={onFocus}
             onBlur={onBlur}
             disabled={isLoadingData}
-            placeholder={t`Ask me anything about trading...`}
+            placeholder={t(msg`Ask me anything about trading...`)}
             enterConfirmCallback={requestStream}
           />
           <Operator $isEmpty={isEmpty && !isMobile}>

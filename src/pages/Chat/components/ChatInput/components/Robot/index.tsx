@@ -5,7 +5,8 @@ import { useMemo, useState, useEffect, useRef } from 'react'
 import { t } from '@lingui/core/macro'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
-
+import { msg } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 // 机器人图片弹出动画
 const robotPopAnimation = keyframes`
   0% {
@@ -115,6 +116,7 @@ const Content = styled.div<{ $show: boolean }>`
 `
 
 export default function Robot({ isFocus }: { isFocus: boolean }) {
+  const { t } = useLingui()
   const [currentTextIndex, setCurrentTextIndex] = useState(0)
   const [displayedText, setDisplayedText] = useState('')
   const [isTyping, setIsTyping] = useState(false)
@@ -133,37 +135,37 @@ export default function Robot({ isFocus }: { isFocus: boolean }) {
   const textList = useMemo(() => {
     return [
       {
-        text: t`Type a coin or strategy, let's see what AI cooks up!`,
+        text: t(msg`Type a coin or strategy, let's see what AI cooks up!`),
       },
       {
-        text: t`Bottom fishing or top chasing? Tell me!`,
+        text: t(msg`Bottom fishing or top chasing? Tell me!`),
       },
       {
-        text: t`Drop me a signal, I'll crunch the charts!`,
+        text: t(msg`Drop me a signal, I'll crunch the charts!`),
       },
       {
-        text: t`Trend check or quick trade idea? Your call!`,
+        text: t(msg`Trend check or quick trade idea? Your call!`),
       },
       {
-        text: t`Try typing BTC / ETH or any token name!`,
+        text: t(msg`Try typing BTC / ETH or any token name!`),
       },
       {
-        text: t`Curious about price or volume? Ask away!`,
+        text: t(msg`Curious about price or volume? Ask away!`),
       },
       {
-        text: t`Share a trading direction, I'll sharpen it!`,
+        text: t(msg`Share a trading direction, I'll sharpen it!`),
       },
       {
-        text: t`Coin + timeframe = instant AI analysis!`,
+        text: t(msg`Coin + timeframe = instant AI analysis!`),
       },
       {
-        text: t`Stuck on strategy? Toss me a keyword!`,
+        text: t(msg`Stuck on strategy? Toss me a keyword!`),
       },
       {
-        text: t`Wanna test AI's trading instincts? Type anything!`,
+        text: t(msg`Wanna test AI's trading instincts? Type anything!`),
       },
     ]
-  }, [])
+  }, [t])
 
   // 打字机效果函数
   const typeText = (text: string) => {

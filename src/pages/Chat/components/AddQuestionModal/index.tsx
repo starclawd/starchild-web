@@ -5,8 +5,8 @@ import { useAddQuestionModalToggle, useIsMobile, useModalOpen } from 'store/appl
 import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import { ApplicationModal } from 'store/application/application.d'
 import { vm } from 'pages/helper'
-import { Trans } from '@lingui/react/macro'
-import { t } from '@lingui/core/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
+import { msg, t } from '@lingui/core/macro'
 import { ButtonCommon } from 'components/Button'
 import InputArea from 'components/InputArea'
 import { ANI_DURATION } from 'constants/index'
@@ -149,6 +149,7 @@ export default memo(function AddQuestionModal({
     id: string
   }
 }) {
+  const { t } = useLingui()
   const theme = useTheme()
   const toast = useToast()
   const [isLoading, setIsLoading] = useState(false)
@@ -231,7 +232,7 @@ export default memo(function AddQuestionModal({
             <InputArea
               id='addQuestionInput'
               value={value}
-              placeholder={t`Please enter`}
+              placeholder={t(msg`Please enter`)}
               setValue={setValue}
               onFocus={onFocus}
               onBlur={onBlur}

@@ -2,8 +2,9 @@ import { memo, useMemo } from 'react'
 import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import { useChartType } from 'store/myvault/hooks/useChartType'
-import { t } from '@lingui/core/macro'
+import { msg, t } from '@lingui/core/macro'
 import { CHART_TYPE } from 'store/vaultsdetail/vaultsdetail'
+import { useLingui } from '@lingui/react/macro'
 
 const TabsContainer = styled.div`
   display: flex;
@@ -55,14 +56,15 @@ const TabItem = styled.div<{ $isActive: boolean }>`
 `
 
 const ChartTypeTabs = memo(() => {
+  const { t } = useLingui()
   const [chartType, setChartType] = useChartType()
 
   const chartTypes = useMemo(
     () => [
-      { key: 'TVL' as const, label: t`TVL` },
-      { key: 'PnL' as const, label: t`PnL` },
+      { key: 'TVL' as const, label: t(msg`TVL`) },
+      { key: 'PnL' as const, label: t(msg`PnL`) },
     ],
-    [],
+    [t],
   )
 
   const handleTabClick = (type: string) => {

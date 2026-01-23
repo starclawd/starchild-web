@@ -346,7 +346,7 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
     if (!can_create_more && !strategyId) {
       toast({
         title: t(msg`Create strategy failed`),
-        description: t`Slot limit reached (${strategy_count}/${strategy_limit})! Boost your current strategy's APR to unlock more slots.`,
+        description: t(msg`Slot limit reached (${strategy_count}/${strategy_limit})! Boost your current strategy's APR to unlock more slots.`),
         status: TOAST_STATUS.ERROR,
         typeIcon: 'icon-create-strategy',
         iconTheme: theme.black0,
@@ -373,11 +373,11 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
     strategy_count,
     strategy_limit,
     theme.black0,
-    t,
     toast,
     resetAllState,
     sendChatUserContent,
     setCurrentRouter,
+    t,
   ])
 
   const handleLogin = useCallback(() => {

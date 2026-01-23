@@ -1,7 +1,7 @@
 import { memo, useMemo, useCallback } from 'react'
 import styled, { css } from 'styled-components'
-import { Trans } from '@lingui/react/macro'
-import { t } from '@lingui/core/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
+import { msg, t } from '@lingui/core/macro'
 import { ButtonCommon } from 'components/Button'
 import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
@@ -95,13 +95,14 @@ export default memo(function SubscribeButton({
   disabled,
   pending,
 }: SubscribeButtonProps) {
+  const { t } = useLingui()
   const iconClass = useMemo(() => {
     return isSubscribed ? 'icon-chat-noti-enable' : 'icon-subscription'
   }, [isSubscribed])
 
   const buttonText = useMemo(() => {
-    return isSubscribed ? t`Unsubscribe` : t`Subscribe`
-  }, [isSubscribed])
+    return isSubscribed ? t(msg`Unsubscribe`) : t(msg`Subscribe`)
+  }, [isSubscribed, t])
 
   const handleClick = useCallback(
     (e: React.MouseEvent) => {

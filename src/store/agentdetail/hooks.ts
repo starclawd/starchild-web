@@ -16,7 +16,8 @@ import { useBinanceSymbols } from 'store/insights/hooks'
 import { useTheme } from 'styled-components'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useLingui } from '@lingui/react/macro'
-
+import { msg } from '@lingui/core/macro'
+  
 export function useGetBacktestData() {
   const [, setBacktestData] = useBacktestData()
   const [triggerGetBacktestData] = useLazyGetBacktestDataQuery()
@@ -79,8 +80,8 @@ export function useGetAgentDetail() {
 
   const agentNotFound = useCallback(() => {
     toast({
-      title: t`Agent not found`,
-      description: t`The agent you’re trying to access doesn’t exist or has already been deleted.`,
+      title: t(msg`Agent not found`),
+      description: t(msg`The agent you’re trying to access doesn’t exist or has already been deleted.`),
       status: TOAST_STATUS.ERROR,
       typeIcon: 'icon-search',
       iconTheme,

@@ -4,7 +4,8 @@ import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { vm } from 'pages/helper'
 import { useTheme } from 'store/themecache/hooks'
 import InputArea from 'components/InputArea'
-import { t } from '@lingui/core/macro'
+import { msg, t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 
 const InputWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -54,11 +55,12 @@ export default function WalletManagement({
   setWalletManagementText: (value: string) => void
 }) {
   const theme = useTheme()
+  const { t } = useLingui()
   return (
     <InputWrapper $borderRadius={12} $borderColor={theme.black600}>
       <InputArea
         disabledUpdateHeight
-        placeholder={t`Enter your wallet addresses (comma-separated): \nExample: 0x123478293892302839827hgsdbh, 0x7e3gqhdbyukeahbuildheli`}
+        placeholder={t(msg`Enter your wallet addresses (comma-separated): \nExample: 0x123478293892302839827hgsdbh, 0x7e3gqhdbyukeahbuildheli`)}
         value={walletManagementText}
         setValue={setWalletManagementText}
       />

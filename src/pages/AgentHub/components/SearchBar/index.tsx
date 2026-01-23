@@ -1,8 +1,9 @@
 import styled, { css } from 'styled-components'
 import { memo, useState } from 'react'
 import Input, { InputType } from 'components/Input'
-import { t } from '@lingui/core/macro'
+import { msg, t } from '@lingui/core/macro'
 import { vm } from 'pages/helper'
+import { useLingui } from '@lingui/react/macro'
 
 const SearchBarWrapper = styled.div`
   width: 100%;
@@ -45,10 +46,11 @@ interface SearchBarProps {
 }
 
 export default memo(function SearchBar({ onChange, value }: SearchBarProps) {
+  const { t } = useLingui()
   return (
     <SearchBarWrapper>
       <Input
-        placeholder={t`Search agents`}
+        placeholder={t(msg`Search agents`)}
         inputType={InputType.SEARCH}
         onChange={(e) => onChange(e.target.value)}
         inputValue={value}

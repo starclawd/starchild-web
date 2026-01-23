@@ -32,7 +32,8 @@ import eventEmitter, { EventEmitterKey } from 'utils/eventEmitter'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
 import { useUserInfo } from 'store/login/hooks'
 import useParsedQueryString from 'hooks/useParsedQueryString'
-
+import { msg } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 export function useSubscribedAgents(): [AgentDetailDataType[], ParamFun<AgentDetailDataType[]>] {
   const dispatch = useDispatch()
   const subscribedAgents = useSelector((state: RootState) => state.myagent.subscribedAgents)
@@ -49,11 +50,11 @@ export function useSubscribedAgents(): [AgentDetailDataType[], ParamFun<AgentDet
 export function useFetchCurrentAgentDetailData() {
   const { agentId } = useParsedQueryString()
   const [triggerGetAgentDetail] = useLazyGetAgentDetailQuery()
-
+  const { t } = useLingui()
   const fetchCurrentAgentDetailData = useCallback(async () => {
     if (!agentId) {
       console.warn('No current agent data or agentId found')
-      return { success: false, error: t`No current agent data or agentId found` }
+      return { success: false, error: t(msg`No current agent data or agentId found`) }
     }
 
     try {
@@ -68,7 +69,7 @@ export function useFetchCurrentAgentDetailData() {
             currentId: agentId,
             fetchedId: agentData.id,
           })
-          return { success: false, error: t`Agent ID mismatch` }
+          return { success: false, error: t(msg`Agent ID mismatch`) }
         }
       } else {
         console.error('Failed to fetch current agent detail:', result.error)
@@ -78,7 +79,7 @@ export function useFetchCurrentAgentDetailData() {
       console.error('Error fetching current agent detail:', error)
       return { success: false, error }
     }
-  }, [agentId, triggerGetAgentDetail])
+  }, [agentId, triggerGetAgentDetail, t])
 
   return {
     fetchCurrentAgentDetailData,

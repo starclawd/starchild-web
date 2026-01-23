@@ -1,7 +1,8 @@
 import { memo, useMemo } from 'react'
 import styled, { css } from 'styled-components'
-import { t } from '@lingui/core/macro'
+import { msg, t } from '@lingui/core/macro'
 import { PAPER_TRADING_STATUS } from 'store/createstrategy/createstrategy'
+import { useLingui } from '@lingui/react/macro'
 
 interface StrategyStatusProps {
   status?: PAPER_TRADING_STATUS
@@ -32,18 +33,19 @@ const VaultSubtitle = styled.div<{ $statusColor: string }>`
 `
 
 export default memo(function StrategyStatus({ status }: StrategyStatusProps) {
+  const { t } = useLingui()
   // 状态映射配置
   const statusConfig = useMemo(() => {
     const statusMap: Record<PAPER_TRADING_STATUS, { text: string; color: string }> = {
-      [PAPER_TRADING_STATUS.RUNNING]: { text: t`Running`, color: 'green' },
-      [PAPER_TRADING_STATUS.LIVE]: { text: t`Live`, color: 'green' },
-      [PAPER_TRADING_STATUS.PAUSED]: { text: t`Paused`, color: 'default' },
-      [PAPER_TRADING_STATUS.SUSPENDED]: { text: t`Suspended`, color: 'default' },
-      [PAPER_TRADING_STATUS.TERMINATED]: { text: t`Terminated`, color: 'default' },
+      [PAPER_TRADING_STATUS.RUNNING]: { text: t(msg`Running`), color: 'green' },
+      [PAPER_TRADING_STATUS.LIVE]: { text: t(msg`Live`), color: 'green' },
+      [PAPER_TRADING_STATUS.PAUSED]: { text: t(msg`Paused`), color: 'default' },
+      [PAPER_TRADING_STATUS.SUSPENDED]: { text: t(msg`Suspended`), color: 'default' },
+      [PAPER_TRADING_STATUS.TERMINATED]: { text: t(msg`Terminated`), color: 'default' },
     }
 
-    return status ? statusMap[status] : { text: t`Running`, color: 'default' }
-  }, [status])
+    return status ? statusMap[status] : { text: t(msg`Running`), color: 'default' }
+  }, [status, t])
 
   const { text: statusText, color: statusColor } = statusConfig
 

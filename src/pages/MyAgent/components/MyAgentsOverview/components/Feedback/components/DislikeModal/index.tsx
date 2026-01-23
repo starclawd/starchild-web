@@ -5,7 +5,7 @@ import { useIsMobile } from 'store/application/hooks'
 import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
 import { vm } from 'pages/helper'
 import { Trans } from '@lingui/react/macro'
-import { t } from '@lingui/core/macro'
+import { msg } from '@lingui/core/macro'
 import { ButtonCommon } from 'components/Button'
 import InputArea from 'components/InputArea'
 import { IconBase } from 'components/Icons'
@@ -15,6 +15,7 @@ import Pending from 'components/Pending'
 import BottomSheet from 'components/BottomSheet'
 import { ANI_DURATION } from 'constants/index'
 import { DislikeModalProps } from '../../types'
+import { useLingui } from '@lingui/react/macro'
 
 const DislikeModalWrapper = styled.div`
   display: flex;
@@ -294,6 +295,7 @@ export default memo(function DislikeModal({
   onLoadingChange,
   onDislike,
 }: DislikeModalProps) {
+  const { t } = useLingui()
   const theme = useTheme()
   const isMobile = useIsMobile()
   const [value, setValue] = useState('')
@@ -375,7 +377,7 @@ export default memo(function DislikeModal({
             </span>
           </OtherTextContent>
           <InputWrapper $borderRadius={12} $borderColor={theme.black600}>
-            <InputArea value={value} placeholder={t`Please enter your feedback`} setValue={setValue} />
+            <InputArea value={value} placeholder={t(msg`Please enter your feedback`)} setValue={setValue} />
           </InputWrapper>
         </Content>
       ) : (

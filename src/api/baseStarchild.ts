@@ -96,24 +96,6 @@ export function handleGeneralError(result: any, args: FetchArgs, dispatch: any, 
 
   // 跳过需要自定义错误处理的 URL
   if (CUSTOM_ERROR_MESSAGE_URLS.includes(url)) return
-
-  // 显示错误提示
-  // const message = (result.error.data as any)?.message || t`Network Error. Please try again later`
-  // const isMobile = state.application.isMobile
-
-  // if (isMobile) {
-  //   dispatch(setModalData({
-  //     message,
-  //     status: PromptInfoType.ERROR,
-  //   }))
-  //   dispatch(setOpenMobileModal(ApplicationModal.TOAST))
-  // } else {
-  //   dispatch(addPopup({
-  //     content: { message },
-  //     type: PromptInfoType.ERROR,
-  //     removeAfterMs: DEFAULT_DISMISS_MS
-  //   }))
-  // }
 }
 
 /**

@@ -4,7 +4,8 @@ import { vm } from 'pages/helper'
 import { useChartVaultId } from 'store/myvault/hooks/useChartVaultId'
 import { useVaultsData } from 'store/vaults/hooks'
 import Select, { TriggerMethod, DataType } from 'components/Select'
-import { t } from '@lingui/core/macro'
+import { msg, t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 
 const SelectorContainer = styled.div`
   display: flex;
@@ -62,6 +63,7 @@ const SelectValue = styled.div`
 `
 
 const VaultsSelector = memo(() => {
+  const { t } = useLingui()
   const theme = useTheme()
   const [chartVaultId, setChartVaultId] = useChartVaultId()
   const { allVaults, isLoadingVaults } = useVaultsData()
@@ -89,11 +91,11 @@ const VaultsSelector = memo(() => {
   // 获取选中的金库名称
   const getSelectedVaultName = () => {
     if (isLoadingVaults || !allVaults.length) {
-      return t`No vaults`
+      return t(msg`No vaults`)
     }
 
     const selectedVault = allVaults.find((vault) => vault.vault_id === chartVaultId)
-    return selectedVault?.vault_name || allVaults[0]?.vault_name || t`No vaults`
+    return selectedVault?.vault_name || allVaults[0]?.vault_name || t(msg`No vaults`)
   }
 
   // 如果没有数据或正在加载，显示禁用状态

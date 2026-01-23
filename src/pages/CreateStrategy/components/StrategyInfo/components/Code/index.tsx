@@ -23,7 +23,8 @@ import { ANI_DURATION } from 'constants/index'
 import MoveTabList, { MoveType } from 'components/MoveTabList'
 import { useWindowSize } from 'hooks/useWindowSize'
 import { MEDIA_WIDTHS } from 'theme/styled'
-import { t } from '@lingui/core/macro'
+import { msg, t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 
 // 打字机效果的速度（每个字符的间隔时间，单位毫秒）
 const TYPEWRITER_SPEED = 17
@@ -178,6 +179,7 @@ const FlowContentWrapper = styled.div<{ $visible: boolean }>`
 `
 
 export default memo(function Code() {
+  const { t } = useLingui()
   const { strategyId } = useParsedQueryString()
   const { width } = useWindowSize()
   const { strategyCode, refetch: refetchStrategyCode } = useStrategyCode({ strategyId: strategyId || '' })
@@ -468,7 +470,7 @@ export default memo(function Code() {
           )}
         </Left>
         <OperatorWrapper>
-          <RegenerateButton $disabled={isGeneratingCodeFrontend} onClick={() => handleGenerateCode(t`Regenerate Code`)}>
+          <RegenerateButton $disabled={isGeneratingCodeFrontend} onClick={() => handleGenerateCode(t(msg`Regenerate Code`))}>
             <IconBase className='icon-arrow-loading' />
             {isShowText && <Trans>Regenerate</Trans>}
           </RegenerateButton>
