@@ -33,17 +33,9 @@ import styled from 'styled-components'
 import Avatar from 'boring-avatars'
 import { useIsDarkMode } from 'store/themecache/hooks'
 import LazyImage from 'components/LazyImage'
+import type { AvatarProps, AvatarWrapperProps } from './types'
 
-// 类型定义
-interface AvatarProps {
-  size?: number
-  name: string
-  avatar?: string
-}
-
-interface AvatarWrapperProps {
-  size: number
-}
+export type { AvatarProps, AvatarWrapperProps }
 
 // 主题颜色配置
 const AVATAR_COLORS = {

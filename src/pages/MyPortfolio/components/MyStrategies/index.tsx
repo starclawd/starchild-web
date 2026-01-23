@@ -24,7 +24,7 @@ import {
 } from 'store/application/hooks'
 import { useCurrentStrategyId, useRestartStrategy } from 'store/mystrategy/hooks/useMyStrategies'
 import { useAppKitAccount } from '@reown/appkit/react'
-import ShinyButton from 'components/ShinyButton'
+import ShinyButton from 'pages/CreateStrategy/components/StrategyInfo/components/ShinyButton'
 import { useVaultsData } from 'store/vaults/hooks'
 
 const MyStrategiesWrapper = styled.div`

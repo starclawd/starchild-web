@@ -134,7 +134,7 @@ const ProvideInfo = styled.div`
 const TabsWrapper = styled.div`
   .tab-list-wrapper {
     height: 48px;
-    .move-tab-item {
+    .tab-item {
       padding: 0;
       font-size: 16px;
       font-style: normal;

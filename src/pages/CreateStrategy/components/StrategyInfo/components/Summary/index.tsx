@@ -10,7 +10,7 @@ import { useIsLoadingChatStream } from 'store/createstrategy/hooks/useLoadingSta
 import { useSendChatUserContent } from 'store/createstrategy/hooks/useStream'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useIsStep3Deploying } from 'store/createstrategy/hooks/useDeployment'
-import MoveTabList, { MoveType } from 'components/MoveTabList'
+import TabList, { TAB_TYPE } from 'components/TabList'
 import { ANI_DURATION } from 'constants/index'
 import TypewriterCursor from 'components/TypewriterCursor'
 import { useIsLogin } from 'store/login/hooks'
@@ -39,7 +39,7 @@ const LayerTitle = styled.div`
   width: 100%;
   height: 40px;
   padding-left: 20px;
-  .move-tab-item {
+  .tab-item {
     padding: 0;
   }
 `
@@ -789,7 +789,7 @@ export default memo(function Summary() {
               <Trans>Flow</Trans>
             </ButtonFlow>
           )} */}
-          <MoveTabList gap={20} tabKey={activeTab} tabList={tabList} />
+          <TabList gap={20} tabKey={activeTab} tabList={tabList} />
         </LeftContent>
         {!typewriterState.isTyping && (
           <ButtonWrapper>

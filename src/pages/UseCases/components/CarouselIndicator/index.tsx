@@ -1,6 +1,6 @@
 import { memo, useEffect, useRef } from 'react'
 import styled, { css } from 'styled-components'
-import { TAB_CONFIG, TabKey } from 'constants/useCases'
+import { TAB_CONFIG, TabKey } from 'store/usecases/usecases.d'
 import { useActiveTab, useCarouselPaused } from 'store/usecases/hooks/useUseCasesHooks'
 import { vm } from 'pages/helper'
 import { ANI_DURATION } from 'constants/index'

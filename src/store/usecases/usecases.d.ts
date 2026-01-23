@@ -1,5 +1,4 @@
 import { t } from '@lingui/core/macro'
-
 export enum USE_CASES_TAB_KEY {
   TA = 'ta',
   RISK = 'risk',

@@ -22,3 +22,8 @@ export interface CommonObjType {
 export enum OPEN_ALL_PERMISSIONS {
   MAIN_NET = 'mainnet',
 }
+
+declare module '*.json' {
+  const value: any
+  export default value
+}

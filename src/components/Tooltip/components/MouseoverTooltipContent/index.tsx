@@ -5,7 +5,7 @@
  */
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ANI_DURATION } from 'constants/index'
-import TooltipContent, { ChildrenWrapper, TooltipContentProps } from './TooltipContent'
+import TooltipContent, { ChildrenWrapper, TooltipContentProps } from 'components/Tooltip/components/TooltipContent'
 import { useIsWindowVisible } from 'store/application/hooks'
 
 /**

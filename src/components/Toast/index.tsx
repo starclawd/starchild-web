@@ -1,21 +1,14 @@
 import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
-import { ReactNode, useCallback } from 'react'
+import { useCallback } from 'react'
 import { toast, Id, ToastContainer } from 'react-toastify'
 import { useIsMobile } from 'store/application/hooks'
 import styled, { css } from 'styled-components'
 import { rotate } from 'styles/animationStyled'
+import { TOAST_STATUS, TOAST_TYPE, ToastData, ToastOptions } from './types'
 
-export enum TOAST_STATUS {
-  SUCCESS = 'SUCCESS',
-  ERROR = 'ERROR',
-  LOADING = 'LOADING',
-}
-
-export enum TOAST_TYPE {
-  OPEN_NOTIFICATION = 'OPEN_NOTIFICATION',
-  CLOSE_NOTIFICATION = 'CLOSE_NOTIFICATION',
-}
+export { TOAST_STATUS, TOAST_TYPE }
+export type { ToastData, ToastOptions }
 
 export const StyledToastContent = styled(ToastContainer)`
   top: 20px;
@@ -153,18 +146,7 @@ const StatusWrapper = styled.div`
     `}
 `
 
-function ToastContent({
-  data,
-}: {
-  data: {
-    title: ReactNode
-    description: ReactNode
-    status: TOAST_STATUS
-    typeIcon: string
-    iconTheme: string
-    iconStyle?: React.CSSProperties
-  }
-}) {
+function ToastContent({ data }: { data: ToastData }) {
   const { title, description, status, typeIcon, iconTheme, iconStyle } = data
   return (
     <ToastContentWrapper>
@@ -191,23 +173,7 @@ function ToastContent({
 export default function useToast() {
   const isMobile = useIsMobile()
   return useCallback(
-    ({
-      title,
-      description,
-      status,
-      typeIcon,
-      iconTheme,
-      iconStyle,
-      autoClose = 3000,
-    }: {
-      title: ReactNode
-      description: ReactNode
-      status: TOAST_STATUS
-      typeIcon: string
-      iconTheme: string
-      autoClose?: number
-      iconStyle?: React.CSSProperties
-    }): Id => {
+    ({ title, description, status, typeIcon, iconTheme, iconStyle, autoClose = 3000 }: ToastOptions): Id => {
       return toast(ToastContent, {
         data: {
           title,

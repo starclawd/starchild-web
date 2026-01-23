@@ -3,7 +3,7 @@ import { memo, useEffect, useCallback, useMemo, useRef } from 'react'
 import { vm } from 'pages/helper'
 import AgentCardSection from '../AgentCardSection'
 import StickySearchHeader from '../StickySearchHeader'
-import { AGENT_HUB_TYPE } from 'constants/agentHub'
+import { AGENT_HUB_TYPE } from 'store/agenthub/agenthub.d'
 import {
   useGetAgentInfoList,
   useGetSearchedCategoryAgentInfoList,

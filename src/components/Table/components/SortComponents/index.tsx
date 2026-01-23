@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import styled, { useTheme } from 'styled-components'
-import { SortDirection } from '../types'
+import { SortDirection } from '../../types'
 import { ANI_DURATION } from 'constants/index'
 
 // 排序箭头容器

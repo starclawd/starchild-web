@@ -9,7 +9,7 @@ import { CHAIN_ID_TO_CHAIN } from 'constants/chainInfo'
 import { getExplorerLink } from 'utils'
 import Tooltip from 'components/Tooltip'
 import { useClaimInfo } from 'store/vaultsdetail/hooks/useClaimInfo'
-import { WITHDRAW_STATUS_MAP, getWithdrawTooltipContent } from 'constants/vaultTransaction'
+import { WITHDRAW_STATUS_MAP, getWithdrawTooltipContent } from 'pages/VaultDetail/components/DepositAndWithdraw/types'
 
 const AvailableClaimWrapper = styled.div`
   display: flex;

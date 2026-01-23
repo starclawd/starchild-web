@@ -3,7 +3,7 @@
  * 从底部滑出的弹层组件，支持向下拖动关闭
  * 使用Portal实现，不受父元素overflow影响
  */
-import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { ANI_DURATION } from 'constants/index'
 import Portal from 'components/Portal'
@@ -11,6 +11,9 @@ import { vm } from 'pages/helper'
 import { fadeIn, fadeOut } from 'styles/animationStyled'
 import { IconBase } from 'components/Icons'
 import { Trans } from '@lingui/react/macro'
+import type { BottomSheetProps } from './types'
+
+export type { BottomSheetProps }
 
 // 遮罩层样式
 const Overlay = styled.div<{ $isClosing: boolean; $top: number; $placement: string }>`
@@ -184,18 +187,6 @@ const CloseWrapper = styled.div`
           cursor: pointer;
         `}
 `
-
-interface BottomSheetProps {
-  isOpen: boolean
-  onClose: () => void
-  children: ReactNode
-  positionRef?: any
-  rootStyle?: React.CSSProperties
-  hideDragHandle?: boolean
-  placement?: 'top' | 'bottom' | 'mobile'
-  hideClose?: boolean
-  isCloseText?: boolean
-}
 
 const BottomSheet = ({
   isOpen,

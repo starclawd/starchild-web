@@ -86,11 +86,11 @@ msgstr "Up to 6 hours"
 msgid "Vibe it, Earn it on Starchild."
 msgstr "Vibe it, Earn it on Starchild."
 
-#: src/pages/Chat/components/AiThreadsList/index.tsx:377
+#: src/pages/Chat/components/AiThreadsList/index.tsx:375
 msgid "Current Session"
 msgstr "Current session"
 
-#: src/constants/agentHub.ts:62
+#: src/store/agenthub/agenthub.d.ts:214
 msgid "Auto Briefing"
 msgstr "Auto briefing"
 
@@ -107,7 +107,7 @@ msgstr "Performance"
 msgid "The vault has been closed and trading has stopped. Funds are ready for claim."
 msgstr "The vault has been closed and trading has stopped. Funds are ready for claim."
 
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:562
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:561
 msgid "Triggered"
 msgstr "Triggered"
 
@@ -162,7 +162,7 @@ msgstr "Validate your trading ideas before risking capital."
 #~ msgid "Featured Strategy Agents"
 #~ msgstr "Featured strategy agents"
 
-#: src/constants/agentHub.ts:27
+#: src/store/agenthub/agenthub.d.ts:179
 msgid "Track key metrics. Stay ahead of the trend"
 msgstr "Track key metrics. Stay ahead of the trend"
 
@@ -170,7 +170,7 @@ msgstr "Track key metrics. Stay ahead of the trend"
 msgid "Dislike"
 msgstr "Dislike"
 
-#: src/constants/agentHub.ts:80
+#: src/store/agenthub/agenthub.d.ts:232
 msgid "Token Deep Dive"
 msgstr "Token deep dive"
 
@@ -210,7 +210,7 @@ msgid "Historical Data"
 msgstr "Historical data"
 
 #: src/pages/Mobile/MobileAgentHub/index.tsx:33
-#: src/pages/AgentHub/index.tsx:273
+#: src/pages/AgentHub/index.tsx:272
 msgid "Agent Marketplace"
 msgstr "Agent marketplace"
 
@@ -261,7 +261,7 @@ msgid "Finish defining your strategy in Step 1 first."
 msgstr "Finish defining your strategy in Step 1 first."
 
 #: src/pages/components/ShareModal/index.tsx:278
-#: src/pages/Vaults/components/StrategyTable/index.tsx:337
+#: src/pages/Vaults/components/StrategyTable/index.tsx:338
 msgid "TVF"
 msgstr "TVF"
 
@@ -281,7 +281,7 @@ msgstr "Paper trading"
 #~ msgid "Closing"
 #~ msgstr "Closing"
 
-#: src/pages/Chat/components/AiThreadsList/index.tsx:377
+#: src/pages/Chat/components/AiThreadsList/index.tsx:375
 msgid "Continue your last chat"
 msgstr "Continue your last chat"
 
@@ -302,8 +302,8 @@ msgstr "Deposited in Vault"
 msgid "Create strategy"
 msgstr "Create strategy"
 
-#: src/components/ConnectWalletModal/components/ChainConnect/index.tsx:267
-#: src/components/ConnectWalletModal/components/ChainConnect/index.tsx:356
+#: src/pages/components/ConnectWalletModal/components/ChainConnect/index.tsx:267
+#: src/pages/components/ConnectWalletModal/components/ChainConnect/index.tsx:356
 msgid "Bind failed"
 msgstr "Bind failed"
 
@@ -330,7 +330,7 @@ msgid "Friday"
 msgstr "Friday"
 
 #: src/pages/components/Header/components/MenuContent/index.tsx:74
-#: src/pages/MyPortfolio/index.tsx:136
+#: src/pages/MyPortfolio/index.tsx:135
 #: src/pages/Chat/components/ChatInput/components/StrategyInfo/components/MyStrategy/index.tsx:272
 msgid "My strategies"
 msgstr "My strategies"
@@ -381,8 +381,8 @@ msgstr "Try Starchild on telegram"
 #~ msgid "Agent details"
 #~ msgstr "Agent details"
 
-#: src/components/ConnectWalletModal/components/ChainConnect/index.tsx:212
-#: src/components/ConnectWalletModal/components/ChainConnect/index.tsx:311
+#: src/pages/components/ConnectWalletModal/components/ChainConnect/index.tsx:212
+#: src/pages/components/ConnectWalletModal/components/ChainConnect/index.tsx:311
 msgid "Login failed"
 msgstr "Login failed"
 
@@ -412,7 +412,7 @@ msgid "Nickname"
 msgstr "Nickname"
 
 #: src/pages/Insights/components/LiveChat/components/ChatItem/index.tsx:294
-#: src/pages/AgentHub/components/AgentCardSection/index.tsx:204
+#: src/pages/AgentHub/components/AgentCardSection/index.tsx:203
 msgid "View more"
 msgstr "View more"
 
@@ -436,7 +436,7 @@ msgstr "Transactions"
 msgid "The minimum trigger interval for the AI agent is 1 hour, and the minimum trigger interval for the Code agent is 20 minutes."
 msgstr "The minimum trigger interval for the AI agent is 1 hour, and the minimum trigger interval for the Code agent is 20 minutes."
 
-#: src/store/myagent/hooks.ts:57
+#: src/store/myagent/hooks.ts:55
 msgid "No current agent data or agentId found"
 msgstr "No current agent data or agentId found"
 
@@ -469,7 +469,7 @@ msgstr "Total trades"
 #~ msgid "My performance"
 #~ msgstr "My performance"
 
-#: src/components/ErrorBoundary/index.tsx:115
+#: src/pages/components/ErrorBoundary/index.tsx:115
 msgid "Oops! Something went wrong!"
 msgstr "Oops! Something went wrong!"
 
@@ -482,11 +482,11 @@ msgstr "Oops! Something went wrong!"
 #~ msgid "Overview"
 #~ msgstr "Overview"
 
-#: src/pages/MyPortfolio/index.tsx:147
+#: src/pages/MyPortfolio/index.tsx:146
 msgid "Launched"
 msgstr "Launched"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:317
+#: src/pages/Vaults/components/StrategyTable/index.tsx:318
 msgid "Leader"
 msgstr "Leader"
 
@@ -526,8 +526,8 @@ msgstr "Google SDK failed to load. Please refresh the page and try again."
 msgid "Hour"
 msgstr "Hour"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:316
-#: src/pages/VaultDetail/components/StrategyMarket/index.tsx:158
+#: src/pages/Vaults/components/StrategyTable/index.tsx:317
+#: src/pages/VaultDetail/components/StrategyMarket/index.tsx:159
 #: src/pages/MyPortfolio/components/MyVaults/index.tsx:210
 #: src/pages/MyPortfolio/components/MyStrategies/index.tsx:379
 msgid "Name"
@@ -537,7 +537,7 @@ msgstr "Name"
 msgid "Please generate valid code (Step 2) before starting Paper Trading."
 msgstr "Please generate valid code (Step 2) before starting Paper Trading."
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:475
+#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:478
 msgid "Regenerate"
 msgstr "Regenerate"
 
@@ -643,7 +643,7 @@ msgstr "Period APR"
 #~ msgid "Public"
 #~ msgstr "Public"
 
-#: src/store/myagent/hooks.ts:72
+#: src/store/myagent/hooks.ts:70
 msgid "Agent ID mismatch"
 msgstr "Agent ID mismatch"
 
@@ -686,13 +686,13 @@ msgstr "Paper trading has been automatically paused. Please click to restart. No
 msgid "What was the largest 24-hour ETH drop in the past 3 years?"
 msgstr "What was the largest 24-hour ETH drop in the past 3 years?"
 
-#: src/pages/VaultDetail/components/VaultPositionsOrders/components/VaultPositions/index.tsx:178
+#: src/pages/VaultDetail/components/VaultPositionsOrders/components/VaultPositions/index.tsx:179
 #: src/pages/VaultDetail/components/VaultPositionsOrders/components/VaultOrderHistory/index.tsx:91
 #: src/pages/VaultDetail/components/VaultPositionsOrders/components/VaultOpenOrders/index.tsx:91
 msgid "Symbol"
 msgstr "Symbol"
 
-#: src/components/ConnectWalletModal/components/ChainConnect/index.tsx:429
+#: src/pages/components/ConnectWalletModal/components/ChainConnect/index.tsx:429
 msgid "Rabby wallet not found"
 msgstr "Rabby wallet not found"
 
@@ -708,7 +708,7 @@ msgstr "Strategy deployed"
 #~ msgid "Modification in progress, please wait..."
 #~ msgstr "Modification in progress, please wait..."
 
-#: src/constants/agentHub.ts:26
+#: src/store/agenthub/agenthub.d.ts:178
 msgid "Indicator Hub"
 msgstr "Indicator hub"
 
@@ -786,7 +786,7 @@ msgstr "Copy failed"
 msgid "Step{stepIndex}"
 msgstr "Step{stepIndex}"
 
-#: src/pages/MyPortfolio/index.tsx:130
+#: src/pages/MyPortfolio/index.tsx:129
 msgid "My vaults portfolio"
 msgstr "My vaults portfolio"
 
@@ -798,7 +798,7 @@ msgstr "Web3 events"
 #~ msgid "Turn your idea into live strategy. e.g., Buy ETH when RSI < 30 on 15m chart."
 #~ msgstr "Turn your idea into live strategy. e.g., Buy ETH when RSI < 30 on 15m chart."
 
-#: src/components/Select/index.tsx:433
+#: src/components/Select/index.tsx:355
 msgid "Search"
 msgstr "Search"
 
@@ -870,7 +870,7 @@ msgstr "All-time APR"
 msgid "Pause Failed"
 msgstr "Pause Failed"
 
-#: src/pages/VaultDetail/components/VaultPositionsOrders/components/VaultPositions/index.tsx:193
+#: src/pages/VaultDetail/components/VaultPositionsOrders/components/VaultPositions/index.tsx:194
 #: src/pages/VaultDetail/components/VaultPositionsOrders/components/VaultOpenOrders/index.tsx:109
 msgid "Qty."
 msgstr "Qty."
@@ -939,8 +939,8 @@ msgstr ""
 "Enter your tokens (comma-separated): \n"
 "Example: btc, eth, sol"
 
-#: src/components/ConnectWalletModal/components/ChainConnect/index.tsx:255
-#: src/components/ConnectWalletModal/components/ChainConnect/index.tsx:344
+#: src/pages/components/ConnectWalletModal/components/ChainConnect/index.tsx:255
+#: src/pages/components/ConnectWalletModal/components/ChainConnect/index.tsx:344
 msgid "Bind successfully"
 msgstr "Bind successfully"
 
@@ -949,7 +949,7 @@ msgid "Deployment Process"
 msgstr "Deployment process"
 
 #. placeholder {0}: totalHistory > 0 && ` (${totalHistory})`
-#: src/pages/VaultDetail/components/VaultPositionsOrders/index.tsx:147
+#: src/pages/VaultDetail/components/VaultPositionsOrders/index.tsx:146
 msgid "History{0}"
 msgstr "History{0}"
 
@@ -1146,7 +1146,7 @@ msgstr "Total PnL"
 
 #. placeholder {0}: !isSubscribed ? 'subscribed' : 'unsubscribed'
 #: src/pages/AgentHub/components/AgentCardList/components/AgentCardWithImage/index.tsx:203
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCard/index.tsx:122
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCard/index.tsx:121
 msgid "Agent {title} was successfully {0}"
 msgstr "Agent {title} was successfully {0}"
 
@@ -1391,7 +1391,7 @@ msgstr "Pause"
 msgid "Quick Start with Default Tasks"
 msgstr "Quick start with default tasks"
 
-#: src/constants/agentHub.ts:63
+#: src/store/agenthub/agenthub.d.ts:215
 msgid "Your daily market intel. Fully automated"
 msgstr "Your daily market intel. Fully automated"
 
@@ -1453,7 +1453,7 @@ msgstr "Once generated, you can Simulation with virtual funds or deploy with rea
 msgid "Turns your text description into code."
 msgstr "Turns your text description into code."
 
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:588
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:587
 #: src/pages/AgentDetail/components/AgentShare/index.tsx:560
 msgid "Recent chats:"
 msgstr "Recent chats:"
@@ -1534,8 +1534,8 @@ msgstr "Discontinue Failed"
 #~ msgid "Profile Summary"
 #~ msgstr "Profile summary"
 
+#: src/store/agenthub/agenthub.d.ts:169
 #: src/pages/MyAgent/components/MyAgentsOverview/components/EmptyOverview/index.tsx:224
-#: src/constants/agentHub.ts:17
 msgid "Discover Agents"
 msgstr "Discover agents"
 
@@ -1572,7 +1572,7 @@ msgid "Time"
 msgstr "Time"
 
 #. placeholder {0}: totalPositions > 0 && ` (${totalPositions})`
-#: src/pages/VaultDetail/components/VaultPositionsOrders/index.tsx:135
+#: src/pages/VaultDetail/components/VaultPositionsOrders/index.tsx:134
 msgid "Positions{0}"
 msgstr "Positions{0}"
 
@@ -1673,11 +1673,11 @@ msgid "All"
 msgstr "All"
 
 #: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:246
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:543
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:542
 msgid "Created by"
 msgstr "Created by"
 
-#: src/pages/MyPortfolio/index.tsx:178
+#: src/pages/MyPortfolio/index.tsx:177
 msgid "My portfolio"
 msgstr "My portfolio"
 
@@ -1782,7 +1782,7 @@ msgstr "PnL"
 msgid "The minimum amount is {minDepositAmount}. Please enter a larger amount to continue."
 msgstr "The minimum amount is {minDepositAmount}. Please enter a larger amount to continue."
 
-#: src/constants/agentHub.ts:54
+#: src/store/agenthub/agenthub.d.ts:206
 msgid "Follow top voices. Act on expert insights"
 msgstr "Follow top voices. Act on expert insights"
 
@@ -1799,8 +1799,8 @@ msgstr "Follow top voices. Act on expert insights"
 msgid "Withdraw"
 msgstr "Withdraw"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:318
-#: src/pages/VaultDetail/components/StrategyMarket/index.tsx:162
+#: src/pages/Vaults/components/StrategyTable/index.tsx:319
+#: src/pages/VaultDetail/components/StrategyMarket/index.tsx:163
 #: src/pages/VaultDetail/components/PaperTradingPerformance/components/StrategyChartStats/index.tsx:108
 msgid "ROE"
 msgstr "ROE"
@@ -1838,7 +1838,7 @@ msgstr "Resubmit"
 msgid "Agents marketplace"
 msgstr "Agents marketplace"
 
-#: src/constants/agentHub.ts:72
+#: src/store/agenthub/agenthub.d.ts:224
 msgid "Live sentiment. Real-time momentum"
 msgstr "Live sentiment. Real-time momentum"
 
@@ -1907,7 +1907,7 @@ msgstr "My vault portfolio"
 msgid "Created time"
 msgstr "Created time"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:473
+#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:475
 msgid "Regenerate Code"
 msgstr "Regenerate Code"
 
@@ -1924,7 +1924,7 @@ msgstr "What new crypto projects launched last week or are launching next week?"
 msgid "You do not have permission to access, please login first."
 msgstr "You do not have permission to access, please login first."
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:324
+#: src/pages/Vaults/components/StrategyTable/index.tsx:325
 msgid "The biggest drop from the peak. Lower means less risk."
 msgstr "The biggest drop from the peak. Lower means less risk."
 
@@ -1990,7 +1990,7 @@ msgid "Signal"
 msgstr "Signal"
 
 #: src/pages/components/Header/components/MenuContent/components/ThreadList/components/Operator/index.tsx:153
-#: src/pages/Chat/components/AiThreadsList/index.tsx:304
+#: src/pages/Chat/components/AiThreadsList/index.tsx:303
 #: src/pages/Chat/components/AiThreadsList/components/ThreadItem/index.tsx:217
 msgid "Conversation Deleted"
 msgstr "Conversation deleted"
@@ -1999,7 +1999,7 @@ msgstr "Conversation deleted"
 msgid "Deploy the smart contract that mirrors your Agent's signals. Retail users will deposit into this Vault."
 msgstr "Deploy the smart contract that mirrors your Agent's signals. Retail users will deposit into this Vault."
 
-#: src/components/ConnectWalletModal/components/ChainConnect/index.tsx:430
+#: src/pages/components/ConnectWalletModal/components/ChainConnect/index.tsx:430
 msgid "Please install Rabby wallet extension"
 msgstr "Please install Rabby wallet extension"
 
@@ -2102,7 +2102,7 @@ msgstr "Refine logic, check paper trade, or launch to earn..."
 msgid "Claimable"
 msgstr "Claimable"
 
-#: src/pages/MyPortfolio/index.tsx:165
+#: src/pages/MyPortfolio/index.tsx:164
 msgid "Archived"
 msgstr "Archived"
 
@@ -2143,7 +2143,7 @@ msgstr "Start with a few defaults or explore thousands of strategies in our Agen
 msgid "Any large wallet transactions on-chain today?"
 msgstr "Any large wallet transactions on-chain today?"
 
-#: src/pages/VaultDetail/components/VaultPositionsOrders/components/VaultPositions/index.tsx:249
+#: src/pages/VaultDetail/components/VaultPositionsOrders/components/VaultPositions/index.tsx:250
 msgid "Liq. price"
 msgstr "Liq. price"
 
@@ -2151,7 +2151,7 @@ msgstr "Liq. price"
 msgid "Hyperliquid Balance"
 msgstr "Hyperliquid Balance"
 
-#: src/constants/agentHub.ts:35
+#: src/store/agenthub/agenthub.d.ts:187
 msgid "Strategy Lab"
 msgstr "Strategy lab"
 
@@ -2159,7 +2159,7 @@ msgstr "Strategy lab"
 msgid "Paused"
 msgstr "Paused"
 
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:623
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:622
 #: src/pages/AgentDetail/components/Preview/index.tsx:178
 msgid "Details"
 msgstr "Details"
@@ -2251,7 +2251,7 @@ msgstr "QR code expired"
 #~ msgid "Generating Code..."
 #~ msgstr "Generating code..."
 
-#: src/components/NetworkIcon/index.tsx:61
+#: src/pages/components/NetworkIcon/index.tsx:61
 msgid "Unsupported Chain"
 msgstr "Unsupported chain"
 
@@ -2352,7 +2352,7 @@ msgid "Ask AI anything..."
 msgstr "Ask AI anything..."
 
 #: src/pages/AgentHub/components/AgentTableList/components/AgentTable.tsx:249
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:552
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCardDetail/index.tsx:551
 msgid "Subscribers"
 msgstr "Subscribers"
 
@@ -2387,7 +2387,7 @@ msgstr "Did any exchange see a sudden spike in long positions or short positions
 #~ msgid "{vault_age} days"
 #~ msgstr "{vault_age} days"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:319
+#: src/pages/Vaults/components/StrategyTable/index.tsx:320
 #: src/pages/VaultDetail/components/PaperTradingPerformance/components/StrategyChartStats/index.tsx:95
 #: src/pages/MyPortfolio/components/MyVaults/index.tsx:255
 #: src/pages/MyPortfolio/components/MyStrategies/index.tsx:428
@@ -2567,7 +2567,7 @@ msgstr "Price"
 #~ msgid "AI knows before you do."
 #~ msgstr "AI knows before you do."
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:336
+#: src/pages/Vaults/components/StrategyTable/index.tsx:337
 msgid "Total follower assets. Higher TVF means more interest."
 msgstr "Total follower assets. Higher TVF means more interest."
 
@@ -2582,7 +2582,7 @@ msgstr "GIF images will be uploaded as original to preserve animation"
 msgid "{sourceListLength} sources"
 msgstr "{sourceListLength} sources"
 
-#: src/components/SwitchChainModal/index.tsx:128
+#: src/pages/components/SwitchChainModal/index.tsx:128
 msgid "Switch network"
 msgstr "Switch network"
 
@@ -2634,7 +2634,7 @@ msgid "Total APR"
 msgstr "Total APR"
 
 #: src/pages/components/Header/components/Preference/index.tsx:220
-#: src/pages/Vaults/components/StrategyTable/index.tsx:364
+#: src/pages/Vaults/components/StrategyTable/index.tsx:365
 msgid "Watchlist"
 msgstr "Watchlist"
 
@@ -2698,7 +2698,7 @@ msgstr "Trigger time: {formatTime}"
 msgid "Choose from these ready-made tasks to get started instantly, or type your own request below to create a custom task."
 msgstr "Choose from these ready-made tasks to get started instantly, or type your own request below to create a custom task."
 
-#: src/constants/agentHub.ts:71
+#: src/store/agenthub/agenthub.d.ts:223
 msgid "Market Pulse"
 msgstr "Market pulse"
 
@@ -2709,7 +2709,7 @@ msgstr "Strategy Layer Flow"
 #. placeholder {0}: 1
 #. placeholder {0}: selectThreadIds.length
 #: src/pages/components/Header/components/MenuContent/components/ThreadList/components/Operator/index.tsx:156
-#: src/pages/Chat/components/AiThreadsList/index.tsx:307
+#: src/pages/Chat/components/AiThreadsList/index.tsx:306
 msgid "<0>{0}</0> conversations were successfully deleted."
 msgstr "<0>{0}</0> conversations were successfully deleted."
 
@@ -2730,7 +2730,7 @@ msgstr "Launch to production"
 #~ msgid "Retail users can deposit into your Vault, and you earn performance fees."
 #~ msgstr "Retail users can deposit into your Vault, and you earn performance fees."
 
-#: src/pages/VaultDetail/components/VaultPositionsOrders/components/VaultPositions/index.tsx:217
+#: src/pages/VaultDetail/components/VaultPositionsOrders/components/VaultPositions/index.tsx:218
 msgid "Mark price"
 msgstr "Mark price"
 
@@ -2741,7 +2741,7 @@ msgstr "Mark price"
 #: src/pages/MyPortfolio/components/MyStrategies/components/BottomRight/index.tsx:147
 #: src/pages/MyAgent/components/DeleteMyAgentModal/index.tsx:203
 #: src/pages/Chat/components/Shortcuts/components/ShortcutsEdit/index.tsx:272
-#: src/pages/Chat/components/AiThreadsList/index.tsx:429
+#: src/pages/Chat/components/AiThreadsList/index.tsx:427
 #: src/pages/AgentDetail/components/AgentActions/translations.tsx:14
 msgid "Delete"
 msgstr "Delete"
@@ -2772,7 +2772,7 @@ msgstr "Available"
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/components/LayerFlowModal/nodes/LayerNode.tsx:834
 #: src/pages/CreateStrategy/components/StrategyInfo/components/DeployModal/components/DeployForm/index.tsx:217
 #: src/pages/Chat/components/ContentItem/index.tsx:170
-#: src/pages/Chat/components/AiThreadsList/index.tsx:423
+#: src/pages/Chat/components/AiThreadsList/index.tsx:421
 msgid "Cancel"
 msgstr "Cancel"
 
@@ -2807,7 +2807,7 @@ msgstr "Trades per day"
 #~ msgstr "How to create an agent"
 
 #. placeholder {0}: totalOrders > 0 && ` (${totalOrders})`
-#: src/pages/VaultDetail/components/VaultPositionsOrders/index.tsx:141
+#: src/pages/VaultDetail/components/VaultPositionsOrders/index.tsx:140
 msgid "Open orders{0}"
 msgstr "Open orders{0}"
 
@@ -2854,11 +2854,11 @@ msgstr "Avatar updated successfully"
 #~ msgid "From"
 #~ msgstr "From"
 
-#: src/pages/MyPortfolio/index.tsx:156
+#: src/pages/MyPortfolio/index.tsx:155
 msgid "Draft"
 msgstr "Draft"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:370
+#: src/pages/Vaults/components/StrategyTable/index.tsx:371
 msgid "My strategy"
 msgstr "My strategy"
 
@@ -3022,7 +3022,7 @@ msgstr "Signals"
 
 #: src/pages/components/ShareModal/index.tsx:467
 #: src/pages/Vaults/components/VaultsWalletConnect/components/OperationSelector/index.tsx:173
-#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:479
+#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:482
 #: src/pages/AgentDetail/components/Code/index.tsx:480
 #: src/pages/AgentDetail/components/ChatHistory/components/HistoryContent/index.tsx:176
 msgid "Copy"
@@ -3074,7 +3074,7 @@ msgstr "Home"
 
 #: src/pages/AgentHub/components/AgentTableList/components/AgentTableRow.tsx:148
 #: src/pages/AgentHub/components/AgentCardList/components/AgentCardWithImage/index.tsx:213
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCard/index.tsx:132
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCard/index.tsx:131
 msgid "Failed to toggle subscription"
 msgstr "Failed to toggle subscription"
 
@@ -3238,9 +3238,9 @@ msgstr "No address available"
 msgid "Feedback Received"
 msgstr "Feedback received"
 
+#: src/pages/components/ErrorBoundary/index.tsx:124
 #: src/pages/UseCases/components/UseCasesTabView/index.tsx:605
 #: src/pages/Chat/components/ChatInput/components/Recommendations/index.tsx:225
-#: src/components/ErrorBoundary/index.tsx:124
 msgid "Refresh"
 msgstr "Refresh"
 
@@ -3278,7 +3278,7 @@ msgstr "Could you please tell us why you dislike this information?<0/>Your feedb
 msgid "Starchild use cases"
 msgstr "Starchild use cases"
 
-#: src/pages/VaultDetail/components/VaultPositionsOrders/components/VaultPositions/index.tsx:260
+#: src/pages/VaultDetail/components/VaultPositionsOrders/components/VaultPositions/index.tsx:261
 msgid "Margin"
 msgstr "Margin"
 
@@ -3315,7 +3315,7 @@ msgstr "Welcome to<0/>Starchild AI agent"
 msgid "Agent not found"
 msgstr "Agent not found"
 
-#: src/constants/agentHub.ts:45
+#: src/store/agenthub/agenthub.d.ts:197
 msgid "Scan the market. Spot real-time opportunities"
 msgstr "Scan the market. Spot real-time opportunities"
 
@@ -3418,7 +3418,7 @@ msgstr "Transferred"
 msgid "What major Web3 conferences or summits are happening next month?"
 msgstr "What major Web3 conferences or summits are happening next month?"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:386
+#: src/pages/Vaults/components/StrategyTable/index.tsx:387
 msgid "Search by name or leader..."
 msgstr "Search by name or leader..."
 
@@ -3446,7 +3446,7 @@ msgstr "Be instantly notified when the price of Bitcoin crosses key thresholds â
 #. placeholder {0}: !isSubscribed ? 'Subscribed' : 'Unsubscribed'
 #: src/pages/AgentHub/components/AgentTableList/components/AgentTableRow.tsx:136
 #: src/pages/AgentHub/components/AgentCardList/components/AgentCardWithImage/index.tsx:201
-#: src/pages/AgentHub/components/AgentCardList/components/AgentCard/index.tsx:120
+#: src/pages/AgentHub/components/AgentCardList/components/AgentCard/index.tsx:119
 msgid "{0} Successfully"
 msgstr "{0} Successfully"
 
@@ -3529,7 +3529,7 @@ msgstr "My fund"
 msgid "What's the move today?"
 msgstr "What's the move today?"
 
-#: src/constants/agentHub.ts:81
+#: src/store/agenthub/agenthub.d.ts:233
 msgid "Uncover the fundamentals behind the tokens"
 msgstr "Uncover the fundamentals behind the tokens"
 
@@ -3671,7 +3671,7 @@ msgid "This strategy is private and can only be viewed by its owner."
 msgstr "This strategy is private and can only be viewed by its owner."
 
 #: src/pages/components/Header/index.tsx:306
-#: src/pages/Vaults/components/StrategyTable/index.tsx:358
+#: src/pages/Vaults/components/StrategyTable/index.tsx:359
 #: src/pages/VaultDetail/components/VaultDetailNavigation/index.tsx:53
 msgid "Leaderboard"
 msgstr "Leaderboard"
@@ -3807,11 +3807,11 @@ msgstr "AI experience"
 #~ msgid "Proportion"
 #~ msgstr "Proportion"
 
-#: src/constants/agentHub.ts:53
+#: src/store/agenthub/agenthub.d.ts:205
 msgid "KOL Radar"
 msgstr "KOL radar"
 
-#: src/pages/VaultDetail/components/VaultPositionsOrders/components/VaultPositions/index.tsx:209
+#: src/pages/VaultDetail/components/VaultPositionsOrders/components/VaultPositions/index.tsx:210
 msgid "Entry price"
 msgstr "Entry price"
 
@@ -3819,7 +3819,7 @@ msgstr "Entry price"
 msgid "Cancelled"
 msgstr "Cancelled"
 
-#: src/constants/agentHub.ts:44
+#: src/store/agenthub/agenthub.d.ts:196
 msgid "Signal Scanner"
 msgstr "Signal scanner"
 
@@ -3827,7 +3827,7 @@ msgstr "Signal scanner"
 #~ msgid "Decision:"
 #~ msgstr "Decision:"
 
-#: src/constants/agentHub.ts:36
+#: src/store/agenthub/agenthub.d.ts:188
 msgid "Build, test, and refine your trading edge"
 msgstr "Build, test, and refine your trading edge"
 
@@ -3835,12 +3835,12 @@ msgstr "Build, test, and refine your trading edge"
 msgid "The minimum amount is {minWithdrawalAmount}. Please enter a larger amount to continue."
 msgstr "The minimum amount is {minWithdrawalAmount}. Please enter a larger amount to continue."
 
-#: src/pages/VaultDetail/components/VaultPositionsOrders/components/VaultPositions/index.tsx:228
+#: src/pages/VaultDetail/components/VaultPositionsOrders/components/VaultPositions/index.tsx:229
 msgid "PnL (ROE%)"
 msgstr "PnL (ROE%)"
 
 #: src/utils/chartTooltipUtils.ts:30
-#: src/pages/VaultDetail/components/VaultPositionsOrders/components/VaultPositions/index.tsx:203
+#: src/pages/VaultDetail/components/VaultPositionsOrders/components/VaultPositions/index.tsx:204
 #: src/pages/VaultDetail/components/VaultPositionsOrders/components/VaultOrderHistory/index.tsx:127
 #: src/pages/VaultDetail/components/VaultPositionsOrders/components/VaultOpenOrders/index.tsx:129
 msgid "Value"
@@ -3869,14 +3869,14 @@ msgstr "Novice"
 #~ msgid "24h change"
 #~ msgstr "24h change"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:325
+#: src/pages/Vaults/components/StrategyTable/index.tsx:326
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Backtest/components/DataList/index.tsx:200
 #: src/pages/AgentDetail/components/Preview/components/DataList/index.tsx:165
 msgid "Max drawdown"
 msgstr "Max drawdown"
 
 #: src/pages/components/ShareModal/index.tsx:283
-#: src/pages/Vaults/components/StrategyTable/index.tsx:344
+#: src/pages/Vaults/components/StrategyTable/index.tsx:345
 msgid "Followers"
 msgstr "Followers"
 
@@ -3945,7 +3945,7 @@ msgstr "Update time"
 #~ msgid "Indicators"
 #~ msgstr "Indicators"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:347
+#: src/pages/Vaults/components/StrategyTable/index.tsx:348
 msgid "Snapshot"
 msgstr "Snapshot"
 
@@ -3989,11 +3989,11 @@ msgstr "Strategy info"
 
 #: src/pages/CreateStrategy/components/StrategyInfo/components/DeployModal/components/DeploySuccess/index.tsx:134
 #: src/pages/CreateStrategy/components/StrategyInfo/components/DeployModal/components/DeployFailed/index.tsx:111
-#: src/components/BottomSheet/index.tsx:363
+#: src/components/BottomSheet/index.tsx:354
 msgid "Close"
 msgstr "Close"
 
-#: src/components/ConnectWalletModal/index.tsx:109
+#: src/pages/components/ConnectWalletModal/index.tsx:109
 msgid "Login"
 msgstr "Login"
 

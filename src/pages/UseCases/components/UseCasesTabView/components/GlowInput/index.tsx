@@ -8,7 +8,7 @@ import {
   TYPEWRITER_START_DELAY,
   TYPEWRITER_CHAR_INTERVAL,
   BUTTON_SCALE_DURATION,
-} from 'constants/useCases'
+} from 'store/usecases/usecases.d'
 import usePrevious from 'hooks/usePrevious'
 import { vm } from 'pages/helper'
 

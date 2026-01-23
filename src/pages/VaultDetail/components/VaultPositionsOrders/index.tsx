@@ -2,7 +2,7 @@ import { memo, useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
-import MoveTabList, { MoveType } from 'components/MoveTabList'
+import TabList from 'components/TabList'
 import { useVaultPositions, useVaultOpenOrdersPaginated, useVaultOrderHistoryPaginated } from 'store/vaultsdetail/hooks'
 import VaultPositions from './components/VaultPositions'
 import VaultOpenOrders from './components/VaultOpenOrders'
@@ -14,7 +14,6 @@ import { DETAIL_TYPE } from 'store/vaultsdetail/vaultsdetail'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from 'store'
 import { setShouldRefreshData } from 'store/createstrategy/reducer'
-import TabList from 'components/TabList'
 import { IconBase } from 'components/Icons'
 import { useCurrentRouter } from 'store/application/hooks'
 import { isMatchCurrentRouter } from 'utils'
@@ -34,7 +33,7 @@ const TableContainer = styled.div<{ $isShowStrategyMarket: boolean; $isVaultDeta
   gap: 12px;
   padding: 20px;
   transition: all ${ANI_DURATION}s;
-  .move-tab-item {
+  .tab-item {
     height: 40px;
     padding: 0;
     font-size: 13px;
@@ -153,7 +152,7 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vault
 
   return (
     <TableContainer $isShowStrategyMarket={isShowStrategyMarket} $isVaultDetailPage={isVaultDetailPage}>
-      <MoveTabList gap={20} tabList={subTabList} tabKey={activeSubTab} />
+      <TabList gap={20} tabList={subTabList} tabKey={activeSubTab} />
       <TableContent>
         {activeSubTab === 0 ? (
           <VaultPositions activeTab={activeTab} vaultId={vaultId} strategyId={strategyId} />

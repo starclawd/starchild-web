@@ -4,16 +4,10 @@
  * 用于将子组件渲染到指定DOM节点
  */
 
-import { ReactNode } from 'react'
 import { createPortal } from 'react-dom'
+import type { PortalProps } from './types'
 
-/**
- * Portal组件属性接口
- */
-interface PortalProps {
-  children: ReactNode // 需要传送的子组件
-  rootEl?: HTMLDivElement | null | undefined // 目标DOM节点，默认为document.body
-}
+export type { PortalProps }
 
 /**
  * Portal组件

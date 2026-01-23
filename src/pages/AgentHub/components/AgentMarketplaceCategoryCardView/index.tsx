@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 import { memo, useEffect, useCallback, useRef, useMemo } from 'react'
 import { vm } from 'pages/helper'
-import { AGENT_CATEGORIES, AGENT_HUB_TYPE } from 'constants/agentHub'
+import { AGENT_CATEGORIES, AGENT_HUB_TYPE } from 'store/agenthub/agenthub.d'
 import AgentCardSection from '../AgentCardSection'
 import {
   useGetAgentInfoList,

@@ -5,14 +5,12 @@ import {
   useLazyGetTokensListQuery,
   useLazySearchAgentsQuery,
 } from 'api/agentHub'
-import { AgentInfo, AgentInfoListParams } from '../agenthub'
+import { AgentInfoListParams, AGENT_HUB_TYPE } from 'store/agenthub/agenthub.d'
 import {
   convertApiTaskListToAgentInfoList,
   convertApiKolListToAgentInfoList,
   convertApiTokenListToAgentInfoList,
 } from '../utils'
-import { useUserInfo } from '../../login/hooks'
-import { AGENT_HUB_TYPE } from 'constants/agentHub'
 import { useAgentInfoList, useIsLoading, useIsLoadMoreLoading } from './useAgentInfo'
 import { useSearchedAgentInfoList } from './useSearch'
 

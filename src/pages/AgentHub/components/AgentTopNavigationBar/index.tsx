@@ -14,7 +14,7 @@ import {
   AUTO_BRIEFING,
   MARKET_PULSE,
   TOKEN_DEEP_DIVE,
-} from 'constants/agentHub'
+} from 'store/agenthub/agenthub.d'
 import { parsedQueryString } from 'hooks/useParsedQueryString'
 
 const AgentTopNavigationBarWrapper = styled.div`

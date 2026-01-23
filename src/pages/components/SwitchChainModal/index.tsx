@@ -12,7 +12,7 @@ import { useSwitchChainModalToggle, useIsMobile, useModalOpen } from 'store/appl
 import { ApplicationModal } from 'store/application/application'
 import { useAppKitNetwork } from '@reown/appkit/react'
 import { Chain, CHAIN_INFO } from 'constants/chainInfo'
-import NetworkIcon from 'components/NetworkIcon'
+import NetworkIcon from 'pages/components/NetworkIcon'
 import { ANI_DURATION } from 'constants/index'
 
 // 桌面端模态框内容容器

@@ -7,7 +7,7 @@ import UseCasesTabBar from '../../UseCases/components/UseCasesTabBar'
 import UseCasesTabView from '../../UseCases/components/UseCasesTabView'
 import MobileHeader from '../components/MobileHeader'
 import { useActiveTab, useIsPlaying } from 'store/usecases/hooks/useUseCasesHooks'
-import { TAB_CONTENT_CONFIG, TabKey } from 'constants/useCases'
+import { TAB_CONTENT_CONFIG, TabKey } from 'store/usecases/usecases.d'
 
 const MobileUseCasesWrapper = styled(BottomSafeArea)<{ $isPlaying?: boolean }>`
   display: flex;

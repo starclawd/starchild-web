@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import styled from 'styled-components'
-import TabList from 'components/TabList'
+import TabList, { TAB_TYPE } from 'components/TabList'
 import { msg, t } from '@lingui/core/macro'
 import { CHAT_TIME_RANGE } from 'store/vaultsdetail/vaultsdetail.d'
 import { useLingui } from '@lingui/react/macro'
@@ -46,7 +46,7 @@ const TimeRangeSelector = memo<TimeRangeSelectorProps>(({ chartTimeRange, setCha
 
   return (
     <SelectorContainer>
-      <TabList tabKey={chartTimeRange} tabList={timeRangeOptions} />
+      <TabList tabKey={chartTimeRange} tabList={timeRangeOptions} tabType={TAB_TYPE.SIMPLE} />
     </SelectorContainer>
   )
 })

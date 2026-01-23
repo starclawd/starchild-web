@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import Transactions from './components/Transactions'
 import { Trans } from '@lingui/react/macro'
 import Performance from './components/Performance'
-import TabList from 'components/TabList'
+import TabList, { TAB_TYPE } from 'components/TabList'
 import { IconBase } from 'components/Icons'
 import MyVaults from './components/MyVaults'
 import MyStrategies from './components/MyStrategies'
@@ -13,7 +13,6 @@ import { useMyStrategies } from 'store/mystrategy/hooks/useMyStrategies'
 import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
 import { MY_PORTFOLIO_TAB_KEY, STRATEGY_TAB_KEY } from 'store/mystrategycache/mystrategycache'
 import { WALLET_CONNECT_MODE } from 'store/vaults/vaults'
-import MoveTabList, { MoveType } from 'components/MoveTabList'
 
 const MyPortfolioWrapper = styled.div`
   display: flex;
@@ -59,7 +58,7 @@ const TabListWrapper = styled.div`
   gap: 24px;
   .tab-list-all {
     height: 48px;
-    .move-tab-item {
+    .tab-item {
       padding: 0;
       font-size: 16px;
       font-style: normal;
@@ -179,9 +178,14 @@ export default memo(function MyPortfolio() {
             </Title>
             <Performance />
             <TabListWrapper>
-              <MoveTabList className='tab-list-all' gap={20} tabKey={activeTab} tabList={tabList} />
+              <TabList className='tab-list-all' gap={20} tabKey={activeTab} tabList={tabList} />
               {activeTab === MY_PORTFOLIO_TAB_KEY.STRATEGY && (
-                <TabList className='tab-list-strategy' tabKey={strategyTabKey} tabList={strategyTabList} />
+                <TabList
+                  className='tab-list-strategy'
+                  tabKey={strategyTabKey}
+                  tabList={strategyTabList}
+                  tabType={TAB_TYPE.SIMPLE}
+                />
               )}
             </TabListWrapper>
           </LeftTopContent>

@@ -1,4 +1,4 @@
-import { AGENT_HUB_TYPE } from 'constants/agentHub'
+import { AGENT_HUB_TYPE } from 'store/agenthub/agenthub.d'
 
 export enum BACKTEST_STATUS {
   RUNNING = 'running',

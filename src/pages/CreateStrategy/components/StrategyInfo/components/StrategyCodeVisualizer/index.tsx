@@ -1,4 +1,4 @@
-import { memo, useMemo, useCallback, useRef } from 'react'
+import { memo, useMemo } from 'react'
 import {
   ReactFlow,
   Node,
@@ -14,7 +14,6 @@ import '@xyflow/react/dist/style.css'
 import styled, { css, useTheme } from 'styled-components'
 import { ParsedStrategy } from 'utils/parseStrategyCode'
 import { strategyConfigToVisualization, StrategyConfig } from 'utils/strategyConfigToVisualization'
-import { isNewCodeFormat } from 'utils/extractExecutableCode'
 import { vm } from 'pages/helper'
 
 // Custom Node Components

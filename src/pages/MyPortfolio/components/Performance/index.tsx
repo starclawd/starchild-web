@@ -3,7 +3,7 @@ import { IconBase } from 'components/Icons'
 import { memo, useMemo, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { ANI_DURATION } from 'constants/index'
-import TabList from 'components/TabList'
+import TabList, { TAB_TYPE } from 'components/TabList'
 
 const PerformanceWrapper = styled.div`
   display: flex;
@@ -148,7 +148,7 @@ export default memo(function Performance() {
           <PnlInfo>
             <span>
               <Trans>{currentDate} PnL</Trans>
-              <TabList tabKey={currentDate} tabList={dateList} />
+              <TabList tabKey={currentDate} tabList={dateList} tabType={TAB_TYPE.SIMPLE} />
             </span>
             <span>--</span>
           </PnlInfo>

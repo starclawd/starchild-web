@@ -2,6 +2,14 @@ import styled, { keyframes, css } from 'styled-components'
 import { memo } from 'react'
 import { vm } from 'pages/helper'
 import { useIsMobile } from 'store/application/hooks'
+import type {
+  SkeletonProps,
+  SkeletonCircleProps,
+  SkeletonTextProps,
+  SkeletonMultilineTextProps,
+} from './types'
+
+export type { SkeletonProps, SkeletonCircleProps, SkeletonTextProps, SkeletonMultilineTextProps }
 
 // 动画常量
 const ANIMATION_DURATION = '1.5s'
@@ -69,28 +77,6 @@ const SkeletonContainer = styled.div`
       gap: ${vm(8)};
     `}
 `
-
-// 接口定义
-interface SkeletonProps {
-  width?: string
-  height?: string
-  borderRadius?: string
-  className?: string
-}
-
-interface SkeletonCircleProps {
-  size?: string
-  className?: string
-}
-
-interface SkeletonTextProps extends SkeletonProps {
-  lines?: never // 确保不会意外传递 lines 参数
-}
-
-interface SkeletonMultilineTextProps {
-  lines?: number
-  className?: string
-}
 
 // 基础骨架屏组件
 export const Skeleton = memo(function Skeleton({ width, height, borderRadius, className }: SkeletonProps) {

@@ -1,7 +1,6 @@
 import { memo, useCallback, useState } from 'react'
 import { Trans } from '@lingui/react'
-import { AGENT_HUB_TYPE } from 'constants/agentHub'
-import { AgentCategory } from 'store/agenthub/agenthub'
+import { AGENT_HUB_TYPE, AgentCategory } from 'store/agenthub/agenthub.d'
 import MobileAgentHubHeader from '../MobileAgentHubHeader'
 import AgentHubPage from 'pages/AgentHub/components/AgentHubPage'
 import BottomSheet from 'components/BottomSheet'

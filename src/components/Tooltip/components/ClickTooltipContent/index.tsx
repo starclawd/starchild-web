@@ -4,7 +4,7 @@
  * 支持点击显示和 3 秒后自动隐藏
  */
 import { useCallback, useRef, useState, useEffect } from 'react'
-import TooltipContent, { ChildrenWrapper, TooltipContentProps } from './TooltipContent'
+import TooltipContent, { ChildrenWrapper, TooltipContentProps } from 'components/Tooltip/components/TooltipContent'
 import { ANI_DURATION } from 'constants/index'
 
 const DISAPPEAR_TIME = 2000
