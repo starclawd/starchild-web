@@ -1,9 +1,9 @@
 import styled, { css } from 'styled-components'
-import { memo, useCallback, useMemo, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { IconBase } from 'components/Icons'
 import InputArea from 'components/InputArea'
 import { vm } from 'pages/helper'
-import { t } from '@lingui/core/macro'
+import { msg } from '@lingui/core/macro'
 import { ButtonCommon } from 'components/Button'
 import { useSendChatUserContent } from 'store/createstrategy/hooks/useStream'
 import { useIsLoadingChatStream } from 'store/createstrategy/hooks/useLoadingState'
@@ -13,13 +13,95 @@ import { isMatchCurrentRouter } from 'utils'
 import { useChatValue } from 'store/createstrategy/hooks/useChatContent'
 import { useResetAllState } from 'store/createstrategy/hooks/useResetAllState'
 // import ModeSelect from 'pages/Chat/components/ChatInput/components/ModeSelect'
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import { useIsLogin } from 'store/login/hooks'
 import { useCreateStrategyDetail } from 'store/createstrategy/hooks/useCreateStrategyDetail'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useUserConfig } from 'store/createstrategy/hooks/useUserConfig'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useTheme } from 'store/themecache/hooks'
+
+// 打字机效果的 placeholder 数组
+
+
+// 打字机效果 hook
+function useTypewriterPlaceholder(enabled: boolean, userHasInput: boolean) {
+   const { t } = useLingui()
+  const [displayText, setDisplayText] = useState('')
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [phase, setPhase] = useState<'typing' | 'waiting' | 'deleting'>('typing')
+  const charIndexRef = useRef(0)
+  const prevUserHasInputRef = useRef(userHasInput)
+
+  const TYPEWRITER_PLACEHOLDERS = useMemo(() => {
+    return [
+      t(msg`Turn your idea into live strategy. e.g., "I have 1,000 USDC. Grow it safely while I sleep. No degen stuff."`),
+      t(msg`Turn your idea into live strategy. e.g., "I need to pay for my vacation next month. Give me a strategy with 20% upside."`),
+      t(msg`Turn your idea into live strategy. e.g., "Everything is dumped too hard. It\'s time for a mean reversion bounce."`),
+    ]
+  }, [t])
+
+  // 当用户从有输入变为无输入时，重置动画
+  useEffect(() => {
+    if (prevUserHasInputRef.current && !userHasInput && enabled) {
+      charIndexRef.current = 0
+      setDisplayText('')
+      setCurrentIndex(0)
+      setPhase('typing')
+    }
+    prevUserHasInputRef.current = userHasInput
+  }, [userHasInput, enabled])
+
+  useEffect(() => {
+    // 如果用户有输入，暂停动画
+    if (userHasInput) {
+      return
+    }
+
+    // 如果未启用，返回空
+    if (!enabled) {
+      setDisplayText('')
+      return
+    }
+
+    const currentText = TYPEWRITER_PLACEHOLDERS[currentIndex]
+
+    if (phase === 'typing') {
+      // 正在打字
+      if (charIndexRef.current < currentText.length) {
+        const timeout = setTimeout(() => {
+          charIndexRef.current += 1
+          setDisplayText(currentText.slice(0, charIndexRef.current))
+        }, 30) // 打字速度 30ms/字符
+        return () => clearTimeout(timeout)
+      } else {
+        // 打字完成，进入等待阶段
+        setPhase('waiting')
+      }
+    } else if (phase === 'waiting') {
+      // 等待 3 秒
+      const timeout = setTimeout(() => {
+        setPhase('deleting')
+      }, 3000)
+      return () => clearTimeout(timeout)
+    } else if (phase === 'deleting') {
+      // 正在删除
+      if (charIndexRef.current > 0) {
+        const timeout = setTimeout(() => {
+          charIndexRef.current -= 1
+          setDisplayText(currentText.slice(0, charIndexRef.current))
+        }, 15) // 删除速度 15ms/字符
+        return () => clearTimeout(timeout)
+      } else {
+        // 删除完成，切换到下一句
+        setCurrentIndex((prev) => (prev + 1) % TYPEWRITER_PLACEHOLDERS.length)
+        setPhase('typing')
+      }
+    }
+  }, [enabled, userHasInput, displayText, currentIndex, phase, TYPEWRITER_PLACEHOLDERS])
+
+  return userHasInput ? '' : displayText
+}
 
 const ChatInputWrapper = styled.div`
   position: relative;
@@ -112,12 +194,6 @@ const InputWrapper = styled.div<{ $isChatPage: boolean; $isMultiline: boolean }>
   flex-shrink: 1;
   z-index: 2;
 
-  textarea {
-    grid-column: 1;
-    grid-row: 1;
-    min-width: ${({ $isMultiline }) => ($isMultiline ? '100%' : '200px')};
-  }
-
   /* 单行模式下SendButton在第二列 */
   ${({ $isMultiline }) =>
     !$isMultiline &&
@@ -155,6 +231,36 @@ const InputWrapper = styled.div<{ $isChatPage: boolean; $isMultiline: boolean }>
         `}
 `
 
+// 自定义打字机 placeholder 覆盖层
+const TypewriterPlaceholder = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  color: ${({ theme }) => theme.black300};
+  pointer-events: none;
+  white-space: pre-wrap;
+  word-break: break-word;
+  z-index: 0;
+  ${({ theme }) =>
+    theme.isMobile &&
+    css`
+      font-size: 0.16rem;
+      font-weight: 500;
+      line-height: 0.24rem;
+    `}
+`
+
+const InputAreaWrapper = styled.div`
+  position: relative;
+  grid-column: 1;
+  grid-row: 1;
+  width: 100%;
+`
+
 const Operator = styled.div<{ $isChatPage: boolean }>`
   display: flex;
   align-items: center;
@@ -178,6 +284,7 @@ const SendButton = styled(ButtonCommon)<{ $disabled: boolean }>`
 `
 
 export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: boolean }) {
+  const { t } = useLingui()
   const theme = useTheme()
   const toast = useToast()
   const isLogin = useIsLogin()
@@ -204,6 +311,11 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
   const inputDisabled = useMemo(() => {
     return !!strategy_config && !isLogin
   }, [strategy_config, isLogin])
+
+  // 打字机效果 placeholder
+  const userHasInput = !!value?.trim()
+  const typewriterPlaceholder = useTypewriterPlaceholder(isChatPage, userHasInput)
+
   const handleWrapperClick = useCallback(() => {
     inputRef.current?.focus()
   }, [])
@@ -233,7 +345,7 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
     }
     if (!can_create_more && !strategyId) {
       toast({
-        title: t`Create strategy failed`,
+        title: t(msg`Create strategy failed`),
         description: t`Slot limit reached (${strategy_count}/${strategy_limit})! Boost your current strategy's APR to unlock more slots.`,
         status: TOAST_STATUS.ERROR,
         typeIcon: 'icon-create-strategy',
@@ -261,6 +373,7 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
     strategy_count,
     strategy_limit,
     theme.black0,
+    t,
     toast,
     resetAllState,
     sendChatUserContent,
@@ -295,19 +408,20 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
       <ChatInputContentWrapper $isChatPage={isChatPage} $value={value}>
         <ClickWrapper onClick={handleWrapperClick}></ClickWrapper>
         <InputWrapper onClick={handleWrapperClick} $isChatPage={isChatPage} $isMultiline={isMultiline}>
-          <InputArea
-            autoFocus={false}
-            value={value}
-            ref={inputRef as any}
-            setValue={setValue}
-            disabled={isLoadingChatStream || inputDisabled}
-            placeholder={
-              isChatPage
-                ? t`Turn your idea into live strategy. e.g., Buy ETH when RSI < 30 on 15m chart.`
-                : t`Refine logic, check paper trade, or launch to earn...`
-            }
-            enterConfirmCallback={requestStream}
-          />
+          <InputAreaWrapper>
+            {isChatPage && !userHasInput && typewriterPlaceholder && (
+              <TypewriterPlaceholder>{typewriterPlaceholder}</TypewriterPlaceholder>
+            )}
+            <InputArea
+              autoFocus={false}
+              value={value}
+              ref={inputRef as any}
+              setValue={setValue}
+              disabled={isLoadingChatStream || inputDisabled}
+              placeholder={isChatPage ? '' : t(msg`Refine logic, check paper trade, or launch to earn...`)}
+              enterConfirmCallback={requestStream}
+            />
+          </InputAreaWrapper>
           <Operator $isChatPage={isChatPage}>
             <SendButton $disabled={!value?.trim() || inputDisabled} onClick={requestStream}>
               <IconBase className='icon-send' />

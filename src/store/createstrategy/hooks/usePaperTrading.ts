@@ -74,10 +74,10 @@ export function useHandleStartPaperTrading() {
   const [isStartingPaperTrading] = useIsStartingPaperTrading()
   const sendChatUserContent = useSendChatUserContent()
 
-  const handleStartPaperTrading = useCallback(async () => {
+  const handleStartPaperTrading = useCallback(async (startMsg?: string) => {
     if (isStartingPaperTrading) return
     sendChatUserContent({
-      value: t`Start paper trading`,
+      value: startMsg ? startMsg : t`Start paper trading`,
     })
   }, [sendChatUserContent, isStartingPaperTrading])
 

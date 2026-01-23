@@ -103,10 +103,10 @@ export function useHandleGenerateCode() {
     return !!strategyDetail?.strategy_config
   }, [strategyDetail])
   const handleGenerateCode = useCallback(
-    async (generateTimes?: number) => {
+    async (generateMsg?: string) => {
       if (!isCreateSuccess || isGeneratingCode) return
       sendChatUserContent({
-        value: generateTimes && generateTimes > 1 ? t`Regenerate Code` : t`Generate Code`,
+        value: generateMsg ? generateMsg : t`Generate Code`,
       })
     },
     [sendChatUserContent, isCreateSuccess, isGeneratingCode],

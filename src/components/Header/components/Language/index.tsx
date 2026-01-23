@@ -10,6 +10,7 @@ import { useIsMobile } from 'store/application/hooks'
 import { useChangeLanguage } from 'store/language/hooks'
 import { useTheme } from 'store/themecache/hooks'
 import styled, { css } from 'styled-components'
+import { ANI_DURATION } from 'constants/index'
 
 const LanguageWrapper = styled.div`
   display: flex;
@@ -18,6 +19,9 @@ const LanguageWrapper = styled.div`
   width: 32px;
   height: 32px;
   cursor: pointer;
+  border-radius: 4px;
+  transition: all ${ANI_DURATION}s;
+  background-color: transparent;
   .icon-menu-language {
     font-size: 16px;
     color: #d9d9d9;
@@ -32,6 +36,9 @@ const LanguageWrapper = styled.div`
     padding: 0;
     border: none;
     background-color: transparent;
+  }
+  &:hover {
+    background-color: ${({ theme }) => theme.black700};
   }
 `
 

@@ -143,6 +143,7 @@ const IconWrapper = styled.div<{ $active?: boolean }>`
   height: 32px;
   border-radius: 4px;
   background-color: transparent;
+  transition: all ${ANI_DURATION}s;
   i {
     font-size: 16px;
     color: ${({ theme }) => theme.black0};
@@ -152,6 +153,9 @@ const IconWrapper = styled.div<{ $active?: boolean }>`
     $active &&
     css`
       background-color: ${theme.black700};
+      &:hover {
+        background-color: ${theme.black600} !important;
+      }
     `}
 `
 
