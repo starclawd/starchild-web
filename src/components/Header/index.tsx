@@ -379,7 +379,10 @@ export const Header = () => {
           <NavTabs onMouseEnter={() => setIsHoverNavTabs(true)} onMouseLeave={handleNavTabsLeave}>
             {menuList.map((tab) => {
               const { key, value, clickCallback, icon, tooltip } = tab
-              const isActive = isMatchFatherRouter(currentRouter, value) || isMatchCurrentRouter(currentRouter, value)
+              const isActive =
+                isMatchFatherRouter(currentRouter, value) ||
+                isMatchCurrentRouter(currentRouter, value) ||
+                key == ROUTER.CHAT
               return (
                 <Tooltip key={key} placement='right' content={tooltip}>
                   <NavTab
