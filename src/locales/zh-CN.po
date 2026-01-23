@@ -261,7 +261,7 @@ msgstr "已存入金库"
 #: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:87
 #: src/pages/Chat/components/ChatInput/components/TabList/index.tsx:40
 #: src/pages/Chat/components/ChatInput/components/ModeSelect/index.tsx:78
-#: src/components/Header/index.tsx:301
+#: src/components/Header/index.tsx:305
 msgid "Create strategy"
 msgstr "创建策略"
 
@@ -652,7 +652,7 @@ msgstr "预估到账"
 msgid "You must claim funds afterward"
 msgstr "请之后领取资金"
 
-#: src/components/Header/index.tsx:306
+#: src/components/Header/index.tsx:310
 msgid "Vibe trading"
 msgstr "共振交易"
 
@@ -713,7 +713,7 @@ msgid "Search"
 msgstr "搜索"
 
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/components/UnLogin/index.tsx:38
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:394
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:401
 msgid "Log in to view AI responses"
 msgstr "登录后查看AI回复"
 
@@ -725,7 +725,7 @@ msgstr "缩放"
 msgid "Strategy deleted"
 msgstr "策略已删除"
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:28
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:40
 msgid "Turn your idea into live strategy. e.g., \"Everything is dumped too hard. It's time for a mean reversion bounce.\""
 msgstr "把你的想法变成实盘策略。例如：“跌得太狠了，是时候来一次均值回归反弹。”"
 
@@ -747,7 +747,7 @@ msgstr "即将推出"
 msgid "Vault becomes 100% cash"
 msgstr "金库变为100%现金"
 
-#: src/components/Header/components/LoginButton/index.tsx:116
+#: src/components/Header/components/LoginButton/index.tsx:122
 msgid "Account"
 msgstr "账户"
 
@@ -895,8 +895,8 @@ msgstr "{description}"
 #~ msgstr "您可以继续登录。"
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:318
-#: src/components/Header/index.tsx:314
-#: src/components/Header/index.tsx:317
+#: src/components/Header/index.tsx:318
+#: src/components/Header/index.tsx:321
 #: src/components/Header/components/MenuContent/index.tsx:112
 msgid "My"
 msgstr "我的"
@@ -910,7 +910,7 @@ msgstr "我的"
 msgid "Claim Successful"
 msgstr "领取成功"
 
-#: src/components/Header/components/Language/index.tsx:62
+#: src/components/Header/components/Language/index.tsx:69
 msgid "Failed to switch language"
 msgstr "语言切换失败"
 
@@ -930,7 +930,7 @@ msgstr "抄底还是追顶？告诉我！"
 msgid "Documents"
 msgstr "文档"
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:343
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:349
 msgid "Slot limit reached ({strategy_count}/{strategy_limit})! Boost your current strategy's APR to unlock more slots."
 msgstr "策略个数已满({strategy_count}/{strategy_limit})！请先提升现有策略表现以提高个数上限。"
 
@@ -1110,7 +1110,7 @@ msgstr "策略无法暂停，请重试。"
 msgid "Vault process"
 msgstr "金库流程"
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:26
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:38
 msgid "Turn your idea into live strategy. e.g., \"I have 1,000 USDC. Grow it safely while I sleep. No degen stuff.\""
 msgstr "把你的想法变成实盘策略。例如：\"我有 1,000 USDC。请帮我安全增值，我睡觉时也能赚钱，不要冒险。\""
 
@@ -1179,7 +1179,7 @@ msgstr "删除策略"
 msgid "Click + to add"
 msgstr "点击 + 添加"
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:342
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:348
 msgid "Create strategy failed"
 msgstr "创建策略失败"
 
@@ -1511,7 +1511,7 @@ msgstr "我的组合"
 msgid "Created by:"
 msgstr "创建者:"
 
-#: src/components/Header/index.tsx:279
+#: src/components/Header/index.tsx:283
 msgid "No strategy"
 msgstr "暂无策略"
 
@@ -1660,7 +1660,7 @@ msgstr "实时情绪，实时动能"
 msgid "Once discontinued:"
 msgstr "下架后："
 
-#: src/components/Header/components/Language/index.tsx:53
+#: src/components/Header/components/Language/index.tsx:60
 msgid "Language switched successfully"
 msgstr "语言切换成功"
 
@@ -1677,7 +1677,7 @@ msgid "You can open the deposit window to view the progress"
 msgstr "你可以打开存入窗口查看进度"
 
 #: src/components/Header/components/Preference/index.tsx:192
-#: src/components/Header/components/LoginButton/index.tsx:130
+#: src/components/Header/components/LoginButton/index.tsx:136
 msgid "Preferences"
 msgstr "偏好"
 
@@ -1850,7 +1850,7 @@ msgstr "聊天记录"
 #: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:170
 #: src/pages/CreateStrategy/components/StrategyInfo/components/StrategyName/index.tsx:199
 #: src/pages/Chat/components/TestChatImg/index.tsx:402
-#: src/components/Header/components/Language/index.tsx:61
+#: src/components/Header/components/Language/index.tsx:68
 msgid "Error"
 msgstr "错误"
 
@@ -1862,7 +1862,7 @@ msgstr "错误"
 msgid "Are you sure you want to discontinue the strategy?"
 msgstr "确定要下架该策略吗？"
 
-#: src/components/Header/index.tsx:280
+#: src/components/Header/index.tsx:284
 msgid "You need to create a strategy first"
 msgstr "您需要先创建一个策略"
 
@@ -1879,7 +1879,7 @@ msgstr "我的信号"
 msgid "Withdraw in progress"
 msgstr "提现进行中"
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:414
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:421
 msgid "Refine logic, check paper trade, or launch to earn..."
 msgstr "优化策略逻辑，检查模拟交易或上线赚收益..."
 
@@ -2757,7 +2757,7 @@ msgstr "星期一"
 msgid "How many times has BTC surged more than 5% in a single day over the past 10 years?"
 msgstr "在过去 10 年中，BTC 有多少次单日涨幅超过 5%？"
 
-#: src/components/Header/index.tsx:298
+#: src/components/Header/index.tsx:302
 msgid "Home"
 msgstr "首页"
 
@@ -2999,7 +2999,7 @@ msgstr "下载"
 msgid "The strategy has been delisted."
 msgstr "该策略已下架。"
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:27
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:39
 msgid "Turn your idea into live strategy. e.g., \"I need to pay for my vacation next month. Give me a strategy with 20% upside.\""
 msgstr "把你的想法变成实盘策略。例如：“我下个月要去度假，需要支付费用。请给我一个有20%上涨空间的策略。”"
 
@@ -3015,7 +3015,7 @@ msgstr "实时虚拟资金模拟。"
 msgid "Share to"
 msgstr "分享到"
 
-#: src/components/Header/components/LoginButton/index.tsx:144
+#: src/components/Header/components/LoginButton/index.tsx:150
 msgid "Logout"
 msgstr "退出"
 
@@ -3243,7 +3243,7 @@ msgid "AI reasoning in progress"
 msgstr "AI推理中"
 
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/components/UnLogin/index.tsx:41
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:397
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:404
 #: src/pages/Chat/components/ChatInput/index.tsx:171
 msgid "Log in"
 msgstr "登录"
@@ -3295,7 +3295,7 @@ msgstr "该策略为私有，仅限所有者查看。"
 
 #: src/pages/Vaults/components/StrategyTable/index.tsx:356
 #: src/pages/VaultDetail/components/VaultDetailNavigation/index.tsx:53
-#: src/components/Header/index.tsx:309
+#: src/components/Header/index.tsx:313
 msgid "Leaderboard"
 msgstr "排行榜"
 
@@ -3625,6 +3625,6 @@ msgstr "已处理"
 #~ msgid "Powered by WOO"
 #~ msgstr "WOO 提供支持"
 
-#: src/components/Header/components/Language/index.tsx:52
+#: src/components/Header/components/Language/index.tsx:59
 msgid "Success"
 msgstr "成功"

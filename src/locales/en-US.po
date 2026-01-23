@@ -299,7 +299,7 @@ msgstr "Deposited in Vault"
 #: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:87
 #: src/pages/Chat/components/ChatInput/components/TabList/index.tsx:40
 #: src/pages/Chat/components/ChatInput/components/ModeSelect/index.tsx:78
-#: src/components/Header/index.tsx:301
+#: src/components/Header/index.tsx:305
 msgid "Create strategy"
 msgstr "Create strategy"
 
@@ -744,7 +744,7 @@ msgstr "Est. receiving"
 msgid "You must claim funds afterward"
 msgstr "You must claim funds afterward"
 
-#: src/components/Header/index.tsx:306
+#: src/components/Header/index.tsx:310
 msgid "Vibe trading"
 msgstr "Vibe trading"
 
@@ -805,7 +805,7 @@ msgid "Search"
 msgstr "Search"
 
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/components/UnLogin/index.tsx:38
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:394
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:401
 msgid "Log in to view AI responses"
 msgstr "Log in to view AI responses"
 
@@ -817,7 +817,7 @@ msgstr "Zoom"
 msgid "Strategy deleted"
 msgstr "Strategy deleted"
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:28
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:40
 msgid "Turn your idea into live strategy. e.g., \"Everything is dumped too hard. It's time for a mean reversion bounce.\""
 msgstr "Turn your idea into live strategy. e.g., \"Everything is dumped too hard. It's time for a mean reversion bounce.\""
 
@@ -839,7 +839,7 @@ msgstr "Coming soon"
 msgid "Vault becomes 100% cash"
 msgstr "Vault becomes 100% cash"
 
-#: src/components/Header/components/LoginButton/index.tsx:116
+#: src/components/Header/components/LoginButton/index.tsx:122
 msgid "Account"
 msgstr "Account"
 
@@ -1007,8 +1007,8 @@ msgstr "{description}"
 #~ msgstr "You can proceed to log in."
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:318
-#: src/components/Header/index.tsx:314
-#: src/components/Header/index.tsx:317
+#: src/components/Header/index.tsx:318
+#: src/components/Header/index.tsx:321
 #: src/components/Header/components/MenuContent/index.tsx:112
 msgid "My"
 msgstr "My"
@@ -1022,7 +1022,7 @@ msgstr "My"
 msgid "Claim Successful"
 msgstr "Claim successful"
 
-#: src/components/Header/components/Language/index.tsx:62
+#: src/components/Header/components/Language/index.tsx:69
 msgid "Failed to switch language"
 msgstr "Failed to switch language"
 
@@ -1042,7 +1042,7 @@ msgstr "Bottom fishing or top chasing? Tell me!"
 msgid "Documents"
 msgstr "Documents"
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:343
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:349
 msgid "Slot limit reached ({strategy_count}/{strategy_limit})! Boost your current strategy's APR to unlock more slots."
 msgstr "Slot limit reached ({strategy_count}/{strategy_limit})! Boost your current strategy's APR to unlock more slots."
 
@@ -1238,7 +1238,7 @@ msgstr "The strategy could not be paused. Please try again."
 msgid "Vault process"
 msgstr "Vault process"
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:26
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:38
 msgid "Turn your idea into live strategy. e.g., \"I have 1,000 USDC. Grow it safely while I sleep. No degen stuff.\""
 msgstr "Turn your idea into live strategy. e.g., \"I have 1,000 USDC. Grow it safely while I sleep. No degen stuff.\""
 
@@ -1311,7 +1311,7 @@ msgstr "Delete strategy"
 msgid "Click + to add"
 msgstr "Click + to add"
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:342
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:348
 msgid "Create strategy failed"
 msgstr "Create strategy failed"
 
@@ -1688,7 +1688,7 @@ msgstr "My portfolio"
 msgid "Created by:"
 msgstr "Created by:"
 
-#: src/components/Header/index.tsx:279
+#: src/components/Header/index.tsx:283
 msgid "No strategy"
 msgstr "No strategy"
 
@@ -1849,7 +1849,7 @@ msgstr "Live sentiment. Real-time momentum"
 msgid "Once discontinued:"
 msgstr "Once discontinued:"
 
-#: src/components/Header/components/Language/index.tsx:53
+#: src/components/Header/components/Language/index.tsx:60
 msgid "Language switched successfully"
 msgstr "Language switched successfully"
 
@@ -1866,7 +1866,7 @@ msgid "You can open the deposit window to view the progress"
 msgstr "You can open the deposit window to view the progress"
 
 #: src/components/Header/components/Preference/index.tsx:192
-#: src/components/Header/components/LoginButton/index.tsx:130
+#: src/components/Header/components/LoginButton/index.tsx:136
 msgid "Preferences"
 msgstr "Preferences"
 
@@ -2062,7 +2062,7 @@ msgstr "Chat history"
 #: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:170
 #: src/pages/CreateStrategy/components/StrategyInfo/components/StrategyName/index.tsx:199
 #: src/pages/Chat/components/TestChatImg/index.tsx:402
-#: src/components/Header/components/Language/index.tsx:61
+#: src/components/Header/components/Language/index.tsx:68
 msgid "Error"
 msgstr "Error"
 
@@ -2074,7 +2074,7 @@ msgstr "Error"
 msgid "Are you sure you want to discontinue the strategy?"
 msgstr "Are you sure you want to discontinue the strategy?"
 
-#: src/components/Header/index.tsx:280
+#: src/components/Header/index.tsx:284
 msgid "You need to create a strategy first"
 msgstr "You need to create a strategy first"
 
@@ -2096,7 +2096,7 @@ msgstr "My signals"
 msgid "Withdraw in progress"
 msgstr "Withdraw in progress"
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:414
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:421
 msgid "Refine logic, check paper trade, or launch to earn..."
 msgstr "Refine logic, check paper trade, or launch to earn..."
 
@@ -3072,7 +3072,7 @@ msgstr "Monday"
 msgid "How many times has BTC surged more than 5% in a single day over the past 10 years?"
 msgstr "How many times has BTC surged more than 5% in a single day over the past 10 years?"
 
-#: src/components/Header/index.tsx:298
+#: src/components/Header/index.tsx:302
 msgid "Home"
 msgstr "Home"
 
@@ -3364,7 +3364,7 @@ msgstr "The strategy has been delisted."
 #~ msgid "Insufficient USDC balance, required: {requiredUsdc} USDC, current balance: {currentUsdc} USDC"
 #~ msgstr "Insufficient USDC balance, required: {requiredUsdc} USDC, current balance: {currentUsdc} USDC"
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:27
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:39
 msgid "Turn your idea into live strategy. e.g., \"I need to pay for my vacation next month. Give me a strategy with 20% upside.\""
 msgstr "Turn your idea into live strategy. e.g., \"I need to pay for my vacation next month. Give me a strategy with 20% upside.\""
 
@@ -3380,7 +3380,7 @@ msgstr "Simulation in real-time with virtual funds."
 msgid "Share to"
 msgstr "Share to"
 
-#: src/components/Header/components/LoginButton/index.tsx:144
+#: src/components/Header/components/LoginButton/index.tsx:150
 msgid "Logout"
 msgstr "Logout"
 
@@ -3620,7 +3620,7 @@ msgid "AI reasoning in progress"
 msgstr "AI reasoning in progress"
 
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/components/UnLogin/index.tsx:41
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:397
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:404
 #: src/pages/Chat/components/ChatInput/index.tsx:171
 msgid "Log in"
 msgstr "Log in"
@@ -3676,7 +3676,7 @@ msgstr "This strategy is private and can only be viewed by its owner."
 
 #: src/pages/Vaults/components/StrategyTable/index.tsx:356
 #: src/pages/VaultDetail/components/VaultDetailNavigation/index.tsx:53
-#: src/components/Header/index.tsx:309
+#: src/components/Header/index.tsx:313
 msgid "Leaderboard"
 msgstr "Leaderboard"
 
@@ -4026,6 +4026,6 @@ msgstr "Processed"
 #~ msgid "Powered by WOO"
 #~ msgstr "Powered by WOO"
 
-#: src/components/Header/components/Language/index.tsx:52
+#: src/components/Header/components/Language/index.tsx:59
 msgid "Success"
 msgstr "Success"
