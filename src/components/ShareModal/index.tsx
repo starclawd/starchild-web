@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components'
 import { useModalOpen, useShareStrategyModalToggle } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
 import logo from 'assets/png/logo.png'
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import { useCurrentShareStrategyData } from 'store/vaultsdetail/hooks/useCurrentShareStrategyData'
 import { QRCodeSVG } from 'qrcode.react'
 import { starchildDomain } from 'utils/url'
@@ -20,7 +20,7 @@ import html2canvas from 'html2canvas'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import Pending from 'components/Pending'
 import useCopyContent from 'hooks/useCopyContent'
-import { t } from '@lingui/core/macro'
+import { msg, t } from '@lingui/core/macro'
 
 const ShareModalWrapper = styled.div`
   display: flex;
@@ -251,6 +251,7 @@ const ShareText = styled.div`
 `
 
 export default memo(function ShareModal() {
+  const { t } = useLingui()
   const theme = useTheme()
   const toast = useToast()
   const { copyRawContent } = useCopyContent()
@@ -404,17 +405,17 @@ export default memo(function ShareModal() {
 
   // 分享到 Telegram
   const handleShareToTelegram = useCallback(() => {
-    const shareText = t`Vibe it, Earn it on Starchild.`
+    const shareText = t(msg`Vibe it, Earn it on Starchild.`)
     const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(shareText)}`
     window.open(telegramUrl, '_blank')
-  }, [shareUrl])
+  }, [shareUrl, t])
 
   // 分享到 X (Twitter)
   const handleShareToX = useCallback(() => {
-    const shareText = t`Vibe it, Earn it on Starchild.`
+    const shareText = t(msg`Vibe it, Earn it on Starchild.`)
     const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`
     window.open(xUrl, '_blank')
-  }, [shareUrl])
+  }, [shareUrl, t])
 
   // 分享到 Discord (复制链接提示用户粘贴)
   const handleShareToDiscord = useCallback(() => {

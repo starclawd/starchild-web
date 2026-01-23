@@ -5,7 +5,7 @@ import { ACTION_TYPE, SuggestedActionsDataType } from 'store/createstrategy/crea
 import styled from 'styled-components'
 import { ANI_DURATION } from 'constants/index'
 import { useHandleGenerateCode } from 'store/createstrategy/hooks/useCode'
-import { useHandleStartPaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
+import { useHandlePausePaperTrading, useHandleStartPaperTrading } from 'store/createstrategy/hooks/usePaperTrading'
 
 const ActionWrapper = styled.div`
   display: flex;
@@ -46,12 +46,16 @@ const Left = styled.div`
 export default memo(function Action({ action }: { action: SuggestedActionsDataType }) {
   const handleGenerateCode = useHandleGenerateCode()
   const handleStartPaperTrading = useHandleStartPaperTrading()
+  const handleStopPaperTrading = useHandlePausePaperTrading()
   const iconMap: Partial<Record<ACTION_TYPE, { icon: string }>> = useMemo(() => {
     return {
       [ACTION_TYPE.GENERATE_CODE]: {
         icon: 'icon-generate-code',
       },
       [ACTION_TYPE.START_PAPER_TRADING]: {
+        icon: 'icon-paper-trading',
+      },
+      [ACTION_TYPE.STOP_PAPER_TRADING]: {
         icon: 'icon-paper-trading',
       },
       [ACTION_TYPE.DEPLOY_LIVE]: {
@@ -65,10 +69,12 @@ export default memo(function Action({ action }: { action: SuggestedActionsDataTy
       handleGenerateCode(label)
     } else if (action_type === ACTION_TYPE.START_PAPER_TRADING) {
       handleStartPaperTrading(label)
+    } else if (action_type === ACTION_TYPE.STOP_PAPER_TRADING) {
+      handleStopPaperTrading(label)
     } else if (action_type === ACTION_TYPE.DEPLOY_LIVE) {
       console.log('deploy')
     }
-  }, [action, handleGenerateCode, handleStartPaperTrading])
+  }, [action, handleGenerateCode, handleStartPaperTrading, handleStopPaperTrading])
   return (
     <ActionWrapper onClick={clickCallback}>
       <Left>

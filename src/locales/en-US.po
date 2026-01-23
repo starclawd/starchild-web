@@ -27,7 +27,7 @@ msgstr "Wallet not connected"
 msgid "Saturday"
 msgstr "Saturday"
 
-#: src/pages/AgentHub/components/SearchBar/index.tsx:51
+#: src/pages/AgentHub/components/SearchBar/index.tsx:53
 msgid "Search agents"
 msgstr "Search agents"
 
@@ -55,7 +55,7 @@ msgstr "Failed to delete agent"
 msgid "Suspend"
 msgstr "Suspend"
 
-#: src/pages/Chat/components/DefaultTasks/index.tsx:133
+#: src/pages/Chat/components/DefaultTasks/index.tsx:135
 msgid "Receive a daily report including market overview, top news highlights, and BTC technical analysis — delivered every day at 00:00 UTC."
 msgstr "Receive a daily report including market overview, top news highlights, and BTC technical analysis — delivered every day at 00:00 UTC."
 
@@ -65,7 +65,7 @@ msgstr "Receive a daily report including market overview, top news highlights, a
 msgid "Commission"
 msgstr "Commission"
 
-#: src/pages/Chat/components/ChatInput/components/Robot/index.tsx:163
+#: src/pages/Chat/components/ChatInput/components/Robot/index.tsx:165
 msgid "Wanna test AI's trading instincts? Type anything!"
 msgstr "Wanna test AI's trading instincts? Type anything!"
 
@@ -81,8 +81,8 @@ msgstr "liquidity BTC"
 msgid "Up to 6 hours"
 msgstr "Up to 6 hours"
 
-#: src/components/ShareModal/index.tsx:407
-#: src/components/ShareModal/index.tsx:414
+#: src/components/ShareModal/index.tsx:408
+#: src/components/ShareModal/index.tsx:415
 msgid "Vibe it, Earn it on Starchild."
 msgstr "Vibe it, Earn it on Starchild."
 
@@ -111,9 +111,9 @@ msgstr "The vault has been closed and trading has stopped. Funds are ready for c
 msgid "Triggered"
 msgstr "Triggered"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:319
+#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:321
 #: src/pages/Chat/components/Feedback/index.tsx:208
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:337
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:338
 msgid "Other"
 msgstr "Other"
 
@@ -129,7 +129,7 @@ msgstr "Est. price per share"
 msgid "This action can be resumed later."
 msgstr "This action can be resumed later."
 
-#: src/components/Header/components/MenuContent/components/ThreadList/index.tsx:217
+#: src/components/Header/components/MenuContent/components/ThreadList/index.tsx:218
 msgid "First 7 days"
 msgstr "First 7 days"
 
@@ -142,7 +142,7 @@ msgstr "First 7 days"
 #~ msgid "To"
 #~ msgstr "To"
 
-#: src/pages/VaultDetail/components/StrategyRadarChart/index.tsx:125
+#: src/pages/VaultDetail/components/StrategyRadarChart/index.tsx:127
 msgid "Stability"
 msgstr "Stability"
 
@@ -150,7 +150,7 @@ msgstr "Stability"
 msgid "All assets will be settled"
 msgstr "All assets will be settled"
 
-#: src/pages/Chat/components/ChatInput/components/Robot/index.tsx:142
+#: src/pages/Chat/components/ChatInput/components/Robot/index.tsx:144
 msgid "Drop me a signal, I'll crunch the charts!"
 msgstr "Drop me a signal, I'll crunch the charts!"
 
@@ -178,12 +178,12 @@ msgstr "Token deep dive"
 #~ msgid "Tell us about you"
 #~ msgstr "Tell us about you"
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:443
-#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:130
+#: src/pages/Chat/components/Shortcuts/index.tsx:445
+#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:132
 msgid "What economic data or meeting will be released this week? What are the market expectations?"
 msgstr "What economic data or meeting will be released this week? What are the market expectations?"
 
-#: src/pages/VaultDetail/components/PaperTradingPerformance/components/VaultChartStats.tsx:96
+#: src/pages/VaultDetail/components/PaperTradingPerformance/components/VaultChartStats.tsx:98
 msgid "7D APR"
 msgstr "7D APR"
 
@@ -205,7 +205,7 @@ msgstr "History"
 msgid "Failed to generate chart images"
 msgstr "Failed to generate chart images"
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:405
+#: src/pages/Chat/components/Shortcuts/index.tsx:407
 msgid "Historical Data"
 msgstr "Historical data"
 
@@ -260,8 +260,8 @@ msgstr "Est. claimable in {estClaimMinutes} mins."
 msgid "Finish defining your strategy in Step 1 first."
 msgstr "Finish defining your strategy in Step 1 first."
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:335
-#: src/components/ShareModal/index.tsx:281
+#: src/pages/Vaults/components/StrategyTable/index.tsx:337
+#: src/components/ShareModal/index.tsx:282
 msgid "TVF"
 msgstr "TVF"
 
@@ -299,7 +299,7 @@ msgstr "Deposited in Vault"
 #: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:87
 #: src/pages/Chat/components/ChatInput/components/TabList/index.tsx:40
 #: src/pages/Chat/components/ChatInput/components/ModeSelect/index.tsx:78
-#: src/components/Header/index.tsx:301
+#: src/components/Header/index.tsx:305
 msgid "Create strategy"
 msgstr "Create strategy"
 
@@ -391,8 +391,8 @@ msgstr "Login failed"
 msgid "Approval Successful"
 msgstr "Approval successful"
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:509
-#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:183
+#: src/pages/Chat/components/Shortcuts/index.tsx:511
+#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:185
 msgid "Have there been any unusual moves in funding rates over the past hour?"
 msgstr "Have there been any unusual moves in funding rates over the past hour?"
 
@@ -408,7 +408,7 @@ msgstr "No data yet"
 #~ msgid " Total PnL"
 #~ msgstr " Total PnL"
 
-#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:205
+#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:206
 msgid "Nickname"
 msgstr "Nickname"
 
@@ -437,7 +437,7 @@ msgstr "Transactions"
 msgid "The minimum trigger interval for the AI agent is 1 hour, and the minimum trigger interval for the Code agent is 20 minutes."
 msgstr "The minimum trigger interval for the AI agent is 1 hour, and the minimum trigger interval for the Code agent is 20 minutes."
 
-#: src/store/myagent/hooks.ts:56
+#: src/store/myagent/hooks.ts:57
 msgid "No current agent data or agentId found"
 msgstr "No current agent data or agentId found"
 
@@ -445,7 +445,7 @@ msgstr "No current agent data or agentId found"
 #~ msgid "Strategy summary"
 #~ msgstr "Strategy summary"
 
-#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:200
+#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:201
 msgid "Change Nickname"
 msgstr "Change nickname"
 
@@ -487,7 +487,7 @@ msgstr "Oops! Something went wrong!"
 msgid "Launched"
 msgstr "Launched"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:315
+#: src/pages/Vaults/components/StrategyTable/index.tsx:317
 msgid "Leader"
 msgstr "Leader"
 
@@ -510,8 +510,8 @@ msgstr "Minute"
 #: src/hooks/useCopyContent.tsx:29
 #: src/hooks/useCopyContent.tsx:49
 #: src/hooks/useCopyContent.tsx:76
-#: src/components/ShareModal/index.tsx:376
-#: src/components/ShareModal/index.tsx:386
+#: src/components/ShareModal/index.tsx:377
+#: src/components/ShareModal/index.tsx:387
 #: src/components/AgentShare/index.tsx:295
 #: src/components/AgentShare/index.tsx:313
 #: src/components/AgentShare/index.tsx:355
@@ -527,7 +527,7 @@ msgstr "Google SDK failed to load. Please refresh the page and try again."
 msgid "Hour"
 msgstr "Hour"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:314
+#: src/pages/Vaults/components/StrategyTable/index.tsx:316
 #: src/pages/VaultDetail/components/StrategyMarket/index.tsx:139
 #: src/pages/MyPortfolio/components/MyVaults/index.tsx:210
 #: src/pages/MyPortfolio/components/MyStrategies/index.tsx:379
@@ -538,7 +538,7 @@ msgstr "Name"
 msgid "Please generate valid code (Step 2) before starting Paper Trading."
 msgstr "Please generate valid code (Step 2) before starting Paper Trading."
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:473
+#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:475
 msgid "Regenerate"
 msgstr "Regenerate"
 
@@ -550,8 +550,8 @@ msgstr "Claim failed"
 #~ msgid "Are you sure you want to delete this agent? This action cannot be undone."
 #~ msgstr "Are you sure you want to delete this agent? This action cannot be undone."
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:378
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:424
+#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:380
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:425
 msgid "Please enter your feedback"
 msgstr "Please enter your feedback"
 
@@ -602,7 +602,7 @@ msgstr "APR"
 #~ msgid "Change succesfully"
 #~ msgstr "Change succesfully"
 
-#: src/pages/Chat/components/ChatInput/components/Robot/index.tsx:136
+#: src/pages/Chat/components/ChatInput/components/Robot/index.tsx:138
 msgid "Type a coin or strategy, let's see what AI cooks up!"
 msgstr "Type a coin or strategy, let's see what AI cooks up!"
 
@@ -616,7 +616,7 @@ msgstr "Failed"
 #~ msgid "Unreleased"
 #~ msgstr "Unreleased"
 
-#: src/pages/Chat/components/AddQuestionModal/index.tsx:222
+#: src/pages/Chat/components/AddQuestionModal/index.tsx:223
 msgid "Add Question"
 msgstr "Add question"
 
@@ -628,7 +628,7 @@ msgstr "Add question"
 #: src/pages/MyPortfolio/components/MyStrategies/components/DelistStrategyModal/index.tsx:231
 #: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:216
 #: src/components/Header/components/Preference/index.tsx:241
-#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:227
+#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:228
 #: src/components/Header/components/AccountManege/components/AvatarEditModal/index.tsx:354
 msgid "Confirm"
 msgstr "Confirm"
@@ -637,7 +637,7 @@ msgstr "Confirm"
 #~ msgid "You can visit our product via Web app or Telegram bot."
 #~ msgstr "You can visit our product via Web app or Telegram bot."
 
-#: src/pages/VaultDetail/components/PaperTradingPerformance/components/VaultChartStats.tsx:100
+#: src/pages/VaultDetail/components/PaperTradingPerformance/components/VaultChartStats.tsx:102
 msgid "Period APR"
 msgstr "Period APR"
 
@@ -645,7 +645,7 @@ msgstr "Period APR"
 #~ msgid "Public"
 #~ msgstr "Public"
 
-#: src/store/myagent/hooks.ts:71
+#: src/store/myagent/hooks.ts:72
 msgid "Agent ID mismatch"
 msgstr "Agent ID mismatch"
 
@@ -683,8 +683,8 @@ msgstr "Network connection failed. Please check your network and try again."
 msgid "Paper trading has been automatically paused. Please click to restart. Note: Paper trading cannot be restarted if your strategy is currently deployed."
 msgstr "Paper trading has been automatically paused. Please click to restart. Note: Paper trading cannot be restarted if your strategy is currently deployed."
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:475
-#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:113
+#: src/pages/Chat/components/Shortcuts/index.tsx:477
+#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:115
 msgid "What was the largest 24-hour ETH drop in the past 3 years?"
 msgstr "What was the largest 24-hour ETH drop in the past 3 years?"
 
@@ -719,7 +719,7 @@ msgstr "Indicator hub"
 msgid "Capital"
 msgstr "Capital"
 
-#: src/components/ShareModal/index.tsx:345
+#: src/components/ShareModal/index.tsx:346
 msgid "Image saved successfully"
 msgstr "Image saved successfully"
 
@@ -744,7 +744,7 @@ msgstr "Est. receiving"
 msgid "You must claim funds afterward"
 msgstr "You must claim funds afterward"
 
-#: src/components/Header/index.tsx:306
+#: src/components/Header/index.tsx:310
 msgid "Vibe trading"
 msgstr "Vibe trading"
 
@@ -792,7 +792,7 @@ msgstr "Step{stepIndex}"
 msgid "My vaults portfolio"
 msgstr "My vaults portfolio"
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:399
+#: src/pages/Chat/components/Shortcuts/index.tsx:401
 msgid "Web3 Events"
 msgstr "Web3 events"
 
@@ -800,12 +800,12 @@ msgstr "Web3 events"
 #~ msgid "Turn your idea into live strategy. e.g., Buy ETH when RSI < 30 on 15m chart."
 #~ msgstr "Turn your idea into live strategy. e.g., Buy ETH when RSI < 30 on 15m chart."
 
-#: src/components/Select/index.tsx:431
+#: src/components/Select/index.tsx:433
 msgid "Search"
 msgstr "Search"
 
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/components/UnLogin/index.tsx:38
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:394
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:401
 msgid "Log in to view AI responses"
 msgstr "Log in to view AI responses"
 
@@ -817,7 +817,7 @@ msgstr "Zoom"
 msgid "Strategy deleted"
 msgstr "Strategy deleted"
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:28
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:40
 msgid "Turn your idea into live strategy. e.g., \"Everything is dumped too hard. It's time for a mean reversion bounce.\""
 msgstr "Turn your idea into live strategy. e.g., \"Everything is dumped too hard. It's time for a mean reversion bounce.\""
 
@@ -839,7 +839,7 @@ msgstr "Coming soon"
 msgid "Vault becomes 100% cash"
 msgstr "Vault becomes 100% cash"
 
-#: src/components/Header/components/LoginButton/index.tsx:116
+#: src/components/Header/components/LoginButton/index.tsx:122
 msgid "Account"
 msgstr "Account"
 
@@ -861,7 +861,7 @@ msgstr "No data"
 #~ msgid "Please go to claim NFT first."
 #~ msgstr "Please go to claim NFT first."
 
-#: src/pages/VaultDetail/components/PaperTradingPerformance/components/VaultChartStats.tsx:143
+#: src/pages/VaultDetail/components/PaperTradingPerformance/components/VaultChartStats.tsx:145
 #: src/pages/VaultDetail/components/PaperTradingPerformance/components/StrategyChartStats.tsx:124
 #: src/pages/MyPortfolio/components/MyStrategies/index.tsx:394
 #: src/pages/MyPortfolio/components/MyStrategies/components/VaultDetail/index.tsx:129
@@ -902,8 +902,8 @@ msgstr "Chain of Thought"
 msgid "Sharpe Ratio"
 msgstr "Sharpe ratio"
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:437
-#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:109
+#: src/pages/Chat/components/Shortcuts/index.tsx:439
+#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:111
 msgid "What's the long/short ratio on Binance, OKX, and Bybit?"
 msgstr "What's the long/short ratio on Binance, OKX, and Bybit?"
 
@@ -916,7 +916,7 @@ msgstr "Max"
 msgid "Slippage"
 msgstr "Slippage"
 
-#: src/pages/Chat/components/ChatInput/components/Robot/index.tsx:154
+#: src/pages/Chat/components/ChatInput/components/Robot/index.tsx:156
 msgid "Share a trading direction, I'll sharpen it!"
 msgstr "Share a trading direction, I'll sharpen it!"
 
@@ -928,12 +928,12 @@ msgstr "Share a trading direction, I'll sharpen it!"
 #~ msgid "The agent you’re trying to access does not exist or has been deleted."
 #~ msgstr "The agent you’re trying to access does not exist or has been deleted."
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:379
-#: src/pages/Chat/components/Shortcuts/index.tsx:645
+#: src/pages/Chat/components/Shortcuts/index.tsx:381
+#: src/pages/Chat/components/Shortcuts/index.tsx:647
 msgid "Shortcuts"
 msgstr "Shortcuts"
 
-#: src/components/Header/components/Preference/components/WatchList/index.tsx:62
+#: src/components/Header/components/Preference/components/WatchList/index.tsx:64
 msgid ""
 "Enter your tokens (comma-separated): \n"
 "Example: btc, eth, sol"
@@ -1007,8 +1007,8 @@ msgstr "{description}"
 #~ msgstr "You can proceed to log in."
 
 #: src/pages/Mobile/components/MobileMenu/index.tsx:318
-#: src/components/Header/index.tsx:314
-#: src/components/Header/index.tsx:317
+#: src/components/Header/index.tsx:318
+#: src/components/Header/index.tsx:321
 #: src/components/Header/components/MenuContent/index.tsx:112
 msgid "My"
 msgstr "My"
@@ -1022,7 +1022,7 @@ msgstr "My"
 msgid "Claim Successful"
 msgstr "Claim successful"
 
-#: src/components/Header/components/Language/index.tsx:62
+#: src/components/Header/components/Language/index.tsx:69
 msgid "Failed to switch language"
 msgstr "Failed to switch language"
 
@@ -1030,11 +1030,11 @@ msgstr "Failed to switch language"
 msgid "Executed Qty."
 msgstr "Executed Qty."
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:393
+#: src/pages/Chat/components/Shortcuts/index.tsx:395
 msgid "Macroeconomic"
 msgstr "Macroeconomic"
 
-#: src/pages/Chat/components/ChatInput/components/Robot/index.tsx:139
+#: src/pages/Chat/components/ChatInput/components/Robot/index.tsx:141
 msgid "Bottom fishing or top chasing? Tell me!"
 msgstr "Bottom fishing or top chasing? Tell me!"
 
@@ -1042,7 +1042,7 @@ msgstr "Bottom fishing or top chasing? Tell me!"
 msgid "Documents"
 msgstr "Documents"
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:343
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:349
 msgid "Slot limit reached ({strategy_count}/{strategy_limit})! Boost your current strategy's APR to unlock more slots."
 msgstr "Slot limit reached ({strategy_count}/{strategy_limit})! Boost your current strategy's APR to unlock more slots."
 
@@ -1056,7 +1056,7 @@ msgid "Sharpe ratio"
 msgstr "Sharpe ratio"
 
 #: src/pages/UseCases/components/UseCasesTabView/index.tsx:616
-#: src/pages/AgentHub/components/AgentCardList/components/SubscribeButton/index.tsx:103
+#: src/pages/AgentHub/components/AgentCardList/components/SubscribeButton/index.tsx:104
 #: src/components/AgentActions/translations.tsx:16
 msgid "Subscribe"
 msgstr "Subscribe"
@@ -1065,12 +1065,12 @@ msgstr "Subscribe"
 msgid "Setting"
 msgstr "Setting"
 
-#: src/pages/VaultDetail/components/PaperTradingPerformance/components/VaultChartStats.tsx:122
+#: src/pages/VaultDetail/components/PaperTradingPerformance/components/VaultChartStats.tsx:124
 msgid "Index"
 msgstr "Index"
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:469
-#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:175
+#: src/pages/Chat/components/Shortcuts/index.tsx:471
+#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:177
 msgid "What are the latest and most talked-about token listings recently?"
 msgstr "What are the latest and most talked-about token listings recently?"
 
@@ -1078,7 +1078,7 @@ msgstr "What are the latest and most talked-about token listings recently?"
 #~ msgid "Base address"
 #~ msgstr "Base address"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:226
+#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:228
 #: src/pages/AgentDetail/components/Code/index.tsx:268
 #: src/pages/AgentDetail/components/Code/index.tsx:281
 msgid "Code"
@@ -1102,7 +1102,7 @@ msgstr "Thinking..."
 msgid "Access Your Smart Crypto Companion anytime, anywhere."
 msgstr "Access your smart crypto companion anytime, anywhere."
 
-#: src/pages/Chat/components/AddQuestionModal/index.tsx:218
+#: src/pages/Chat/components/AddQuestionModal/index.tsx:219
 msgid "Edit Question"
 msgstr "Edit question"
 
@@ -1126,10 +1126,10 @@ msgstr "Platform"
 msgid "Active"
 msgstr "Active"
 
-#: src/utils/chartTooltipUtils.ts:26
-#: src/pages/VaultDetail/components/PaperTradingPerformance/components/VaultChartStats.tsx:115
-#: src/pages/VaultDetail/components/PaperTradingPerformance/components/ChartTypeTabs.tsx:69
-#: src/pages/MyVault/components/MyPerfomance/components/ChartTypeTabs.tsx:62
+#: src/utils/chartTooltipUtils.ts:27
+#: src/pages/VaultDetail/components/PaperTradingPerformance/components/VaultChartStats.tsx:117
+#: src/pages/VaultDetail/components/PaperTradingPerformance/components/ChartTypeTabs.tsx:71
+#: src/pages/MyVault/components/MyPerfomance/components/ChartTypeTabs.tsx:64
 #: src/pages/MyPortfolio/components/MyVaults/index.tsx:215
 msgid "TVL"
 msgstr "TVL"
@@ -1204,7 +1204,7 @@ msgstr "The agent was checked but not triggered."
 msgid "Agent list"
 msgstr "Agent list"
 
-#: src/pages/Chat/components/AddQuestionModal/index.tsx:234
+#: src/pages/Chat/components/AddQuestionModal/index.tsx:235
 msgid "Please enter"
 msgstr "Please enter"
 
@@ -1238,7 +1238,7 @@ msgstr "The strategy could not be paused. Please try again."
 msgid "Vault process"
 msgstr "Vault process"
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:26
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:38
 msgid "Turn your idea into live strategy. e.g., \"I have 1,000 USDC. Grow it safely while I sleep. No degen stuff.\""
 msgstr "Turn your idea into live strategy. e.g., \"I have 1,000 USDC. Grow it safely while I sleep. No degen stuff.\""
 
@@ -1246,8 +1246,8 @@ msgstr "Turn your idea into live strategy. e.g., \"I have 1,000 USDC. Grow it sa
 msgid "User ID"
 msgstr "User ID"
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:479
-#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:117
+#: src/pages/Chat/components/Shortcuts/index.tsx:481
+#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:119
 msgid "On which day did BTC record its biggest single-day gain, and by how much?"
 msgstr "On which day did BTC record its biggest single-day gain, and by how much?"
 
@@ -1255,8 +1255,8 @@ msgstr "On which day did BTC record its biggest single-day gain, and by how much
 #~ msgid "Welcome,<0> {userName}</0>"
 #~ msgstr "Welcome,<0> {userName}</0>"
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:497
-#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:150
+#: src/pages/Chat/components/Shortcuts/index.tsx:499
+#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:152
 msgid "What's the BTC ETF net inflow over the past 24 hours?"
 msgstr "What's the BTC ETF net inflow over the past 24 hours?"
 
@@ -1311,7 +1311,7 @@ msgstr "Delete strategy"
 msgid "Click + to add"
 msgstr "Click + to add"
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:342
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:348
 msgid "Create strategy failed"
 msgstr "Create strategy failed"
 
@@ -1327,12 +1327,12 @@ msgstr "Create strategy failed"
 #~ msgid "Days"
 #~ msgstr "Days"
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:513
-#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:187
+#: src/pages/Chat/components/Shortcuts/index.tsx:515
+#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:189
 msgid "What triggered the sudden BTC dump?"
 msgstr "What triggered the sudden BTC dump?"
 
-#: src/pages/VaultDetail/components/StrategyRadarChart/index.tsx:128
+#: src/pages/VaultDetail/components/StrategyRadarChart/index.tsx:130
 msgid "Safety"
 msgstr "Safety"
 
@@ -1341,7 +1341,7 @@ msgstr "Safety"
 #~ msgstr "Deploy to Production"
 
 #: src/pages/MyPortfolio/components/MyVaults/index.tsx:220
-#: src/components/ShareModal/index.tsx:272
+#: src/components/ShareModal/index.tsx:273
 msgid "All time APR"
 msgstr "All time APR"
 
@@ -1390,7 +1390,7 @@ msgstr "Avg losing trade"
 msgid "Pause"
 msgstr "Pause"
 
-#: src/pages/Chat/components/DefaultTasks/index.tsx:156
+#: src/pages/Chat/components/DefaultTasks/index.tsx:158
 msgid "Quick Start with Default Tasks"
 msgstr "Quick start with default tasks"
 
@@ -1465,7 +1465,7 @@ msgstr "Recent chats:"
 msgid "All positions close at market"
 msgstr "All positions close at market"
 
-#: src/pages/VaultDetail/components/StrategyRadarChart/index.tsx:126
+#: src/pages/VaultDetail/components/StrategyRadarChart/index.tsx:128
 msgid "Hot"
 msgstr "Hot"
 
@@ -1476,7 +1476,7 @@ msgstr "Hot"
 #~ msgid "My Agent"
 #~ msgstr "My agent"
 
-#: src/pages/VaultDetail/components/StrategyRadarChart/index.tsx:124
+#: src/pages/VaultDetail/components/StrategyRadarChart/index.tsx:126
 msgid "Profit"
 msgstr "Profit"
 
@@ -1484,8 +1484,8 @@ msgstr "Profit"
 msgid "View detail"
 msgstr "View detail"
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:489
-#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:142
+#: src/pages/Chat/components/Shortcuts/index.tsx:491
+#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:144
 msgid "Which institutions/whales bought or sold BTC/ETH today?"
 msgstr "Which institutions/whales bought or sold BTC/ETH today?"
 
@@ -1501,7 +1501,7 @@ msgstr "Which institutions/whales bought or sold BTC/ETH today?"
 #~ msgid "Network Fee"
 #~ msgstr "Network fee"
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:411
+#: src/pages/Chat/components/Shortcuts/index.tsx:413
 msgid "Market Movements"
 msgstr "Market movements"
 
@@ -1546,16 +1546,16 @@ msgstr "Discover agents"
 msgid "You should add your wallet address before using this feature."
 msgstr "You should add your wallet address before using this feature."
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:424
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:470
+#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:426
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:471
 msgid "Send Feedback"
 msgstr "Send feedback"
 
-#: src/components/Header/components/MenuContent/components/ThreadList/index.tsx:223
+#: src/components/Header/components/MenuContent/components/ThreadList/index.tsx:224
 msgid "Before this year"
 msgstr "Before this year"
 
-#: src/pages/Chat/components/ChatInput/components/Robot/index.tsx:145
+#: src/pages/Chat/components/ChatInput/components/Robot/index.tsx:147
 msgid "Trend check or quick trade idea? Your call!"
 msgstr "Trend check or quick trade idea? Your call!"
 
@@ -1563,7 +1563,7 @@ msgstr "Trend check or quick trade idea? Your call!"
 msgid "Scan code to log in"
 msgstr "Scan code to log in"
 
-#: src/components/ShareModal/index.tsx:448
+#: src/components/ShareModal/index.tsx:449
 msgid "Vibe it, Earn it"
 msgstr "Vibe it, Earn it"
 
@@ -1636,8 +1636,8 @@ msgstr "Est. Shares"
 msgid "Connect Your Wallet"
 msgstr "Connect your wallet"
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:493
-#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:146
+#: src/pages/Chat/components/Shortcuts/index.tsx:495
+#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:148
 msgid "What did major KOLs tweet today about the market?"
 msgstr "What did major KOLs tweet today about the market?"
 
@@ -1668,10 +1668,10 @@ msgstr "Insufficient balance"
 #~ msgid "Run Backtest"
 #~ msgstr "Run backtest"
 
-#: src/pages/MyStrategy/components/MyPerfomance/components/StrategiesSelector.tsx:75
-#: src/pages/MyStrategy/components/MyPerfomance/components/StrategiesSelector.tsx:111
-#: src/pages/MyStrategy/components/MyPerfomance/components/StrategiesSelector.tsx:122
-#: src/pages/AgentHub/components/ButtonGroup/index.tsx:117
+#: src/pages/MyStrategy/components/MyPerfomance/components/StrategiesSelector.tsx:77
+#: src/pages/MyStrategy/components/MyPerfomance/components/StrategiesSelector.tsx:113
+#: src/pages/MyStrategy/components/MyPerfomance/components/StrategiesSelector.tsx:124
+#: src/pages/AgentHub/components/ButtonGroup/index.tsx:118
 msgid "All"
 msgstr "All"
 
@@ -1688,7 +1688,7 @@ msgstr "My portfolio"
 msgid "Created by:"
 msgstr "Created by:"
 
-#: src/components/Header/index.tsx:279
+#: src/components/Header/index.tsx:283
 msgid "No strategy"
 msgstr "No strategy"
 
@@ -1708,7 +1708,7 @@ msgstr "Minimum trigger interval: "
 #~ msgid "Preference modified"
 #~ msgstr "Preference modified"
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:544
+#: src/pages/Chat/components/Shortcuts/index.tsx:546
 msgid "Add to Favorites"
 msgstr "Add to favorites"
 
@@ -1766,11 +1766,11 @@ msgstr "✦ Your AI trading copilot • Powered by WOO"
 msgid "No performance data available"
 msgstr "No performance data available"
 
-#: src/utils/chartTooltipUtils.ts:28
-#: src/pages/VaultDetail/components/PaperTradingPerformance/components/VaultChartStats.tsx:129
+#: src/utils/chartTooltipUtils.ts:29
+#: src/pages/VaultDetail/components/PaperTradingPerformance/components/VaultChartStats.tsx:131
 #: src/pages/VaultDetail/components/PaperTradingPerformance/components/StrategyChartStats.tsx:102
-#: src/pages/VaultDetail/components/PaperTradingPerformance/components/ChartTypeTabs.tsx:70
-#: src/pages/MyVault/components/MyPerfomance/components/ChartTypeTabs.tsx:63
+#: src/pages/VaultDetail/components/PaperTradingPerformance/components/ChartTypeTabs.tsx:72
+#: src/pages/MyVault/components/MyPerfomance/components/ChartTypeTabs.tsx:65
 #: src/pages/MyPortfolio/components/MyVaults/index.tsx:237
 #: src/pages/MyPortfolio/components/MyStrategies/components/VaultDetail/index.tsx:117
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Backtest/components/DataList/index.tsx:212
@@ -1803,7 +1803,7 @@ msgstr "Follow top voices. Act on expert insights"
 msgid "Withdraw"
 msgstr "Withdraw"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:316
+#: src/pages/Vaults/components/StrategyTable/index.tsx:318
 #: src/pages/VaultDetail/components/PaperTradingPerformance/components/StrategyChartStats.tsx:109
 msgid "ROE"
 msgstr "ROE"
@@ -1816,12 +1816,12 @@ msgstr "Preference modification failed"
 msgid "Please connect your wallet to continue."
 msgstr "Please connect your wallet to continue."
 
-#: src/pages/AgentHub/components/AgentListViewSortingBar/index.tsx:126
+#: src/pages/AgentHub/components/AgentListViewSortingBar/index.tsx:127
 msgid "Subscriptions"
 msgstr "Subscriptions"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:384
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:430
+#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:386
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:431
 msgid "Please tell us why you dislike this information.<0/>Your feedback will help us improve our AI."
 msgstr "Please tell us why you dislike this information.<0/>Your feedback will help us improve our AI."
 
@@ -1849,7 +1849,7 @@ msgstr "Live sentiment. Real-time momentum"
 msgid "Once discontinued:"
 msgstr "Once discontinued:"
 
-#: src/components/Header/components/Language/index.tsx:53
+#: src/components/Header/components/Language/index.tsx:60
 msgid "Language switched successfully"
 msgstr "Language switched successfully"
 
@@ -1866,7 +1866,7 @@ msgid "You can open the deposit window to view the progress"
 msgstr "You can open the deposit window to view the progress"
 
 #: src/components/Header/components/Preference/index.tsx:192
-#: src/components/Header/components/LoginButton/index.tsx:130
+#: src/components/Header/components/LoginButton/index.tsx:136
 msgid "Preferences"
 msgstr "Preferences"
 
@@ -1886,7 +1886,7 @@ msgstr "Run paper trading"
 msgid "Explore all strategies and activate your first one."
 msgstr "Explore all strategies and activate your first one."
 
-#: src/store/myagent/hooks/useAgentTriggerHistoryFeedbackHooks.ts:162
+#: src/store/myagent/hooks/useAgentTriggerHistoryFeedbackHooks.ts:163
 msgid "Action Failed"
 msgstr "Action failed"
 
@@ -1894,9 +1894,9 @@ msgstr "Action failed"
 msgid "Total TVL"
 msgstr "Total TVL"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:307
+#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:309
 #: src/pages/Chat/components/Feedback/index.tsx:204
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:319
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:320
 msgid "Inaccurate"
 msgstr "Inaccurate"
 
@@ -1906,11 +1906,11 @@ msgstr "Inaccurate"
 msgid "My vault portfolio"
 msgstr "My vault portfolio"
 
-#: src/pages/AgentHub/components/AgentListViewSortingBar/index.tsx:122
+#: src/pages/AgentHub/components/AgentListViewSortingBar/index.tsx:123
 msgid "Created time"
 msgstr "Created time"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:471
+#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:473
 msgid "Regenerate Code"
 msgstr "Regenerate Code"
 
@@ -1918,8 +1918,8 @@ msgstr "Regenerate Code"
 #~ msgid "{0} days"
 #~ msgstr "{0} days"
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:465
-#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:171
+#: src/pages/Chat/components/Shortcuts/index.tsx:467
+#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:173
 msgid "What new crypto projects launched last week or are launching next week?"
 msgstr "What new crypto projects launched last week or are launching next week?"
 
@@ -1927,7 +1927,7 @@ msgstr "What new crypto projects launched last week or are launching next week?"
 msgid "You do not have permission to access, please login first."
 msgstr "You do not have permission to access, please login first."
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:322
+#: src/pages/Vaults/components/StrategyTable/index.tsx:324
 msgid "The biggest drop from the peak. Lower means less risk."
 msgstr "The biggest drop from the peak. Lower means less risk."
 
@@ -1935,7 +1935,7 @@ msgstr "The biggest drop from the peak. Lower means less risk."
 #~ msgid "Chat now"
 #~ msgstr "Chat now"
 
-#: src/pages/AgentHub/components/AgentListViewSortingBar/index.tsx:118
+#: src/pages/AgentHub/components/AgentListViewSortingBar/index.tsx:119
 msgid "Updated time"
 msgstr "Updated time"
 
@@ -1944,8 +1944,8 @@ msgstr "Updated time"
 msgid "Buy & hold equity"
 msgstr "Buy & hold equity"
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:461
-#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:167
+#: src/pages/Chat/components/Shortcuts/index.tsx:463
+#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:169
 msgid "Are there any major token unlocks scheduled for next month?"
 msgstr "Are there any major token unlocks scheduled for next month?"
 
@@ -1964,7 +1964,7 @@ msgstr "My wallet"
 #~ msgid "❌ Main Video Load Failed"
 #~ msgstr "❌ Main video load failed"
 
-#: src/pages/Chat/components/DefaultTasks/index.tsx:145
+#: src/pages/Chat/components/DefaultTasks/index.tsx:147
 msgid "Every Sunday, receive a crypto market sentiment summary based on social trends, funding rates, and the fear & greed index."
 msgstr "Every Sunday, receive a crypto market sentiment summary based on social trends, funding rates, and the fear & greed index."
 
@@ -1977,8 +1977,8 @@ msgstr "Followed"
 msgid "Account management"
 msgstr "Account management"
 
-#: src/pages/VaultDetail/components/VaultInfo/components/StrategyStatus/index.tsx:38
-#: src/pages/VaultDetail/components/VaultInfo/components/StrategyStatus/index.tsx:45
+#: src/pages/VaultDetail/components/VaultInfo/components/StrategyStatus/index.tsx:40
+#: src/pages/VaultDetail/components/VaultInfo/components/StrategyStatus/index.tsx:47
 #: src/pages/AgentDetail/components/AgentStatus/index.tsx:108
 msgid "Running"
 msgstr "Running"
@@ -2015,12 +2015,12 @@ msgstr "Quick start with default agents"
 #~ msgid "Ask me anything about crypto"
 #~ msgstr "Ask me anything about crypto"
 
-#: src/components/Header/components/MenuContent/components/ThreadList/index.tsx:257
+#: src/components/Header/components/MenuContent/components/ThreadList/index.tsx:258
 msgid "Search chat"
 msgstr "Search chat"
 
 #: src/pages/Chat/components/ContentItem/components/Recommandations/index.tsx:252
-#: src/pages/AgentHub/components/AgentCardList/components/SubscribeButton/index.tsx:103
+#: src/pages/AgentHub/components/AgentCardList/components/SubscribeButton/index.tsx:104
 #: src/components/AgentActions/translations.tsx:18
 msgid "Unsubscribe"
 msgstr "Unsubscribe"
@@ -2051,7 +2051,7 @@ msgstr "Login error"
 #~ msgid "Telegram"
 #~ msgstr "Telegram"
 
-#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:172
+#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:173
 msgid "Updated successfully"
 msgstr "Updated successfully"
 
@@ -2062,7 +2062,7 @@ msgstr "Chat history"
 #: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:170
 #: src/pages/CreateStrategy/components/StrategyInfo/components/StrategyName/index.tsx:199
 #: src/pages/Chat/components/TestChatImg/index.tsx:402
-#: src/components/Header/components/Language/index.tsx:61
+#: src/components/Header/components/Language/index.tsx:68
 msgid "Error"
 msgstr "Error"
 
@@ -2074,7 +2074,7 @@ msgstr "Error"
 msgid "Are you sure you want to discontinue the strategy?"
 msgstr "Are you sure you want to discontinue the strategy?"
 
-#: src/components/Header/index.tsx:280
+#: src/components/Header/index.tsx:284
 msgid "You need to create a strategy first"
 msgstr "You need to create a strategy first"
 
@@ -2096,7 +2096,7 @@ msgstr "My signals"
 msgid "Withdraw in progress"
 msgstr "Withdraw in progress"
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:414
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:421
 msgid "Refine logic, check paper trade, or launch to earn..."
 msgstr "Refine logic, check paper trade, or launch to earn..."
 
@@ -2113,12 +2113,12 @@ msgstr "Archived"
 msgid "Create Agent"
 msgstr "Create agent"
 
-#: src/pages/Chat/components/DefaultTasks/index.tsx:149
+#: src/pages/Chat/components/DefaultTasks/index.tsx:151
 msgid "Stay informed about newly listed tokens across major exchanges with real-time alerts, including token names and launch prices."
 msgstr "Stay informed about newly listed tokens across major exchanges with real-time alerts, including token names and launch prices."
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:429
-#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:101
+#: src/pages/Chat/components/Shortcuts/index.tsx:431
+#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:103
 msgid "Can you identify the support and resistance levels for BTC on the 4H and 1D chart?"
 msgstr "Can you identify the support and resistance levels for BTC on the 4H and 1D chart?"
 
@@ -2141,8 +2141,8 @@ msgstr "Start with a few defaults or explore thousands of strategies in our Agen
 #~ msgid "Settings"
 #~ msgstr "Settings"
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:501
-#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:154
+#: src/pages/Chat/components/Shortcuts/index.tsx:503
+#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:156
 msgid "Any large wallet transactions on-chain today?"
 msgstr "Any large wallet transactions on-chain today?"
 
@@ -2158,7 +2158,7 @@ msgstr "Hyperliquid Balance"
 msgid "Strategy Lab"
 msgstr "Strategy lab"
 
-#: src/pages/VaultDetail/components/VaultInfo/components/StrategyStatus/index.tsx:40
+#: src/pages/VaultDetail/components/VaultInfo/components/StrategyStatus/index.tsx:42
 msgid "Paused"
 msgstr "Paused"
 
@@ -2201,7 +2201,7 @@ msgstr "Approval failed"
 #~ msgid "Turn Thought into Alpha"
 #~ msgstr "Turn Thought into Alpha"
 
-#: src/pages/Chat/components/ChatInput/components/Robot/index.tsx:160
+#: src/pages/Chat/components/ChatInput/components/Robot/index.tsx:162
 msgid "Stuck on strategy? Toss me a keyword!"
 msgstr "Stuck on strategy? Toss me a keyword!"
 
@@ -2258,11 +2258,11 @@ msgstr "QR code expired"
 msgid "Unsupported Chain"
 msgstr "Unsupported chain"
 
-#: src/components/Header/components/MenuContent/components/ThreadList/index.tsx:220
+#: src/components/Header/components/MenuContent/components/ThreadList/index.tsx:221
 msgid "First 30 days"
 msgstr "First 30 days"
 
-#: src/components/ShareModal/index.tsx:344
+#: src/components/ShareModal/index.tsx:345
 msgid "Downloaded"
 msgstr "Downloaded"
 
@@ -2377,12 +2377,12 @@ msgstr "Deposit Successful"
 msgid "Activity"
 msgstr "Activity"
 
-#: src/pages/VaultDetail/components/PaperTradingPerformance/components/TimeRangeSelector.tsx:40
+#: src/pages/VaultDetail/components/PaperTradingPerformance/components/TimeRangeSelector.tsx:42
 msgid "All time"
 msgstr "All time"
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:505
-#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:179
+#: src/pages/Chat/components/Shortcuts/index.tsx:507
+#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:181
 msgid "Did any exchange see a sudden spike in long positions or short positions?"
 msgstr "Did any exchange see a sudden spike in long positions or short positions?"
 
@@ -2390,7 +2390,7 @@ msgstr "Did any exchange see a sudden spike in long positions or short positions
 #~ msgid "{vault_age} days"
 #~ msgstr "{vault_age} days"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:317
+#: src/pages/Vaults/components/StrategyTable/index.tsx:319
 #: src/pages/VaultDetail/components/PaperTradingPerformance/components/StrategyChartStats.tsx:96
 #: src/pages/MyPortfolio/components/MyVaults/index.tsx:255
 #: src/pages/MyPortfolio/components/MyStrategies/index.tsx:428
@@ -2401,7 +2401,7 @@ msgstr "Age(days)"
 msgid "Stop staring at charts. Deploy agents instead."
 msgstr "Stop staring at charts. Deploy agents instead."
 
-#: src/pages/Chat/components/DefaultTasks/index.tsx:137
+#: src/pages/Chat/components/DefaultTasks/index.tsx:139
 msgid "Get a summary of your portfolio performance every Monday, including gains/losses, asset allocation changes, and top performers."
 msgstr "Get a summary of your portfolio performance every Monday, including gains/losses, asset allocation changes, and top performers."
 
@@ -2418,17 +2418,17 @@ msgstr "Get a summary of your portfolio performance every Monday, including gain
 msgid "Risk"
 msgstr "Risk"
 
-#: src/utils/chartTooltipUtils.ts:30
-#: src/pages/VaultDetail/components/PaperTradingPerformance/components/ChartTypeTabs.tsx:66
-#: src/pages/MyStrategy/components/MyPerfomance/components/ChartTypeTabs.tsx:53
+#: src/utils/chartTooltipUtils.ts:31
+#: src/pages/VaultDetail/components/PaperTradingPerformance/components/ChartTypeTabs.tsx:68
+#: src/pages/MyStrategy/components/MyPerfomance/components/ChartTypeTabs.tsx:55
 #: src/pages/MyPortfolio/components/MyStrategies/index.tsx:389
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Backtest/components/VolumeChart/index.tsx:252
 #: src/pages/AgentDetail/components/Preview/components/VolumeChart/index.tsx:244
 msgid "Equity"
 msgstr "Equity"
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:451
-#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:138
+#: src/pages/Chat/components/Shortcuts/index.tsx:453
+#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:140
 msgid "Are there any upcoming political events that might impact the crypto or financial markets?"
 msgstr "Are there any upcoming political events that might impact the crypto or financial markets?"
 
@@ -2460,8 +2460,8 @@ msgstr "Are you sure you want to pause the strategy?"
 msgid "Approving..."
 msgstr "Approving..."
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:433
-#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:105
+#: src/pages/Chat/components/Shortcuts/index.tsx:435
+#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:107
 msgid "What are the current BTC perp funding rates across major exchanges?"
 msgstr "What are the current BTC perp funding rates across major exchanges?"
 
@@ -2474,8 +2474,8 @@ msgstr "Bind succesfully"
 #~ msgid "AI generated Vaults"
 #~ msgstr "AI generated vaults"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:360
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:406
+#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:362
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:407
 msgid "Feedback"
 msgstr "Feedback"
 
@@ -2490,7 +2490,7 @@ msgid "Requested"
 msgstr "Requested"
 
 #: src/pages/Vaults/components/VaultsWalletConnect/components/ExpandWalletConnect/index.tsx:305
-#: src/pages/MyStrategy/components/MyPerfomance/components/StrategiesSelector.tsx:107
+#: src/pages/MyStrategy/components/MyPerfomance/components/StrategiesSelector.tsx:109
 msgid "Loading..."
 msgstr "Loading..."
 
@@ -2517,12 +2517,12 @@ msgid "Generate daily expert-level crypto market report at 00:00 UTC."
 msgstr "Generate daily expert-level crypto market report at 00:00 UTC."
 
 #: src/pages/Chat/components/Feedback/index.tsx:233
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:366
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:367
 msgid "Thank you for your feedback. We've received your submission and will use it to improve our service."
 msgstr "Thank you for your feedback. We've received your submission and will use it to improve our service."
 
-#: src/pages/MyVault/components/MyPerfomance/components/VaultsSelector.tsx:92
-#: src/pages/MyVault/components/MyPerfomance/components/VaultsSelector.tsx:96
+#: src/pages/MyVault/components/MyPerfomance/components/VaultsSelector.tsx:94
+#: src/pages/MyVault/components/MyPerfomance/components/VaultsSelector.tsx:98
 msgid "No vaults"
 msgstr "No vaults"
 
@@ -2571,7 +2571,7 @@ msgstr "Price"
 #~ msgid "AI knows before you do."
 #~ msgstr "AI knows before you do."
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:334
+#: src/pages/Vaults/components/StrategyTable/index.tsx:336
 msgid "Total follower assets. Higher TVF means more interest."
 msgstr "Total follower assets. Higher TVF means more interest."
 
@@ -2610,7 +2610,7 @@ msgstr "Welcome to <0>Starchild</0>"
 msgid "Position Size"
 msgstr "Position size"
 
-#: src/store/createstrategy/hooks/usePaperTrading.ts:80
+#: src/store/createstrategy/hooks/usePaperTrading.ts:81
 msgid "Start paper trading"
 msgstr "Start paper trading"
 
@@ -2618,7 +2618,7 @@ msgstr "Start paper trading"
 #~ msgid "Login with telegram"
 #~ msgstr "Login with telegram"
 
-#: src/pages/VaultDetail/components/PaperTradingPerformance/components/TimeRangeSelector.tsx:30
+#: src/pages/VaultDetail/components/PaperTradingPerformance/components/TimeRangeSelector.tsx:32
 msgid "7D"
 msgstr "7D"
 
@@ -2637,7 +2637,7 @@ msgstr "Workflow"
 msgid "Total APR"
 msgstr "Total APR"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:362
+#: src/pages/Vaults/components/StrategyTable/index.tsx:364
 #: src/components/Header/components/Preference/index.tsx:222
 msgid "Watchlist"
 msgstr "Watchlist"
@@ -2646,7 +2646,7 @@ msgstr "Watchlist"
 msgid "Img List"
 msgstr "Img list"
 
-#: src/pages/AgentHub/components/AgentCardList/components/SubscribeButton/index.tsx:128
+#: src/pages/AgentHub/components/AgentCardList/components/SubscribeButton/index.tsx:129
 msgid "{buttonText}"
 msgstr "{buttonText}"
 
@@ -2658,7 +2658,7 @@ msgstr "{buttonText}"
 #~ msgid "Smart Crypto Trading Assistant"
 #~ msgstr "Smart crypto trading assistant"
 
-#: src/store/createstrategy/hooks/useCode.ts:109
+#: src/store/createstrategy/hooks/useCode.ts:111
 #: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:209
 #: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:101
 msgid "Generate Code"
@@ -2680,7 +2680,7 @@ msgstr "The strategy has been paused."
 msgid "Research"
 msgstr "Research"
 
-#: src/pages/Chat/components/AddQuestionModal/index.tsx:228
+#: src/pages/Chat/components/AddQuestionModal/index.tsx:229
 msgid "Question"
 msgstr "Question"
 
@@ -2689,8 +2689,8 @@ msgstr "Question"
 #~ msgid "Failed to update Agent, please try again later"
 #~ msgstr "Failed to update agent, please try again later"
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:425
-#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:97
+#: src/pages/Chat/components/Shortcuts/index.tsx:427
+#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:99
 msgid "Give a technical analysis of BTC and ETH prices."
 msgstr "Give a technical analysis of BTC and ETH prices."
 
@@ -2698,7 +2698,7 @@ msgstr "Give a technical analysis of BTC and ETH prices."
 msgid "Trigger time: {formatTime}"
 msgstr "Trigger time: {formatTime}"
 
-#: src/pages/Chat/components/DefaultTasks/index.tsx:159
+#: src/pages/Chat/components/DefaultTasks/index.tsx:161
 msgid "Choose from these ready-made tasks to get started instantly, or type your own request below to create a custom task."
 msgstr "Choose from these ready-made tasks to get started instantly, or type your own request below to create a custom task."
 
@@ -2775,12 +2775,12 @@ msgstr "Available"
 #: src/pages/Chat/components/ContentItem/index.tsx:169
 #: src/pages/Chat/components/AiThreadsList/index.tsx:424
 #: src/components/Header/components/Preference/index.tsx:238
-#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:224
+#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:225
 #: src/components/Header/components/AccountManege/components/AvatarEditModal/index.tsx:351
 msgid "Cancel"
 msgstr "Cancel"
 
-#: src/pages/VaultDetail/components/VaultInfo/components/StrategyStatus/index.tsx:39
+#: src/pages/VaultDetail/components/VaultInfo/components/StrategyStatus/index.tsx:41
 #: src/pages/MyPortfolio/components/MyStrategies/index.tsx:156
 msgid "Live"
 msgstr "Live"
@@ -2815,8 +2815,8 @@ msgstr "Trades per day"
 msgid "Open orders{0}"
 msgstr "Open orders{0}"
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:517
-#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:191
+#: src/pages/Chat/components/Shortcuts/index.tsx:519
+#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:193
 msgid "Are there any breaking news that moved the market?"
 msgstr "Are there any breaking news that moved the market?"
 
@@ -2828,7 +2828,7 @@ msgstr "Are there any breaking news that moved the market?"
 #~ msgid "INITIAL DEPOSIT (USDC)"
 #~ msgstr "INITIAL DEPOSIT (USDC)"
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:387
+#: src/pages/Chat/components/Shortcuts/index.tsx:389
 msgid "Indicators & Analysis"
 msgstr "Indicators & analysis"
 
@@ -2845,7 +2845,7 @@ msgstr "Indicators & analysis"
 msgid "Edit"
 msgstr "Edit"
 
-#: src/components/Header/components/MenuContent/components/ThreadList/index.tsx:214
+#: src/components/Header/components/MenuContent/components/ThreadList/index.tsx:215
 msgid "Today"
 msgstr "Today"
 
@@ -2862,7 +2862,7 @@ msgstr "Avatar updated successfully"
 msgid "Draft"
 msgstr "Draft"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:368
+#: src/pages/Vaults/components/StrategyTable/index.tsx:370
 msgid "My strategy"
 msgstr "My strategy"
 
@@ -2875,7 +2875,7 @@ msgstr "My strategy"
 #~ msgid "View More"
 #~ msgstr "View more"
 
-#: src/pages/Chat/components/ChatInput/components/Research/index.tsx:212
+#: src/pages/Chat/components/ChatInput/components/Research/index.tsx:214
 msgid "Ask me anything about trading..."
 msgstr "Ask me anything about trading..."
 
@@ -2896,7 +2896,7 @@ msgstr "Auto summary"
 #~ msgid "10% Creator Share"
 #~ msgstr "10% creator share"
 
-#: src/pages/MyStrategy/components/MyPerfomance/components/StrategiesSelector.tsx:118
+#: src/pages/MyStrategy/components/MyPerfomance/components/StrategiesSelector.tsx:120
 msgid "No strategies"
 msgstr "No strategies"
 
@@ -2904,7 +2904,7 @@ msgstr "No strategies"
 #~ msgid "Anything"
 #~ msgstr "Anything"
 
-#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:215
+#: src/components/Header/components/AccountManege/components/EditNicknameModal/index.tsx:216
 msgid "Please enter your new nickname"
 msgstr "Please enter your new nickname"
 
@@ -2925,7 +2925,7 @@ msgstr "SDK loading error"
 #~ msgid "Click [Generate Code] to let the Agent write the script and transform your text strategy into executable logic. Once generated, you can Simulation with virtual funds or deploy with real funds."
 #~ msgstr "Click [Generate Code] to let the Agent write the script and transform your text strategy into executable logic. Once generated, you can Simulation with virtual funds or deploy with real funds."
 
-#: src/pages/VaultDetail/components/VaultInfo/components/StrategyStatus/index.tsx:41
+#: src/pages/VaultDetail/components/VaultInfo/components/StrategyStatus/index.tsx:43
 #: src/pages/MyPortfolio/components/MyStrategies/index.tsx:166
 msgid "Suspended"
 msgstr "Suspended"
@@ -2955,11 +2955,11 @@ msgstr "Strategy has been successfully updated"
 msgid "Deploy Failed"
 msgstr "Deploy failed"
 
-#: src/components/Header/components/MenuContent/components/ThreadList/index.tsx:262
+#: src/components/Header/components/MenuContent/components/ThreadList/index.tsx:263
 msgid "Recent Chats"
 msgstr "Recent chats"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:466
+#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:468
 msgid "Your intuition has been translated into code. The matrix is ready. "
 msgstr "Your intuition has been translated into code. The matrix is ready. "
 
@@ -2978,8 +2978,8 @@ msgstr "My wallet"
 #~ msgid "Your configuration is complete. You can now run the strategy."
 #~ msgstr "Your configuration is complete. You can now run the strategy."
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:447
-#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:134
+#: src/pages/Chat/components/Shortcuts/index.tsx:449
+#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:136
 msgid "Is there a chance of an interest rate hike or cut in the near future?"
 msgstr "Is there a chance of an interest rate hike or cut in the near future?"
 
@@ -3013,7 +3013,7 @@ msgstr "Fees (Maker)"
 msgid "Create"
 msgstr "Create"
 
-#: src/pages/Chat/components/ChatInput/components/Robot/index.tsx:148
+#: src/pages/Chat/components/ChatInput/components/Robot/index.tsx:150
 msgid "Try typing BTC / ETH or any token name!"
 msgstr "Try typing BTC / ETH or any token name!"
 
@@ -3025,10 +3025,10 @@ msgid "Signals"
 msgstr "Signals"
 
 #: src/pages/Vaults/components/VaultsWalletConnect/components/OperationSelector/index.tsx:173
-#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:477
+#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:479
 #: src/pages/AgentDetail/components/Code/index.tsx:481
 #: src/pages/AgentDetail/components/ChatHistory/components/HistoryContent/index.tsx:176
-#: src/components/ShareModal/index.tsx:470
+#: src/components/ShareModal/index.tsx:471
 msgid "Copy"
 msgstr "Copy"
 
@@ -3067,12 +3067,12 @@ msgstr "Claim"
 msgid "Monday"
 msgstr "Monday"
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:483
-#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:121
+#: src/pages/Chat/components/Shortcuts/index.tsx:485
+#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:123
 msgid "How many times has BTC surged more than 5% in a single day over the past 10 years?"
 msgstr "How many times has BTC surged more than 5% in a single day over the past 10 years?"
 
-#: src/components/Header/index.tsx:298
+#: src/components/Header/index.tsx:302
 msgid "Home"
 msgstr "Home"
 
@@ -3134,7 +3134,7 @@ msgstr "Strategy Discontinued"
 #~ msgid "Please proceed to link your telegram to log in."
 #~ msgstr "Please proceed to link your telegram to log in."
 
-#: src/components/Header/components/Preference/components/WalletManagement/index.tsx:61
+#: src/components/Header/components/Preference/components/WalletManagement/index.tsx:63
 msgid ""
 "Enter your wallet addresses (comma-separated): \n"
 "Example: 0x123478293892302839827hgsdbh, 0x7e3gqhdbyukeahbuildheli"
@@ -3238,7 +3238,7 @@ msgid "No address available"
 msgstr "No address available"
 
 #: src/pages/Chat/components/Feedback/index.tsx:231
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:364
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:365
 msgid "Feedback Received"
 msgstr "Feedback received"
 
@@ -3264,7 +3264,7 @@ msgstr "System deploys both Strategy and Vault contracts to Mainnet simultaneous
 msgid "Vault detail"
 msgstr "Vault detail"
 
-#: src/pages/VaultDetail/components/StrategyRadarChart/index.tsx:127
+#: src/pages/VaultDetail/components/StrategyRadarChart/index.tsx:129
 msgid "Risk-Reward"
 msgstr "Risk-Reward"
 
@@ -3272,8 +3272,8 @@ msgstr "Risk-Reward"
 #~ msgid "Strategy changed or unsatisfied with the results? Click 'Restart' to restart the papertrading."
 #~ msgstr "Strategy changed or unsatisfied with the results? Click 'Restart' to restart the papertrading."
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:370
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:416
+#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:372
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:417
 msgid "Could you please tell us why you dislike this information?<0/>Your feedback will help us improve our AI."
 msgstr "Could you please tell us why you dislike this information?<0/>Your feedback will help us improve our AI."
 
@@ -3315,7 +3315,7 @@ msgstr "Strategy Paused"
 msgid "Welcome to<0/>Starchild AI Agent"
 msgstr "Welcome to<0/>Starchild AI agent"
 
-#: src/store/agentdetail/hooks.ts:82
+#: src/store/agentdetail/hooks.ts:83
 msgid "Agent not found"
 msgstr "Agent not found"
 
@@ -3335,7 +3335,7 @@ msgstr "Share image"
 msgid "Delist Strategy"
 msgstr "Delist strategy"
 
-#: src/pages/Chat/components/ChatInput/components/Robot/index.tsx:151
+#: src/pages/Chat/components/ChatInput/components/Robot/index.tsx:153
 msgid "Curious about price or volume? Ask away!"
 msgstr "Curious about price or volume? Ask away!"
 
@@ -3352,7 +3352,7 @@ msgstr "Follow this agent"
 msgid "Get K-Chart"
 msgstr "Get K-Chart"
 
-#: src/components/ShareModal/index.tsx:464
+#: src/components/ShareModal/index.tsx:465
 msgid "Download"
 msgstr "Download"
 
@@ -3364,7 +3364,7 @@ msgstr "The strategy has been delisted."
 #~ msgid "Insufficient USDC balance, required: {requiredUsdc} USDC, current balance: {currentUsdc} USDC"
 #~ msgstr "Insufficient USDC balance, required: {requiredUsdc} USDC, current balance: {currentUsdc} USDC"
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:27
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:39
 msgid "Turn your idea into live strategy. e.g., \"I need to pay for my vacation next month. Give me a strategy with 20% upside.\""
 msgstr "Turn your idea into live strategy. e.g., \"I need to pay for my vacation next month. Give me a strategy with 20% upside.\""
 
@@ -3376,15 +3376,15 @@ msgstr "AI chat"
 msgid "Simulation in real-time with virtual funds."
 msgstr "Simulation in real-time with virtual funds."
 
-#: src/components/ShareModal/index.tsx:477
+#: src/components/ShareModal/index.tsx:478
 msgid "Share to"
 msgstr "Share to"
 
-#: src/components/Header/components/LoginButton/index.tsx:144
+#: src/components/Header/components/LoginButton/index.tsx:150
 msgid "Logout"
 msgstr "Logout"
 
-#: src/pages/Chat/components/ChatInput/components/Robot/index.tsx:157
+#: src/pages/Chat/components/ChatInput/components/Robot/index.tsx:159
 msgid "Coin + timeframe = instant AI analysis!"
 msgstr "Coin + timeframe = instant AI analysis!"
 
@@ -3392,7 +3392,7 @@ msgstr "Coin + timeframe = instant AI analysis!"
 msgid "Data Source"
 msgstr "Data source"
 
-#: src/pages/VaultDetail/components/PaperTradingPerformance/components/TimeRangeSelector.tsx:35
+#: src/pages/VaultDetail/components/PaperTradingPerformance/components/TimeRangeSelector.tsx:37
 msgid "1M"
 msgstr "1M"
 
@@ -3417,16 +3417,16 @@ msgstr "Intermediate"
 msgid "Transferred"
 msgstr "Transferred"
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:457
-#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:163
+#: src/pages/Chat/components/Shortcuts/index.tsx:459
+#: src/pages/Chat/components/DefalutUi/components/ShortcutsList/index.tsx:165
 msgid "What major Web3 conferences or summits are happening next month?"
 msgstr "What major Web3 conferences or summits are happening next month?"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:384
+#: src/pages/Vaults/components/StrategyTable/index.tsx:386
 msgid "Search by name or leader..."
 msgstr "Search by name or leader..."
 
-#: src/pages/VaultDetail/components/PaperTradingPerformance/components/TimeRangeSelector.tsx:25
+#: src/pages/VaultDetail/components/PaperTradingPerformance/components/TimeRangeSelector.tsx:27
 msgid "24H"
 msgstr "24H"
 
@@ -3438,12 +3438,12 @@ msgstr "All vaults"
 #~ msgid "We recommend signing in with Telegram for the best experience."
 #~ msgstr "We recommend signing in with Telegram for the best experience."
 
-#: src/pages/VaultDetail/components/PaperTradingPerformance/components/VaultChartStats.tsx:98
+#: src/pages/VaultDetail/components/PaperTradingPerformance/components/VaultChartStats.tsx:100
 #: src/pages/VaultDetail/components/PaperTradingPerformance/components/StrategyChartStats.tsx:116
 msgid "30D APR"
 msgstr "30D APR"
 
-#: src/pages/Chat/components/DefaultTasks/index.tsx:141
+#: src/pages/Chat/components/DefaultTasks/index.tsx:143
 msgid "Be instantly notified when the price of Bitcoin crosses key thresholds — for example, above $100,000 or below $60,000."
 msgstr "Be instantly notified when the price of Bitcoin crosses key thresholds — for example, above $100,000 or below $60,000."
 
@@ -3500,16 +3500,16 @@ msgstr "{title}"
 msgid "{0, plural, one {Show # post} other {Show # posts}}"
 msgstr "{0, plural, one {Show # post} other {Show # posts}}"
 
-#: src/pages/VaultDetail/components/VaultInfo/components/StrategyStatus/index.tsx:42
+#: src/pages/VaultDetail/components/VaultInfo/components/StrategyStatus/index.tsx:44
 #: src/pages/MyPortfolio/components/MyStrategies/index.tsx:176
 msgid "Terminated"
 msgstr "Terminated"
 
-#: src/store/agentdetail/hooks.ts:83
+#: src/store/agentdetail/hooks.ts:84
 msgid "The agent you’re trying to access doesn’t exist or has already been deleted."
 msgstr "The agent you’re trying to access doesn’t exist or has already been deleted."
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:645
+#: src/pages/Chat/components/Shortcuts/index.tsx:647
 msgid "You can ask"
 msgstr "You can ask"
 
@@ -3605,9 +3605,9 @@ msgstr "Backtest: DCA into BTC — buy a fixed amount daily over the past 365 da
 #~ msgid "Your wallet address was not whitelisted. Share your Telegram account to join the waitlist."
 #~ msgstr "Your wallet address was not whitelisted. Share your Telegram account to join the waitlist."
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:313
+#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:315
 #: src/pages/Chat/components/Feedback/index.tsx:206
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:331
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:332
 msgid "Useless"
 msgstr "Useless"
 
@@ -3620,7 +3620,7 @@ msgid "AI reasoning in progress"
 msgstr "AI reasoning in progress"
 
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/components/UnLogin/index.tsx:41
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:397
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:404
 #: src/pages/Chat/components/ChatInput/index.tsx:171
 msgid "Log in"
 msgstr "Log in"
@@ -3674,9 +3674,9 @@ msgstr "Execution"
 msgid "This strategy is private and can only be viewed by its owner."
 msgstr "This strategy is private and can only be viewed by its owner."
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:356
+#: src/pages/Vaults/components/StrategyTable/index.tsx:358
 #: src/pages/VaultDetail/components/VaultDetailNavigation/index.tsx:53
-#: src/components/Header/index.tsx:309
+#: src/components/Header/index.tsx:313
 msgid "Leaderboard"
 msgstr "Leaderboard"
 
@@ -3688,15 +3688,15 @@ msgstr "Delete Failed"
 #~ msgid "You can not claim at this time. Return at {claimTime} UTC to try and claim."
 #~ msgstr "You can not claim at this time. Return at {claimTime} UTC to try and claim."
 
-#: src/pages/Chat/components/AddQuestionModal/index.tsx:247
+#: src/pages/Chat/components/AddQuestionModal/index.tsx:248
 msgid "Save"
 msgstr "Save"
 
-#: src/store/myagent/hooks/useAgentTriggerHistoryFeedbackHooks.ts:163
+#: src/store/myagent/hooks/useAgentTriggerHistoryFeedbackHooks.ts:164
 msgid "Unable to process your Like/Dislike request. Please try again in a moment."
 msgstr "Unable to process your like/dislike request. Please try again in a moment."
 
-#: src/pages/Chat/components/AddQuestionModal/index.tsx:181
+#: src/pages/Chat/components/AddQuestionModal/index.tsx:182
 msgid "Added Successfully"
 msgstr "Added successfully"
 
@@ -3728,7 +3728,7 @@ msgstr "Delete successfully"
 #~ msgid "Status"
 #~ msgstr "Status"
 
-#: src/pages/Chat/components/Shortcuts/index.tsx:565
+#: src/pages/Chat/components/Shortcuts/index.tsx:567
 msgid "Remove from Favorites"
 msgstr "Remove from favorites"
 
@@ -3761,7 +3761,7 @@ msgstr "Vaults"
 msgid "sources"
 msgstr "sources"
 
-#: src/store/createstrategy/hooks/usePaperTrading.ts:94
+#: src/store/createstrategy/hooks/usePaperTrading.ts:96
 msgid "Pause paper trading"
 msgstr "Pause paper trading"
 
@@ -3789,8 +3789,8 @@ msgstr "No img generated"
 #~ msgid "Wallet Address"
 #~ msgstr "Wallet address"
 
-#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:367
-#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:413
+#: src/pages/MyAgent/components/MyAgentsOverview/components/Feedback/components/DislikeModal/index.tsx:369
+#: src/pages/Chat/components/Feedback/components/DislikeModal/index.tsx:414
 msgid "We sincerely apologize."
 msgstr "We sincerely apologize."
 
@@ -3843,7 +3843,7 @@ msgstr "The minimum amount is {minWithdrawalAmount}. Please enter a larger amoun
 msgid "PnL (ROE%)"
 msgstr "PnL (ROE%)"
 
-#: src/utils/chartTooltipUtils.ts:32
+#: src/utils/chartTooltipUtils.ts:33
 #: src/pages/VaultDetail/components/VaultPositionsOrders/components/VaultPositions/index.tsx:216
 #: src/pages/VaultDetail/components/VaultPositionsOrders/components/VaultOrderHistory/index.tsx:137
 #: src/pages/VaultDetail/components/VaultPositionsOrders/components/VaultOpenOrders/index.tsx:139
@@ -3873,14 +3873,14 @@ msgstr "Novice"
 #~ msgid "24h change"
 #~ msgstr "24h change"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:323
+#: src/pages/Vaults/components/StrategyTable/index.tsx:325
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Backtest/components/DataList/index.tsx:200
 #: src/pages/AgentDetail/components/Preview/components/DataList/index.tsx:165
 msgid "Max drawdown"
 msgstr "Max drawdown"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:342
-#: src/components/ShareModal/index.tsx:286
+#: src/pages/Vaults/components/StrategyTable/index.tsx:344
+#: src/components/ShareModal/index.tsx:287
 msgid "Followers"
 msgstr "Followers"
 
@@ -3912,7 +3912,7 @@ msgstr "Tools"
 msgid "Use this prompt"
 msgstr "Use this prompt"
 
-#: src/pages/VaultDetail/components/PaperTradingPerformance/components/VaultChartStats.tsx:94
+#: src/pages/VaultDetail/components/PaperTradingPerformance/components/VaultChartStats.tsx:96
 msgid "24H APR"
 msgstr "24H APR"
 
@@ -3949,7 +3949,7 @@ msgstr "Update time"
 #~ msgid "Indicators"
 #~ msgstr "Indicators"
 
-#: src/pages/Vaults/components/StrategyTable/index.tsx:345
+#: src/pages/Vaults/components/StrategyTable/index.tsx:347
 msgid "Snapshot"
 msgstr "Snapshot"
 
@@ -3967,11 +3967,11 @@ msgstr "Available:"
 msgid "Paper trading"
 msgstr "Paper trading"
 
-#: src/components/Header/components/Preference/components/PersonalProfile/index.tsx:62
+#: src/components/Header/components/Preference/components/PersonalProfile/index.tsx:64
 msgid "Ready to learn about you! Add some details to help me assist you better."
 msgstr "Ready to learn about you! Add some details to help me assist you better."
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:232
+#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:234
 msgid "Flow"
 msgstr "Flow"
 
@@ -4014,7 +4014,7 @@ msgstr "Agent description"
 #~ msgid "Strategy changed or unsatisfied with the results? Click 'Regenerate' to update the code."
 #~ msgstr "Strategy changed or unsatisfied with the results? Click 'Regenerate' to update the code."
 
-#: src/pages/Chat/components/AddQuestionModal/index.tsx:181
+#: src/pages/Chat/components/AddQuestionModal/index.tsx:182
 msgid "Edited Successfully"
 msgstr "Edited successfully"
 
@@ -4026,6 +4026,6 @@ msgstr "Processed"
 #~ msgid "Powered by WOO"
 #~ msgstr "Powered by WOO"
 
-#: src/components/Header/components/Language/index.tsx:52
+#: src/components/Header/components/Language/index.tsx:59
 msgid "Success"
 msgstr "Success"

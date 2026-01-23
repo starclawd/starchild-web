@@ -4,8 +4,9 @@ import { vm } from 'pages/helper'
 import { useChartStrategyId } from 'store/mystrategy/hooks/useChartStrategyId'
 import { useMyStrategies } from 'store/mystrategy/hooks/useMyStrategies'
 import Select, { TriggerMethod, DataType } from 'components/Select'
-import { t } from '@lingui/core/macro'
+import { msg, t } from '@lingui/core/macro'
 import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
+import { useLingui } from '@lingui/react/macro'
 
 const SelectorContainer = styled.div`
   display: flex;
@@ -63,6 +64,7 @@ const SelectValue = styled.div`
 `
 
 const StrategiesSelector = memo(() => {
+  const { t } = useLingui()
   const theme = useTheme()
   const [chartStrategyId, setChartStrategyId] = useChartStrategyId()
   const { myStrategies, isLoadingMyStrategies } = useMyStrategies()
@@ -72,7 +74,7 @@ const StrategiesSelector = memo(() => {
     const options: DataType[] = [
       {
         value: 'all',
-        text: t`All`,
+        text: t(msg`All`),
         clickCallback: () => setChartStrategyId('all'),
       },
     ]
@@ -92,7 +94,7 @@ const StrategiesSelector = memo(() => {
     }
 
     return options
-  }, [myStrategies, setChartStrategyId])
+  }, [myStrategies, setChartStrategyId, t])
 
   // 默认选择"All"
   useEffect(() => {
@@ -104,22 +106,22 @@ const StrategiesSelector = memo(() => {
   // 获取选中的策略名称
   const getSelectedStrategyName = () => {
     if (isLoadingMyStrategies) {
-      return t`Loading...`
+      return t(msg`Loading...`)
     }
 
     if (chartStrategyId === 'all') {
-      return t`All`
+      return t(msg`All`)
     }
 
     // 只从 deployed 策略中查找
     const deployedStrategies = myStrategies.filter((strategy) => strategy.status === STRATEGY_STATUS.DEPLOYED)
 
     if (!deployedStrategies.length) {
-      return t`No strategies`
+      return t(msg`No strategies`)
     }
 
     const selectedStrategy = deployedStrategies.find((strategy) => strategy.strategy_id === chartStrategyId)
-    return selectedStrategy?.strategy_name || t`All`
+    return selectedStrategy?.strategy_name || t(msg`All`)
   }
 
   // 如果没有数据或正在加载，显示禁用状态

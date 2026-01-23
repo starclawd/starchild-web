@@ -3,7 +3,8 @@ import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import { IconBase } from 'components/Icons'
 import PureRadarChart from './components/RadarChart'
-import { t } from '@lingui/core/macro'
+import { msg } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 
 const StrategyRadarChartWrapper = styled.div`
   display: flex;
@@ -119,13 +120,14 @@ const RightSection = styled.div`
  * 展示策略的风险偏好和各维度评分
  */
 const StrategyRadarChart = memo(() => {
+  const { t } = useLingui()
   const score = 93
   const radarData = [
-    { label: t`Profit`, value: 85 },
-    { label: t`Stability`, value: 72 },
-    { label: t`Hot`, value: 58 },
-    { label: t`Risk-Reward`, value: 76 },
-    { label: t`Safety`, value: 91 },
+    { label: t(msg`Profit`), value: 85 },
+    { label: t(msg`Stability`), value: 72 },
+    { label: t(msg`Hot`), value: 58 },
+    { label: t(msg`Risk-Reward`), value: 76 },
+    { label: t(msg`Safety`), value: 91 },
   ]
   return (
     <StrategyRadarChartWrapper>

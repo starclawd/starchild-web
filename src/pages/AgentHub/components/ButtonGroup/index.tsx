@@ -2,8 +2,8 @@ import { memo, useCallback, useState, useMemo, useEffect, useRef } from 'react'
 import styled, { css } from 'styled-components'
 import { AgentCategory } from 'store/agenthub/agenthub'
 import { BaseButton } from 'components/Button'
-import { Trans } from '@lingui/react/macro'
-import { t } from '@lingui/core/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
+import { msg, t } from '@lingui/core/macro'
 import { vm } from 'pages/helper'
 import { ANI_DURATION } from 'constants/index'
 
@@ -109,17 +109,18 @@ export default memo(function ButtonGroup({
   showAll = false,
   value,
 }: ButtonGroupProps) {
+  const { t } = useLingui()
   const processedItems = useMemo(() => {
     if (!showAll) return items
 
     const allItem: ButtonGroupItemProps = {
       id: 'item_all',
-      label: t`All`,
+      label: t(msg`All`),
       value: '',
     }
 
     return [allItem, ...items]
-  }, [items, showAll])
+  }, [items, showAll, t])
 
   // 根据传入的 value 找到对应的 item id，如果没有找到则使用第一个
   const getInitialActiveButton = useCallback(() => {

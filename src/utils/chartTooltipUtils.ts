@@ -1,6 +1,7 @@
 import { formatNumber } from 'utils/format'
 import { t } from '@lingui/core/macro'
-
+import { msg } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 export interface ChartTooltipConfig {
   theme: any
   getChartType?: () => string
@@ -17,19 +18,19 @@ export interface ChartTooltipConfig {
  */
 export const createChartTooltipConfig = (config: ChartTooltipConfig) => {
   const { theme, getChartType, getDisplayValue, getTitleByChartType, showStrategyName, getStrategyName } = config
-
+  const { t } = useLingui()
   const defaultGetDisplayValue = (value: number) => formatNumber(value, { showDollar: true })
 
   const defaultGetTitleByChartType = (chartType: string) => {
     switch (chartType) {
       case 'TVL':
-        return t`TVL`
+        return t(msg`TVL`)
       case 'PNL':
-        return t`PnL`
+        return t(msg`PnL`)
       case 'EQUITY':
-        return t`Equity`
+        return t(msg`Equity`)
       default:
-        return t`Value`
+        return t(msg`Value`)
     }
   }
 

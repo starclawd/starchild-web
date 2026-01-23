@@ -7,7 +7,8 @@ import { useVaultInfo } from 'store/vaultsdetail/hooks/useVaultInfo'
 import { useCurrentVaultId } from 'store/vaultsdetail/hooks'
 import { CHAT_TIME_RANGE } from 'store/vaultsdetail/vaultsdetail.d'
 import { toFix } from 'utils/calc'
-import { t } from '@lingui/core/macro'
+import { msg, t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 
 const ChartStats = styled.div`
   display: flex;
@@ -80,6 +81,7 @@ interface VaultChartStatsProps {
 }
 
 const VaultChartStats = memo<VaultChartStatsProps>(({ chartTimeRange }) => {
+  const { t } = useLingui()
   // 获取 vault 基础信息
   const vaultId = useCurrentVaultId()
   const { vaultInfo, isLoadingVaultInfo } = useVaultInfo({ vaultId })
@@ -91,15 +93,15 @@ const VaultChartStats = memo<VaultChartStatsProps>(({ chartTimeRange }) => {
   const periodApyLabel = useMemo(() => {
     switch (chartTimeRange) {
       case '24h':
-        return t`24H APR`
+        return t(msg`24H APR`)
       case '7d':
-        return t`7D APR`
+        return t(msg`7D APR`)
       case '30d':
-        return t`30D APR`
+        return t(msg`30D APR`)
       default:
-        return t`Period APR`
+        return t(msg`Period APR`)
     }
-  }, [chartTimeRange])
+  }, [chartTimeRange, t])
 
   // 统计项配置
   const statsConfig: StatItemConfig[] = useMemo(() => {
@@ -112,21 +114,21 @@ const VaultChartStats = memo<VaultChartStatsProps>(({ chartTimeRange }) => {
     return [
       {
         key: 'tvl',
-        label: t`TVL`,
+        label: t(msg`TVL`),
         value: tvl,
         showSignColor: false,
         format: (val) => (val == null ? '--' : formatKMBNumber(val, 2, { showDollar: true })),
       },
       {
         key: 'index',
-        label: t`Index`,
+        label: t(msg`Index`),
         value: index,
         showSignColor: false,
         format: (val) => (val == null ? '--' : formatNumber(toFix(val, 8))),
       },
       {
         key: 'pnl',
-        label: t`PnL`,
+        label: t(msg`PnL`),
         value: pnl,
         showSignColor: true,
         format: (val) => (val == null ? '--' : formatKMBNumber(val, 2, { showDollar: true })),
@@ -140,13 +142,13 @@ const VaultChartStats = memo<VaultChartStatsProps>(({ chartTimeRange }) => {
       },
       {
         key: 'lifetimeApy',
-        label: t`All-time APR`,
+        label: t(msg`All-time APR`),
         value: lifetimeApy,
         showSignColor: true,
         format: (val) => (val == null ? '--' : formatPercent({ value: val, precision: 2 })),
       },
     ]
-  }, [vaultInfo, performanceData, periodApyLabel])
+  }, [vaultInfo, performanceData, periodApyLabel, t])
 
   const isLoading = isLoadingVaultInfo || isLoadingPerformance || !vaultInfo
 

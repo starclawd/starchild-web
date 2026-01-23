@@ -15,7 +15,8 @@ import MoveTabList, { MoveType } from 'components/MoveTabList'
 import { useAllFollowedStrategiesOverview } from 'store/mystrategy/hooks/useAllFollowedStrategiesOverview'
 import { useMyStrategies } from 'store/mystrategy/hooks/useMyStrategies'
 import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy.d'
-
+import { msg } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 const StrategyTableWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -218,6 +219,7 @@ export enum TabKey {
 }
 
 export default memo(function StrategyTable() {
+  const { t } = useLingui()
   const [searchValue, setSearchValue] = useState('')
   const [activeTab, setActiveTab] = useState<TabKey>(TabKey.LEADERBOARD)
   const { sortState, handleSort } = useSort('roe', SortDirection.DESC)
@@ -381,7 +383,7 @@ export default memo(function StrategyTable() {
           <Input
             inputValue={searchValue}
             onChange={changeSearchValue}
-            placeholder={t`Search by name or leader...`}
+            placeholder={t(msg`Search by name or leader...`)}
             inputType={InputType.SEARCH}
             onResetValue={() => setSearchValue('')}
           />

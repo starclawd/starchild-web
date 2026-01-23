@@ -4,7 +4,8 @@ import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { vm } from 'pages/helper'
 import { useTheme } from 'store/themecache/hooks'
 import InputArea from 'components/InputArea'
-import { t } from '@lingui/core/macro'
+import { msg, t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 
 const InputWrapper = styled(BorderAllSide1PxBox)`
   display: flex;
@@ -55,11 +56,12 @@ export default function PersonalProfile({
   setPersonalProfileText: (value: string) => void
 }) {
   const theme = useTheme()
+  const { t } = useLingui()
   return (
     <InputWrapper $borderRadius={4} $borderColor={theme.black600}>
       <InputArea
         disabledUpdateHeight
-        placeholder={t`Ready to learn about you! Add some details to help me assist you better.`}
+        placeholder={t(msg`Ready to learn about you! Add some details to help me assist you better.`)}
         value={personalProfileText}
         setValue={setPersonalProfileText}
       />

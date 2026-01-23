@@ -3,7 +3,8 @@ import { useLazyAgentTriggerHistoryFeedbackQuery } from 'api/myAgent'
 import { useTheme } from 'styled-components'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { t } from '@lingui/core/macro'
-
+import { msg } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 interface FeedbackLoadingStates {
   like: boolean
   dislike: boolean
@@ -155,18 +156,18 @@ export const useAgentTriggerHistoryFeedback = ({
 const useFeedbackFailedToast = () => {
   const theme = useTheme()
   const toast = useToast()
-
+  const { t } = useLingui()
   const showFeedbackFailedToast = useCallback(
     (customError?: string) => {
       toast({
-        title: t`Action Failed`,
-        description: customError || t`Unable to process your Like/Dislike request. Please try again in a moment.`,
+        title: t(msg`Action Failed`) ,
+        description: customError || t(msg`Unable to process your Like/Dislike request. Please try again in a moment.`),
         status: TOAST_STATUS.ERROR,
         typeIcon: 'icon-warn',
         iconTheme: theme.black0,
       })
     },
-    [theme.black0, toast],
+    [theme.black0, toast, t],
   )
 
   return showFeedbackFailedToast

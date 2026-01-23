@@ -3,6 +3,7 @@ import { memo, useCallback, useMemo } from 'react'
 import { ListViewSortingColumn, ListViewSortingOrder } from 'store/agenthub/agenthub'
 import { vm } from 'pages/helper'
 import { useLingui } from '@lingui/react/macro'
+import { msg, t } from '@lingui/core/macro'
 
 const SortingBarContainer = styled.div`
   display: flex;
@@ -115,15 +116,15 @@ export default memo(function AgentListViewSortingBar({
     () => [
       {
         key: ListViewSortingColumn.UPDATED_TIME,
-        label: t`Updated time`,
+        label: t(msg`Updated time`),
       },
       {
         key: ListViewSortingColumn.CREATED_TIME,
-        label: t`Created time`,
+        label: t(msg`Created time`),
       },
       {
         key: ListViewSortingColumn.SUBSCRIPTIONS,
-        label: t`Subscriptions`,
+        label: t(msg`Subscriptions`),
       },
     ],
     [t],

@@ -1,7 +1,8 @@
 import { memo } from 'react'
 import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
-import { t } from '@lingui/core/macro'
+import { msg, t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 
 const TabsContainer = styled.div`
   display: flex;
@@ -48,9 +49,10 @@ const TabItem = styled.div`
 `
 
 const ChartTypeTabs = memo(() => {
+  const { t } = useLingui()
   return (
     <TabsContainer>
-      <TabItem>{t`Equity`}</TabItem>
+      <TabItem>{t(msg`Equity`)}</TabItem>
     </TabsContainer>
   )
 })

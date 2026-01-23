@@ -3,7 +3,8 @@ import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import { useChartType } from 'store/vaultsdetail/hooks/useVaultDetailState'
 import { CHART_TYPE, DETAIL_TYPE } from 'store/vaultsdetail/vaultsdetail.d'
-import { t } from '@lingui/core/macro'
+import { msg } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 
 const TabsContainer = styled.div`
   display: flex;
@@ -59,18 +60,19 @@ interface ChartTypeTabsProps {
 }
 
 const ChartTypeTabs = memo<ChartTypeTabsProps>(({ activeTab }) => {
+  const { t } = useLingui()
   const [chartType, setChartType] = useChartType()
 
   const chartTypes = useMemo(() => {
     if (activeTab === DETAIL_TYPE.STRATEGY) {
-      return [{ key: CHART_TYPE.EQUITY, label: t`Equity` }]
+      return [{ key: CHART_TYPE.EQUITY, label: t(msg`Equity`) }]
     } else {
       return [
-        { key: CHART_TYPE.TVL, label: t`TVL` },
-        { key: CHART_TYPE.PNL, label: t`PnL` },
+        { key: CHART_TYPE.TVL, label: t(msg`TVL`) },
+        { key: CHART_TYPE.PNL, label: t(msg`PnL`) },
       ]
     }
-  }, [activeTab])
+  }, [activeTab, t])
 
   // 当activeTab变化时，直接设置对应的默认图表类型
   useEffect(() => {

@@ -8,13 +8,13 @@ import Modal, {
 import { useIsMobile, useModalOpen, useEditNicknameModalToggle } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
 import { ModalSafeAreaWrapper } from 'components/SafeAreaWrapper'
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
 import BottomSheet from 'components/BottomSheet'
 import { ChangeEvent, useCallback, useMemo, useState } from 'react'
 import { IconBase } from 'components/Icons'
 import Input from 'components/Input'
-import { t } from '@lingui/core/macro'
+import { msg, t } from '@lingui/core/macro'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
 import Pending from 'components/Pending'
 import { useChangeNickname, useGetUserInfo } from 'store/login/hooks'
@@ -122,6 +122,7 @@ const ButtonConfirm = styled(ButtonCommon)`
 `
 
 export function EditNicknameModal() {
+  const { t } = useLingui()
   const isMobile = useIsMobile()
   const [errorKey, setErrorKey] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -212,7 +213,7 @@ export function EditNicknameModal() {
           <NicknameInput>
             <Input
               showError={errorKey === 'nickname'}
-              placeholder={t`Please enter your new nickname`}
+              placeholder={t(msg`Please enter your new nickname`)}
               inputValue={nickname}
               onChange={inputChange}
               clearError={() => setErrorKey('')}

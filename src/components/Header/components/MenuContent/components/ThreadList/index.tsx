@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
-import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { msg, t } from '@lingui/core/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import Input, { InputType } from 'components/Input'
 import { useCallback, useMemo, useState } from 'react'
 import { useThreadsList } from 'store/chat/hooks'
@@ -123,6 +123,7 @@ export default function ThreadList({
   isMobileMenu?: boolean
   mobileMenuCallback?: () => void
 }) {
+  const { t } = useLingui()
   const isMobile = useIsMobile()
   const [searchValue, setSearchValue] = useState('')
   const scrollRef = useScrollbarClass<HTMLDivElement>()
@@ -254,7 +255,7 @@ export default function ThreadList({
           onChange={changeSearchValue}
           inputType={InputType.SEARCH}
           onResetValue={() => setSearchValue('')}
-          placeholder={t`Search chat`}
+          placeholder={t(msg`Search chat`)}
         />
       )}
       <Content>
