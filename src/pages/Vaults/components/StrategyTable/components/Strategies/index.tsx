@@ -1,6 +1,7 @@
 import { memo, useMemo, useState, useCallback, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import Pending from 'components/Pending'
+import NoData from 'components/NoData'
 import { useAllStrategiesOverview } from 'store/vaults/hooks'
 import { SortState, SortDirection } from 'components/TableSortableColumn'
 import { COLUMN_WIDTHS } from '../../index'
@@ -198,6 +199,14 @@ const Strategies = memo(
       return (
         <StrategiesContainer>
           <Pending isNotButtonLoading />
+        </StrategiesContainer>
+      )
+    }
+
+    if (displayStrategies.length === 0) {
+      return (
+        <StrategiesContainer>
+          <NoData />
         </StrategiesContainer>
       )
     }

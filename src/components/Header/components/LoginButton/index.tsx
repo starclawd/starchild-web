@@ -154,35 +154,18 @@ export default function LoginButton() {
     toggleConnectWalletModal()
   }, [toggleConnectWalletModal])
   return (
-    <AvatarWrapper>
+    <AvatarWrapper onClick={isLogin ? toggleAccountManegeModal : handleLogin}>
       {isLogin ? (
-        <Select
-          usePortal
-          hideExpand
-          offsetLeft={32}
-          offsetTop={-32}
-          triggerMethod={TriggerMethod.CLICK}
-          placement='top-end'
-          value=''
-          popItemStyle={{
-            padding: '0',
-          }}
-          popItemTextStyle={{
-            width: '100%',
-          }}
-          dataList={selectList}
-        >
-          {userAvatar ? (
+        userAvatar ? (
             <img className='avatar-img' src={userAvatar} alt='avatar' />
           ) : (
             <Avatar
               name={userName || ''}
               size={isMobile ? (24 / MOBILE_DESIGN_WIDTH) * (width || MOBILE_DESIGN_WIDTH) : 24}
             />
-          )}
-        </Select>
+          )
       ) : (
-        <LoginWrapper onClick={handleLogin}>
+        <LoginWrapper>
           <IconBase className='icon-menu-login' />
         </LoginWrapper>
       )}
