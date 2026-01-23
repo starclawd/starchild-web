@@ -136,7 +136,15 @@ interface ConditionNodeData {
 }
 
 function ConditionNode({ data }: NodeProps) {
-  const nodeData = data as unknown as ConditionNodeData
+  const rawData = data as unknown as ConditionNodeData
+  // 防御性编程：确保所有字段都有默认值
+  const nodeData = {
+    direction: rawData.direction || 'both',
+    category: rawData.category || 'entry',
+    triggerType: rawData.triggerType || 'signal',
+    conditions: Array.isArray(rawData.conditions) ? rawData.conditions : [],
+    description: rawData.description || '',
+  }
 
   const getTriggerLabel = (type: string) => {
     switch (type) {

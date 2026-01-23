@@ -128,7 +128,12 @@ interface ActionNodeData {
 }
 
 function ActionNode({ data }: NodeProps) {
-  const nodeData = data as unknown as ActionNodeData
+  const rawData = data as unknown as ActionNodeData
+  // 防御性编程：确保字段有默认值
+  const nodeData = {
+    action: rawData.action || 'hold',
+    description: rawData.description || '',
+  }
 
   const getIcon = (action: string) => {
     switch (action) {

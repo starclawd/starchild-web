@@ -91,7 +91,9 @@ interface AnalyzeDetailNodeData {
 }
 
 function AnalyzeDetailNode({ data }: NodeProps) {
-  const nodeData = data as unknown as AnalyzeDetailNodeData
+  const rawData = data as unknown as AnalyzeDetailNodeData
+  // 防御性编程：确保 steps 是数组
+  const steps = Array.isArray(rawData.steps) ? rawData.steps : []
 
   return (
     <NodeWrapper>
@@ -103,12 +105,12 @@ function AnalyzeDetailNode({ data }: NodeProps) {
         <Title>ANALYZE</Title>
       </Header>
       <StepList>
-        {nodeData.steps.map((step, index) => (
-          <StepItem key={step.id}>
+        {steps.map((step, index) => (
+          <StepItem key={step?.id || index}>
             <StepNumber>{index + 1}</StepNumber>
             <StepContent>
-              <StepLabel>{step.label}</StepLabel>
-              <StepDescription>{step.description}</StepDescription>
+              <StepLabel>{step?.label || 'Step'}</StepLabel>
+              <StepDescription>{step?.description || ''}</StepDescription>
             </StepContent>
           </StepItem>
         ))}

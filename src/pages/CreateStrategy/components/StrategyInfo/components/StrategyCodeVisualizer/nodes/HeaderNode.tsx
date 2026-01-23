@@ -104,7 +104,15 @@ interface HeaderNodeData {
 }
 
 function HeaderNode({ data }: NodeProps) {
-  const nodeData = data as unknown as HeaderNodeData
+  const rawData = data as unknown as HeaderNodeData
+  // 防御性编程：确保字段有默认值
+  const nodeData = {
+    name: rawData.name || 'Trading Strategy',
+    strategyType: rawData.strategyType || 'Strategy',
+    timeframe: rawData.timeframe || '1H',
+    symbol: rawData.symbol || 'BTC-PERP',
+    crossAssetInfo: rawData.crossAssetInfo,
+  }
   const { crossAssetInfo } = nodeData
 
   return (
@@ -121,7 +129,7 @@ function HeaderNode({ data }: NodeProps) {
           <InfoValue>{nodeData.timeframe?.toUpperCase() || '1H'}</InfoValue>
         </InfoItem>
       </InfoRow>
-      {crossAssetInfo && (
+      {crossAssetInfo && crossAssetInfo.signalAsset && crossAssetInfo.tradingAsset && (
         <CrossAssetBadge>
           <div>
             <AssetLabel $type="signal">Signal</AssetLabel>

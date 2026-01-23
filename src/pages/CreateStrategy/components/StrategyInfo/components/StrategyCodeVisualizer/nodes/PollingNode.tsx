@@ -106,10 +106,18 @@ interface PollingNodeData {
 }
 
 function PollingNode({ data }: NodeProps) {
-  const nodeData = data as unknown as PollingNodeData
+  const rawData = data as unknown as PollingNodeData
+  // 防御性编程：确保字段有默认值
+  const nodeData = {
+    mode: rawData.mode || 'adaptive',
+    baseInterval: rawData.baseInterval || 30,
+    minInterval: rawData.minInterval || 5,
+  }
 
-  // 计算最小间隔相对于基础间隔的比例
-  const intervalRatio = ((nodeData.baseInterval - nodeData.minInterval) / nodeData.baseInterval) * 100
+  // 计算最小间隔相对于基础间隔的比例（防止除以零）
+  const intervalRatio = nodeData.baseInterval > 0
+    ? ((nodeData.baseInterval - nodeData.minInterval) / nodeData.baseInterval) * 100
+    : 0
 
   return (
     <NodeWrapper>

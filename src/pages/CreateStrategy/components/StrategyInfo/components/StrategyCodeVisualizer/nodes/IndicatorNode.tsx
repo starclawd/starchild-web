@@ -56,7 +56,8 @@ interface IndicatorNodeData {
 
 function IndicatorNode({ data }: NodeProps) {
   const nodeData = data as unknown as IndicatorNodeData
-  const shortName = nodeData.name.substring(0, 3).toUpperCase()
+  const name = nodeData.name || 'IND'
+  const shortName = name.substring(0, 3).toUpperCase()
 
   return (
     <NodeWrapper>
@@ -64,8 +65,8 @@ function IndicatorNode({ data }: NodeProps) {
       <Header>
         <IconWrapper>{shortName}</IconWrapper>
         <Content>
-          <Title>{nodeData.name}</Title>
-          <Params>{nodeData.params}</Params>
+          <Title>{name}</Title>
+          <Params>{nodeData.params || ''}</Params>
         </Content>
       </Header>
       <Handle type="source" position={Position.Bottom} style={{ background: '#A87FFF' }} />

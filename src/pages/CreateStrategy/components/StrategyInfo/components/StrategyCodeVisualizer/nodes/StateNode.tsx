@@ -106,7 +106,13 @@ interface StateNodeData extends StateManagementInfo {
 }
 
 function StateNode({ data }: NodeProps) {
-  const nodeData = data as unknown as StateNodeData
+  const rawData = data as unknown as StateNodeData
+  // 防御性编程：确保字段有默认值
+  const nodeData = {
+    fields: Array.isArray(rawData.fields) ? rawData.fields : [],
+    resetTrigger: rawData.resetTrigger || undefined,
+    needsState: rawData.needsState ?? true,
+  }
 
   return (
     <NodeWrapper>

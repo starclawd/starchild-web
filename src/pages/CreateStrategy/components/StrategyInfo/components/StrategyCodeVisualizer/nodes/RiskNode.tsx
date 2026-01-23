@@ -136,11 +136,24 @@ interface RiskNodeData {
 }
 
 function RiskNode({ data }: NodeProps) {
-  const nodeData = data as unknown as RiskNodeData
+  const rawData = data as unknown as RiskNodeData
+  // 防御性编程：确保字段有默认值
+  const nodeData = {
+    takeProfit: rawData.takeProfit || 'Dynamic',
+    stopLoss: rawData.stopLoss || 'Dynamic',
+    leverage: rawData.leverage || '1x',
+    positionSize: rawData.positionSize || '100%',
+    longPositionSize: rawData.longPositionSize,
+    shortPositionSize: rawData.shortPositionSize,
+    maxRoeLoss: rawData.maxRoeLoss,
+    maxDrawdown: rawData.maxDrawdown,
+    maxAccountRisk: rawData.maxAccountRisk,
+    hardStops: Array.isArray(rawData.hardStops) ? rawData.hardStops : [],
+  }
 
   const hasAsymmetricSize = nodeData.longPositionSize || nodeData.shortPositionSize
   const hasAdvancedRisk = nodeData.maxRoeLoss || nodeData.maxDrawdown || nodeData.maxAccountRisk
-  const hasHardStops = nodeData.hardStops && nodeData.hardStops.length > 0
+  const hasHardStops = nodeData.hardStops.length > 0
 
   return (
     <NodeWrapper>
@@ -209,7 +222,7 @@ function RiskNode({ data }: NodeProps) {
       {hasHardStops && (
         <HardStopsSection>
           <HardStopsTitle>Hard Stops</HardStopsTitle>
-          {nodeData.hardStops?.map((stop, index) => (
+          {nodeData.hardStops.map((stop, index) => (
             <HardStopItem key={index}>{stop}</HardStopItem>
           ))}
         </HardStopsSection>

@@ -110,17 +110,25 @@ interface DecisionDetailNodeData {
 }
 
 function DecisionDetailNode({ data }: NodeProps) {
-  const nodeData = data as unknown as DecisionDetailNodeData
+  const rawData = data as unknown as DecisionDetailNodeData
+  // 防御性编程：确保字段有默认值
+  const nodeData = {
+    hasPosition: Array.isArray(rawData.hasPosition) ? rawData.hasPosition : [],
+    noPosition: Array.isArray(rawData.noPosition) ? rawData.noPosition : [],
+    entryConditionsCount: rawData.entryConditionsCount,
+    exitConditionsCount: rawData.exitConditionsCount,
+  }
 
   // 提取简化的分支动作
   const getSimplifiedActions = (branches: DecisionBranch[]) => {
-    const actions = branches.map((b) => b.action)
+    if (!Array.isArray(branches)) return []
+    const actions = branches.map((b) => b?.action || 'UNKNOWN').filter(Boolean)
     // 去重并限制显示数量
     return [...new Set(actions)].slice(0, 3)
   }
 
-  const noPositionActions = getSimplifiedActions(nodeData.noPosition || [])
-  const hasPositionActions = getSimplifiedActions(nodeData.hasPosition || [])
+  const noPositionActions = getSimplifiedActions(nodeData.noPosition)
+  const hasPositionActions = getSimplifiedActions(nodeData.hasPosition)
 
   // 使用实际的条件数量（如果传递了的话），否则使用 decisionLogic 的数量
   const entryCount = nodeData.entryConditionsCount ?? nodeData.noPosition?.length ?? 0

@@ -159,15 +159,26 @@ interface CandlePatternNodeData extends CandlePatternInfo {
 }
 
 function CandlePatternNode({ data }: NodeProps) {
-  const nodeData = data as unknown as CandlePatternNodeData
+  const rawData = data as unknown as CandlePatternNodeData
+  // 防御性编程：确保字段有默认值
+  const defaultPattern: ('green' | 'red')[] = ['green', 'green', 'green']
+  const nodeData = {
+    colorPattern: Array.isArray(rawData.colorPattern) ? rawData.colorPattern : defaultPattern,
+    name: rawData.name || 'Pattern',
+    entryCondition: rawData.entryCondition,
+    exitCondition: rawData.exitCondition,
+    description: rawData.description,
+    type: rawData.type,
+    requiredCandles: rawData.requiredCandles,
+  }
 
-  // 生成 K 线展示数据
-  const candles = nodeData.colorPattern || ['green', 'green', 'green']
+  // 生成 K 线展示数据 - 确保颜色值是有效的
+  const candles = nodeData.colorPattern.map((c) => (c === 'red' ? 'red' : 'green') as 'green' | 'red')
   const candleHeights = candles.map((_, i) => 20 + i * 8) // 递增高度
 
   return (
     <NodeWrapper>
-      <Handle type="target" position={Position.Top} style={{ background: '#00DE73' }} />
+      <Handle type='target' position={Position.Top} style={{ background: '#00DE73' }} />
 
       <Header>
         <IconWrapper>📊</IconWrapper>
@@ -193,7 +204,7 @@ function CandlePatternNode({ data }: NodeProps) {
       {nodeData.entryCondition && (
         <ConditionSection>
           <ConditionLabel>Entry Condition</ConditionLabel>
-          <ConditionValue $type="entry">{nodeData.entryCondition}</ConditionValue>
+          <ConditionValue $type='entry'>{nodeData.entryCondition}</ConditionValue>
         </ConditionSection>
       )}
 
@@ -201,14 +212,14 @@ function CandlePatternNode({ data }: NodeProps) {
       {nodeData.exitCondition && (
         <ConditionSection>
           <ConditionLabel>Exit Condition</ConditionLabel>
-          <ConditionValue $type="exit">{nodeData.exitCondition}</ConditionValue>
+          <ConditionValue $type='exit'>{nodeData.exitCondition}</ConditionValue>
         </ConditionSection>
       )}
 
       {/* 描述 */}
       {nodeData.description && <Description>{nodeData.description}</Description>}
 
-      <Handle type="source" position={Position.Bottom} style={{ background: '#00DE73' }} />
+      <Handle type='source' position={Position.Bottom} style={{ background: '#00DE73' }} />
     </NodeWrapper>
   )
 }

@@ -61,7 +61,12 @@ interface DataSourceNodeData {
 }
 
 function DataSourceNode({ data }: NodeProps) {
-  const nodeData = data as unknown as DataSourceNodeData
+  const rawData = data as unknown as DataSourceNodeData
+  // 防御性编程：确保字段有默认值
+  const nodeData = {
+    api: rawData.api || 'API',
+    fields: Array.isArray(rawData.fields) ? rawData.fields : [],
+  }
 
   return (
     <NodeWrapper>
