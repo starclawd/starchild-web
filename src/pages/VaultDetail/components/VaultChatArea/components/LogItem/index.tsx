@@ -66,12 +66,7 @@ export default function LogItem({ log }: { log: LogType }) {
       <Time>{dayjs.tz(timestamp, timezone).format('YYYY-MM-DD HH:mm:ss')}</Time>
       <Content>
         <IconBase className='icon-signal-log' />
-        <Right>
-          <Signal>
-            <Trans>Check signal:</Trans>
-          </Signal>
-          <Des>{logContent}</Des>
-        </Right>
+        <Des>{logContent}</Des>
       </Content>
     </LogItemWrapper>
   )
