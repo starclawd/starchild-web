@@ -1,6 +1,5 @@
 import { memo } from 'react'
 import styled, { css } from 'styled-components'
-import ScrollPageContent from 'components/ScrollPageContent'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import PaperTradingPerformance from 'pages/VaultDetail/components/PaperTradingPerformance'
 import VaultPositionsOrders from 'pages/VaultDetail/components/VaultPositionsOrders'
@@ -24,10 +23,6 @@ const PaperTradingMainContent = styled.div<{ $isShowRestart: boolean }>`
   height: 100%;
   margin: 0;
   background: ${({ theme }) => theme.black1000};
-  .paper-trading-scroll {
-    padding: 0;
-    padding-right: 4px !important;
-  }
   ${({ $isShowRestart }) =>
     $isShowRestart &&
     css`
@@ -35,6 +30,16 @@ const PaperTradingMainContent = styled.div<{ $isShowRestart: boolean }>`
         padding-bottom: 56px;
       }
     `}
+`
+
+const ScrollPageContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  padding: 0;
 `
 
 const PaperTradingChatSidebar = styled.div<{ $isShowSignals: boolean }>`
@@ -69,7 +74,7 @@ const PaperTradingRunning = memo(() => {
   return (
     <PaperTradingContainer>
       <PaperTradingMainContent $isShowRestart={isShowRestart}>
-        <ScrollPageContent className='paper-trading-scroll'>
+        <ScrollPageContent className='scroll-style'>
           <PaperTradingContentWrapper>
             {/* PnL图表区域 */}
             <PaperTradingPerformance activeTab={activeTab} vaultId={''} strategyId={strategyId} />

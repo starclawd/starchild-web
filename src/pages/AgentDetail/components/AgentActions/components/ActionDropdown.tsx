@@ -1,6 +1,6 @@
 import { memo, RefObject } from 'react'
 import { IconBase } from 'components/Icons'
-import AgentShare from 'components/AgentShare'
+import AgentShare from 'pages/AgentDetail/components/AgentShare'
 import { ActionType, ActionConfig } from '../types'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import { DropdownWrapper, DropdownItem, IconWrapper } from '../styles'

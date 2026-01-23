@@ -1,7 +1,6 @@
 import styled, { css } from 'styled-components'
 import { memo, useEffect, useCallback, useMemo, useRef } from 'react'
 import { vm } from 'pages/helper'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import AgentCardSection from '../AgentCardSection'
 import StickySearchHeader from '../StickySearchHeader'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
@@ -139,7 +138,7 @@ export default memo(function AgentHubPage({
   onRunAgent,
   showSearchBar = true,
 }: AgentHubPageProps) {
-  const agentHubPageWrapperRef = useScrollbarClass<HTMLDivElement>()
+  const agentHubPageWrapperRef = useRef<HTMLDivElement>(null)
   const isInitializedRef = useRef(false)
 
   const isMobile = useIsMobile()
@@ -249,7 +248,7 @@ export default memo(function AgentHubPage({
   return (
     <AgentHubContainer>
       <AgentTopNavigationBar />
-      <AgentHubPageWrapper ref={agentHubPageWrapperRef as any} className='scroll-style'>
+      <AgentHubPageWrapper ref={agentHubPageWrapperRef} className='scroll-style'>
         <InnerContent>
           {!isMobile && (
             <Header>

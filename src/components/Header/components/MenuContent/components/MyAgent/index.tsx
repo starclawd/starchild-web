@@ -14,7 +14,6 @@ import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
 import { ButtonCommon } from 'components/Button'
 import { ROUTER } from 'pages/router'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import useSubErrorInfo from 'hooks/useSubErrorInfo'
 import NoData from 'components/NoData'
@@ -114,7 +113,6 @@ export default function MyAgent() {
   const [, setCurrentEditAgentData] = useCurrentEditAgentData()
   const { agentId } = useParsedQueryString()
   const wrapperRef = useRef<HTMLDivElement>(null)
-  const scrollRef = useScrollbarClass<HTMLDivElement>()
   const subErrorInfo = useSubErrorInfo()
 
   const sortSubscribedAgents = useMemo(() => {
@@ -247,7 +245,7 @@ export default function MyAgent() {
           <Trans>Create Agent</Trans>
         </CreateAgent>
       )}
-      <AgentList className={isMobile ? '' : 'scroll-style'} ref={isMobile ? undefined : scrollRef}>
+      <AgentList className={isMobile ? '' : 'scroll-style'}>
         {sortSubscribedAgents.length > 0 ? (
           sortSubscribedAgents.map((item) => {
             return <AgentItem key={item.id} data={item} fromPage='myagents' />

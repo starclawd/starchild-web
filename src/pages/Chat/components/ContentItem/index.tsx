@@ -15,6 +15,7 @@ import DeepThink from '../DeepThink'
 import Recommandations from './components/Recommandations'
 import Portal from 'components/Portal'
 import GetKChart from './components/GetKChart'
+import LazyImage from 'components/LazyImage'
 
 const EditContentWrapper = styled.div`
   display: flex;
@@ -195,7 +196,7 @@ export default memo(function ContentItemCom({ data }: { data: TempAiContentDataT
           {imgList.length > 0 && (
             <ImgWrapper>
               {imgList.map((item, index) => {
-                return <img key={index} src={item} alt='kline' onClick={() => handleImageClick(item)} />
+                return <LazyImage width='100%' key={index} src={item} alt='kline' onClick={() => handleImageClick(item)} />
               })}
             </ImgWrapper>
           )}

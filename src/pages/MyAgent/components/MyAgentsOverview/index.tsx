@@ -13,7 +13,6 @@ import Pending from 'components/Pending'
 import PullUpRefresh from 'components/PullUpRefresh'
 import { vm } from 'pages/helper'
 import { Plural } from '@lingui/react/macro'
-import ScrollPageContent from 'components/ScrollPageContent'
 
 const MyAgentsOverviewPageWrapper = styled.div`
   position: relative;
@@ -25,6 +24,16 @@ const MyAgentsOverviewPageWrapper = styled.div`
     css`
       overflow-y: auto;
     `}
+`
+
+const ScrollPageContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
 `
 // 从页面中间上方滑入的动画
 const slideInFromCenter = keyframes`
@@ -176,7 +185,7 @@ function MyAgentsOverview() {
   if (!myAgentsOverviewList || myAgentsOverviewList.length === 0) {
     return (
       <MyAgentsOverviewPageWrapper>
-        <ScrollPageContent>
+        <ScrollPageContent className='scroll-style'>
           <EmptyOverview />
         </ScrollPageContent>
       </MyAgentsOverviewPageWrapper>
@@ -192,7 +201,7 @@ function MyAgentsOverview() {
           <Plural value={newTriggerList.length} one='Show # post' other='Show # posts' />
         </NotificationButton>
       )}
-      <ScrollPageContent>
+      <ScrollPageContent className='scroll-style'>
         <PullUpRefresh
           onRefresh={handleLoadMore}
           isRefreshing={isRefreshing}

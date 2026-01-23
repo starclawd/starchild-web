@@ -1,18 +1,10 @@
-import { Trans } from '@lingui/react/macro'
-import { IconBase } from 'components/Icons'
 import { useIsMobile, useIsShowMobileMenu, useSetCurrentRouter } from 'store/application/hooks'
-import {
-  useGetSystemSignalAgents,
-  useSystemSignalAgents,
-  useSystemSignalOverviewList,
-} from 'store/insights/hooks/useSystemSignalHooks'
+import { useSystemSignalAgents } from 'store/insights/hooks/useSystemSignalHooks'
 import styled, { css } from 'styled-components'
 import { useEffect, useRef, useCallback, useMemo } from 'react'
-import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
 import { ButtonCommon } from 'components/Button'
 import { ROUTER } from 'pages/router'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import AgentItem from 'pages/MyAgent/components/AgentItem'
 import NoData from 'components/NoData'
@@ -32,20 +24,6 @@ const InsightsWrapper = styled.div`
     css`
       gap: ${vm(8)};
     `}
-`
-
-const Overview = styled(ButtonCommon)`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  flex-shrink: 0;
-  height: ${vm(32)};
-  padding: ${vm(8)};
-  border-radius: ${vm(6)};
-  font-size: 0.13rem;
-  line-height: 0.2rem;
-  color: ${({ theme }) => theme.black100};
-  background: ${({ theme }) => theme.black900};
 `
 
 const InsightList = styled.div`
@@ -68,7 +46,6 @@ export default function Insights() {
   const { agentId: insightId } = useParsedQueryString()
   const [systemSignalList] = useSystemSignalAgents()
   const wrapperRef = useRef<HTMLDivElement>(null)
-  const scrollRef = useScrollbarClass<HTMLDivElement>()
 
   const sortInsights = useMemo(() => {
     return [...systemSignalList].sort((a, b) => {
@@ -170,7 +147,7 @@ export default function Insights() {
 
   return (
     <InsightsWrapper ref={wrapperRef} tabIndex={0} onClick={handleWrapperClick}>
-      <InsightList className={isMobile ? '' : 'scroll-style'} ref={isMobile ? undefined : scrollRef}>
+      <InsightList className={isMobile ? '' : 'scroll-style'}>
         {sortInsights.length > 0 ? (
           sortInsights.map((item) => {
             return <AgentItem key={item.id} data={item} fromPage='insights' />

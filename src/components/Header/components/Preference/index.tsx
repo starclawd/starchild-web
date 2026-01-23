@@ -17,7 +17,6 @@ import AiExperience from './components/AiExperience'
 import WatchList from './components/WatchList'
 import PersonalProfile from './components/PersonalProfile'
 import { ButtonBorder, ButtonCommon } from 'components/Button'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import BottomSheet from 'components/BottomSheet'
 import { useGetPreference, usePreferenceData, useUpdatePreference } from 'store/perference/hooks'
 import Pending from 'components/Pending'
@@ -108,7 +107,6 @@ export default function Preference() {
   const toast = useToast()
   const isMobile = useIsMobile()
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const contentRef = useScrollbarClass<HTMLDivElement>()
   const [timezone, setTimezone] = useState<string>('')
   const [tradingExperience, setTradingExperience] = useState<string>('')
   const [aiExperience, setAiExperience] = useState<string>('')
@@ -191,7 +189,7 @@ export default function Preference() {
         <CommonModalHeader>
           <Trans>Preferences</Trans>
         </CommonModalHeader>
-        <CommonModalContent ref={contentRef} className='scroll-style'>
+        <CommonModalContent className='scroll-style'>
           <SelectWrapper>
             <SelectItem style={{ width: '100%' }}>
               <span className='title'>

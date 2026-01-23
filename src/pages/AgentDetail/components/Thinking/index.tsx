@@ -2,7 +2,6 @@ import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { vm } from 'pages/helper'
 import { useIsRunningBacktestAgent } from 'store/agentdetail/hooks'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { handleGenerationMsg } from 'store/agentdetail/utils'
 import Workflow from '../Workflow'
 import usePrevious from 'hooks/usePrevious'
@@ -76,7 +75,7 @@ export default memo(function DeepThink({
   backtestData: BacktestDataType
   isMobileThinkingModal?: boolean
 }) {
-  const scrollRef = useScrollbarClass<HTMLDivElement>()
+  const scrollRef = useRef<HTMLDivElement>(null)
   const { generation_msg } = agentDetailData
   const autoScrollEnabledRef = useRef(true)
   const isUserScrollingRef = useRef(false)

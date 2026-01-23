@@ -46,10 +46,6 @@ const LeftSection = styled.div`
   gap: 40px;
   background-size: 100%;
   background-repeat: no-repeat;
-  .logo {
-    width: 32px;
-    height: 32px;
-  }
 `
 
 const StrategyBaseInfo = styled.div`
@@ -429,7 +425,7 @@ export default memo(function ShareModal() {
       <ShareModalWrapper>
         <ShareContent ref={shareContentRef}>
           <LeftSection style={{ backgroundImage: `url(${shareLeftBg})` }}>
-            <img className='logo' src={logo} alt='logo' />
+            <img className='logo' src={logo} alt='logo' width={32} height={32} />
             <StrategyBaseInfo>
               <StrategyName>{strategyName}</StrategyName>
               <InfoList>

@@ -14,6 +14,7 @@ import { VaultPositionsOrdersProps } from '../..'
 import { DETAIL_TYPE } from 'store/vaultsdetail/vaultsdetail'
 import { StyledTable, LoadingWrapper } from '../../styles'
 import { useSymbolPrecision } from 'store/vaults/hooks'
+import LazyImage from 'components/LazyImage'
 
 // Symbol 显示组件
 const SymbolCell = styled.div`
@@ -26,14 +27,9 @@ const SymbolContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-`
-
-const SymbolLogo = styled.img`
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-right: 4px;
+  .symbol-logo {
+    margin-right: 4px;
+  }
 `
 
 // 侧边栏指示器
@@ -61,13 +57,7 @@ const SymbolDisplay = memo<SymbolDisplayProps>(({ displaySymbol, token, logoUrl,
 
   return (
     <SymbolContainer>
-      <SymbolLogo
-        src={logoUrl}
-        alt={token}
-        onError={(e) => {
-          e.currentTarget.style.display = 'none'
-        }}
-      />
+      <LazyImage className='symbol-logo' src={logoUrl} alt={token} width={24} height={24} />
       {orderSide && <SideIndicator $side={orderSide} />}
       <SymbolText $isLong={isLong}>{displaySymbol}</SymbolText>
     </SymbolContainer>

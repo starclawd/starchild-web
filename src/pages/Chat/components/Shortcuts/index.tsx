@@ -24,7 +24,6 @@ import {
   useShortcuts,
 } from 'store/shortcuts/hooks'
 import { useUserInfo } from 'store/login/hooks'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { useLingui } from '@lingui/react/macro'
 
 const ShortcutsWrapper = styled.div`
@@ -333,8 +332,8 @@ export default memo(function Shortcuts() {
   const addQuestionModalOpen = useModalOpen(ApplicationModal.ADD_QUESTION_MODAL)
   const [operatorText, setOperatorText] = useState('')
   const shortcutsRef = useRef<HTMLDivElement>(null)
-  const scrollRef = useScrollbarClass<HTMLDivElement>()
-  const scrollRef1 = useScrollbarClass<HTMLDivElement>()
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const scrollRef1 = useRef<HTMLDivElement>(null)
   const handleCloseSheet = useCallback(() => {
     setIsOpen(false)
     setCurrentShortcut('')

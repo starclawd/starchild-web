@@ -6,7 +6,7 @@ import styled, { css } from 'styled-components'
 import { div, isGt, sub, toFix, toPrecision } from 'utils/calc'
 import { formatNumber } from 'utils/format'
 import { useGetConvertPeriod } from 'store/insightscache/hooks'
-import ImgLoad from 'components/ImgLoad'
+import LazyImage from 'components/LazyImage'
 import PeridSelector from './components/PeridSelector'
 import { PERIOD_OPTIONS } from 'store/insightscache/insightscache'
 import { KlineSubInnerDataType } from 'store/insights/insights'
@@ -45,11 +45,6 @@ const Left = styled.div`
     align-items: center;
     gap: 4px;
     height: fit-content;
-    img {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-    }
     span {
       font-size: 14px;
       font-weight: 500;
@@ -171,7 +166,7 @@ export default function ChartHeader({
     <ChartHeaderWrapper>
       <Left>
         <span className='symbol-info'>
-          <ImgLoad src={getTokenImg(symbol)} alt={symbol} />
+          <LazyImage src={getTokenImg(symbol)} alt={symbol} width={24} height={24} />
           <span>{symbol}</span>
         </span>
         <PriceInfo $isPositive={!!priceChange.isPositive} $change={priceChange.change}>

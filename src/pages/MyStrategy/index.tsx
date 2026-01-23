@@ -2,12 +2,8 @@ import { memo } from 'react'
 import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import VaultsWalletConnect from 'pages/Vaults/components/VaultsWalletConnect'
-import ScrollPageContent from 'components/ScrollPageContent'
 import Transactions from './components/Transactions'
-import MyPerfomance from './components/MyPerfomance'
 import MyAssets from './components/MyAssets'
-import { useModalOpen } from 'store/application/hooks'
-import { ApplicationModal } from 'store/application/application.d'
 
 const MyStrategyWrapper = styled.div`
   display: flex;
@@ -25,11 +21,15 @@ const MyStrategyContentWrapper = styled.div`
   height: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  .my-strategy-scroll {
-    padding: 0;
-    padding-right: 0;
-    padding-bottom: 12px;
-  }
+`
+const ScrollPageContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  padding-bottom: 12px;
 `
 
 const LeftContent = styled.div`
@@ -56,13 +56,10 @@ const RightContent = styled.div`
 `
 
 export default memo(function MyStrategy() {
-  const pauseStrategyModalOpen = useModalOpen(ApplicationModal.PAUSE_STRATEGY_MODAL)
-  const deleteStrategyModalOpen = useModalOpen(ApplicationModal.DELETE_STRATEGY_MODAL)
-  const delistStrategyModalOpen = useModalOpen(ApplicationModal.DELIST_STRATEGY_MODAL)
   return (
     <MyStrategyWrapper>
       <MyStrategyContentWrapper>
-        <ScrollPageContent className='my-strategy-scroll transparent-scroll-style'>
+        <ScrollPageContent className='transparent-scroll-style'>
           <LeftContent>
             <Title>
               <Trans>My Strategies</Trans>
@@ -77,9 +74,6 @@ export default memo(function MyStrategy() {
           <Transactions />
         </RightContent>
       </MyStrategyContentWrapper>
-      {/* {pauseStrategyModalOpen && <PauseStrategyModal />}
-      {delistStrategyModalOpen && <DelistStrategyModal />}
-      {deleteStrategyModalOpen && <DeleteStrategyModal />} */}
     </MyStrategyWrapper>
   )
 })

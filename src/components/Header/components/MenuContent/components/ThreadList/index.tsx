@@ -6,7 +6,6 @@ import { useCallback, useMemo, useState } from 'react'
 import { useThreadsList } from 'store/chat/hooks'
 import styled, { css } from 'styled-components'
 import { useCurrentAiThreadId } from 'store/chatcache/hooks'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { useIsMobile } from 'store/application/hooks'
 import { useActiveLocale } from 'hooks/useActiveLocale'
 import { LOCAL_TEXT } from 'constants/locales'
@@ -126,7 +125,6 @@ export default function ThreadList({
   const { t } = useLingui()
   const isMobile = useIsMobile()
   const [searchValue, setSearchValue] = useState('')
-  const scrollRef = useScrollbarClass<HTMLDivElement>()
   const [threadsList] = useThreadsList()
   const [currentAiThreadId] = useCurrentAiThreadId()
   const activeLocale = useActiveLocale()
@@ -262,7 +260,7 @@ export default function ThreadList({
         <RecentChat>
           <Trans>Recent Chats</Trans>
         </RecentChat>
-        <List ref={scrollRef} className={!isMobile ? 'transparent-scroll-style' : ''}>
+        <List className={!isMobile ? 'transparent-scroll-style' : ''}>
           {contentList.map((data) => {
             const { time, list, key } = data
             return (

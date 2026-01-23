@@ -1,11 +1,10 @@
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import useCopyContent from 'hooks/useCopyContent'
 import { vm } from 'pages/helper'
 import { memo, useCallback, useMemo, useState, useEffect, useRef } from 'react'
 import { useIsCodeTaskType, useIsGeneratingCode, useIsRunningBacktestAgent, useTabIndex } from 'store/agentdetail/hooks'
-import styled, { css, useTheme } from 'styled-components'
+import styled, { css } from 'styled-components'
 import NoData from 'components/NoData'
 import MemoizedHighlight from 'components/MemoizedHighlight'
 import { useSleep } from 'hooks/useSleep'
@@ -201,7 +200,7 @@ export default memo(function Code({
 }) {
   const { sleep } = useSleep()
   const isMobile = useIsMobile()
-  const contentRef = useScrollbarClass<HTMLDivElement>()
+  const contentRef = useRef<HTMLDivElement>(null)
   const [tabIndex, setTabIndex] = useTabIndex()
   const isCodeTaskType = useIsCodeTaskType(agentDetailData)
   const isRunningBacktestAgent = useIsRunningBacktestAgent(agentDetailData, backtestData)

@@ -5,7 +5,6 @@ import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import { useUserInfo } from 'store/login/hooks'
 import { useTheme } from 'store/themecache/hooks'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { useIsAnalyzeContent, useIsLoadingChatStream } from 'store/createstrategy/hooks/useLoadingState'
 import {
   useChatResponseContentList,
@@ -102,7 +101,7 @@ export default memo(function ChatContent() {
   const [isLoadingChatStream] = useIsLoadingChatStream()
   const { strategyId } = useParsedQueryString()
   const preStrategyId = usePrevious(strategyId)
-  const contentInnerRef = useScrollbarClass<HTMLDivElement>()
+  const contentInnerRef = useRef<HTMLDivElement>(null)
   const [chatResponseContentList, setChatResponseContentList] = useChatResponseContentList()
   const triggerGetStrategyChatContents = useGetStrategyChatContents()
   const tempChatContentData = useTempChatContentData()
@@ -311,7 +310,7 @@ export default memo(function ChatContent() {
 
   return (
     <ChatContentWrapper className='chat-content-wrapper'>
-      <ContentInner ref={contentInnerRef as any} className='scroll-style'>
+      <ContentInner ref={contentInnerRef} className='scroll-style'>
         <ChatScrollContent>
           {chatResponseContentList.length === 0 && !tempChatContentData.id && isLoadingChatStream ? (
             <Pending isNotButtonLoading />

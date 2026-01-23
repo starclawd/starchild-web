@@ -13,10 +13,8 @@ import { IconBase } from 'components/Icons'
 import { useUserInfo, useIsLogin } from 'store/login/hooks'
 import { ANI_DURATION } from 'constants/index'
 import logoImg from 'assets/png/logo.png'
-import MenuContent from './components/MenuContent'
 import { useAddNewThread, useChatTabIndex, useGetThreadsList } from 'store/chat/hooks'
 import { useIsFixMenu } from 'store/headercache/hooks'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import LoginButton from './components/LoginButton'
 import Language from './components/Language'
 import Tooltip from 'components/Tooltip'
@@ -87,10 +85,6 @@ const LogoWrapper = styled.div`
   width: 36px;
   height: 36px;
   cursor: pointer;
-  img {
-    width: 28px;
-    height: 28px;
-  }
 `
 
 const NavTabs = styled.div`
@@ -174,7 +168,6 @@ export const Header = () => {
   const [, setChatTabIndex] = useChatTabIndex()
   const [isFixMenu] = useIsFixMenu()
   const isInNavTabRef = useRef(false)
-  const scrollRef = useScrollbarClass<HTMLDivElement>()
   const triggerGetAiBotChatThreads = useGetThreadsList()
   const currentRouter = useCurrentRouter()
   const setCurrentRouter = useSetCurrentRouter()
@@ -371,9 +364,9 @@ export const Header = () => {
       $isHoverNavTabs={isHoverNavTabs}
       $isPopoverOpen={isPopoverOpen}
     >
-      <Menu ref={scrollRef} className='scroll-style'>
+      <Menu className='scroll-style'>
         <LogoWrapper onClick={goHomePage}>
-          <img src={logoImg} alt='' />
+          <img src={logoImg} alt='logo' width={28} height={28} />
         </LogoWrapper>
         <CenterSection>
           <NavTabs onMouseEnter={() => setIsHoverNavTabs(true)} onMouseLeave={handleNavTabsLeave}>

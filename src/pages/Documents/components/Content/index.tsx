@@ -6,7 +6,6 @@ import { LOCAL_TEXT } from 'constants/locales'
 import productInfoEn from 'assets/documents/product_info.md?raw'
 import productInfoCn from 'assets/documents/product_info_cn.md?raw'
 import { vm } from 'pages/helper'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
 const ContentWrapper = styled.div`
   width: 100%;
@@ -27,7 +26,7 @@ const ContentContainer = styled.div`
 
 function Content() {
   const activeLocale = useActiveLocale()
-  const scrollRef = useScrollbarClass<HTMLDivElement>()
+  const scrollRef = useRef<HTMLDivElement>(null)
 
   const documentContent = useMemo(() => {
     return activeLocale === LOCAL_TEXT.CN ? productInfoCn : productInfoEn

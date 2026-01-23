@@ -8,7 +8,7 @@ import {
   useTempAiContentData,
 } from 'store/chat/hooks'
 import { ROLE_TYPE } from 'store/chat/chat.d'
-import { memo, useCallback, useEffect, useState } from 'react'
+import { memo, useCallback, useEffect, useState, useRef } from 'react'
 // import DefalutUi from '../DefalutUi'
 import { useCurrentAiThreadId } from 'store/chatcache/hooks'
 import usePrevious from 'hooks/usePrevious'
@@ -16,7 +16,6 @@ import { useIsLogout, useUserInfo, useIsLogin } from 'store/login/hooks'
 import ContentItemCom from '../ContentItem'
 import { vm } from 'pages/helper'
 import DeepThink from '../DeepThink'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 // import DefaultTasks from '../DefaultTasks'
 import { useIsMobile } from 'store/application/hooks'
 import { IconBase } from 'components/Icons'
@@ -112,7 +111,7 @@ export default memo(function ChatContent() {
   const theme = useTheme()
   const isEmpty = useIsAiContentEmpty()
   const [{ userInfoId }] = useUserInfo()
-  const contentInnerRef = useScrollbarClass<HTMLDivElement>()
+  const contentInnerRef = useRef<HTMLDivElement>(null)
   const [currentAiThreadId] = useCurrentAiThreadId()
   const preCurrentAiThreadId = usePrevious(currentAiThreadId)
   const [aiResponseContentList, setAiResponseContentList] = useAiResponseContentList()
@@ -334,7 +333,7 @@ export default memo(function ChatContent() {
 
   return (
     <ChatContentWrapper className='chat-content-wrapper' $isEmpty={isEmpty}>
-      <ContentInner ref={contentInnerRef as any} className='scroll-style'>
+      <ContentInner ref={contentInnerRef} className='scroll-style'>
         <ChatScrollContent id='chatScrollContent'>
           {currentLoadingThreadId && aiResponseContentList.length === 0 && !tempAiContentData.id ? (
             <Pending isNotButtonLoading />

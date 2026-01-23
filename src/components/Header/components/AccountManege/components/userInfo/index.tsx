@@ -10,6 +10,7 @@ import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useTheme } from 'store/themecache/hooks'
+import LazyImage from 'components/LazyImage'
 
 const UserInfoWrapper = styled.div`
   display: flex;
@@ -28,12 +29,6 @@ const AvatarWrapper = styled.div`
   border-radius: 50%;
   overflow: hidden;
   cursor: pointer;
-  .user-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-  }
   .icon-upload {
     position: absolute;
     top: 50%;
@@ -214,7 +209,7 @@ export default function UserInfo() {
     <UserInfoWrapper>
       <AvatarWrapper onClick={handleAvatarClick}>
         {userAvatar ? (
-          <img className='user-avatar' src={userAvatar} alt='userAvatar' />
+          <LazyImage className='user-avatar' src={userAvatar} alt='userAvatar' width={40} height={40} />
         ) : (
           <Avatar size={40} name={userName} />
         )}

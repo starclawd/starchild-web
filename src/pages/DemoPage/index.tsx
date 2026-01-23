@@ -14,7 +14,6 @@ import NoDataDemo from 'components/NoData/Demo'
 import PendingDemo from 'components/Pending/Demo'
 import PopoverDemo from 'components/Popover/Demo'
 import PortalDemo from 'components/Portal/Demo'
-import ScrollContainerDemo from 'components/ScrollContainer/Demo'
 import SelectDemo from 'components/Select/Demo'
 import TabListDemo from 'components/TabList/Demo'
 import TooltipDemo from 'components/Tooltip/Demo'
@@ -22,11 +21,11 @@ import TransitionWrapperDemo from 'components/TransitionWrapper/Demo'
 import IconsDemo from 'components/Icons/Demo'
 import PullUpRefreshDemo from 'components/PullUpRefresh/Demo'
 import SkeletonDemo from 'components/Skeleton/Demo'
-import TaskShareDemo from 'components/AgentShare/Demo'
+import TaskShareDemo from 'pages/AgentDetail/components/AgentShare/Demo'
 import ToastDemo from 'components/Toast/Demo'
 import DividerDemo from 'components/Divider/Demo'
 import LazyImageDemo from 'components/LazyImage/Demo'
-import AgentActionsDemo from 'components/AgentActions/Demo'
+import AgentActionsDemo from 'pages/AgentDetail/components/AgentActions/Demo'
 
 const DemoPageWrapper = styled.div`
   display: flex;
@@ -297,13 +296,6 @@ const components = [
     desc: '传送门组件',
     category: '通用',
     component: PortalDemo,
-  },
-  {
-    id: 'scrollcontainer',
-    name: 'ScrollContainer',
-    desc: '滚动容器组件',
-    category: '通用',
-    component: ScrollContainerDemo,
   },
   {
     id: 'bottomsheet',

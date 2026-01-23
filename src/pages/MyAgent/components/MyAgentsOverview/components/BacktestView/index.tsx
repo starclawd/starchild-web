@@ -1,7 +1,6 @@
-import { useIsBinanceSupport, useIsGeneratingCode, useIsRunningBacktestAgent } from 'store/agentdetail/hooks'
+import { useIsBinanceSupport, useIsRunningBacktestAgent } from 'store/agentdetail/hooks'
 import styled, { css } from 'styled-components'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 import { vm } from 'pages/helper'
 import { AgentDetailDataType, BACKTEST_STATUS } from 'store/agentdetail/agentdetail'
 import { BacktestDataType } from 'store/agentdetail/agentdetail'
@@ -91,7 +90,7 @@ export default function BacktestView({
   backtestData: BacktestDataType
 }) {
   const { symbol, status, error_msg } = backtestData
-  const previewWrapperRef = useScrollbarClass<HTMLDivElement>()
+  const previewWrapperRef = useRef<HTMLDivElement>(null)
   const isRunningBacktestAgent = useIsRunningBacktestAgent(agentDetailData, backtestData)
   const isBinanceSupport = useIsBinanceSupport(backtestData)
 
@@ -108,13 +107,13 @@ export default function BacktestView({
   }
   if (status === BACKTEST_STATUS.FAILED) {
     return (
-      <BacktestViewWrapper className='scroll-style' ref={previewWrapperRef as any}>
+      <BacktestViewWrapper className='scroll-style' ref={previewWrapperRef}>
         <ErrorDisplay>{formatErrorForDisplay(error_msg)}</ErrorDisplay>
       </BacktestViewWrapper>
     )
   }
   return (
-    <BacktestViewWrapper className='scroll-style' ref={previewWrapperRef as any}>
+    <BacktestViewWrapper className='scroll-style' ref={previewWrapperRef}>
       <VolumeChart symbol={propSymbol} isBinanceSupport={isBinanceSupport} backtestData={backtestData} />
     </BacktestViewWrapper>
   )

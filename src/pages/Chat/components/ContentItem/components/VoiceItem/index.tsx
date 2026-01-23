@@ -5,6 +5,7 @@ import { vm } from 'pages/helper'
 import { useTheme } from 'store/themecache/hooks'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { useIsMobile } from 'store/application/hooks'
+import LazyImage from 'components/LazyImage'
 
 const VoiceItemWrapper = styled.div<{ $isAiInput?: boolean }>`
   display: flex;
@@ -570,7 +571,7 @@ export default function VoiceItem({
             height='72'
             style={{ background: 'transparent', visibility: resultVoiceImg && !isPlaying ? 'hidden' : 'visible' }}
           />
-          {resultVoiceImg && !isPlaying && <img src={resultVoiceImg} alt='' />}
+          {resultVoiceImg && !isPlaying && <LazyImage src={resultVoiceImg} alt='' width='100%' height='100%' />}
         </CanvasWrapper>
         <TimeDisplay>{formatTime(duration - currentTime)}</TimeDisplay>
         {isAiInput && (

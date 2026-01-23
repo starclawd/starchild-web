@@ -16,6 +16,7 @@ import {
 import { useWindowSize } from 'hooks/useWindowSize'
 import { MOBILE_DESIGN_WIDTH } from 'constants/index'
 import { ANI_DURATION } from 'constants/index'
+import LazyImage from 'components/LazyImage'
 
 const AvatarWrapper = styled.div`
   display: flex;
@@ -36,13 +37,6 @@ const AvatarWrapper = styled.div`
   }
   .select-value-wrapper {
     justify-content: center;
-  }
-  .avatar-img {
-    flex-shrink: 0;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    object-fit: cover;
   }
   &:hover {
     background-color: ${({ theme }) => theme.black700};
@@ -163,13 +157,13 @@ export default function LoginButton() {
     <AvatarWrapper onClick={isLogin ? toggleAccountManegeModal : handleLogin}>
       {isLogin ? (
         userAvatar ? (
-            <img className='avatar-img' src={userAvatar} alt='avatar' />
-          ) : (
-            <Avatar
-              name={userName || ''}
-              size={isMobile ? (24 / MOBILE_DESIGN_WIDTH) * (width || MOBILE_DESIGN_WIDTH) : 24}
-            />
-          )
+          <LazyImage src={userAvatar} alt='avatar' width={20} height={20} objectFit='cover' borderRadius='50%' />
+        ) : (
+          <Avatar
+            name={userName || ''}
+            size={isMobile ? (24 / MOBILE_DESIGN_WIDTH) * (width || MOBILE_DESIGN_WIDTH) : 24}
+          />
+        )
       ) : (
         <LoginWrapper>
           <IconBase className='icon-menu-login' />

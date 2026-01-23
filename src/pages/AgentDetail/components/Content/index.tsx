@@ -1,11 +1,10 @@
 import styled, { css } from 'styled-components'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { useMemo, useState } from 'react'
 import Pending from 'components/Pending'
 import ChatHistory from '../ChatHistory'
 import AgentDescription from '../AgentDescription'
 import Code from '../Code'
-import { AGENT_TYPE, AgentDetailDataType, BacktestDataType } from 'store/agentdetail/agentdetail'
+import { AGENT_TYPE } from 'store/agentdetail/agentdetail'
 import { ANI_DURATION } from 'constants/index'
 import { useAgentDetailPolling } from '../hooks'
 import {
@@ -14,7 +13,6 @@ import {
   useIsGeneratingCode,
   useIsRunningBacktestAgent,
 } from 'store/agentdetail/hooks'
-import AiInput from 'pages/Chat/components/ChatInput'
 
 const AgentDetailContentWrapper = styled.div`
   display: flex;

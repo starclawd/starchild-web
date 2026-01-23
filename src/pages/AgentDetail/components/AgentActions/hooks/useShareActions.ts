@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 import { useTheme } from 'styled-components'
-import { useCopyImgAndText, useCopyText } from 'components/AgentShare'
+import { useCopyImgAndText, useCopyText } from 'pages/AgentDetail/components/AgentShare'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { AgentDetailDataType } from 'store/agentdetail/agentdetail'
 import { ActionType, ActionConfig } from '../types'

@@ -26,9 +26,6 @@ const ImgWrapper = styled.div`
   position: unset;
   width: 100%;
   height: fit-content;
-  img {
-    width: 346px;
-  }
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -57,6 +54,10 @@ const ImgWrapper = styled.div`
         }
       }
     `}
+`
+
+const SuggestImg = styled.img`
+  object-fit: contain;
 `
 
 const Content = styled.div`
@@ -108,7 +109,7 @@ export default memo(function DefalutUi() {
   return (
     <DefalutUiWrapper>
       <ImgWrapper>
-        <img src={suggestImg} alt='' />
+        <SuggestImg src={suggestImg} alt='' width={346} />
         {isMobile && <IconBase className='icon-chat-default-ui' />}
         {isMobile && <IconBase className='icon-chat-default-ui' />}
       </ImgWrapper>

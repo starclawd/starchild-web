@@ -11,6 +11,7 @@ import { useTimezone } from 'store/timezonecache/hooks'
 import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
 import { useCurrentLiveChatData, useIsExpandedLiveChat } from 'store/insights/hooks/useLiveChatHooks'
+import LazyImage from 'components/LazyImage'
 
 const ChatItemWrapper = styled.div<{ $isChatDetail?: boolean }>`
   display: flex;
@@ -57,11 +58,6 @@ const Title = styled.div`
   font-weight: 500;
   line-height: 18px;
   color: ${({ theme }) => theme.black0};
-  img {
-    width: 24px;
-    height: 24px;
-    border-radius: 6px;
-  }
   ${({ theme }) =>
     theme.isMobile &&
     css`
@@ -74,6 +70,10 @@ const Title = styled.div`
         border-radius: ${vm(6)};
       }
     `}
+`
+
+const LogoImg = styled.img`
+  border-radius: 6px;
 `
 
 const UserContentWrapper = styled.div`
@@ -271,7 +271,7 @@ export default memo(function ChatItem({ data, isChatDetail }: { data: LiveChatDa
       {!isChatDetail && <CurrentTime>{formatTime}</CurrentTime>}
       <UserContentWrapper>
         <Title>
-          <img src={user_avatar} alt='user' />
+          <LazyImage src={user_avatar} alt='user' width={24} height={24} borderRadius='6px' />
           {user_name}
         </Title>
         <UserContentOuterWrapper>
@@ -280,7 +280,7 @@ export default memo(function ChatItem({ data, isChatDetail }: { data: LiveChatDa
       </UserContentWrapper>
       <AssistantContentWrapper $isChatDetail={isChatDetail} $showViewMore={showViewMore} onClick={handleClickViewMore}>
         <Title>
-          <img src={logo} alt='logo' />
+          <LogoImg src={logo} alt='logo' width={24} height={24} />
           <span>
             <Trans>Starchild</Trans>
           </span>

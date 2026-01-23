@@ -17,6 +17,7 @@ import useToast, { TOAST_STATUS } from 'components/Toast'
 import html2canvas from 'html2canvas'
 import logo from 'assets/png/logo.png'
 import { isTelegramWebApp } from 'utils/telegramWebApp'
+import LazyImage from 'components/LazyImage'
 
 const AgentShareWrapper = styled.div`
   position: fixed;
@@ -34,9 +35,6 @@ const AgentShareWrapper = styled.div`
   .logo {
     position: relative;
     z-index: 2;
-    width: 44px;
-    height: 44px;
-    object-fit: contain;
   }
   .share-bg-top {
     position: absolute;
@@ -486,11 +484,64 @@ export default function AgentShare({
 
   return (
     <AgentShareWrapper ref={ref}>
-      {!isMobile && <img src={shareBgTop} alt='share-bg' className='share-bg-top' />}
-      {!isMobile && <img src={shareBgBottom} alt='share-bg' className='share-bg-bottom' />}
-      {isMobile && <img src={mobileShareBgTop} alt='share-bg' className='share-bg-top' />}
-      {isMobile && <img src={mobileShareBgBottom} alt='share-bg' className='share-bg-bottom' />}
-      <img src={logo} alt='logo' className='logo' />
+      {!isMobile && (
+        <LazyImage
+          src={shareBgTop}
+          alt='share-bg'
+          className='share-bg-top'
+          width='100%'
+          height='auto'
+          objectFit='contain'
+          eager
+          showSkeleton={false}
+        />
+      )}
+      {!isMobile && (
+        <LazyImage
+          src={shareBgBottom}
+          alt='share-bg'
+          className='share-bg-bottom'
+          width='100%'
+          height='auto'
+          objectFit='contain'
+          eager
+          showSkeleton={false}
+        />
+      )}
+      {isMobile && (
+        <LazyImage
+          src={mobileShareBgTop}
+          alt='share-bg'
+          className='share-bg-top'
+          width='100%'
+          height='auto'
+          objectFit='contain'
+          eager
+          showSkeleton={false}
+        />
+      )}
+      {isMobile && (
+        <LazyImage
+          src={mobileShareBgBottom}
+          alt='share-bg'
+          className='share-bg-bottom'
+          width='100%'
+          height='auto'
+          objectFit='contain'
+          eager
+          showSkeleton={false}
+        />
+      )}
+      <LazyImage
+        src={logo}
+        alt='logo'
+        className='logo'
+        width='44px'
+        height='44px'
+        borderRadius='50%'
+        eager
+        showSkeleton={false}
+      />
       <TopContent>
         <Title>
           <Markdown>{title}</Markdown>
@@ -501,10 +552,7 @@ export default function AgentShare({
             <IconBase className='icon-subscription' />
             {subscription_user_count}
           </span>
-          <span>
-            {/* {user_avatar && <img src={user_avatar} alt='user-avatar' />} */}
-            {user_name}
-          </span>
+          <span>{user_name}</span>
         </SubCount>
       </TopContent>
       <RecentChat>

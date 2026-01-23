@@ -1,12 +1,10 @@
 import styled, { css } from 'styled-components'
 import ChatContent from '../ChatContent'
 import ChatInput from '../ChatInput'
-import { memo, useCallback, useState } from 'react'
+import { memo, useCallback, useState, useRef } from 'react'
 import { useAiResponseContentList, useFileList, useTempAiContentData } from 'store/chat/hooks'
 import { Trans } from '@lingui/react/macro'
 import { vm } from 'pages/helper'
-import { useIsMobile } from 'store/application/hooks'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 
 const FileDragWrapper = styled.div<{ $isEmpty: boolean }>`
   position: relative;
@@ -42,8 +40,7 @@ const DropPrompt = styled.div`
 `
 
 export default memo(function FileDrag() {
-  const isMobile = useIsMobile()
-  const scrollRef = useScrollbarClass<HTMLDivElement>()
+  const scrollRef = useRef<HTMLDivElement>(null)
   const [fileList, setFileList] = useFileList()
   const [isDragging, setIsDragging] = useState(false)
   const tempAiContentData = useTempAiContentData()

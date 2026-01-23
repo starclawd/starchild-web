@@ -1,12 +1,12 @@
 import { IconBase } from 'components/Icons'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { vm } from 'pages/helper'
-import { useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 import { useTheme } from 'store/themecache/hooks'
 import { useFileList } from 'store/chat/hooks'
 import styled, { css } from 'styled-components'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { formatFileSize, getFileType } from 'utils'
+import LazyImage from 'components/LazyImage'
 
 const FileShowWrapper = styled.div`
   display: flex;
@@ -27,18 +27,6 @@ const ImgItem = styled.div`
   position: relative;
   display: flex;
   flex-shrink: 0;
-  img {
-    width: 60px;
-    height: 60px;
-    border-radius: 12px;
-  }
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      width: ${vm(60)};
-      height: ${vm(60)};
-      border-radius: ${vm(12)};
-    `}
 `
 
 const DeleteIconWrapper = styled(BorderAllSide1PxBox)`
@@ -101,7 +89,7 @@ const FileWrapper = styled(BorderAllSide1PxBox)`
 
 export default function FileShow() {
   const theme = useTheme()
-  const scrollRef = useScrollbarClass<HTMLDivElement>()
+  const scrollRef = useRef<HTMLDivElement>(null)
   const [fileList, setFileList] = useFileList()
   const deleteImg = useCallback(
     (deleteIndex: number) => {
@@ -125,7 +113,7 @@ export default function FileShow() {
             <DeleteIconWrapper $borderRadius={12} $borderColor={theme.black600} onClick={deleteImg(index)}>
               <IconBase className='icon-chat-delete' />
             </DeleteIconWrapper>
-            <img src={src} alt='' />
+            <LazyImage src={src} alt='' width={60} height={60} borderRadius='12px' />
           </ImgItem>
         ) : (
           <FileWrapper $borderRadius={12} $borderColor={theme.black600} key={String(lastModified)}>

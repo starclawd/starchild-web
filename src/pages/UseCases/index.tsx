@@ -1,10 +1,9 @@
-import { memo, useState, useCallback } from 'react'
-import styled, { css } from 'styled-components'
+import { memo } from 'react'
+import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
-import { vm } from 'pages/helper'
 import UseCasesTabBar from './components/UseCasesTabBar'
 import UseCasesTabView from './components/UseCasesTabView'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
+import { useRef } from 'react'
 
 const UseCasesWrapper = styled.div`
   display: flex;
@@ -44,10 +43,10 @@ const Description = styled.p`
 `
 
 function UseCases() {
-  const useCasesWrapperRef = useScrollbarClass<HTMLDivElement>()
+  const useCasesWrapperRef = useRef<HTMLDivElement>(null)
 
   return (
-    <UseCasesWrapper ref={useCasesWrapperRef as any} className='scroll-style'>
+    <UseCasesWrapper ref={useCasesWrapperRef} className='scroll-style'>
       <InnerContent>
         <Title>
           <Trans>Starchild use cases</Trans>

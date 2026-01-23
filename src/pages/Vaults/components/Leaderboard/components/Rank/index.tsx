@@ -85,9 +85,6 @@ const RankWrapper = styled.div<{ $type: RANK_TYPE }>`
 `
 
 export default memo(function Rank({ rank, type }: { rank: number; type: RANK_TYPE }) {
-  const colorMap = useMemo(() => {
-    return ['#f90', '#888', '#AF3C1F']
-  }, [])
   return (
     <RankWrapper $type={type}>
       <img src={RankRedBg} alt='rank' />
