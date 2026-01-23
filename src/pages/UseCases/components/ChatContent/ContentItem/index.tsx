@@ -7,6 +7,7 @@ import { ANI_DURATION } from 'constants/index'
 import DeepThink from '../DeepThink'
 import Portal from 'components/Portal'
 import ChatHistoryContent from 'pages/AgentDetail/components/ChatHistory/components/HistoryContent'
+import LazyImage from 'components/LazyImage'
 
 const ImgWrapper = styled.div`
   display: flex;
@@ -14,8 +15,6 @@ const ImgWrapper = styled.div`
   gap: 10px;
   margin-top: 20px;
   img {
-    width: 100%;
-    border-radius: 12px;
     cursor: pointer;
     transition: all ${ANI_DURATION}s;
     &:hover {
@@ -101,7 +100,17 @@ export default memo(function ContentItemCom({ data }: { data: TempAiContentDataT
           {imgList.length > 0 && (
             <ImgWrapper>
               {imgList.map((item, index) => {
-                return <img key={index} src={item} alt='kline' onClick={() => handleImageClick(item)} />
+                return (
+                  <LazyImage
+                    width='100%'
+                    height='auto'
+                    borderRadius='12px'
+                    key={index}
+                    src={item}
+                    alt='kline'
+                    onClick={() => handleImageClick(item)}
+                  />
+                )
               })}
             </ImgWrapper>
           )}

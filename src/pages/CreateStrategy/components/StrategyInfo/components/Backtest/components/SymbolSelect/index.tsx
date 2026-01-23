@@ -1,4 +1,4 @@
-import ImgLoad from 'components/ImgLoad'
+import LazyImage from 'components/LazyImage'
 import Select, { TriggerMethod } from 'components/Select'
 import { memo, useMemo } from 'react'
 import { useGetTokenImg } from 'store/application/hooks'
@@ -20,11 +20,6 @@ const SymbolItemWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 4px;
-  img {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-  }
   span:nth-child(2) {
     font-size: 14px;
     font-style: normal;
@@ -59,7 +54,7 @@ export default memo(function SymbolSelect({
         key: symbol,
         text: (
           <SymbolItemWrapper>
-            <ImgLoad src={getTokenImg(base)} alt={base} />
+            <LazyImage src={getTokenImg(base)} alt={base} width={24} height={24} />
             <span>{base}</span>
             <span>{name}</span>
           </SymbolItemWrapper>
@@ -88,7 +83,7 @@ export default memo(function SymbolSelect({
         }}
       >
         <SymbolItemWrapper>
-          <ImgLoad src={getTokenImg(base)} alt={base} />
+          <LazyImage src={getTokenImg(base)} alt={base} width={24} height={24} />
           <span>{base}</span>
           <span>{name}</span>
         </SymbolItemWrapper>

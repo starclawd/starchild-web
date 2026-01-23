@@ -5,7 +5,6 @@ import { useLocation } from 'react-router-dom'
 import { vm } from 'pages/helper'
 import ButtonGroup from './components/ButtonGroup'
 import StickySearchHeader from 'pages/AgentHub/components/StickySearchHeader'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { AGENT_CATEGORIES } from 'constants/agentHub'
 import { useMarketplaceSearchString } from 'store/agenthub/hooks/useSearch'
 import { debounce } from 'utils/common'
@@ -100,7 +99,7 @@ interface AgentHubProps {
 }
 
 export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
-  const agentHubWrapperRef = useScrollbarClass<HTMLDivElement>()
+  const agentHubWrapperRef = useRef<HTMLDivElement>(null)
 
   const [searchString, setSearchString] = useMarketplaceSearchString()
   const [displaySearchString, setDisplaySearchString] = useState(searchString)
@@ -266,7 +265,7 @@ export default memo(function AgentHub({ showSearchBar = true }: AgentHubProps) {
   return (
     <AgentHubContainer>
       <AgentTopNavigationBar />
-      <AgentHubWrapper ref={agentHubWrapperRef as any} className='scroll-style'>
+      <AgentHubWrapper ref={agentHubWrapperRef} className='scroll-style'>
         <MarketPlaceWrapper>
           {!isMobile && (
             <MarketPlaceHeader>

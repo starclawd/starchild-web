@@ -2,11 +2,9 @@ import styled from 'styled-components'
 import MyAssets from './components/MyAssets'
 import { Trans } from '@lingui/react/macro'
 import MyPerfomance from './components/MyPerfomance'
-// import MyVaults from './components/MyVaults'
-// import Transactions from './components/Transactions'
 import VaultsWalletConnect from 'pages/Vaults/components/VaultsWalletConnect'
-import ScrollPageContent from 'components/ScrollPageContent'
 import { memo } from 'react'
+
 const MyVaultsWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -23,11 +21,16 @@ const MyVaultsContentWrapper = styled.div`
   height: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  .my-vaults-scroll {
-    padding: 0;
-    padding-right: 0;
-    padding-bottom: 12px;
-  }
+`
+
+const ScrollPageContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  padding-bottom: 12px;
 `
 
 const LeftContent = styled.div`
@@ -57,7 +60,7 @@ export default memo(function MyVault() {
   return (
     <MyVaultsWrapper>
       <MyVaultsContentWrapper>
-        <ScrollPageContent className='my-vaults-scroll transparent-scroll-style'>
+        <ScrollPageContent className='scroll-style transparent-scroll-style'>
           <LeftContent>
             <Title>
               <Trans>My Vault Portfolio</Trans>

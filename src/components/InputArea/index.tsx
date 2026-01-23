@@ -2,7 +2,6 @@
  * 输入框组件
  */
 import { ANI_DURATION } from 'constants/index'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { vm } from 'pages/helper'
 import { ChangeEvent, FocusEventHandler, useCallback, useEffect, useRef } from 'react'
 import { useIsMobile } from 'store/application/hooks'
@@ -82,7 +81,7 @@ export default function InputArea({
   onBlur?: FocusEventHandler<HTMLTextAreaElement>
 }) {
   const isMobile = useIsMobile()
-  const inputRef = ref || useScrollbarClass<HTMLTextAreaElement>()
+  const inputRef = ref || useRef<HTMLTextAreaElement>(null)
   const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const updateHeight = useCallback(() => {
     if (disabledUpdateHeight) return

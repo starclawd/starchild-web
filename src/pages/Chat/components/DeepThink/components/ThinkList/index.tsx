@@ -1,9 +1,9 @@
 import { IconBase } from 'components/Icons'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { vm } from 'pages/helper'
 import Markdown from 'components/Markdown'
-import { TempAiContentDataType, ThoughtContentDataType } from 'store/chat/chat.d'
+import { ThoughtContentDataType } from 'store/chat/chat.d'
 import styled, { css } from 'styled-components'
+import { useRef } from 'react'
 
 const ThinkListWrapper = styled.div`
   display: flex;
@@ -49,7 +49,7 @@ const ThinkItem = styled.div<{ $isLast?: boolean }>`
 `
 
 export default function ThinkList({ thoughtList }: { thoughtList: ThoughtContentDataType[] }) {
-  const scrollRef = useScrollbarClass<HTMLDivElement>()
+  const scrollRef = useRef<HTMLDivElement>(null)
   return (
     <ThinkListWrapper ref={scrollRef} className='think-list-wrapper scroll-style'>
       {thoughtList.map((item, index) => {

@@ -1,9 +1,10 @@
 import { ANI_DURATION } from 'constants/index'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { vm } from 'pages/helper'
 import { SourceListDetailsDataType } from 'store/chat/chat.d'
 import styled, { css } from 'styled-components'
 import { getFaviconUrl } from 'utils/common'
+import { useRef } from 'react'
+import LazyImage from 'components/LazyImage'
 
 const SourcesWrapper = styled.div`
   display: flex;
@@ -41,12 +42,6 @@ const SourceItem = styled.a`
     display: flex;
     align-items: center;
     gap: 6px;
-    img {
-      width: 18px;
-      height: 18px;
-      border-radius: 4px;
-      flex-shrink: 0;
-    }
     span {
       font-size: 12px;
       font-weight: 400;
@@ -120,7 +115,7 @@ const SourceItem = styled.a`
 `
 
 export default function Sources({ sourceList }: { sourceList: SourceListDetailsDataType[] }) {
-  const scrollRef = useScrollbarClass<HTMLDivElement>()
+  const scrollRef = useRef<HTMLDivElement>(null)
   return (
     <SourcesWrapper className='sources-wrapper'>
       <List ref={scrollRef} className='sources-list scroll-style'>
@@ -130,7 +125,7 @@ export default function Sources({ sourceList }: { sourceList: SourceListDetailsD
           return (
             <SourceItem key={id} rel='noopener noreferrer' href={id} target='_blank'>
               <span>
-                <img src={faviconUrl} alt='' />
+                <LazyImage src={faviconUrl} alt='' width='18px' height='18px' borderRadius='4px' />
                 <span>{origin.replace('https://', '')}</span>
               </span>
               <span>

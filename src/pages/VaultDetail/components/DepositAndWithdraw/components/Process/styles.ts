@@ -109,10 +109,6 @@ export const Amount = styled.div`
   flex-direction: row;
   align-items: center;
   gap: 4px;
-  img {
-    width: 16px;
-    height: 16px;
-  }
   span {
     font-size: 12px;
     font-style: normal;
@@ -126,10 +122,6 @@ export const Amount = styled.div`
   ${({ theme }) =>
     theme.isMobile &&
     css`
-      img {
-        width: ${vm(16)};
-        height: ${vm(16)};
-      }
       span {
         font-size: 0.12rem;
         line-height: 0.18rem;

@@ -11,13 +11,13 @@ import { useTimezone } from 'store/timezonecache/hooks'
 import { vm } from 'pages/helper'
 import { ANI_DURATION } from 'constants/index'
 import BacktestView from '../BacktestView'
-import AgentShare, { useCopyText } from 'components/AgentShare'
+import AgentShare, { useCopyText } from 'pages/AgentDetail/components/AgentShare'
 import Pending from 'components/Pending'
 import { useSetCurrentRouter, useGetTokenImg, useIsMobile } from 'store/application/hooks'
-import ImgLoad from 'components/ImgLoad'
+import LazyImage from 'components/LazyImage'
 import Popover from 'components/Popover'
-import ShareActionDropdown from 'components/AgentActions/components/ShareActionDropdown'
-import { useShareActions } from 'components/AgentActions/hooks'
+import ShareActionDropdown from 'pages/AgentDetail/components/AgentActions/components/ShareActionDropdown'
+import { useShareActions } from 'pages/AgentDetail/components/AgentActions/hooks'
 import { ROUTER } from 'pages/router'
 import AgentTriggerItemFeedback from '../AgentTriggerItemFeedback'
 
@@ -130,11 +130,6 @@ const TitleSection = styled.div`
     align-items: center;
     gap: 6px;
     height: fit-content;
-    img {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-    }
     span {
       font-size: 13px;
       font-weight: 500;
@@ -290,13 +285,13 @@ function AgentOverviewCard({ data, fromPage = 'myagents' }: AgentOverviewCardPro
       <TitleSection>
         {data.kol_name && (
           <span className='kol-info'>
-            <ImgLoad src={data.kol_avatar} alt={data.kol_name} />
+            <LazyImage src={data.kol_avatar} alt={data.kol_name} width={32} height={32} />
             <span>{data.kol_name}</span>
           </span>
         )}
         {symbol && (
           <span className='symbol-info'>
-            <ImgLoad src={getTokenImg(symbol)} alt={symbol} />
+            <LazyImage src={getTokenImg(symbol)} alt={symbol} width={32} height={32} />
             <span>{symbol}</span>
           </span>
         )}

@@ -6,11 +6,10 @@ import Avatar from 'components/Avatar'
 import NoData from 'components/NoData'
 import { AgentCardProps } from 'store/agenthub/agenthub'
 import { IconBase } from 'components/Icons'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { formatNumber } from 'utils/format'
-import { ButtonBorder, ButtonCommon } from 'components/Button'
+import { ButtonBorder } from 'components/Button'
 import Pending from 'components/Pending'
-import AgentShare, { useCopyImgAndText } from 'components/AgentShare'
+import AgentShare, { useCopyImgAndText } from 'pages/AgentDetail/components/AgentShare'
 import dayjs from 'dayjs'
 import { GENERATION_STATUS, AGENT_STATUS, AGENT_TYPE } from 'store/agentdetail/agentdetail'
 import Markdown from 'components/Markdown'
@@ -458,7 +457,7 @@ export default memo(function AgentCardDetail({
   onSubscription,
 }: AgentCardDetailProps) {
   const isMobile = useIsMobile()
-  const scrollRef = useScrollbarClass<HTMLDivElement>()
+  const scrollRef = useRef<HTMLDivElement>(null)
   const shareDomRef = useRef<HTMLDivElement>(null)
   const [isCopyLoading, setIsCopyLoading] = useState(false)
   const copyImgAndText = useCopyImgAndText()

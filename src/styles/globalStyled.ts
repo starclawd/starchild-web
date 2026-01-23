@@ -20,16 +20,6 @@ export const GlobalStyle = createGlobalStyle<{ theme: ReturnType<typeof getTheme
         background: ${({ theme }) => theme.black600};
       }
     }
-
-    /* textarea 元素在有滚动条时的样式 */
-    &.has-scrollbar {
-      ${({ theme }) =>
-        !theme.isMobile &&
-        css`
-          padding-right: 14px;
-          margin-right: 4px;
-        `}
-    }
   }
 
   .transparent-scroll-style {

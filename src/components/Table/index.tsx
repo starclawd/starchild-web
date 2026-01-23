@@ -1,6 +1,5 @@
 import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { ReactNode, useMemo } from 'react'
 import styled, { css } from 'styled-components'
 import Select, { DataType, TriggerMethod } from 'components/Select'
@@ -315,8 +314,6 @@ function Table<T extends Record<string, any>>({
   onPageSizeChange,
   onRowClick,
 }: TableProps<T>) {
-  const scrollRef = useScrollbarClass<HTMLDivElement>()
-  // 为最后一列设置右对齐
   const processedColumns = useMemo(() => {
     return columns.map((column, index) => {
       if (index === columns.length - 1 && !column.align) {
@@ -437,7 +434,7 @@ function Table<T extends Record<string, any>>({
 
   return (
     <TableContainer className={className}>
-      <TableScrollContainer ref={scrollRef} className='table-scroll-container scroll-style'>
+      <TableScrollContainer className='table-scroll-container scroll-style'>
         <StyledTable>
           {renderColGroup()}
           <TableHeader className='table-header'>

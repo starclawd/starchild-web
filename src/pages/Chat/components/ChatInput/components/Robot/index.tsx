@@ -252,9 +252,9 @@ export default function Robot({ isFocus }: { isFocus: boolean }) {
 
   return (
     <RobotWrapper $showText={showText} $robotAnimationComplete={robotAnimationComplete}>
-      <img className='robot' src={robot} alt='' />
+      <img className='robot' src={robot} alt='' width={52} height={52} />
       <Content className='robot-content' $show={showText}>
-        {textAnimationStarted && <img src={robotPop} alt='' />}
+        {textAnimationStarted && <img src={robotPop} alt='' width={6} height={6} />}
         <span>{textAnimationStarted ? displayedText : ''}</span>
       </Content>
     </RobotWrapper>

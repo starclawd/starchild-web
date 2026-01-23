@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import SystemSignalOverview from './components/Signals'
 import { useUserInfo } from 'store/login/hooks'
 import Pending from 'components/Pending'
-import Insights from 'components/Header/components/MenuContent/components/Insights'
+import Insights from 'pages/components/Header/components/MenuContent/components/Insights'
 import { Trans } from '@lingui/react/macro'
 
 const SignalsWrapper = styled.div`

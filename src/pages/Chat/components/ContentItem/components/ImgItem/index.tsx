@@ -2,7 +2,12 @@ import { vm } from 'pages/helper'
 import styled, { css } from 'styled-components'
 import img1 from 'assets/chat/voice.png'
 import img2 from 'assets/chat/voice.png'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
+import { useRef } from 'react'
+
+const StyledImg = styled.img`
+  flex-shrink: 0;
+  border-radius: 12px;
+`
 
 const ImgItemWrapper = styled.div`
   display: flex;
@@ -27,27 +32,17 @@ const ImgList = styled.div`
   display: flex;
   justify-content: flex-end;
   width: 100%;
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(8)};
-      img {
-        width: ${vm(60)};
-        height: ${vm(60)};
-        border-radius: ${vm(12)};
-      }
-    `}
 `
 
 export default function ImgItem() {
-  const scrollRef = useScrollbarClass<HTMLDivElement>()
+  const scrollRef = useRef<HTMLDivElement>(null)
   const imgList = [img1, img2]
   return (
     <ImgItemWrapper>
       <Content>test test test test test test test test test test test </Content>
       <ImgList ref={scrollRef} className='scroll-style'>
         {imgList.map((item, index) => (
-          <img key={index} src={item} alt='' />
+          <StyledImg key={index} src={item} alt='' width={60} height={60} />
         ))}
       </ImgList>
     </ImgItemWrapper>

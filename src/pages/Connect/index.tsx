@@ -337,7 +337,6 @@ export default function Connect() {
     <ConnectWrapper>
       <InnerContent>
         <span className='wallet-bg'></span>
-        {/* <img className='wallet-img' src={wallet} alt='wallet' /> */}
         <LeftWrapper>
           <span>
             <Trans>
@@ -351,7 +350,6 @@ export default function Connect() {
             </Trans>
           </span>
           <ButtonTg onClick={goTelegramPage}>
-            {/* <img src={tgIcon} alt='telegram' /> */}
             <Trans>Try Starchild on telegram</Trans>
           </ButtonTg>
         </LeftWrapper>
@@ -379,10 +377,7 @@ export default function Connect() {
                 </ExpiredWrapper>
               )}
             </QrWrapper>
-            <span>
-              {/* <img className='homepage-img' src={homepage} alt='homepage' /> */}
-              {/* <img className='scan-img' src={scan} alt='scan' /> */}
-            </span>
+            <span></span>
           </CenterWrapper>
           <ScanWrapper>
             <ScanIconWrapper>

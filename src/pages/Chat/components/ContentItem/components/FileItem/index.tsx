@@ -1,12 +1,10 @@
 import { vm } from 'pages/helper'
 import styled, { css } from 'styled-components'
-import img1 from 'assets/chat/voice.png'
-import img2 from 'assets/chat/voice.png'
 import { IconBase } from 'components/Icons'
 import { formatFileSize, getFileType } from 'utils'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { useTheme } from 'store/themecache/hooks'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
+import { useRef } from 'react'
 
 const FileItemWrapper = styled.div`
   display: flex;
@@ -84,7 +82,7 @@ const FileItemItem = styled(BorderAllSide1PxBox)`
 
 export default function FileItem() {
   const theme = useTheme()
-  const scrollRef = useScrollbarClass<HTMLDivElement>()
+  const scrollRef = useRef<HTMLDivElement>(null)
   const fileList = [
     {
       name: 'test.png',

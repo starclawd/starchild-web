@@ -1,158 +1,555 @@
 import { ANI_DURATION } from 'constants/index'
-import React, { useState, useEffect, useRef, useCallback, memo } from 'react'
-import styled, { css } from 'styled-components'
+import React, { useState, useEffect, useRef, useCallback, memo, useMemo } from 'react'
+import styled, { css, keyframes } from 'styled-components'
 
-// 占位符样式
-const PlaceholderContainer = styled.div<{ $width?: string | number; $height?: string | number }>`
-  width: ${({ $width }) => (typeof $width === 'number' ? `${$width}px` : $width || '100%')};
-  height: ${({ $height }) => (typeof $height === 'number' ? `${$height}px` : $height || '100%')};
-  background: ${({ theme }) => theme.black900};
+import defaultImg from 'assets/png/default.png'
+
+// ==================== 类型定义 ====================
+
+type ObjectFitType = 'cover' | 'contain' | 'fill' | 'none' | 'scale-down'
+type ObjectPositionType = 'center' | 'top' | 'bottom' | 'left' | 'right' | string
+
+export interface LazyImageProps extends Omit<React.ImgHTMLAttributes<HTMLImageElement>, 'onLoad' | 'onError'> {
+  /** 图片 URL */
+  src?: string
+  /** 加载失败时的备用图片 */
+  fallbackSrc?: string
+  /** 自定义占位符 */
+  placeholder?: React.ReactNode
+  /** 图片宽度 */
+  width?: string | number
+  /** 图片高度 */
+  height?: string | number
+  /** 宽高比 (如 "16/9", "4/3", "1/1") */
+  aspectRatio?: string
+  /** 触发加载的阈值（距离视口的像素） */
+  threshold?: number
+  /** IntersectionObserver 的 rootMargin */
+  rootMargin?: string
+  /** 是否作为背景图片 */
+  asBackground?: boolean
+  /** 图片加载成功回调 */
+  onLoad?: () => void
+  /** 图片加载失败回调 */
+  onError?: (error?: Error) => void
+  /** 是否显示骨架屏动画 */
+  showSkeleton?: boolean
+  /** 骨架屏颜色 */
+  skeletonColor?: string
+  /** 骨架屏高亮颜色 */
+  skeletonHighlightColor?: string
+  /** object-fit 属性 */
+  objectFit?: ObjectFitType
+  /** object-position 属性 */
+  objectPosition?: ObjectPositionType
+  /** 圆角 */
+  borderRadius?: string | number
+  /** 是否禁用懒加载（立即加载） */
+  eager?: boolean
+  /** 失败重试次数 */
+  retryCount?: number
+  /** 重试延迟（毫秒） */
+  retryDelay?: number
+  /** 加载超时时间（毫秒） */
+  loadingTimeout?: number
+  /** 自定义错误组件 */
+  errorComponent?: React.ReactNode
+  /** 淡入动画时长（秒） */
+  transitionDuration?: number
+  /** 动画缓动函数 */
+  transitionTimingFunction?: string
+  /** 是否显示模糊占位效果 */
+  blurPreview?: boolean
+  /** 低质量占位图 URL（LQIP） */
+  lowQualitySrc?: string
+  /** 响应式图片 srcSet */
+  srcSet?: string
+  /** 响应式图片 sizes */
+  sizes?: string
+  /** 跨域设置 */
+  crossOrigin?: 'anonymous' | 'use-credentials' | ''
+  /** 是否显示加载状态 */
+  showLoading?: boolean
+  /** 自定义加载组件 */
+  loadingComponent?: React.ReactNode
+  /** 背景图片模式下的子内容 */
+  children?: React.ReactNode
+}
+
+// ==================== 样式定义 ====================
+
+const skeletonLoading = keyframes`
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+`
+
+const shimmer = keyframes`
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+`
+
+const pulse = keyframes`
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+`
+
+interface ContainerStyleProps {
+  $width?: string | number
+  $height?: string | number
+  $aspectRatio?: string
+  $borderRadius?: string | number
+  $skeletonColor?: string
+}
+
+const formatSize = (size?: string | number) => {
+  if (typeof size === 'number') return `${size}px`
+  return size || '100%'
+}
+
+const formatBorderRadius = (radius?: string | number) => {
+  if (typeof radius === 'number') return `${radius}px`
+  return radius || '0'
+}
+
+// 占位符容器
+const PlaceholderContainer = styled.div<ContainerStyleProps>`
+  flex-shrink: 0;
+  width: ${({ $width }) => formatSize($width)};
+  height: ${({ $height }) => formatSize($height)};
+  ${({ $aspectRatio }) =>
+    $aspectRatio &&
+    css`
+      aspect-ratio: ${$aspectRatio};
+      height: auto;
+    `}
+  background: ${({ theme, $skeletonColor }) => $skeletonColor || theme.black900};
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   overflow: hidden;
+  border-radius: ${({ $borderRadius }) => formatBorderRadius($borderRadius)};
 `
 
-const ImageElement = styled.img<{ $isLoaded: boolean }>`
+interface ImageStyleProps {
+  $isLoaded: boolean
+  $objectFit?: ObjectFitType
+  $objectPosition?: ObjectPositionType
+  $transitionDuration?: number
+  $transitionTimingFunction?: string
+  $blurPreview?: boolean
+  $showLowQuality?: boolean
+}
+
+const ImageElement = styled.img<ImageStyleProps>`
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  transition: opacity ${ANI_DURATION}s ease-in-out;
+  object-fit: ${({ $objectFit }) => $objectFit || 'cover'};
+  object-position: ${({ $objectPosition }) => $objectPosition || 'center'};
+  transition:
+    opacity ${({ $transitionDuration }) => $transitionDuration ?? ANI_DURATION}s
+      ${({ $transitionTimingFunction }) => $transitionTimingFunction || 'ease-in-out'},
+    filter ${({ $transitionDuration }) => $transitionDuration ?? ANI_DURATION}s
+      ${({ $transitionTimingFunction }) => $transitionTimingFunction || 'ease-in-out'};
   opacity: ${({ $isLoaded }) => ($isLoaded ? 1 : 0)};
+  ${({ $blurPreview, $showLowQuality, $isLoaded }) =>
+    $blurPreview &&
+    $showLowQuality &&
+    !$isLoaded &&
+    css`
+      filter: blur(20px);
+      opacity: 1;
+    `}
+  position: absolute;
+  top: 0;
+  left: 0;
 `
 
-const BackgroundContainer = styled.div<{
+interface BackgroundStyleProps {
   $backgroundImage?: string
   $width?: string | number
   $height?: string | number
+  $aspectRatio?: string
   $isLoaded: boolean
-}>`
-  width: ${({ $width }) => (typeof $width === 'number' ? `${$width}px` : $width || '100%')};
-  height: ${({ $height }) => (typeof $height === 'number' ? `${$height}px` : $height || '100%')};
+  $objectFit?: ObjectFitType
+  $objectPosition?: ObjectPositionType
+  $borderRadius?: string | number
+  $transitionDuration?: number
+  $transitionTimingFunction?: string
+  $blurPreview?: boolean
+  $showLowQuality?: boolean
+  $skeletonColor?: string
+}
+
+const BackgroundContainer = styled.div<BackgroundStyleProps>`
+  flex-shrink: 0;
+  width: ${({ $width }) => formatSize($width)};
+  height: ${({ $height }) => formatSize($height)};
+  ${({ $aspectRatio }) =>
+    $aspectRatio &&
+    css`
+      aspect-ratio: ${$aspectRatio};
+      height: auto;
+    `}
   background-image: ${({ $backgroundImage }) => ($backgroundImage ? `url(${$backgroundImage})` : 'none')};
-  background-size: cover;
-  background-position: center;
+  background-size: ${({ $objectFit }) => ($objectFit === 'contain' ? 'contain' : 'cover')};
+  background-position: ${({ $objectPosition }) => $objectPosition || 'center'};
   background-repeat: no-repeat;
-  transition: opacity ${ANI_DURATION}s ease-in-out;
+  background-color: ${({ theme, $skeletonColor }) => $skeletonColor || theme.black900};
+  transition:
+    opacity ${({ $transitionDuration }) => $transitionDuration ?? ANI_DURATION}s
+      ${({ $transitionTimingFunction }) => $transitionTimingFunction || 'ease-in-out'},
+    filter ${({ $transitionDuration }) => $transitionDuration ?? ANI_DURATION}s
+      ${({ $transitionTimingFunction }) => $transitionTimingFunction || 'ease-in-out'};
   opacity: ${({ $isLoaded }) => ($isLoaded ? 1 : 0)};
+  ${({ $blurPreview, $showLowQuality, $isLoaded }) =>
+    $blurPreview &&
+    $showLowQuality &&
+    !$isLoaded &&
+    css`
+      filter: blur(20px);
+      opacity: 1;
+    `}
   position: relative;
+  border-radius: ${({ $borderRadius }) => formatBorderRadius($borderRadius)};
+  overflow: hidden;
 `
 
-// Loading骨架屏动画
-const SkeletonAnimation = styled.div`
+interface SkeletonStyleProps {
+  $skeletonHighlightColor?: string
+}
+
+// Loading 骨架屏动画
+const SkeletonAnimation = styled.div<SkeletonStyleProps>`
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, ${({ theme }) => theme.black800}, transparent);
-  animation: skeleton-loading 1.5s infinite;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    ${({ theme, $skeletonHighlightColor }) => $skeletonHighlightColor || theme.black800},
+    transparent
+  );
+  animation: ${skeletonLoading} 1.5s infinite;
+`
 
-  @keyframes skeleton-loading {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(200%);
+// Shimmer 效果
+const ShimmerOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent 0%, ${({ theme }) => theme.black700}40 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: ${shimmer} 1.5s infinite;
+`
+
+// Pulse 效果
+const PulseOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: ${({ theme }) => theme.black800};
+  animation: ${pulse} 2s ease-in-out infinite;
+`
+
+// 默认加载组件
+const DefaultLoadingSpinner = styled.div`
+  width: 24px;
+  height: 24px;
+  border: 2px solid ${({ theme }) => theme.black700};
+  border-top-color: ${({ theme }) => theme.black400};
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
     }
   }
 `
 
-interface LazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
-  src?: string
-  fallbackSrc?: string
-  placeholder?: React.ReactNode
-  width?: string | number
-  height?: string | number
-  threshold?: number // 触发加载的阈值（距离视口的像素）
-  rootMargin?: string // IntersectionObserver的rootMargin
-  asBackground?: boolean // 是否作为背景图片
-  onLoad?: () => void
-  onError?: () => void
-  showSkeleton?: boolean // 是否显示骨架屏动画
-}
+// 默认错误组件
+const DefaultErrorComponent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: ${({ theme }) => theme.black400};
+  font-size: 12px;
+  padding: 8px;
+  text-align: center;
+`
+
+const ErrorIcon = styled.span`
+  font-size: 24px;
+  opacity: 0.5;
+`
+
+// ==================== 组件实现 ====================
 
 const LazyImage = memo(function LazyImage({
   src,
-  fallbackSrc,
+  fallbackSrc = defaultImg,
   placeholder,
   width,
   height,
+  aspectRatio,
   threshold = 100,
-  rootMargin = `${threshold}px`,
+  rootMargin,
   asBackground = false,
   onLoad,
   onError,
   showSkeleton = true,
+  skeletonColor,
+  skeletonHighlightColor,
+  objectFit = 'cover',
+  objectPosition = 'center',
+  borderRadius,
+  eager = false,
+  retryCount = 0,
+  retryDelay = 1000,
+  loadingTimeout,
+  errorComponent,
+  transitionDuration,
+  transitionTimingFunction,
+  blurPreview = false,
+  lowQualitySrc,
+  srcSet,
+  sizes,
+  crossOrigin,
+  showLoading = false,
+  loadingComponent,
+  children,
   className,
   style,
+  alt,
   ...rest
 }: LazyImageProps) {
   const [imageSrc, setImageSrc] = useState<string | undefined>(undefined)
   const [isLoaded, setIsLoaded] = useState(false)
   const [isError, setIsError] = useState(false)
-  const [isInView, setIsInView] = useState(false)
+  const [isInView, setIsInView] = useState(eager)
+  const [showLowQuality, setShowLowQuality] = useState(false)
+  const [currentRetry, setCurrentRetry] = useState(0)
+
   const containerRef = useRef<HTMLDivElement>(null)
   const imageRef = useRef<HTMLImageElement | null>(null)
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const retryTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // 计算 rootMargin，确保格式正确
+  const computedRootMargin = useMemo(() => {
+    if (rootMargin) {
+      // 如果传入了 rootMargin，验证格式
+      const isValidFormat = /^-?\d+(\.\d+)?(px|%)(\s+-?\d+(\.\d+)?(px|%)){0,3}$/.test(rootMargin.trim())
+      if (isValidFormat) {
+        return rootMargin
+      }
+      // 如果格式无效，尝试添加 px 单位
+      const numValue = parseFloat(rootMargin)
+      if (!isNaN(numValue)) {
+        return `${numValue}px`
+      }
+    }
+    // 使用 threshold 默认值
+    return `${threshold}px`
+  }, [rootMargin, threshold])
+
+  // 清理定时器
+  const clearTimeouts = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+      timeoutRef.current = null
+    }
+    if (retryTimeoutRef.current) {
+      clearTimeout(retryTimeoutRef.current)
+      retryTimeoutRef.current = null
+    }
+  }, [])
 
   // 处理图片加载成功
   const handleLoad = useCallback(() => {
+    clearTimeouts()
     setIsLoaded(true)
+    setIsError(false)
     onLoad?.()
-  }, [onLoad])
+  }, [onLoad, clearTimeouts])
 
   // 处理图片加载失败
   const handleError = useCallback(() => {
+    clearTimeouts()
+
+    // 重试逻辑
+    if (currentRetry < retryCount && imageSrc !== fallbackSrc) {
+      retryTimeoutRef.current = setTimeout(() => {
+        setCurrentRetry((prev) => prev + 1)
+        // 强制重新加载
+        setImageSrc(undefined)
+        setTimeout(() => {
+          setImageSrc(src)
+        }, 50)
+      }, retryDelay)
+      return
+    }
+
     setIsError(true)
     if (fallbackSrc && imageSrc !== fallbackSrc) {
       setImageSrc(fallbackSrc)
     }
-    onError?.()
-  }, [fallbackSrc, imageSrc, onError])
+    onError?.(new Error('Image failed to load'))
+  }, [fallbackSrc, imageSrc, onError, clearTimeouts, currentRetry, retryCount, retryDelay, src])
 
-  // 使用IntersectionObserver检测元素是否进入视口
+  // 加载低质量占位图
   useEffect(() => {
-    if (!containerRef.current) return
+    if (blurPreview && lowQualitySrc && isInView && !showLowQuality) {
+      const img = new Image()
+      img.src = lowQualitySrc
+      img.onload = () => {
+        setShowLowQuality(true)
+        setImageSrc(lowQualitySrc)
+      }
+    }
+  }, [blurPreview, lowQualitySrc, isInView, showLowQuality])
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !isInView) {
-          setIsInView(true)
-          // 一旦进入视口就停止观察
-          observer.disconnect()
-        }
-      },
-      {
-        rootMargin,
-        threshold: 0,
-      },
-    )
+  // 使用 IntersectionObserver 检测元素是否进入视口
+  useEffect(() => {
+    if (eager || !containerRef.current) return
 
-    observer.observe(containerRef.current)
+    let observer: IntersectionObserver | null = null
+
+    try {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting && !isInView) {
+            setIsInView(true)
+            observer?.disconnect()
+          }
+        },
+        {
+          rootMargin: computedRootMargin,
+          threshold: 0,
+        },
+      )
+
+      observer.observe(containerRef.current)
+    } catch (error) {
+      // 如果 IntersectionObserver 创建失败（例如 rootMargin 格式无效），直接设置为可见
+      console.warn('LazyImage: IntersectionObserver creation failed, loading immediately', error)
+      setIsInView(true)
+    }
 
     return () => {
-      observer.disconnect()
+      observer?.disconnect()
     }
-  }, [rootMargin, isInView])
+  }, [computedRootMargin, isInView, eager])
 
   // 当元素进入视口时开始加载图片
   useEffect(() => {
-    if (isInView && src && !imageSrc) {
+    if (!isInView || !src) return
+
+    // 如果已经加载完成或者正在显示低质量图，且不是高清图源，跳过
+    if (isLoaded && imageSrc === src) return
+
+    // 如果正在显示低质量占位图，继续加载高清图
+    const shouldLoadHighQuality = showLowQuality || !imageSrc || imageSrc === fallbackSrc
+
+    if (shouldLoadHighQuality) {
       // 预加载图片
       const img = new Image()
-      img.src = src
+
+      if (crossOrigin) {
+        img.crossOrigin = crossOrigin
+      }
+
+      // 设置加载超时
+      if (loadingTimeout) {
+        timeoutRef.current = setTimeout(() => {
+          img.src = '' // 取消加载
+          handleError()
+        }, loadingTimeout)
+      }
+
       img.onload = () => {
         setImageSrc(src)
+        setShowLowQuality(false)
         handleLoad()
       }
+
       img.onerror = () => {
         handleError()
       }
-    }
-  }, [isInView, src, imageSrc, handleLoad, handleError])
 
-  // 如果是背景图片模式
+      img.src = src
+    }
+  }, [
+    isInView,
+    src,
+    imageSrc,
+    handleLoad,
+    handleError,
+    showLowQuality,
+    fallbackSrc,
+    isLoaded,
+    crossOrigin,
+    loadingTimeout,
+  ])
+
+  // 组件卸载时清理
+  useEffect(() => {
+    return () => {
+      clearTimeouts()
+    }
+  }, [clearTimeouts])
+
+  // 渲染骨架屏/加载状态
+  const renderLoadingState = () => {
+    if (isLoaded) return null
+
+    return (
+      <>
+        {showSkeleton && <SkeletonAnimation $skeletonHighlightColor={skeletonHighlightColor} />}
+        {showLoading && (loadingComponent || <DefaultLoadingSpinner />)}
+        {placeholder}
+      </>
+    )
+  }
+
+  // 渲染错误状态
+  const renderErrorState = () => {
+    if (!isError || imageSrc === fallbackSrc) return null
+
+    if (errorComponent) {
+      return errorComponent
+    }
+
+    return (
+      <DefaultErrorComponent>
+        <ErrorIcon>⚠️</ErrorIcon>
+        <span>加载失败</span>
+      </DefaultErrorComponent>
+    )
+  }
+
+  // 背景图片模式
   if (asBackground) {
     return (
       <BackgroundContainer
@@ -160,33 +557,66 @@ const LazyImage = memo(function LazyImage({
         $backgroundImage={imageSrc}
         $width={width}
         $height={height}
+        $aspectRatio={aspectRatio}
         $isLoaded={isLoaded}
+        $objectFit={objectFit}
+        $objectPosition={objectPosition}
+        $borderRadius={borderRadius}
+        $transitionDuration={transitionDuration}
+        $transitionTimingFunction={transitionTimingFunction}
+        $blurPreview={blurPreview}
+        $showLowQuality={showLowQuality}
+        $skeletonColor={skeletonColor}
         className={className}
         style={style}
       >
-        {!isLoaded && showSkeleton && <SkeletonAnimation />}
-        {!isLoaded && placeholder}
+        {renderLoadingState()}
+        {renderErrorState()}
+        {children}
       </BackgroundContainer>
     )
   }
 
-  // 普通img标签模式
+  // 普通 img 标签模式
   return (
-    <PlaceholderContainer ref={containerRef} $width={width} $height={height} className={className} style={style}>
-      {!isLoaded && showSkeleton && <SkeletonAnimation />}
-      {!isLoaded && placeholder}
+    <PlaceholderContainer
+      ref={containerRef}
+      $width={width}
+      $height={height}
+      $aspectRatio={aspectRatio}
+      $borderRadius={borderRadius}
+      $skeletonColor={skeletonColor}
+      className={className}
+      style={style}
+    >
+      {renderLoadingState()}
+      {renderErrorState()}
       {imageSrc && (
         <ImageElement
           ref={imageRef}
           src={imageSrc}
+          srcSet={isLoaded ? srcSet : undefined}
+          sizes={isLoaded ? sizes : undefined}
+          crossOrigin={crossOrigin}
           $isLoaded={isLoaded}
+          $objectFit={objectFit}
+          $objectPosition={objectPosition}
+          $transitionDuration={transitionDuration}
+          $transitionTimingFunction={transitionTimingFunction}
+          $blurPreview={blurPreview}
+          $showLowQuality={showLowQuality}
           onLoad={handleLoad}
           onError={handleError}
+          alt={alt}
           {...rest}
         />
       )}
+      {children}
     </PlaceholderContainer>
   )
 })
 
 export default LazyImage
+
+// ==================== 导出类型 ====================
+export type { ObjectFitType, ObjectPositionType }

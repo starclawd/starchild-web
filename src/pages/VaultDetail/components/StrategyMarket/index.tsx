@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components'
 import { ANI_DURATION } from 'constants/index'
 import { Trans } from '@lingui/react/macro'
 import { useAllStrategiesOverview } from 'store/vaults/hooks'
+import { StrategiesOverviewDataType } from 'api/strategy'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import { formatPercent, getStatValueColor } from 'utils/format'
 import { useTheme } from 'store/themecache/hooks'
@@ -52,7 +53,7 @@ const Header = styled.div`
     line-height: 20px;
     color: ${({ theme }) => theme.black300};
   }
-  .apr {
+  .roe {
     font-size: 13px;
     font-style: normal;
     font-weight: 400;
@@ -99,19 +100,37 @@ export default memo(function StrategyMarket() {
   const { strategyId } = useParsedQueryString()
   const [isShowStrategyMarket] = useIsShowStrategyMarket()
   const { allStrategies } = useAllStrategiesOverview()
-  const { sortState, handleSort } = useSort('all_time_apr', SortDirection.NONE)
+  const { sortState, handleSort } = useSort('roe', SortDirection.DESC)
 
   // 根据排序状态对策略列表进行排序
   const sortedStrategies = useMemo(() => {
-    if (sortState.field !== 'all_time_apr' || sortState.direction === SortDirection.NONE) {
+    if (sortState.field === null || sortState.direction === SortDirection.NONE) {
       return allStrategies
     }
-    return [...allStrategies].sort((a, b) => {
-      if (sortState.direction === SortDirection.ASC) {
-        return a.all_time_apr - b.all_time_apr
+
+    const sorted = [...allStrategies].sort((a, b) => {
+      const field = sortState.field as keyof StrategiesOverviewDataType
+      const aValue = a[field] ?? 0
+      const bValue = b[field] ?? 0
+
+      // 尝试转换为数字进行比较
+      const aNum = Number(aValue)
+      const bNum = Number(bValue)
+
+      let result: number
+      if (!isNaN(aNum) && !isNaN(bNum)) {
+        result = aNum - bNum
+      } else if (typeof aValue === 'string' && typeof bValue === 'string') {
+        result = aValue.localeCompare(bValue)
+      } else {
+        result = 0
       }
-      return b.all_time_apr - a.all_time_apr
+
+      // 根据排序方向返回结果
+      return sortState.direction === SortDirection.DESC ? -result : result
     })
+
+    return sorted
   }, [allStrategies, sortState])
 
   const handleToggleStrategyId = useCallback(
@@ -127,8 +146,8 @@ export default memo(function StrategyMarket() {
     [toggleStrategyId, resetAllState, strategyId],
   )
 
-  const handleSortByApr = useCallback(() => {
-    handleSort('all_time_apr')
+  const handleSortByRoe = useCallback(() => {
+    handleSort('roe')
   }, [handleSort])
 
   return (
@@ -138,13 +157,13 @@ export default memo(function StrategyMarket() {
           <span className='name'>
             <Trans>Name</Trans>
           </span>
-          <SortableHeader onClick={handleSortByApr}>
-            <span className='apr'>
-              <Trans>APR</Trans>
+          <SortableHeader onClick={handleSortByRoe}>
+            <span className='roe'>
+              <Trans>ROE</Trans>
             </span>
             <SortArrows
-              direction={sortState.field === 'all_time_apr' ? sortState.direction : SortDirection.NONE}
-              onClick={handleSortByApr}
+              direction={sortState.field === 'roe' ? sortState.direction : SortDirection.NONE}
+              onClick={handleSortByRoe}
             />
           </SortableHeader>
         </Header>
@@ -156,9 +175,9 @@ export default memo(function StrategyMarket() {
               key={strategy.strategy_id}
             >
               <span>{strategy.strategy_name}</span>
-              <span style={{ color: getStatValueColor(strategy.all_time_apr, true, theme) }}>
-                {!isInvalidValue(strategy.all_time_apr)
-                  ? formatPercent({ value: strategy.all_time_apr, mark: true, precision: 1 })
+              <span style={{ color: getStatValueColor(strategy.roe, true, theme) }}>
+                {!isInvalidValue(strategy.roe)
+                  ? formatPercent({ value: strategy.roe, mark: true, precision: 1 })
                   : '--'}
               </span>
             </StrategyItem>

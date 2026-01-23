@@ -5,6 +5,7 @@ import { vm } from 'pages/helper'
 import { MOBILE_DESIGN_WIDTH } from 'constants/index'
 import { useIsMobile } from 'store/application/hooks'
 import { useWindowSize } from 'hooks/useWindowSize'
+import LazyImage from 'components/LazyImage'
 
 const GoogleInfoWrapper = styled.div`
   display: flex;
@@ -16,11 +17,6 @@ const GoogleInfoWrapper = styled.div`
   padding: 8px 12px;
   border-radius: 12px;
   background: rgba(0, 0, 0, 0.8);
-  img {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-  }
   > span {
     display: flex;
     flex-direction: column;
@@ -72,7 +68,7 @@ export default function GoogleInfo() {
   return (
     <GoogleInfoWrapper>
       {googleUserAvatar ? (
-        <img src={googleUserAvatar} alt='googleUserAvatar' />
+        <LazyImage src={googleUserAvatar} alt='googleUserAvatar' width={32} height={32} />
       ) : (
         <Avatar size={isMobile ? (32 / MOBILE_DESIGN_WIDTH) * (width || MOBILE_DESIGN_WIDTH) : 32} name={email || ''} />
       )}

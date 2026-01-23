@@ -10,12 +10,12 @@ import { DETAIL_TYPE } from 'store/vaultsdetail/vaultsdetail'
 import PixelCanvas from 'pages/Chat/components/PixelCanvas'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 import VibeItem from 'pages/VaultDetail/components/VaultInfo/components/VibeItem'
-import MoveTabList, { MoveType } from 'components/MoveTabList'
 import DepositSection from './components/DepositSection'
 import TvfSection from './components/TvfSection'
 import { ANI_DURATION } from 'constants/index'
 import { useIsShowStrategyMarket } from 'store/vaultsdetailcache/hooks'
 import Avatar from 'boring-avatars'
+import LazyImage from 'components/LazyImage'
 
 const VaultInfoContainer = styled.div<{ $isShowStrategyMarket: boolean }>`
   position: relative;
@@ -129,11 +129,6 @@ const ProvideInfo = styled.div`
   font-weight: 400;
   line-height: 18px;
   color: ${({ theme }) => theme.black0};
-  img {
-    width: 18px;
-    height: 18px;
-    border-radius: 3px;
-  }
 `
 
 const TabsWrapper = styled.div`
@@ -212,7 +207,15 @@ export default memo(function VaultInfo() {
               <RightStatuswrapper>
                 <ProvideInfo>
                   {userAvatar ? (
-                    <img src={userAvatar} alt='userAvatar' />
+                    <LazyImage
+                      src={userAvatar}
+                      alt='userAvatar'
+                      width='18px'
+                      height='18px'
+                      borderRadius='3px'
+                      eager
+                      showSkeleton={false}
+                    />
                   ) : (
                     <Avatar size={18} avatar={userAvatar} name={userName} />
                   )}

@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
-import { memo, useCallback, useEffect, useMemo, useState } from 'react'
+import { memo, useCallback, useEffect, useMemo, useState, useRef } from 'react'
 import {
   useDeleteThread,
   useGetThreadsList,
@@ -22,8 +22,7 @@ import TransitionWrapper from 'components/TransitionWrapper'
 import { useWindowSize } from 'hooks/useWindowSize'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import Pending from 'components/Pending'
-import { useIsLogin, useIsLogout, useUserInfo } from 'store/login/hooks'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
+import { useIsLogout, useUserInfo } from 'store/login/hooks'
 
 const AiThreadsListWrapper = styled.div`
   display: flex;
@@ -273,7 +272,7 @@ export default memo(function AiThreadsList({ closeHistory }: { closeHistory?: ()
   const toast = useToast()
   const isLogout = useIsLogout()
   const [{ userInfoId }] = useUserInfo()
-  const scrollRef = useScrollbarClass<HTMLDivElement>()
+  const scrollRef = useRef<HTMLDivElement>(null)
   const [isLoadingThreadsList, setIsLoadingThreadsList] = useState<boolean>(true)
   const [currentDeleteThreadId, setCurrentDeleteThreadId] = useState('')
   const [threadsList, setThreadsList] = useThreadsList()

@@ -1,7 +1,7 @@
 import { Trans } from '@lingui/react/macro'
-import Language from 'components/Header/components/Language'
-import LoginButton from 'components/Header/components/LoginButton'
-import ThreadList from 'components/Header/components/MenuContent/components/ThreadList'
+import Language from 'pages/components/Header/components/Language'
+import LoginButton from 'pages/components/Header/components/LoginButton'
+import ThreadList from 'pages/components/Header/components/MenuContent/components/ThreadList'
 import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
 import logoImg from 'assets/png/logo.png'
@@ -13,9 +13,7 @@ import { useAddNewThread, useGetThreadsList } from 'store/chat/hooks'
 import { useCurrentActiveNavKey } from 'store/headercache/hooks'
 import styled, { css } from 'styled-components'
 import { isMatchCurrentRouter, isMatchFatherRouter } from 'utils'
-import MyAgent from 'components/Header/components/MenuContent/components/MyAgent'
-import Insights from 'components/Header/components/MenuContent/components/Insights'
-import { useUserInfo, useIsLogin } from 'store/login/hooks'
+import { useUserInfo } from 'store/login/hooks'
 
 const MobileMenuWrapper = styled.div<{
   $isShowMobileMenu: boolean
@@ -77,10 +75,6 @@ const Header = styled.div`
     align-items: center;
     width: auto;
     height: 100%;
-  }
-  img {
-    width: ${vm(32)};
-    height: ${vm(32)};
   }
   .icon-chat-delete {
     font-size: 0.24rem;
@@ -472,7 +466,7 @@ export default function MobileMenu() {
       <MenuContent>
         <Header>
           <span onClick={goHomePage}>
-            <img src={logoImg} alt='' />
+            <img src={logoImg} alt='' width={32} height={32} />
           </span>
           <span onClick={changeIsShowMobileMenu}>
             <IconBase className='icon-chat-delete' />

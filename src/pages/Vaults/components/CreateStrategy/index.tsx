@@ -10,6 +10,13 @@ import { ROUTER } from 'pages/router'
 import { ANI_DURATION } from 'constants/index'
 import createStrateVideo from 'assets/createstrategy/create-stratygy.mp4'
 
+const BgImg = styled.img`
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  object-fit: contain;
+`
+
 const CreateStrategyWrapper = styled.div`
   position: relative;
   display: flex;
@@ -23,13 +30,6 @@ const CreateStrategyWrapper = styled.div`
   border-radius: 8px;
   border: 1px solid ${({ theme }) => theme.black800};
   background: ${({ theme }) => theme.black700};
-  img {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 120px;
-    height: auto;
-  }
 `
 
 const TopContent = styled.div`
@@ -147,7 +147,7 @@ export default memo(function CreateStrategy() {
 
   return (
     <CreateStrategyWrapper>
-      <img src={createStrategyBg} alt='create-strategy-bg' />
+      <BgImg src={createStrategyBg} alt='create-strategy-bg' width={120} />
       <TopContent>
         <TopLeft>
           <Trans>

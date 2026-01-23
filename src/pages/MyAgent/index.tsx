@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { useUserInfo } from 'store/login/hooks'
 import MyAgentsOverview from './components/MyAgentsOverview'
 import Pending from 'components/Pending'
-import MyAgentMenu from 'components/Header/components/MenuContent/components/MyAgent'
+import MyAgentMenu from 'pages/components/Header/components/MenuContent/components/MyAgent'
 import { Trans } from '@lingui/react/macro'
 
 const MyAgentWrapper = styled.div`

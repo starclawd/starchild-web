@@ -49,10 +49,6 @@ const LeftContent = styled.div`
     font-weight: 400;
     line-height: 20px;
     color: ${({ theme }) => theme.black0};
-    img {
-      width: 18px;
-      height: 18px;
-    }
   }
 `
 
@@ -177,7 +173,7 @@ export default function AvailableClaim() {
           <Trans>Claimable</Trans>
         </span>
         <span>
-          <img src={usdc} alt='usdc' />
+          <img src={usdc} alt='usdc' width={18} height={18} />
           <span>{formatNumber(availableClaimAmount)}</span>
         </span>
       </LeftContent>

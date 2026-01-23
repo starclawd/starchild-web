@@ -1,9 +1,8 @@
 import { memo } from 'react'
 import BottomSheet from 'components/BottomSheet'
 import { vm } from 'pages/helper'
-import MyAgent from 'components/Header/components/MenuContent/components/MyAgent'
-import Insights from 'components/Header/components/MenuContent/components/Insights'
-import ScrollPageContent from 'components/ScrollPageContent'
+import MyAgent from 'pages/components/Header/components/MenuContent/components/MyAgent'
+import Insights from 'pages/components/Header/components/MenuContent/components/Insights'
 import { styled, useTheme } from 'styled-components'
 
 interface AgentListProps {
@@ -21,8 +20,14 @@ const Title = styled.div`
   text-align: center;
 `
 
-const ContentWrapper = styled(ScrollPageContent)`
-  padding: ${vm(12)};
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  padding: 12px;
 `
 
 const AgentList = memo(({ isOpen, onClose, type }: AgentListProps) => {

@@ -104,10 +104,6 @@ const Usdc = styled.div`
   top: 50%;
   height: 18px;
   transform: translateY(-50%);
-  img {
-    width: 18px;
-    height: 18px;
-  }
   span {
     font-size: 14px;
     font-style: normal;
@@ -651,7 +647,7 @@ const DepositAndWithdraw = memo(() => {
           <InputWrapper>
             <Input inputValue={amount} onChange={handleAmountChange} placeholder='0' />
             <Usdc>
-              {depositAndWithdrawTabIndex === 0 && <img src={usdc} alt='usdc' />}
+              {depositAndWithdrawTabIndex === 0 && <img src={usdc} alt='usdc' width={18} height={18} />}
               {depositAndWithdrawTabIndex === 0 ? <span>USDC</span> : <span>Shares</span>}
             </Usdc>
           </InputWrapper>

@@ -1,7 +1,6 @@
 import styled, { css } from 'styled-components'
 import { memo, useEffect, useCallback, useRef } from 'react'
 import { vm } from 'pages/helper'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { AGENT_HUB_TYPE } from 'constants/agentHub'
 import {
   useGetAgentInfoList,
@@ -51,7 +50,7 @@ interface AgentTableListPageProps {
 }
 
 export default memo(function AgentTableListPage({ initialTag, filterType }: AgentTableListPageProps) {
-  const agentHubPageWrapperRef = useScrollbarClass<HTMLDivElement>()
+  const agentHubPageWrapperRef = useRef<HTMLDivElement>(null)
   const isInitializedRef = useRef(false)
   const [isLoading] = useIsLoading()
   const [agentInfoList, agentInfoListTotal, agentInfoListPage, agentInfoListPageSize] = useAgentInfoList()
@@ -105,7 +104,7 @@ export default memo(function AgentTableListPage({ initialTag, filterType }: Agen
   }, [isLoadMoreLoading, hasLoadMore, currentPage, currentPageSize, getAgentInfoList, initialTag, filterType])
 
   return (
-    <AgentHubPageWrapper ref={agentHubPageWrapperRef as any} className='scroll-style'>
+    <AgentHubPageWrapper ref={agentHubPageWrapperRef} className='scroll-style'>
       <Content>
         <AgentTable
           agents={currentAgentsList}

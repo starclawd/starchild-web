@@ -41,7 +41,7 @@ export default function LatestDeposit({ latestTransaction }: { latestTransaction
           )}
         </Status>
         <Amount>
-          <img src={usdc} alt='usdc' />
+          <img src={usdc} alt='usdc' width={16} height={16} />
           <span className='amount'>{latestTransaction?.amount_change}</span>
         </Amount>
       </DepositContent>

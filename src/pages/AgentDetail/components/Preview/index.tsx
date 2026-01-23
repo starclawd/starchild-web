@@ -1,7 +1,6 @@
 import { useIsBinanceSupport, useIsGeneratingCode, useIsRunningBacktestAgent } from 'store/agentdetail/hooks'
 import styled, { css } from 'styled-components'
 import CryptoChart from './components/CryptoChart'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import { useMemo, useRef, useEffect, useCallback } from 'react'
 import DataList from './components/DataList'
 import VolumeChart from './components/VolumeChart'
@@ -108,7 +107,7 @@ export default function Preview({
 }) {
   const { symbol, status, error_msg } = backtestData
   const isMobile = useIsMobile()
-  const previewWrapperRef = useScrollbarClass<HTMLDivElement>()
+  const previewWrapperRef = useRef<HTMLDivElement>(null)
   const cryptoChartRef = useRef<CryptoChartRef>(null!)
   const isRunningBacktestAgent = useIsRunningBacktestAgent(agentDetailData, backtestData)
   const isGeneratingCode = useIsGeneratingCode(agentDetailData)

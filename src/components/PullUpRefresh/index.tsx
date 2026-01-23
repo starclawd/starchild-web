@@ -4,7 +4,6 @@
  * 提供流畅的上拉动画和加载状态展示
  */
 import styled, { css } from 'styled-components'
-import { Trans } from '@lingui/react/macro'
 import {
   Dispatch,
   memo,
@@ -16,9 +15,7 @@ import {
   useRef,
   useState,
 } from 'react'
-import { ANI_DURATION } from 'constants/index'
 import usePrevious from 'hooks/usePrevious'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import Pending from 'components/Pending'
 import { vm } from 'pages/helper'
 import { useIsMobile } from 'store/application/hooks'
@@ -135,7 +132,7 @@ export default memo(function PullUpRefresh({
   const childrenWrapperEl = useRef<HTMLDivElement>(null)
   const pullUpAreaEl = useRef<HTMLDivElement>(null)
   const pullUpWrapperEl = useRef<HTMLDivElement>(null)
-  const contentWrapperEl = useScrollbarClass<HTMLDivElement>()
+  const contentWrapperEl = useRef<HTMLDivElement>(null)
   const contentScrollTopRef = useRef(0)
   const previousYRef = useRef(0)
   const startYRef = useRef(0)

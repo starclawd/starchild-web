@@ -4,14 +4,10 @@
  * 记录错误并显示降级UI界面
  * 防止整个应用因组件错误而崩溃
  */
-import React, { ReactNode, useCallback, useEffect } from 'react'
-import styled, { css } from 'styled-components'
-import { ROUTER } from 'pages/router'
-import { useIsMobile } from 'store/application/hooks'
-import { useIsDarkMode } from 'store/themecache/hooks'
+import React, { ReactNode, useCallback } from 'react'
+import styled from 'styled-components'
 import { Trans } from '@lingui/react/macro'
 import { ButtonCommon } from 'components/Button'
-import { useScrollbarClass } from 'hooks/useScrollbarClass'
 import useParsedQueryString from 'hooks/useParsedQueryString'
 
 /**
@@ -101,9 +97,6 @@ const ButtonBack = styled(ButtonCommon)`
  * 支持移动端和桌面端不同布局
  */
 function ErrorCom({ error }: { error: Error }) {
-  const isMobile = useIsMobile()
-  const isDark = useIsDarkMode()
-  const scrollRef = useScrollbarClass<HTMLDivElement>()
   const { agentId } = useParsedQueryString()
 
   /**
@@ -117,7 +110,7 @@ function ErrorCom({ error }: { error: Error }) {
   return (
     <FallbackWrapper>
       <BodyWrapper>
-        <SuspendedWrapper ref={scrollRef} className='scroll-style'>
+        <SuspendedWrapper className='scroll-style'>
           <TiTle>
             <Trans>Oops! Something went wrong!</Trans>
           </TiTle>

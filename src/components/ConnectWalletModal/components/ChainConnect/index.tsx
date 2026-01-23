@@ -84,12 +84,6 @@ const ButtonIcon = styled.div`
   align-items: center;
   justify-content: center;
 
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-
   ${({ theme }) =>
     theme.isMobile &&
     `
@@ -544,7 +538,7 @@ export default memo(function ChainConnect({ className, oldWalletAddress, onSucce
                   $disabled={getIsDisabled(wallet.chainType)}
                 >
                   <ButtonIcon>
-                    <img src={wallet.icon} alt={wallet.name} />
+                    <img src={wallet.icon} alt={wallet.name} width={18} height={18} />
                   </ButtonIcon>
                   <ButtonText>{wallet.name}</ButtonText>
                 </ConnectButton>

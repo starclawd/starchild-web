@@ -1,7 +1,6 @@
 import { memo, useState, useEffect, useCallback } from 'react'
 import styled, { css, keyframes } from 'styled-components'
 import Pending from 'components/Pending'
-import ScrollPageContent from 'components/ScrollPageContent'
 import PullUpRefresh from 'components/PullUpRefresh'
 import { vm } from 'pages/helper'
 import { Plural } from '@lingui/react/macro'
@@ -22,15 +21,21 @@ const SignalsPageWrapper = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
-  .signals-page-content {
-    padding-top: 0;
-  }
-
   ${({ theme }) =>
     theme.isMobile &&
     css`
       overflow-y: auto;
     `}
+`
+
+const ScrollPageContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  padding: 0 20px 20px;
 `
 
 // 从页面中间上方滑入的动画
@@ -202,7 +207,7 @@ function SystemSignalOverview() {
         </NotificationButton>
       )}
 
-      <ScrollPageContent className='signals-page-content'>
+      <ScrollPageContent className='scroll-style'>
         <PullUpRefresh
           onRefresh={handleLoadMore}
           isRefreshing={isRefreshing}

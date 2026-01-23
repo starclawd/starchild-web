@@ -6,7 +6,7 @@ import Pending from 'components/Pending'
 import { useVaultPositions } from 'store/vaultsdetail/hooks'
 import { VaultPosition } from 'api/vaults'
 import { formatNumber } from 'utils/format'
-import { toFix, toPrecision } from 'utils/calc'
+import { toFix } from 'utils/calc'
 import { useStrategyPositions } from 'store/vaultsdetail/hooks/useStrategyPositions'
 import NoData from 'components/NoData'
 import { useSort, useSortableHeader, SortDirection } from 'components/TableSortableColumn'
@@ -14,6 +14,7 @@ import { VaultPositionsOrdersProps } from '../..'
 import { DETAIL_TYPE } from 'store/vaultsdetail/vaultsdetail'
 import { StyledTable, LoadingWrapper } from '../../styles'
 import { useSymbolPrecision } from 'store/vaults/hooks'
+import LazyImage from 'components/LazyImage'
 
 // Symbol 显示组件
 const SymbolCell = styled.div`
@@ -26,14 +27,6 @@ const SymbolContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-`
-
-const SymbolLogo = styled.img`
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-right: 4px;
 `
 
 const PositionSideBar = styled.div<{ $isLong: boolean }>`
@@ -60,13 +53,7 @@ const SymbolDisplay = memo<SymbolDisplayProps>(({ displaySymbol, token, logoUrl,
 
   return (
     <SymbolContainer>
-      <SymbolLogo
-        src={logoUrl}
-        alt={token}
-        onError={(e) => {
-          e.currentTarget.style.display = 'none'
-        }}
-      />
+      <LazyImage rootMargin='0 4px 0 0' src={logoUrl} alt={token} width='24px' height='24px' borderRadius='50%' />
       {positionSide && <PositionSideBar $isLong={isLong} />}
       <SymbolText $isLong={isLong}>{displaySymbol}</SymbolText>
     </SymbolContainer>
@@ -121,7 +108,7 @@ const VaultPositions = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, st
   // 获取positions数据
   const { positions: vaultPositions, isLoading: isLoadingPositions } = useVaultPositions(vaultId || '')
   const { positions: strategyPositions, isLoading: isLoadingStrategyPositions } = useStrategyPositions(strategyId || '')
-  const { formatPrice, getPricePrecision } = useSymbolPrecision()
+  const { formatPrice } = useSymbolPrecision()
 
   const rawPositions = useMemo(() => {
     return activeTab === DETAIL_TYPE.VAULT ? vaultPositions : strategyPositions
