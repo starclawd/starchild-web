@@ -16,8 +16,8 @@ import {
 } from 'chart.js'
 import 'chartjs-adapter-date-fns'
 import Pending from 'components/Pending'
-import { PerformanceChartProps, ChartMode } from 'components/PerformanceChart/types'
 import { useLeaderboardBalanceUpdates } from 'store/vaults/hooks'
+import { ChartMode, PerformanceChartProps } from './types'
 
 // 注册 Chart.js 组件
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ChartTitle, Tooltip, Legend, Filler, TimeScale)

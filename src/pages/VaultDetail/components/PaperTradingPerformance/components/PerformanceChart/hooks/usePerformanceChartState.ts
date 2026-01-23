@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { CHART_TYPE, CHAT_TIME_RANGE } from 'store/vaultsdetail/vaultsdetail'
-import { PerformanceChartState, ChartMode } from 'components/PerformanceChart/types'
+import { PerformanceChartState, ChartMode } from '../types'
 
 // 导入各模块的状态管理hooks
 import { useChartType as useMyVaultChartType } from 'store/myvault/hooks/useChartType'

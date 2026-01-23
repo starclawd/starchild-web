@@ -1,6 +1,4 @@
 import { memo } from 'react'
-import PerformanceChart from 'components/PerformanceChart'
-import { usePerformanceChartState } from 'components/PerformanceChart/hooks/usePerformanceChartState'
 import {
   useMyStrategyChartOptions,
   createEmptyStrategyChartData,
@@ -10,6 +8,8 @@ import useMyStrategyPerformanceChart from 'store/mystrategy/hooks/useMyStrategyP
 import { useUserInfo } from 'store/login/hooks'
 import styled, { useTheme } from 'styled-components'
 import TimeRangeSelector from 'pages/VaultDetail/components/PaperTradingPerformance/components/TimeRangeSelector'
+import { usePerformanceChartState } from 'pages/VaultDetail/components/PaperTradingPerformance/components/PerformanceChart/hooks/usePerformanceChartState'
+import PerformanceChart from 'pages/VaultDetail/components/PaperTradingPerformance/components/PerformanceChart'
 
 const MyPerformanceWrapper = styled.div`
   display: flex;

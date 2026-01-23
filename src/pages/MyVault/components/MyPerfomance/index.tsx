@@ -1,7 +1,5 @@
 import styled from 'styled-components'
 import { memo } from 'react'
-import PerformanceChart from 'components/PerformanceChart'
-import { usePerformanceChartState } from 'components/PerformanceChart/hooks/usePerformanceChartState'
 import {
   useVaultDetailChartOptions,
   createEmptyVaultChartData,
@@ -12,6 +10,8 @@ import { useTheme } from 'styled-components'
 import useMyPerformanceChart from 'store/myvault/hooks/useMyPerformanceChart'
 import { useAppKitAccount } from '@reown/appkit/react'
 import TimeRangeSelector from 'pages/VaultDetail/components/PaperTradingPerformance/components/TimeRangeSelector'
+import { usePerformanceChartState } from 'pages/VaultDetail/components/PaperTradingPerformance/components/PerformanceChart/hooks/usePerformanceChartState'
+import PerformanceChart from 'pages/VaultDetail/components/PaperTradingPerformance/components/PerformanceChart'
 
 const MyPerformanceWrapper = styled.div`
   display: flex;

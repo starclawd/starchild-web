@@ -5,7 +5,6 @@ import { formatNumber, formatKMBNumber, formatPercent, getStatValueColor } from 
 import { useStrategyPerformance } from 'store/vaultsdetail/hooks/useStrategyPerformance'
 import { CHAT_TIME_RANGE } from 'store/vaultsdetail/vaultsdetail.d'
 import { toFix } from 'utils/calc'
-import { t } from '@lingui/core/macro'
 import { isMatchCurrentRouter } from 'utils'
 import { useCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { CHAT_TIME_RANGE } from 'store/vaultsdetail/vaultsdetail'
-import { ChartState } from 'components/PerformanceChart/types'
+import { ChartState } from '../types'
 
 // 通用的图表状态管理hook
 // chartType由各自的模块管理，这里只管理timeRange

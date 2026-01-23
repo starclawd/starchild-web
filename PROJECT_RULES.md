@@ -251,6 +251,28 @@ export interface RootState {
 - 使用 theme 变量（如 `${({ theme }) => theme.black0}`）
 - 使用 theme media queries 做响应式（如 `theme.mediaMaxWidth.width1440`）
 
+### Images
+
+- **远程图片**：必须使用 `LazyImage` 组件（支持懒加载、错误处理、骨架屏）
+- **本地图片**：使用原生 `<img>` 标签即可
+
+```typescript
+// ✅ 远程图片 - 使用 LazyImage
+import LazyImage from 'components/LazyImage'
+
+<LazyImage 
+  src="https://example.com/image.png" 
+  width={100} 
+  height={100}
+  fallbackSrc={defaultImg}  // 可选：加载失败时显示的图片
+/>
+
+// ✅ 本地图片 - 使用原生 img
+import logo from 'assets/icons/logo.svg'
+
+<img src={logo} alt="Logo" />
+```
+
 ### Hooks & State
 
 - 使用 `store/` 中的自定义 hooks 进行状态管理

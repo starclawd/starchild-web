@@ -1,8 +1,8 @@
 import { memo } from 'react'
 import BottomSheet from 'components/BottomSheet'
 import { vm } from 'pages/helper'
-import MyAgent from 'components/Header/components/MenuContent/components/MyAgent'
-import Insights from 'components/Header/components/MenuContent/components/Insights'
+import MyAgent from 'pages/components/Header/components/MenuContent/components/MyAgent'
+import Insights from 'pages/components/Header/components/MenuContent/components/Insights'
 import { styled, useTheme } from 'styled-components'
 
 interface AgentListProps {
