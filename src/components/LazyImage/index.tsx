@@ -286,6 +286,7 @@ const LazyImage = memo(function LazyImage({
   const imageRef = useRef<HTMLImageElement | null>(null)
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const retryTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const prevSrcRef = useRef<string | undefined>(undefined)
 
   // 计算 rootMargin，确保格式正确
   const computedRootMargin = useMemo(() => {
@@ -348,6 +349,18 @@ const LazyImage = memo(function LazyImage({
     }
     onError?.(new Error('Image failed to load'))
   }, [fallbackSrc, imageSrc, onError, clearTimeouts, currentRetry, retryCount, retryDelay, src])
+
+  // 当 src 改变时，重置状态以重新加载新图片
+  useEffect(() => {
+    if (prevSrcRef.current !== undefined && prevSrcRef.current !== src) {
+      setIsLoaded(false)
+      setIsError(false)
+      setCurrentRetry(0)
+      setShowLowQuality(false)
+      setImageSrc(undefined)
+    }
+    prevSrcRef.current = src
+  }, [src])
 
   // 加载低质量占位图
   useEffect(() => {
