@@ -210,7 +210,7 @@ export default memo(function StrategyInfo() {
               description={
                 <Trans>Once generated, you can Simulation with virtual funds or deploy with real funds.</Trans>
               }
-              clickCallback={() => handleGenerateCode(1)}
+              clickCallback={() => handleGenerateCode()}
             />
           )}
           {isShowPaperTradingOperation && isLogin && (
@@ -219,7 +219,7 @@ export default memo(function StrategyInfo() {
               iconCls='icon-paper-trading'
               title={<Trans>Run Paper Trading</Trans>}
               description={<Trans>Simulation in real-time with virtual funds.</Trans>}
-              clickCallback={handleStartPaperTrading}
+              clickCallback={() => handleStartPaperTrading()}
             />
           )}
           {isShowLaunchOperation && isLogin && (

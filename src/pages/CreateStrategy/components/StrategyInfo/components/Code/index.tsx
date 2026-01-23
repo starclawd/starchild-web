@@ -23,6 +23,7 @@ import { ANI_DURATION } from 'constants/index'
 import MoveTabList, { MoveType } from 'components/MoveTabList'
 import { useWindowSize } from 'hooks/useWindowSize'
 import { MEDIA_WIDTHS } from 'theme/styled'
+import { t } from '@lingui/core/macro'
 
 // 打字机效果的速度（每个字符的间隔时间，单位毫秒）
 const TYPEWRITER_SPEED = 17
@@ -467,7 +468,7 @@ export default memo(function Code() {
           )}
         </Left>
         <OperatorWrapper>
-          <RegenerateButton $disabled={isGeneratingCodeFrontend} onClick={() => handleGenerateCode(2)}>
+          <RegenerateButton $disabled={isGeneratingCodeFrontend} onClick={() => handleGenerateCode(t`Regenerate Code`)}>
             <IconBase className='icon-arrow-loading' />
             {isShowText && <Trans>Regenerate</Trans>}
           </RegenerateButton>

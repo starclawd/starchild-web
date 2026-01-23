@@ -46,28 +46,25 @@ const Left = styled.div`
 export default memo(function Action({ action }: { action: SuggestedActionsDataType }) {
   const handleGenerateCode = useHandleGenerateCode()
   const handleStartPaperTrading = useHandleStartPaperTrading()
-  const iconMap: Partial<Record<ACTION_TYPE, { icon: string; label: React.ReactNode }>> = useMemo(() => {
+  const iconMap: Partial<Record<ACTION_TYPE, { icon: string }>> = useMemo(() => {
     return {
       [ACTION_TYPE.GENERATE_CODE]: {
         icon: 'icon-generate-code',
-        label: <Trans>Generate Code</Trans>,
       },
       [ACTION_TYPE.START_PAPER_TRADING]: {
         icon: 'icon-paper-trading',
-        label: <Trans>Paper trading</Trans>,
       },
       [ACTION_TYPE.DEPLOY_LIVE]: {
         icon: 'icon-launch',
-        label: <Trans>Launch</Trans>,
       },
     }
   }, [])
   const clickCallback = useCallback(() => {
-    const { action_type } = action
+    const { action_type, label } = action
     if (action_type === ACTION_TYPE.GENERATE_CODE) {
-      handleGenerateCode()
+      handleGenerateCode(label)
     } else if (action_type === ACTION_TYPE.START_PAPER_TRADING) {
-      handleStartPaperTrading()
+      handleStartPaperTrading(label)
     } else if (action_type === ACTION_TYPE.DEPLOY_LIVE) {
       console.log('deploy')
     }
@@ -76,7 +73,7 @@ export default memo(function Action({ action }: { action: SuggestedActionsDataTy
     <ActionWrapper onClick={clickCallback}>
       <Left>
         <IconBase className={iconMap[action.action_type]?.icon} />
-        <span>{iconMap[action.action_type]?.label}</span>
+        <span>{action.label}</span>
       </Left>
       <IconBase className='icon-arrow' />
     </ActionWrapper>

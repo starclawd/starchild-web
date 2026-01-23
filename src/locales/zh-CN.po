@@ -463,7 +463,7 @@ msgstr "名称"
 msgid "Please generate valid code (Step 2) before starting Paper Trading."
 msgstr "请先在第2步生成有效代码后再开始模拟交易。"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:472
+#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:473
 msgid "Regenerate"
 msgstr "重新生成"
 
@@ -705,15 +705,15 @@ msgid "Web3 Events"
 msgstr "Web3 活动"
 
 #: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:306
-msgid "Turn your idea into live strategy. e.g., Buy ETH when RSI < 30 on 15m chart."
-msgstr "将你的想法变成实时策略。例如：15分钟RSI小于30买入ETH。"
+#~ msgid "Turn your idea into live strategy. e.g., Buy ETH when RSI < 30 on 15m chart."
+#~ msgstr "将你的想法变成实时策略。例如：15分钟RSI小于30买入ETH。"
 
 #: src/components/Select/index.tsx:431
 msgid "Search"
 msgstr "搜索"
 
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/components/UnLogin/index.tsx:38
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:288
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:394
 msgid "Log in to view AI responses"
 msgstr "登录后查看AI回复"
 
@@ -724,6 +724,10 @@ msgstr "缩放"
 #: src/pages/MyPortfolio/components/MyStrategies/components/DeleteStrategyModal/index.tsx:153
 msgid "Strategy deleted"
 msgstr "策略已删除"
+
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:28
+msgid "Turn your idea into live strategy. e.g., \"Everything is dumped too hard. It's time for a mean reversion bounce.\""
+msgstr "把你的想法变成实盘策略。例如：“跌得太狠了，是时候来一次均值回归反弹。”"
 
 #: src/pages/Mobile/MobileChat/components/Chat/index.tsx:62
 msgid "Chat"
@@ -926,7 +930,7 @@ msgstr "抄底还是追顶？告诉我！"
 msgid "Documents"
 msgstr "文档"
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:237
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:343
 msgid "Slot limit reached ({strategy_count}/{strategy_limit})! Boost your current strategy's APR to unlock more slots."
 msgstr "策略个数已满({strategy_count}/{strategy_limit})！请先提升现有策略表现以提高个数上限。"
 
@@ -962,7 +966,7 @@ msgstr "最近有哪些最新、最受关注的代币上市？"
 #~ msgid "Base address"
 #~ msgstr "基准地址"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:225
+#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:226
 #: src/pages/AgentDetail/components/Code/index.tsx:268
 #: src/pages/AgentDetail/components/Code/index.tsx:281
 msgid "Code"
@@ -1106,6 +1110,10 @@ msgstr "策略无法暂停，请重试。"
 msgid "Vault process"
 msgstr "金库流程"
 
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:26
+msgid "Turn your idea into live strategy. e.g., \"I have 1,000 USDC. Grow it safely while I sleep. No degen stuff.\""
+msgstr "把你的想法变成实盘策略。例如：\"我有 1,000 USDC。请帮我安全增值，我睡觉时也能赚钱，不要冒险。\""
+
 #: src/components/Header/components/AccountManege/components/userInfo/index.tsx:237
 msgid "User ID"
 msgstr "用户 ID"
@@ -1171,7 +1179,7 @@ msgstr "删除策略"
 msgid "Click + to add"
 msgstr "点击 + 添加"
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:236
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:342
 msgid "Create strategy failed"
 msgstr "创建策略失败"
 
@@ -1709,7 +1717,7 @@ msgstr "我的金库组合"
 msgid "Created time"
 msgstr "创建时间"
 
-#: src/store/createstrategy/hooks/useCode.ts:109
+#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:471
 msgid "Regenerate Code"
 msgstr "重新生成代码"
 
@@ -1871,7 +1879,7 @@ msgstr "我的信号"
 msgid "Withdraw in progress"
 msgstr "提现进行中"
 
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:307
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:414
 msgid "Refine logic, check paper trade, or launch to earn..."
 msgstr "优化策略逻辑，检查模拟交易或上线赚收益..."
 
@@ -2244,7 +2252,6 @@ msgstr "您可以在聊天中描述任务，Starchild 将自动为您创建它�
 
 #: src/pages/MyPortfolio/components/MyStrategies/index.tsx:305
 #: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:132
-#: src/pages/CreateStrategy/components/Chat/components/Action/index.tsx:61
 msgid "Launch"
 msgstr "上线"
 
@@ -2393,7 +2400,6 @@ msgstr "{buttonText}"
 #: src/store/createstrategy/hooks/useCode.ts:109
 #: src/pages/CreateStrategy/components/StrategyInfo/index.tsx:209
 #: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:101
-#: src/pages/CreateStrategy/components/Chat/components/Action/index.tsx:53
 msgid "Generate Code"
 msgstr "生成代码"
 
@@ -2651,7 +2657,7 @@ msgstr "部署失败"
 msgid "Recent Chats"
 msgstr "最近的聊天"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:465
+#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:466
 msgid "Your intuition has been translated into code. The matrix is ready. "
 msgstr "你的直觉已经被翻译为代码，matrix已就绪。"
 
@@ -2704,7 +2710,7 @@ msgid "Signals"
 msgstr "信号"
 
 #: src/pages/Vaults/components/VaultsWalletConnect/components/OperationSelector/index.tsx:173
-#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:476
+#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:477
 #: src/pages/AgentDetail/components/Code/index.tsx:481
 #: src/pages/AgentDetail/components/ChatHistory/components/HistoryContent/index.tsx:176
 #: src/components/ShareModal/index.tsx:470
@@ -2993,6 +2999,10 @@ msgstr "下载"
 msgid "The strategy has been delisted."
 msgstr "该策略已下架。"
 
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:27
+msgid "Turn your idea into live strategy. e.g., \"I need to pay for my vacation next month. Give me a strategy with 20% upside.\""
+msgstr "把你的想法变成实盘策略。例如：“我下个月要去度假，需要支付费用。请给我一个有20%上涨空间的策略。”"
+
 #: src/pages/Insights/components/LiveChat/components/ChatDetail/index.tsx:87
 msgid "AI chat"
 msgstr "AI 聊天"
@@ -3233,7 +3243,7 @@ msgid "AI reasoning in progress"
 msgstr "AI推理中"
 
 #: src/pages/CreateStrategy/components/StrategyInfo/components/Summary/components/UnLogin/index.tsx:41
-#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:291
+#: src/pages/CreateStrategy/components/Chat/components/ChatInput/index.tsx:397
 #: src/pages/Chat/components/ChatInput/index.tsx:171
 msgid "Log in"
 msgstr "登录"
@@ -3561,7 +3571,6 @@ msgid "Available:"
 msgstr "可用："
 
 #: src/pages/CreateStrategy/components/StrategyInfo/components/TabList/index.tsx:118
-#: src/pages/CreateStrategy/components/Chat/components/Action/index.tsx:57
 msgid "Paper trading"
 msgstr "模拟交易"
 
@@ -3569,7 +3578,7 @@ msgstr "模拟交易"
 msgid "Ready to learn about you! Add some details to help me assist you better."
 msgstr "准备好了解你了！请补充一些信息，以便我更好地帮助你。"
 
-#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:231
+#: src/pages/CreateStrategy/components/StrategyInfo/components/Code/index.tsx:232
 msgid "Flow"
 msgstr "流程"
 

@@ -28,6 +28,9 @@ const AvatarWrapper = styled.div`
   line-height: 16px;
   color: ${({ theme }) => theme.black0};
   cursor: pointer;
+  border-radius: 4px;
+  transition: all ${ANI_DURATION}s;
+  background-color: transparent;
   .select-wrapper {
     height: 32px;
   }
@@ -40,6 +43,9 @@ const AvatarWrapper = styled.div`
     height: 20px;
     border-radius: 50%;
     object-fit: cover;
+  }
+  &:hover {
+    background-color: ${({ theme }) => theme.black700};
   }
 `
 
