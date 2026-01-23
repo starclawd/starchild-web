@@ -378,7 +378,7 @@ export function useSendChatUserContent() {
           ...(strategyId ? nextChatResponseContentList || chatResponseContentList : []),
           {
             id: `${nanoid()}`,
-            content: value,
+            content: strategyId ? value : `Create strategy: ${value}`,
             thinkingContent: '',
             role: ROLE_TYPE.USER,
             timestamp: new Date().getTime(),
