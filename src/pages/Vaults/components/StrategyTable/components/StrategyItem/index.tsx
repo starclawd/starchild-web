@@ -518,7 +518,7 @@ const StrategyItem = memo(({ record, roeRank, showActions }: StrategyItemProps) 
             $isPositive={record.roe != null && record.roe > 0}
             $isNegative={record.roe != null && record.roe < 0}
           >
-            {record.roe != null ? formatPercent({ value: record.roe }) : '--'}
+            {record.roe != null ? formatPercent({ value: record.roe }) : '0'}
             {shouldShowApr(record) && (
               <span
                 style={{ color: theme.green300 }}
@@ -528,7 +528,7 @@ const StrategyItem = memo(({ record, roeRank, showActions }: StrategyItemProps) 
         </TableCell>
         <TableCell>{Math.floor(record.age_days)}</TableCell>
         <TableCell>
-          <MaxDrawdownText>{formatPercent({ value: record.max_drawdown })}</MaxDrawdownText>
+          <MaxDrawdownText>{record.max_drawdown ? formatPercent({ value: record.max_drawdown }) : '0'}</MaxDrawdownText>
         </TableCell>
         <TableCell>
           <TvfText $isFollowed={isFollowed}>{tvf ? formatKMBNumber(tvf, 2, { showDollar: true }) : '0'}</TvfText>
