@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'icomoon';
   src:
-    url('fonts/icomoon.ttf?mkkvtzl8') format('truetype'),
-    url('fonts/icomoon.woff?mkkvtzl8') format('woff'),
-    url('fonts/icomoon.svg?mkkvtzl8#icomoon') format('svg');
+    url('fonts/icomoon.ttf?mknr1l8s') format('truetype'),
+    url('fonts/icomoon.woff?mknr1l8s') format('woff'),
+    url('fonts/icomoon.svg?mknr1l8s#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -189,6 +189,9 @@
 .icon-search:before {
   content: "\e935";
 }
+.icon-send:before {
+  content: "\f104";
+}
 .icon-share:before {
   content: "\e936";
 }
@@ -222,8 +225,14 @@
 .icon-tooltip-arrow:before {
   content: "\e940";
 }
+.icon-upload:before {
+  content: "\f102";
+}
 .icon-wallet:before {
   content: "\e941";
+}
+.icon-watchlist:before {
+  content: "\f103";
 }
 .icon-x:before {
   content: "\e942";

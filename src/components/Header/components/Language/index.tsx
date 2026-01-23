@@ -19,7 +19,7 @@ const LanguageWrapper = styled.div`
   height: 32px;
   cursor: pointer;
   .icon-menu-language {
-    font-size: 24px;
+    font-size: 16px;
     color: #d9d9d9;
   }
   .select-wrapper {
@@ -33,15 +33,6 @@ const LanguageWrapper = styled.div`
     border: none;
     background-color: transparent;
   }
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      width: ${vm(24)};
-      height: ${vm(24)};
-      .icon-menu-language {
-        font-size: 0.24rem;
-      }
-    `}
 `
 
 export default function Language() {
@@ -97,8 +88,8 @@ export default function Language() {
       <Select
         usePortal
         hideExpand
-        offsetLeft={8}
-        offsetTop={8}
+        offsetLeft={24}
+        offsetTop={-24}
         placement={isMobile ? 'top-start' : 'top-end'}
         value={activeLocale}
         dataList={languageList}

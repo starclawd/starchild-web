@@ -1,8 +1,7 @@
-import { memo, useCallback, useState } from 'react'
+import { memo, useCallback, useState, useMemo } from 'react'
 import styled, { css } from 'styled-components'
 import { useFollowStrategy, useUnfollowStrategy, useAllStrategiesOverview } from 'store/vaults/hooks'
-import { toFix } from 'utils/calc'
-import { formatKMBNumber } from 'utils/format'
+import { formatKMBNumber, formatPercent, shouldShowApr } from 'utils/format'
 import { useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import { ANI_DURATION } from 'constants/index'
@@ -12,11 +11,21 @@ import { StrategiesOverviewDataType } from 'api/strategy'
 import { useTheme } from 'store/themecache/hooks'
 import Snapshot from '../Snapshort'
 import { useIsLogin, useUserInfo } from 'store/login/hooks'
-import { useAllFollowedStrategiesOverview } from 'store/mystrategy/hooks'
+import { useAllFollowedStrategiesOverview, useMyStrategies } from 'store/mystrategy/hooks'
 import { Trans } from '@lingui/react/macro'
-import { ButtonCommon } from 'components/Button'
+import { ButtonCommon, ButtonBorder } from 'components/Button'
 import Tooltip from 'components/Tooltip'
 import Pending from 'components/Pending'
+import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy.d'
+import { useCurrentStrategyId, useRestartStrategy } from 'store/mystrategy/hooks/useMyStrategies'
+import {
+  useDeleteStrategyModalToggle,
+  useDelistStrategyModalToggle,
+  useDeployModalToggle,
+  usePauseStrategyModalToggle,
+} from 'store/application/hooks'
+import { useAppKitAccount } from '@reown/appkit/react'
+import { isPro } from 'utils/url'
 
 const StrategyTbody = styled.tbody`
   cursor: pointer;
@@ -91,8 +100,17 @@ const TagsCell = styled.td`
 `
 
 const PercentageText = styled.span<{ $isPositive?: boolean; $isNegative?: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: 4px;
   color: ${({ theme, $isPositive, $isNegative }) =>
     $isPositive ? theme.green100 : $isNegative ? theme.red100 : theme.black100};
+  span {
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 18px;
+  }
 `
 
 const MaxDrawdownText = styled.span`
@@ -221,12 +239,193 @@ const VibeWrapper = styled.div`
   }
 `
 
-interface StrategyItemProps {
-  record: StrategiesOverviewDataType
-  aprRank: number
+const ActionButtonsWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: flex-end;
+`
+
+const ButtonAction = styled(ButtonBorder)`
+  width: fit-content;
+  padding: 0 12px;
+  height: 24px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px;
+  border: 1px solid ${({ theme }) => theme.black600};
+`
+
+const ButtonPrimary = styled(ButtonCommon)`
+  width: fit-content;
+  padding: 0 12px;
+  height: 24px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px;
+  color: ${({ theme }) => theme.black1000};
+`
+
+const LaunchButton = styled(ButtonCommon)`
+  width: 52px;
+  height: 24px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 18px;
+`
+
+function ActionButtons({ strategy }: { strategy: StrategiesOverviewDataType }) {
+  const { status, strategy_id } = strategy
+  const { address } = useAppKitAccount()
+  const [isLoading, setIsLoading] = useState(false)
+  const { refetch: refetchMyStrategies } = useMyStrategies()
+  const [, setCurrentStrategyId] = useCurrentStrategyId()
+  const triggerRestartStrategy = useRestartStrategy()
+  const toggleDelistStrategyModal = useDelistStrategyModalToggle()
+  const toggleDeleteStrategyModal = useDeleteStrategyModalToggle()
+  const togglePauseStrategyModal = usePauseStrategyModalToggle()
+  const toggleDeployModal = useDeployModalToggle()
+  const setCurrentRouter = useSetCurrentRouter()
+
+  const isReleased = useMemo(() => {
+    return status === STRATEGY_STATUS.DEPLOYED || status === STRATEGY_STATUS.PAUSED
+  }, [status])
+  const isUnreleased = useMemo(() => {
+    return (
+      status === STRATEGY_STATUS.DRAFT ||
+      status === STRATEGY_STATUS.DRAFT_READY ||
+      status === STRATEGY_STATUS.DEPLOYING ||
+      status === STRATEGY_STATUS.PAPER_TRADING
+    )
+  }, [status])
+  const isDraftReady = useMemo(() => {
+    return status === STRATEGY_STATUS.PAPER_TRADING
+  }, [status])
+  const isDelisted = useMemo(() => {
+    return status === STRATEGY_STATUS.DELISTED || status === STRATEGY_STATUS.ARCHIVED
+  }, [status])
+
+  const handleEdit = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation()
+      setCurrentRouter(`${ROUTER.CREATE_STRATEGY}?strategyId=${strategy_id}`)
+    },
+    [strategy_id, setCurrentRouter],
+  )
+
+  const handleDelist = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation()
+      setCurrentStrategyId(strategy_id)
+      toggleDelistStrategyModal()
+    },
+    [toggleDelistStrategyModal, setCurrentStrategyId, strategy_id],
+  )
+
+  const handlePause = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation()
+      setCurrentStrategyId(strategy_id)
+      togglePauseStrategyModal()
+    },
+    [togglePauseStrategyModal, setCurrentStrategyId, strategy_id],
+  )
+
+  const handleDelete = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation()
+      setCurrentStrategyId(strategy_id)
+      toggleDeleteStrategyModal()
+    },
+    [toggleDeleteStrategyModal, setCurrentStrategyId, strategy_id],
+  )
+
+  const handleDeploy = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation()
+      toggleDeployModal(strategy_id)
+    },
+    [toggleDeployModal, strategy_id],
+  )
+
+  const handleRestart = useCallback(
+    async (e: React.MouseEvent) => {
+      e.stopPropagation()
+      if (isLoading) return
+      try {
+        if (address && strategy_id) {
+          setIsLoading(true)
+          const data = await triggerRestartStrategy({ strategyId: strategy_id, walletId: address })
+          if ((data as any)?.data?.status === 'success') {
+            await refetchMyStrategies()
+          }
+          setIsLoading(false)
+          return data
+        }
+      } catch (error) {
+        setIsLoading(false)
+        return error
+      }
+    },
+    [strategy_id, address, refetchMyStrategies, triggerRestartStrategy, isLoading],
+  )
+
+  if (isReleased) {
+    return (
+      <ActionButtonsWrapper>
+        <ButtonAction onClick={handleEdit}>
+          <Trans>Edit</Trans>
+        </ButtonAction>
+        <ButtonAction onClick={handleDelist}>
+          <Trans>Delist</Trans>
+        </ButtonAction>
+        {status === STRATEGY_STATUS.DEPLOYED ? (
+          <ButtonAction onClick={handlePause}>
+            <Trans>Pause</Trans>
+          </ButtonAction>
+        ) : (
+          <ButtonPrimary onClick={handleRestart}>{isLoading ? <Pending /> : <Trans>Restart</Trans>}</ButtonPrimary>
+        )}
+      </ActionButtonsWrapper>
+    )
+  } else if (isUnreleased) {
+    return (
+      <ActionButtonsWrapper>
+        <ButtonAction onClick={handleEdit}>
+          <Trans>Edit</Trans>
+        </ButtonAction>
+        <ButtonAction onClick={handleDelete}>
+          <Trans>Delete</Trans>
+        </ButtonAction>
+        {/* {isDraftReady && (
+          <LaunchButton onClick={handleDeploy}>
+            <Trans>Launch</Trans>
+          </LaunchButton>
+        )} */}
+      </ActionButtonsWrapper>
+    )
+  } else if (isDelisted) {
+    return (
+      <ActionButtonsWrapper>
+        <ButtonAction onClick={handleEdit}>
+          <Trans>Edit</Trans>
+        </ButtonAction>
+      </ActionButtonsWrapper>
+    )
+  }
+  return null
 }
 
-const StrategyItem = memo(({ record, aprRank }: StrategyItemProps) => {
+interface StrategyItemProps {
+  record: StrategiesOverviewDataType
+  roeRank: number
+  showActions?: boolean
+}
+
+const StrategyItem = memo(({ record, roeRank, showActions }: StrategyItemProps) => {
   const theme = useTheme()
   const isLogin = useIsLogin()
   const [{ userInfoId }] = useUserInfo()
@@ -235,6 +434,7 @@ const StrategyItem = memo(({ record, aprRank }: StrategyItemProps) => {
   const unfollowStrategy = useUnfollowStrategy()
   const { allFollowedStrategies, refetch: refetchAllFollowedStrategies } = useAllFollowedStrategiesOverview()
   const { refetch: refetchAllStrategies } = useAllStrategiesOverview()
+  const { refetch: refetchMyStrategies } = useMyStrategies()
   const setCurrentRouter = useSetCurrentRouter()
 
   // 计算派生数据
@@ -244,8 +444,8 @@ const StrategyItem = memo(({ record, aprRank }: StrategyItemProps) => {
   const followers = record.followers || 0
   const userName = record.user_info?.user_name || ''
   const columnCount = 9
-  // 根据 all_time_apr 倒序排名，前三名显示特殊样式
-  const showRank = aprRank >= 1 && aprRank <= 3
+  // 根据 roe 倒序排名，前三名显示特殊样式
+  const showRank = roeRank >= 1 && roeRank <= 3
   const isCurrentUser = record.user_info?.user_info_id === Number(userInfoId)
   const isFollowed = allFollowedStrategies.some((s) => s.strategy_id === record.strategy_id)
 
@@ -267,6 +467,7 @@ const StrategyItem = memo(({ record, aprRank }: StrategyItemProps) => {
         }
         await refetchAllStrategies()
         await refetchAllFollowedStrategies()
+        await refetchMyStrategies()
       } catch (err) {
         console.error('Follow strategy failed:', err)
       } finally {
@@ -280,22 +481,25 @@ const StrategyItem = memo(({ record, aprRank }: StrategyItemProps) => {
       record.strategy_id,
       unfollowStrategy,
       followStrategy,
+      refetchMyStrategies,
       refetchAllStrategies,
       refetchAllFollowedStrategies,
     ],
   )
 
-  // 格式化百分比显示
-  const formatPercent = (value: number) => {
-    const formatted = toFix(value * 100, 1)
-    return `${formatted}%`
-  }
-
   return (
     <StrategyTbody onClick={handleRowClick}>
       <DataRow>
         <TableCell>
-          {showRank ? <Rank type={RANK_TYPE.TABLE} rank={aprRank} /> : <NormalRank>{aprRank}</NormalRank>}
+          {roeRank > 0 ? (
+            showRank ? (
+              <Rank type={RANK_TYPE.TABLE} rank={roeRank} />
+            ) : (
+              <NormalRank>{roeRank}</NormalRank>
+            )
+          ) : (
+            <NormalRank>--</NormalRank>
+          )}
         </TableCell>
         <TableCell>
           <StrategyName>{record.strategy_name}</StrategyName>
@@ -305,21 +509,26 @@ const StrategyItem = memo(({ record, aprRank }: StrategyItemProps) => {
             <Avatar avatar={record.user_info?.user_avatar} name={userName} size={24} />
             <LeaderName>
               {userName}&nbsp;
-              <CurrentUser>{isCurrentUser ? `(you)` : ''}</CurrentUser>
+              <CurrentUser>{isCurrentUser && !showActions ? `(you)` : ''}</CurrentUser>
             </LeaderName>
           </LeaderWrapper>
         </TableCell>
         <TableCell>
           <PercentageText
-            $isPositive={record.all_time_apr != null && record.all_time_apr > 0}
-            $isNegative={record.all_time_apr != null && record.all_time_apr < 0}
+            $isPositive={record.roe != null && record.roe > 0}
+            $isNegative={record.roe != null && record.roe < 0}
           >
-            {record.all_time_apr != null ? formatPercent(record.all_time_apr) : '--'}
+            {record.roe != null ? formatPercent({ value: record.roe }) : '--'}
+            {shouldShowApr(record) && (
+              <span
+                style={{ color: theme.green300 }}
+              >{` (APR: ${formatPercent({ value: record.all_time_apr })})`}</span>
+            )}
           </PercentageText>
         </TableCell>
         <TableCell>{Math.floor(record.age_days)}</TableCell>
         <TableCell>
-          <MaxDrawdownText>{formatPercent(record.max_drawdown)}</MaxDrawdownText>
+          <MaxDrawdownText>{formatPercent({ value: record.max_drawdown })}</MaxDrawdownText>
         </TableCell>
         <TableCell>
           <TvfText $isFollowed={isFollowed}>{tvf ? formatKMBNumber(tvf, 2, { showDollar: true }) : '0'}</TvfText>
@@ -343,7 +552,7 @@ const StrategyItem = memo(({ record, aprRank }: StrategyItemProps) => {
           </FollowWrapper>
         </TableCell>
         <TableCell $align='right'>
-          <Snapshot data={record.s24h} />
+          {showActions ? <ActionButtons strategy={record} /> : <Snapshot data={record.s24h} />}
         </TableCell>
       </DataRow>
       <TagsRow>

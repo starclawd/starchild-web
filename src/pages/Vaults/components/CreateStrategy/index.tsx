@@ -54,6 +54,7 @@ const TopRight = styled.div`
   flex-direction: column;
   color: ${({ theme }) => theme.brand100};
   > span:first-child {
+    display: inline-block;
     height: 64px;
     text-align: right;
     span:first-child {

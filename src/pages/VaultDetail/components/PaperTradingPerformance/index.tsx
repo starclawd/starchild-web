@@ -132,7 +132,7 @@ const PaperTradingPerformance = memo<VaultPnLChartProps>(({ activeTab, vaultId, 
       {activeTab === DETAIL_TYPE.VAULT ? (
         <VaultChartStats chartTimeRange={chartState.timeRange} />
       ) : (
-        <StrategyChartStats strategyId={strategyId || ''} chartTimeRange={chartState.timeRange} />
+        <StrategyChartStats strategyId={strategyId} chartTimeRange={chartState.timeRange} />
       )}
       <AiAnalysis>
         <AiSummary />

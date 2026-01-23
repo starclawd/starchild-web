@@ -24,8 +24,8 @@ import { useIsShowStrategyMarket } from 'store/vaultsdetailcache/hooks'
 
 export interface VaultPositionsOrdersProps {
   activeTab: DETAIL_TYPE
-  vaultId: string
-  strategyId: string
+  vaultId: string | undefined
+  strategyId: string | undefined
 }
 
 const TableContainer = styled.div<{ $isShowStrategyMarket: boolean; $isVaultDetailPage?: boolean }>`
@@ -73,9 +73,9 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vault
   const [isShowStrategyMarket] = useIsShowStrategyMarket()
 
   // 获取数据统计信息用于显示Tab标题
-  const { totalCount: totalVaultPositions } = useVaultPositions(vaultId || '')
-  const { totalCount: totalVaultOrders } = useVaultOpenOrdersPaginated(vaultId || '')
-  const { totalCount: totalVaultHistory } = useVaultOrderHistoryPaginated(vaultId || '')
+  const { totalCount: totalVaultPositions } = useVaultPositions(vaultId)
+  const { totalCount: totalVaultOrders } = useVaultOpenOrdersPaginated(vaultId)
+  const { totalCount: totalVaultHistory } = useVaultOrderHistoryPaginated(vaultId)
   const { totalCount: totalStrategyPositions, refetch: refetchStrategyPositions } = useStrategyPositions(
     strategyId || '',
   )
@@ -153,14 +153,14 @@ const VaultPositionsOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vault
 
   return (
     <TableContainer $isShowStrategyMarket={isShowStrategyMarket} $isVaultDetailPage={isVaultDetailPage}>
-      <MoveTabList gap={20} moveType={MoveType.LINE} tabList={subTabList} tabKey={activeSubTab} />
+      <MoveTabList gap={20} tabList={subTabList} tabKey={activeSubTab} />
       <TableContent>
         {activeSubTab === 0 ? (
-          <VaultPositions activeTab={activeTab} vaultId={vaultId || ''} strategyId={strategyId || ''} />
+          <VaultPositions activeTab={activeTab} vaultId={vaultId} strategyId={strategyId} />
         ) : activeSubTab === 1 ? (
-          <VaultOpenOrders activeTab={activeTab} vaultId={vaultId || ''} strategyId={strategyId || ''} />
+          <VaultOpenOrders activeTab={activeTab} vaultId={vaultId} strategyId={strategyId} />
         ) : (
-          <VaultOrderHistory activeTab={activeTab} vaultId={vaultId || ''} strategyId={strategyId || ''} />
+          <VaultOrderHistory activeTab={activeTab} vaultId={vaultId} strategyId={strategyId} />
         )}
       </TableContent>
     </TableContainer>

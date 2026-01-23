@@ -1,6 +1,6 @@
 import { Trans } from '@lingui/react/macro'
 import { CommonModalHeader } from 'components/Modal'
-import MoveTabList, { MoveType } from 'components/MoveTabList'
+import MoveTabList from 'components/MoveTabList'
 import { vm } from 'pages/helper'
 import { useMemo } from 'react'
 import { useDepositAndWithdrawTabIndex } from 'store/vaultsdetail/hooks/useDepositAndWithdraw'
@@ -58,7 +58,7 @@ export default function Title({ depositDisabled }: { depositDisabled: boolean })
   }, [setDepositAndWithdrawTabIndex, depositDisabled])
   return (
     <TitleWrapper $depositDisabled={depositDisabled}>
-      <MoveTabList gap={20} tabKey={depositAndWithdrawTabIndex} moveType={MoveType.LINE} tabList={tabList} />
+      <MoveTabList gap={20} tabKey={depositAndWithdrawTabIndex} tabList={tabList} />
     </TitleWrapper>
   )
 }

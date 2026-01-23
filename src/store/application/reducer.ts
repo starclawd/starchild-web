@@ -12,6 +12,7 @@ export interface ApplicationState {
   isPopoverOpen: boolean
   bindWalletModalAddress: string | null
   deployStrategyId: string | null
+  avatarEditImageSrc: string | null
 }
 
 const initialState: ApplicationState = {
@@ -25,6 +26,7 @@ const initialState: ApplicationState = {
   isPopoverOpen: false,
   bindWalletModalAddress: null,
   deployStrategyId: null,
+  avatarEditImageSrc: null,
 }
 
 export const applicationSlice = createSlice({
@@ -61,6 +63,9 @@ export const applicationSlice = createSlice({
     setDeployStrategyId(state, action: PayloadAction<string | null>) {
       state.deployStrategyId = action.payload
     },
+    setAvatarEditImageSrc(state, action: PayloadAction<string | null>) {
+      state.avatarEditImageSrc = action.payload
+    },
   },
 })
 
@@ -75,6 +80,7 @@ export const {
   setIsPopoverOpen,
   setBindWalletModalAddress,
   setDeployStrategyId,
+  setAvatarEditImageSrc,
 } = applicationSlice.actions
 
 export default applicationSlice.reducer

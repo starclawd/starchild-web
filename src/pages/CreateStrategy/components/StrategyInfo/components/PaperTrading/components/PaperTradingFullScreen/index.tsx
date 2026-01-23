@@ -94,8 +94,8 @@ export default memo(function PaperTradingFullScreen() {
 
       <FullScreenContent>
         <LeftContent className='transparent-scroll-style'>
-          <PaperTradingPerformance activeTab={DETAIL_TYPE.STRATEGY} vaultId={''} strategyId={strategyId || ''} />
-          <VaultPositionsOrders activeTab={DETAIL_TYPE.STRATEGY} vaultId={''} strategyId={strategyId || ''} />
+          <PaperTradingPerformance activeTab={DETAIL_TYPE.STRATEGY} vaultId={''} strategyId={strategyId} />
+          <VaultPositionsOrders activeTab={DETAIL_TYPE.STRATEGY} vaultId={''} strategyId={strategyId} />
         </LeftContent>
 
         <RightContent>

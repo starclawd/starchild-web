@@ -242,6 +242,7 @@ export type StrategiesOverviewDataType = {
   followers: number
   tvf: number
   ai_summary: string
+  roe: number | null
   user_info: {
     user_avatar: string
     user_info_id: number
@@ -427,14 +428,14 @@ export const strategyApi = chatApi.injectEndpoints({
     // 获取所有策略概览
     getAllStrategiesOverview: builder.query<StrategiesOverviewResponse, void>({
       query: () => ({
-        url: '/api/v1/strategy/overview/all',
+        url: '/api/v1/strategy/overview/all?period=all',
         method: 'GET',
       }),
     }),
     // 获取所有策略概览
     getAllFollowedStrategiesOverview: builder.query<StrategiesOverviewResponse, void>({
       query: () => ({
-        url: '/api/v1/strategy/following',
+        url: '/api/v1/strategy/following?period=all',
         method: 'GET',
       }),
     }),
@@ -487,7 +488,7 @@ export const strategyApi = chatApi.injectEndpoints({
     // 获取所有策略概览
     getMyStrategies: builder.query<StrategiesOverviewResponse, void>({
       query: () => ({
-        url: '/api/v1/strategy/strategies',
+        url: '/api/v1/strategy/strategies?period=all',
         method: 'GET',
       }),
     }),

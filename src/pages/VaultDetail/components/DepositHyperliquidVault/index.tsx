@@ -14,7 +14,7 @@ import { parseUnits } from 'viem'
 import { signL1Action } from 'utils/hyperliquidSign'
 import { useLocalApproveWalletData } from 'store/vaultsdetailcache/hooks'
 import { hyperliquidChainId } from 'utils/url'
-import MoveTabList, { MoveType } from 'components/MoveTabList'
+import MoveTabList from 'components/MoveTabList'
 import Input from 'components/Input'
 import Pending from 'components/Pending'
 import useToast, { TOAST_STATUS } from 'components/Toast'
@@ -615,7 +615,7 @@ export default memo(function DepositHyperliquidVault({ vaultAddress, onClose }: 
   return (
     <DepositHyperliquidVaultWrapper>
       <TitleWrapper>
-        <MoveTabList tabKey={tabIndex} moveType={MoveType.LINE} tabList={tabList} />
+        <MoveTabList tabKey={tabIndex} tabList={tabList} />
       </TitleWrapper>
 
       <InputWrapper>

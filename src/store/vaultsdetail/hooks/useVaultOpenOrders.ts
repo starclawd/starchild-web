@@ -3,7 +3,7 @@ import { useLazyGetVaultOpenOrdersQuery, VaultOpenOrder } from 'api/vaults'
 
 // Vault Open Orders 服务端分页hook (专为Table组件设计)
 export function useVaultOpenOrdersPaginated(
-  vaultId: string,
+  vaultId: string | undefined,
   filters?: {
     symbol?: string
     side?: 'buy' | 'sell'
@@ -25,7 +25,7 @@ export function useVaultOpenOrdersPaginated(
     async (page: number, size: number) => {
       if (!vaultId) return
       await triggerGetVaultOpenOrders({
-        vault_id: vaultId,
+        vault_id: vaultId || '',
         page,
         size,
         symbol: filters?.symbol,

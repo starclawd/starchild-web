@@ -26,10 +26,10 @@ const VaultContent = memo(() => {
   return (
     <VaultContentContainer>
       {/* PnL图表区域 */}
-      <PaperTradingPerformance activeTab={activeTab} vaultId={currentVaultId || ''} strategyId={strategyId || ''} />
+      <PaperTradingPerformance activeTab={activeTab} vaultId={currentVaultId} strategyId={strategyId} />
 
       {/* Positions/Orders表格区域 */}
-      <VaultPositionsOrders activeTab={activeTab} vaultId={currentVaultId || ''} strategyId={strategyId || ''} />
+      <VaultPositionsOrders activeTab={activeTab} vaultId={currentVaultId} strategyId={strategyId} />
     </VaultContentContainer>
   )
 })

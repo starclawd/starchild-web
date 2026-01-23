@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useGetStrategyPerformanceQuery } from 'api/strategy'
 
-export const useStrategyPerformance = (strategyId: string, period: string) => {
+export const useStrategyPerformance = (strategyId: string | undefined, period: string) => {
   const [error, setError] = useState<string | null>(null)
 
   // 获取策略性能数据
@@ -12,7 +12,7 @@ export const useStrategyPerformance = (strategyId: string, period: string) => {
     refetch,
   } = useGetStrategyPerformanceQuery(
     {
-      strategy_id: strategyId,
+      strategy_id: strategyId || '',
       period: period === 'all_time' ? 'all' : period,
     },
     {

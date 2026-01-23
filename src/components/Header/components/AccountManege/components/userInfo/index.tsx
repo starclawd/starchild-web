@@ -1,34 +1,55 @@
 import { Trans } from '@lingui/react/macro'
 import Avatar from 'boring-avatars'
 import { vm } from 'pages/helper'
-import { useEditNicknameModalToggle } from 'store/application/hooks'
+import { useEditNicknameModalToggle, useOpenAvatarEditModal } from 'store/application/hooks'
 import { useUserInfo } from 'store/login/hooks'
 import styled, { css } from 'styled-components'
 import useCopyContent from 'hooks/useCopyContent'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
+import useToast, { TOAST_STATUS } from 'components/Toast'
+import { useTheme } from 'store/themecache/hooks'
 
 const UserInfoWrapper = styled.div`
   display: flex;
   align-items: center;
   height: 48px;
   gap: 12px;
+`
+
+const AvatarWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  cursor: pointer;
   .user-avatar {
     width: 40px;
     height: 40px;
     border-radius: 50%;
     object-fit: cover;
   }
-  ${({ theme }) =>
-    theme.isMobile &&
-    css`
-      gap: ${vm(12)};
-      .user-avatar {
-        width: ${vm(40)};
-        height: ${vm(40)};
-      }
-    `}
+  .icon-upload {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    color: ${({ theme }) => theme.black0};
+    transition: all ${ANI_DURATION}s;
+    opacity: 0;
+    z-index: 2;
+  }
+  &:hover {
+    .icon-upload {
+      opacity: 1;
+    }
+  }
 `
 
 const RightContent = styled.div`
@@ -124,23 +145,87 @@ const Primay = styled.div`
     `}
 `
 
+const HiddenInput = styled.input`
+  display: none;
+`
+
 export default function UserInfo() {
   const { copyRawContent } = useCopyContent()
   const [{ userName, userAvatar, userInfoId, primaryLoginType }] = useUserInfo()
   const toggleEditNicknameModal = useEditNicknameModalToggle()
+  const openAvatarEditModal = useOpenAvatarEditModal()
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const toast = useToast()
+  const theme = useTheme()
   const formatUserId = useMemo(() => {
     return userInfoId?.toString().padStart(8, '0')
   }, [userInfoId])
   const handleCopyUserId = useCallback(() => {
     copyRawContent(formatUserId)
   }, [copyRawContent, formatUserId])
+
+  const handleAvatarClick = useCallback(() => {
+    fileInputRef.current?.click()
+  }, [])
+
+  const handleFileSelect = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0]
+      if (file) {
+        // 验证文件类型（只支持 JPEG、PNG、WebP、GIF）
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+        if (!allowedTypes.includes(file.type)) {
+          toast({
+            title: <Trans>Unsupported image format</Trans>,
+            description: <Trans>Please use JPG, PNG, WebP or GIF</Trans>,
+            status: TOAST_STATUS.ERROR,
+            typeIcon: 'icon-account',
+            iconTheme: theme.black0,
+          })
+          e.target.value = ''
+          return
+        }
+        // 验证文件大小（最大 2MB）
+        if (file.size > 2 * 1024 * 1024) {
+          toast({
+            title: <Trans>File too large</Trans>,
+            description: <Trans>Image size cannot exceed 2MB</Trans>,
+            status: TOAST_STATUS.ERROR,
+            typeIcon: 'icon-account',
+            iconTheme: theme.black0,
+          })
+          e.target.value = ''
+          return
+        }
+        const reader = new FileReader()
+        reader.addEventListener('load', () => {
+          const imageSrc = reader.result as string
+          openAvatarEditModal(imageSrc)
+        })
+        reader.readAsDataURL(file)
+      }
+      // 重置 input 以便可以选择相同的文件
+      e.target.value = ''
+    },
+    [openAvatarEditModal, toast, theme.black0],
+  )
+
   return (
     <UserInfoWrapper>
-      {userAvatar ? (
-        <img className='user-avatar' src={userAvatar} alt='userAvatar' />
-      ) : (
-        <Avatar size={40} name={userName} />
-      )}
+      <AvatarWrapper onClick={handleAvatarClick}>
+        {userAvatar ? (
+          <img className='user-avatar' src={userAvatar} alt='userAvatar' />
+        ) : (
+          <Avatar size={40} name={userName} />
+        )}
+        <IconBase className='icon-upload' />
+      </AvatarWrapper>
+      <HiddenInput
+        ref={fileInputRef}
+        type='file'
+        accept='image/jpeg,image/png,image/webp,image/gif'
+        onChange={handleFileSelect}
+      />
       <RightContent>
         <UserName>
           <span>{userName}</span>

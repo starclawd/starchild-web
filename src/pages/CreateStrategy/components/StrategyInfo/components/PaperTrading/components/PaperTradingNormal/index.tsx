@@ -12,7 +12,7 @@ import VaultChatArea from 'pages/VaultDetail/components/VaultChatArea'
 import { useStrategyPositions } from 'store/vaultsdetail/hooks/useStrategyPositions'
 import { useStrategyOpenOrdersPaginated } from 'store/vaultsdetail/hooks/useStrategyOpenOrders'
 import { useStrategyOrderHistoryPaginated } from 'store/vaultsdetail/hooks/useStrategyOrderHistory'
-import MoveTabList, { MoveType } from 'components/MoveTabList'
+import MoveTabList from 'components/MoveTabList'
 import { DETAIL_TYPE } from 'store/vaultsdetail/vaultsdetail'
 import { PAPER_TRADING_TAB_KEY } from 'store/createstrategy/createstrategy'
 import { useWindowSize } from 'hooks/useWindowSize'
@@ -72,9 +72,9 @@ export default memo(function PaperTradingTabs() {
   }, [isShowExpandPaperTrading, width])
 
   // 获取数据统计信息用于显示Tab标题
-  const { totalCount: totalStrategyPositions } = useStrategyPositions(strategyId || '')
-  const { totalCount: totalStrategyOrders } = useStrategyOpenOrdersPaginated(strategyId || '')
-  const { totalCount: totalStrategyHistory } = useStrategyOrderHistoryPaginated(strategyId || '')
+  const { totalCount: totalStrategyPositions } = useStrategyPositions(strategyId)
+  const { totalCount: totalStrategyOrders } = useStrategyOpenOrdersPaginated(strategyId)
+  const { totalCount: totalStrategyHistory } = useStrategyOrderHistoryPaginated(strategyId)
 
   const handleTabClick = useCallback((key: PAPER_TRADING_TAB_KEY) => {
     setActiveTab(key)
@@ -87,7 +87,7 @@ export default memo(function PaperTradingTabs() {
         icon: isShowIcon ? <IconBase className='icon-performance' /> : null,
         text: <Trans>Performance</Trans>,
         clickCallback: () => handleTabClick(PAPER_TRADING_TAB_KEY.PERFORMANCE),
-        content: <PaperTradingPerformance activeTab={DETAIL_TYPE.STRATEGY} vaultId='' strategyId={strategyId || ''} />,
+        content: <PaperTradingPerformance activeTab={DETAIL_TYPE.STRATEGY} vaultId='' strategyId={strategyId} />,
       },
       {
         key: PAPER_TRADING_TAB_KEY.SIGNALS,
@@ -146,7 +146,7 @@ export default memo(function PaperTradingTabs() {
   return (
     <PaperTradingTabsWrapper>
       <Header>
-        <MoveTabList gap={20} moveType={MoveType.LINE} tabKey={activeTab} tabList={tabList} />
+        <MoveTabList gap={20} tabKey={activeTab} tabList={tabList} />
         <PaperTradingButtonWrapper />
       </Header>
       <TabContent className='scroll-style'>

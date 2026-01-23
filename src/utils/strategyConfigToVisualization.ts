@@ -31,8 +31,8 @@ interface IndicatorConfig {
  * 入场/退出条件的对象形式
  */
 interface ConditionConfig {
-  long?: Record<string, boolean | string>
-  short?: Record<string, boolean | string>
+  long?: Record<string, boolean | string> | string // 支持字符串条件表达式
+  short?: Record<string, boolean | string> | string // 支持字符串条件表达式
   condition?: string
   side?: string
   symbol?: string
@@ -63,6 +63,10 @@ interface PositionSizingConfig {
   sizing_method?: string
   risk_per_trade?: number | { min: number; max: number }
   base_currency?: string
+  // 新增字段支持 { base: "available_balance", type: "percentage", value: 100 }
+  base?: string
+  type?: string
+  value?: number
 }
 
 /**
@@ -111,7 +115,9 @@ export interface StrategyConfig {
     stop_loss?: string | StopConfig
     take_profit?: string | StopConfig
     hard_stop?: string[]
-    emergency_exit?: string | { action?: string; account_risk_threshold?: number } // 紧急退出条件
+    emergency_exit?:
+      | string
+      | { action?: string; account_risk_threshold?: number; account_drawdown?: number } // 紧急退出条件
     position_limits?: string | { no_hedging?: boolean; no_pyramiding?: boolean } // 仓位限制
     drawdown_priority?: string // 回撤优先级
     additional_risk?: string | string[] // 额外风险规则
@@ -120,6 +126,8 @@ export interface StrategyConfig {
     market_neutral?: string // 市场中性说明
     funding_rate_check?: string // 资金费率检查
     max_drawdown?: number // 最大回撤
+    max_positions?: number // 最大持仓数
+    max_account_risk?: number // 最大账户风险
     account_protection?: {
       max_account_risk?: number
       daily_loss_limit?: number
@@ -138,8 +146,8 @@ export interface StrategyConfig {
     entry_long?: string[] | ConditionConfig // 做多入场条件
     entry_short?: string[] | ConditionConfig // 做空入场条件
     hold_condition?: string | string[] | ConditionConfig // 持仓条件
-    exit_conditions?: string[] | Record<string, boolean>
-    entry_conditions?: string[] | ConditionConfig
+    exit_conditions?: string[] | Record<string, boolean | string> | ConditionConfig // 支持字符串条件
+    entry_conditions?: string[] | Record<string, boolean | string> | ConditionConfig // 支持字符串条件
     selection_logic?: string[] // 选币逻辑
     rebalance_trigger?: string[] // 再平衡触发
     accumulation_logic?: string // 累积逻辑
@@ -147,6 +155,7 @@ export interface StrategyConfig {
     position_management?: string[] // 仓位管理规则
     signal_strength?: string[] // 信号强度描述
     add_position_trigger?: string[] // 加仓触发条件
+    trading_symbol?: string // 交易币种
     filters?: {
       funding_rate_check?: boolean
       max_funding_rate?: number
@@ -163,6 +172,9 @@ export interface StrategyConfig {
     max_position?: string
     max_positions?: string | number // 最大持仓数量
     margin_type?: string // 保证金类型
+    margin_usage?: string // 保证金使用方式 (dynamic/fixed)
+    per_trade_risk?: number | string // 每交易风险百分比
+    total_allocation?: number | string // 总分配百分比
     multi_symbol_allocation?: string // 多币种分配
     max_total_exposure?: string // 最大总敞口
     initial_position_size?: string // 初始仓位
@@ -209,6 +221,8 @@ export interface StrategyConfig {
       stop_loss?: string
       take_profit?: string
     }
+    leverage?: string | number | Record<string, number> // 杠杆（可能按币种分配）
+    position_sizing?: string | PositionSizingConfig // 仓位大小配置
     description?: string
     slippage_tolerance?: string | number
     execution_timing?: string // 执行时机
@@ -392,34 +406,60 @@ export function strategyConfigToVisualization(config: StrategyConfig): ParsedStr
         })
       })
     } else if (typeof entryConditionsConfig === 'object') {
-      // 对象形式：{ long: {...}, short: {...} }
+      // 对象形式：{ long: {...} | string, short: {...} | string }
       const { long: longCond, short: shortCond } = entryConditionsConfig as ConditionConfig
       if (longCond) {
-        const conditions = extractConditionsFromObject(longCond)
-        if (conditions.length > 0) {
+        // 支持字符串形式的条件（如 "crossover(BTC_MA5, BTC_MA10)"）
+        if (typeof longCond === 'string') {
           entryConditions.push({
             id: 'entry-cond-long',
             type: 'condition' as const,
             direction: 'long',
             category: 'entry' as const,
-            triggerType: inferTriggerTypeFromConditions(conditions),
-            conditions,
-            description: conditions.join(' AND '),
+            triggerType: inferTriggerType(longCond),
+            conditions: [longCond],
+            description: longCond,
           })
+        } else {
+          const conditions = extractConditionsFromObject(longCond)
+          if (conditions.length > 0) {
+            entryConditions.push({
+              id: 'entry-cond-long',
+              type: 'condition' as const,
+              direction: 'long',
+              category: 'entry' as const,
+              triggerType: inferTriggerTypeFromConditions(conditions),
+              conditions,
+              description: conditions.join(' AND '),
+            })
+          }
         }
       }
       if (shortCond) {
-        const conditions = extractConditionsFromObject(shortCond)
-        if (conditions.length > 0) {
+        // 支持字符串形式的条件（如 "crossunder(BTC_MA5, BTC_MA10)"）
+        if (typeof shortCond === 'string') {
           entryConditions.push({
             id: 'entry-cond-short',
             type: 'condition' as const,
             direction: 'short',
             category: 'entry' as const,
-            triggerType: inferTriggerTypeFromConditions(conditions),
-            conditions,
-            description: conditions.join(' AND '),
+            triggerType: inferTriggerType(shortCond),
+            conditions: [shortCond],
+            description: shortCond,
           })
+        } else {
+          const conditions = extractConditionsFromObject(shortCond)
+          if (conditions.length > 0) {
+            entryConditions.push({
+              id: 'entry-cond-short',
+              type: 'condition' as const,
+              direction: 'short',
+              category: 'entry' as const,
+              triggerType: inferTriggerTypeFromConditions(conditions),
+              conditions,
+              description: conditions.join(' AND '),
+            })
+          }
         }
       }
     }
@@ -618,18 +658,46 @@ export function strategyConfigToVisualization(config: StrategyConfig): ParsedStr
         })
       })
     } else if (typeof exitConditionsConfig === 'object') {
-      // 对象形式：{ stop_loss_hit: true, take_profit_hit: true, opposite_signal: true }
-      const conditions = extractConditionsFromObject(exitConditionsConfig as Record<string, boolean | string>)
-      if (conditions.length > 0) {
-        exitConditions.push({
-          id: 'exit-cond-obj',
-          type: 'condition' as const,
-          direction: 'both',
-          category: 'exit' as const,
-          triggerType: inferTriggerTypeFromConditions(conditions),
-          conditions,
-          description: conditions.join(' OR '),
-        })
+      // 检查是否是 { long: string, short: string } 形式
+      const exitObj = exitConditionsConfig as Record<string, boolean | string>
+      if ('long' in exitObj || 'short' in exitObj) {
+        // { long: "crossunder(...)", short: "crossover(...)" } 形式
+        if (exitObj.long && typeof exitObj.long === 'string') {
+          exitConditions.push({
+            id: 'exit-cond-long',
+            type: 'condition' as const,
+            direction: 'long',
+            category: 'exit' as const,
+            triggerType: inferExitTriggerType(exitObj.long),
+            conditions: [exitObj.long],
+            description: `Exit Long: ${exitObj.long}`,
+          })
+        }
+        if (exitObj.short && typeof exitObj.short === 'string') {
+          exitConditions.push({
+            id: 'exit-cond-short',
+            type: 'condition' as const,
+            direction: 'short',
+            category: 'exit' as const,
+            triggerType: inferExitTriggerType(exitObj.short),
+            conditions: [exitObj.short],
+            description: `Exit Short: ${exitObj.short}`,
+          })
+        }
+      } else {
+        // 对象形式：{ stop_loss_hit: true, take_profit_hit: true, opposite_signal: true }
+        const conditions = extractConditionsFromObject(exitObj)
+        if (conditions.length > 0) {
+          exitConditions.push({
+            id: 'exit-cond-obj',
+            type: 'condition' as const,
+            direction: 'both',
+            category: 'exit' as const,
+            triggerType: inferTriggerTypeFromConditions(conditions),
+            conditions,
+            description: conditions.join(' OR '),
+          })
+        }
       }
     }
   }
@@ -1119,7 +1187,7 @@ function inferTriggerTypeFromConditions(conditions: string[]): ConditionNode['tr
  * 格式化紧急退出条件（支持字符串和对象形式）
  */
 function formatEmergencyExit(
-  value: string | { action?: string; account_risk_threshold?: number } | undefined,
+  value: string | { action?: string; account_risk_threshold?: number; account_drawdown?: number } | undefined,
 ): string | undefined {
   if (!value) return undefined
 
@@ -1127,13 +1195,16 @@ function formatEmergencyExit(
     return value
   }
 
-  // 对象形式: { action?: string; account_risk_threshold?: number }
+  // 对象形式: { action?: string; account_risk_threshold?: number; account_drawdown?: number }
   const parts: string[] = []
   if (value.action) {
     parts.push(value.action)
   }
   if (value.account_risk_threshold !== undefined) {
     parts.push(`Account Risk Threshold: ${value.account_risk_threshold}%`)
+  }
+  if (value.account_drawdown !== undefined) {
+    parts.push(`Account Drawdown: ${value.account_drawdown}%`)
   }
 
   return parts.length > 0 ? parts.join(', ') : 'Enabled'
@@ -1181,6 +1252,32 @@ function extractStopValue(value: string | StopConfig | undefined): string | unde
  * 提取杠杆倍数（支持字符串和数字形式）
  */
 function extractLeverage(config: StrategyConfig): string {
+  // 先检查 execution_layer.leverage（可能是 Record<string, number>）
+  const execLeverage = config.execution_layer?.leverage
+  if (execLeverage !== undefined) {
+    if (typeof execLeverage === 'object' && execLeverage !== null) {
+      // Record<string, number> 形式，如 { "ETH-PERP": 10 }
+      const entries = Object.entries(execLeverage)
+      if (entries.length === 1) {
+        return `${entries[0][1]}x`
+      }
+      return entries.map(([symbol, lev]) => `${symbol}: ${lev}x`).join(', ')
+    }
+    if (typeof execLeverage === 'number') {
+      return `${execLeverage}x`
+    }
+    if (typeof execLeverage === 'string') {
+      if (execLeverage.includes('x') || execLeverage.includes('倍')) {
+        return execLeverage
+      }
+      const num = parseFloat(execLeverage)
+      if (!isNaN(num)) {
+        return `${num}x`
+      }
+      return execLeverage
+    }
+  }
+
   const leverageValue =
     config.capital_layer?.leverage ||
     (config.capital_layer?.position_sizing as PositionSizingConfig | undefined)?.leverage ||
@@ -1210,6 +1307,20 @@ function extractLeverage(config: StrategyConfig): string {
  * 提取仓位大小（支持字符串和对象形式）
  */
 function extractPositionSize(config: StrategyConfig): string {
+  // 先检查 execution_layer.position_sizing（可能是对象形式）
+  const execPositionSizing = config.execution_layer?.position_sizing
+  if (execPositionSizing && typeof execPositionSizing === 'object') {
+    const ps = execPositionSizing as PositionSizingConfig
+    // 支持 { base: "available_balance", type: "percentage", value: 100 } 形式
+    if (ps.type && ps.value !== undefined) {
+      const baseStr = ps.base ? ` of ${ps.base.replace(/_/g, ' ')}` : ''
+      if (ps.type === 'percentage') {
+        return `${ps.value}%${baseStr}`
+      }
+      return `${ps.value} (${ps.type})${baseStr}`
+    }
+  }
+
   const positionSizing = config.capital_layer?.position_sizing
 
   // 字符串形式
@@ -1220,6 +1331,15 @@ function extractPositionSize(config: StrategyConfig): string {
   // 对象形式
   if (positionSizing && typeof positionSizing === 'object') {
     const ps = positionSizing as PositionSizingConfig
+
+    // 支持 { base: "available_balance", type: "percentage", value: 100 } 形式
+    if (ps.type && ps.value !== undefined) {
+      const baseStr = ps.base ? ` of ${ps.base.replace(/_/g, ' ')}` : ''
+      if (ps.type === 'percentage') {
+        return `${ps.value}%${baseStr}`
+      }
+      return `${ps.value} (${ps.type})${baseStr}`
+    }
 
     // 如果有 long_positions 和 short_positions
     if (ps.long_positions || ps.short_positions) {

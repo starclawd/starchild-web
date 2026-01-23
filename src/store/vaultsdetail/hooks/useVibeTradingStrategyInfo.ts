@@ -4,7 +4,7 @@ import { RootState } from 'store'
 import { updateStrategyInfo, setLoadingStrategyInfo } from '../reducer'
 import { useGetStrategyPerformanceQuery, useLazyGetStrategyPerformanceQuery } from 'api/strategy'
 
-export function useVibeTradingStrategyInfo({ strategyId }: { strategyId: string | null }) {
+export function useVibeTradingStrategyInfo({ strategyId }: { strategyId: string | undefined }) {
   const dispatch = useDispatch()
   const strategyInfo = useSelector((state: RootState) => state.vaultsdetail.strategyInfo)
   const isLoadingStrategyInfo = useSelector((state: RootState) => state.vaultsdetail.isLoadingStrategyInfo)
@@ -16,7 +16,6 @@ export function useVibeTradingStrategyInfo({ strategyId }: { strategyId: string 
     },
     {
       skip: !strategyId,
-      refetchOnMountOrArgChange: true,
     },
   )
 

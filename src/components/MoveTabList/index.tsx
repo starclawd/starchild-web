@@ -111,6 +111,7 @@ const TabItem = styled.div<{
   transition: all ${ANI_DURATION}s;
   i {
     font-size: 18px;
+    transition: all ${ANI_DURATION}s;
     color: ${({ theme }) => theme.black200};
   }
   ${({ theme, $forceWebStyle, $tabCount, $borderRadius, $gap = 4 }) =>
@@ -141,7 +142,7 @@ export default function MoveTabList({
   tabKey,
   gap = 4,
   tabList,
-  moveType = MoveType.BG,
+  moveType = MoveType.LINE,
   borderRadius,
   itemBorderRadius,
   forceWebStyle = false,

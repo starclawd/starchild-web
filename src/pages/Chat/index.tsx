@@ -23,7 +23,7 @@ import useParsedQueryString from 'hooks/useParsedQueryString'
 import { useSetCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
 import Social from './components/Social'
-import PixelCanvas from './components/PixelCanvas'
+import SvgCanvas from './components/SvgCanvas'
 
 // 扩展window对象类型
 declare global {
@@ -69,14 +69,6 @@ const ChatWrapper = styled.div<{
       max-width: 800px;
       min-width: 0;
       flex-shrink: 1;
-    }
-  `}
-  ${({ theme }) => theme.mediaMinWidth.width1920`
-    #chatScrollContent,
-    #chatInputOutWrapper,
-    #recommendationsWrapper,
-    #createStrategyWrapper {
-      width: 800px;
     }
   `}
 `
@@ -212,7 +204,7 @@ export default function Chat() {
         )}
         <Social />
       </InnerChatWrapper>
-      <PixelCanvas />
+      <SvgCanvas />
     </ChatWrapper>
   )
 }

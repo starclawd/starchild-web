@@ -1,6 +1,30 @@
 import { WalletLoginParams } from 'store/login/hooks/useWalletLogin'
 import { baseApi } from './baseStarchild'
 
+// 头像上传相关类型定义
+export interface AvatarPresignRequest {
+  contentType: string
+  fileSize: number
+}
+
+export interface AvatarPresignResponse {
+  signedUrl: string
+  publicUrl: string
+  expiresAt: string
+}
+
+export interface AvatarConfirmRequest {
+  avatarUrl: string
+}
+
+export interface AvatarConfirmResponse {
+  avatarUrl: string
+}
+
+export interface DeleteAvatarResponse {
+  status: string
+}
+
 const postsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getUserInfo: builder.query({
@@ -94,6 +118,29 @@ const postsApi = baseApi.injectEndpoints({
         }
       },
     }),
+    // 获取头像上传签名 URL
+    avatarPresign: builder.mutation<AvatarPresignResponse, AvatarPresignRequest>({
+      query: (data) => ({
+        url: '/private/user/avatar/presign',
+        method: 'post',
+        body: data,
+      }),
+    }),
+    // 确认头像上传完成
+    avatarConfirm: builder.mutation<AvatarConfirmResponse, AvatarConfirmRequest>({
+      query: (data) => ({
+        url: '/private/user/avatar/confirm',
+        method: 'post',
+        body: data,
+      }),
+    }),
+    // 删除头像
+    deleteAvatar: builder.mutation<DeleteAvatarResponse, void>({
+      query: () => ({
+        url: '/private/user/avatar',
+        method: 'delete',
+      }),
+    }),
   }),
   overrideExisting: false,
 })
@@ -108,5 +155,8 @@ export const {
   useLazyBindTelegramQuery,
   useLazyWalletLoginQuery,
   useLazyBindWalletQuery,
+  useAvatarPresignMutation,
+  useAvatarConfirmMutation,
+  useDeleteAvatarMutation,
 } = postsApi
 export default postsApi

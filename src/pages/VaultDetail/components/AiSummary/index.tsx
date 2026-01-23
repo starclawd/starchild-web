@@ -121,7 +121,7 @@ const AiSummary = memo(() => {
   const [isShowStrategyMarket] = useIsShowStrategyMarket()
   const currentRouter = useCurrentRouter()
   const isVaultDetailPage = isMatchCurrentRouter(currentRouter, ROUTER.VAULT_DETAIL)
-  const { strategyInfo } = useVibeTradingStrategyInfo({ strategyId: strategyId || null })
+  const { strategyInfo } = useVibeTradingStrategyInfo({ strategyId })
   const summary = strategyInfo?.ai_summary || ''
   return (
     <AiSummaryWrapper $isShowStrategyMarket={isShowStrategyMarket} $isVaultDetailPage={isVaultDetailPage}>

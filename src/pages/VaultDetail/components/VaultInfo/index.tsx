@@ -158,8 +158,8 @@ export default memo(function VaultInfo() {
   const [isShowStrategyMarket] = useIsShowStrategyMarket()
   const [activeTab, setActiveTab] = useActiveTab()
   const vaultId = useCurrentVaultId()
-  const { strategyInfo } = useVibeTradingStrategyInfo({ strategyId: strategyId || null })
-  const { paperTradingPublicData } = usePaperTradingPublic({ strategyId: strategyId || '' })
+  const { strategyInfo } = useVibeTradingStrategyInfo({ strategyId })
+  const { paperTradingPublicData } = usePaperTradingPublic({ strategyId })
   const [vibe, strategyName, userName, userAvatar] = useMemo(() => {
     return [
       strategyInfo?.vibe || '',
@@ -225,7 +225,7 @@ export default memo(function VaultInfo() {
           </VaultHeader>
 
           {/* <TabsWrapper>
-            <MoveTabList gap={20} tabKey={activeTab} tabList={tabList} moveType={MoveType.LINE} />
+            <MoveTabList gap={20} tabKey={activeTab} tabList={tabList} />
           </TabsWrapper> */}
         </LeftWrapper>
         {activeTab === DETAIL_TYPE.STRATEGY && <TvfSection />}

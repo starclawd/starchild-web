@@ -9,8 +9,9 @@ import { t } from '@lingui/core/macro'
 import { isMatchCurrentRouter } from 'utils'
 import { useCurrentRouter } from 'store/application/hooks'
 import { ROUTER } from 'pages/router'
-import { ANI_DURATION } from 'constants/index'
+import { ANI_DURATION, SHOW_APR_AGE_DAYS } from 'constants/index'
 import { useIsShowStrategyMarket } from 'store/vaultsdetailcache/hooks'
+import { useVibeTradingStrategyInfo } from 'store/vaultsdetail/hooks'
 
 const ChartStats = styled.div<{ $isShowStrategyMarket: boolean; $isVaultDetailPage?: boolean }>`
   display: flex;
@@ -62,12 +63,13 @@ const StatValue = styled.span<{ value?: number | null; $showPnlColor?: boolean }
 `
 
 interface StrategyChartStatsProps {
-  strategyId: string
+  strategyId: string | undefined
   chartTimeRange: CHAT_TIME_RANGE
 }
 
 const StrategyChartStats = memo<StrategyChartStatsProps>(({ strategyId, chartTimeRange }) => {
-  const { performanceData, isLoading, error } = useStrategyPerformance(strategyId, chartTimeRange)
+  const { performanceData } = useStrategyPerformance(strategyId, '30d')
+  const { strategyInfo } = useVibeTradingStrategyInfo({ strategyId })
   const currentRouter = useCurrentRouter()
   const isVaultDetailPage = isMatchCurrentRouter(currentRouter, ROUTER.VAULT_DETAIL)
   const [isShowStrategyMarket] = useIsShowStrategyMarket()
@@ -86,39 +88,55 @@ const StrategyChartStats = memo<StrategyChartStatsProps>(({ strategyId, chartTim
     {
       key: 'initialEquity',
       label: <Trans>Initial Equity</Trans>,
-      getValue: () => performanceData?.initial_balance || 0,
+      getValue: () => strategyInfo?.initial_balance || 0,
       formatValue: (v) => formatNumber(v, { showDollar: true }),
     },
     {
       key: 'age',
       label: <Trans>Age(days)</Trans>,
-      getValue: () => performanceData?.age_days || 0,
+      getValue: () => strategyInfo?.age_days || 0,
       formatValue: (v) => String(v),
     },
     {
       key: 'pnl',
       label: <Trans>PnL</Trans>,
-      getValue: () => performanceData?.pnl || 0,
+      getValue: () => strategyInfo?.pnl || 0,
       formatValue: (v) => formatKMBNumber(v, 2, { showDollar: true }),
       showPnlColor: true,
     },
     {
-      key: 'allTimeApy',
-      label: <Trans>All-time APR</Trans>,
-      getValue: () => performanceData?.all_time_apr || 0,
+      key: 'roe',
+      label: <Trans>ROE</Trans>,
+      getValue: () => strategyInfo?.roe || 0,
       formatValue: (v) => formatPercent({ value: v, precision: 1 }),
       showPnlColor: true,
     },
     {
+      key: 'apr',
+      label: <Trans>30D APR</Trans>,
+      getValue: () => performanceData?.apr || 0,
+      formatValue: (v) => formatPercent({ value: v, precision: 1 }),
+      showPnlColor: true,
+      visible: (strategyInfo?.age_days || 0) >= SHOW_APR_AGE_DAYS && (strategyInfo?.roe || 0) > 0,
+    },
+    {
+      key: 'allTimeApr',
+      label: <Trans>All-time APR</Trans>,
+      getValue: () => strategyInfo?.all_time_apr || 0,
+      formatValue: (v) => formatPercent({ value: v, precision: 1 }),
+      showPnlColor: true,
+      visible: (strategyInfo?.age_days || 0) >= SHOW_APR_AGE_DAYS && (strategyInfo?.roe || 0) > 0,
+    },
+    {
       key: 'maxDrawdown',
       label: <Trans>Max Drawdown</Trans>,
-      getValue: () => performanceData?.max_drawdown || 0,
+      getValue: () => strategyInfo?.max_drawdown || 0,
       formatValue: (v) => formatPercent({ value: Math.abs(v), precision: 1 }),
     },
     {
       key: 'sharpeRatio',
       label: <Trans>Sharpe Ratio</Trans>,
-      getValue: () => performanceData?.sharpe_ratio || 0,
+      getValue: () => strategyInfo?.sharpe_ratio || 0,
       formatValue: (v) => formatNumber(toFix(v, 1)),
     },
   ]

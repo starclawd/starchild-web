@@ -37,18 +37,16 @@ const ChatInputContentWrapper = styled.div<{ $value: string; $isChatPage: boolea
   align-items: flex-start;
   width: 100%;
   gap: 20px;
-  padding: 12px;
+  padding: 20px;
   border-radius: 12px;
-  border: 1px solid ${({ theme }) => theme.black600};
-  background: ${({ theme }) => theme.black800};
+  background: ${({ theme }) => theme.black900};
   backdrop-filter: blur(12px);
   z-index: 2;
   ${({ $isChatPage }) =>
     !$isChatPage &&
     css`
       border-radius: 8px;
-      border: none;
-      padding: 20px;
+      background: ${({ theme }) => theme.black800};
     `}
   ${({ theme }) =>
     theme.isMobile &&
@@ -109,7 +107,6 @@ const InputWrapper = styled.div<{ $isChatPage: boolean; $isMultiline: boolean }>
   align-items: ${({ $isMultiline }) => ($isMultiline ? 'stretch' : 'center')};
   min-height: 40px;
   width: 100%;
-  padding: ${({ $isChatPage }) => ($isChatPage ? '8px' : '0')};
   gap: 8px;
   flex-grow: 1;
   flex-shrink: 1;
@@ -162,28 +159,21 @@ const Operator = styled.div<{ $isChatPage: boolean }>`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  ${({ $isChatPage }) =>
-    $isChatPage &&
-    css`
-      width: 100%;
-    `}
 `
 
-const SendButton = styled(ButtonCommon)`
+const SendButton = styled(ButtonCommon)<{ $disabled: boolean }>`
   width: 40px;
   height: 40px;
   flex-shrink: 0;
   align-self: flex-end;
-  .icon-arrow {
-    font-size: 18px;
-    transform: rotate(90deg);
+  .icon-send {
+    font-size: 20px;
   }
-  ${({ theme }) =>
-    theme.isMobile &&
+  ${({ $disabled }) =>
+    $disabled &&
     css`
-      .icon-arrow {
-        font-size: ${vm(24)};
-      }
+      color: ${({ theme }) => theme.black200};
+      background: ${({ theme }) => theme.black700};
     `}
 `
 
@@ -304,7 +294,7 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
       )}
       <ChatInputContentWrapper $isChatPage={isChatPage} $value={value}>
         <ClickWrapper onClick={handleWrapperClick}></ClickWrapper>
-        <InputWrapper $isChatPage={isChatPage} $isMultiline={isMultiline}>
+        <InputWrapper onClick={handleWrapperClick} $isChatPage={isChatPage} $isMultiline={isMultiline}>
           <InputArea
             autoFocus={false}
             value={value}
@@ -319,10 +309,8 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
             enterConfirmCallback={requestStream}
           />
           <Operator $isChatPage={isChatPage}>
-            {/* {isChatPage && <ModeSelect />} */}
-            <div></div>
             <SendButton $disabled={!value?.trim() || inputDisabled} onClick={requestStream}>
-              <IconBase className='icon-arrow' />
+              <IconBase className='icon-send' />
             </SendButton>
           </Operator>
         </InputWrapper>

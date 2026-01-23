@@ -11,9 +11,6 @@ import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy.d'
 import { StrategiesOverviewDataType } from 'api/strategy'
 import { useModalOpen, useCurrentRouter, useSetCurrentRouter } from 'store/application/hooks'
 import { ApplicationModal } from 'store/application/application.d'
-import PauseStrategyModal from './components/PauseStrategyModal'
-import DelistStrategyModal from './components/DelistStrategyModal'
-import DeleteStrategyModal from './components/DeleteStrategyModal'
 import { useTheme } from 'store/themecache/hooks'
 import { isInvalidValue, toFix } from 'utils/calc'
 import { formatNumber, formatPercent, formatKMBNumber } from 'utils/format'
@@ -492,9 +489,6 @@ export default memo(function MyStrategies() {
           <NoData />
         )}
       </StrategiesListWrapper>
-      {pauseStrategyModalOpen && <PauseStrategyModal />}
-      {delistStrategyModalOpen && <DelistStrategyModal />}
-      {deleteStrategyModalOpen && <DeleteStrategyModal />}
     </MyStrategiesWrapper>
   )
 })

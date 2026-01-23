@@ -14,6 +14,18 @@
 
 > ⚠️ 默认沙盒环境会限制文件写入、网络访问和 git 操作，导致命令失败。
 
+### 📦 安装依赖必须禁用沙盒
+
+以下命令**必须**在禁用沙盒的情况下执行：
+
+```bash
+yarn install        # 安装所有依赖
+yarn add <pkg>      # 添加依赖
+yarn add -D <pkg>   # 添加开发依赖
+```
+
+**原因：** 沙盒环境会限制 node_modules 目录的写入权限，导致安装失败。
+
 ---
 
 ## 🚀 启动项目前的必要检查
@@ -62,12 +74,12 @@ yarn start
 
 ### 使用方法
 
-| 操作 | 说明 |
-|------|------|
-| `Shift + Alt + C` | 开启/关闭检查模式 |
-| 鼠标悬停 | 查看组件名和文件路径 |
-| 点击元素 | 复制组件名，并自动在 Cursor 中打开对应文件 |
-| `ESC` | 退出检查模式 |
+| 操作              | 说明                                       |
+| ----------------- | ------------------------------------------ |
+| `Shift + Alt + C` | 开启/关闭检查模式                          |
+| 鼠标悬停          | 查看组件名和文件路径                       |
+| 点击元素          | 复制组件名，并自动在 Cursor 中打开对应文件 |
+| `ESC`             | 退出检查模式                               |
 
 ### 工作流程
 
@@ -98,6 +110,131 @@ yarn start
 - wagmi + viem + @reown/appkit Web3 钱包集成
 - react-router-dom v7 路由
 - TanStack React Query 服务端状态
+
+---
+
+## 🔌 API 配置规范
+
+新增 API 时，必须按照以下步骤配置：
+
+### 1. 选择正确的 API 基础实例
+
+| API 实例    | 用途                 | 文件位置                  |
+| ----------- | -------------------- | ------------------------- |
+| `baseApi`   | 主业务 API（带拦截器） | `src/api/baseStarchild.ts` |
+| `chatApi`   | Chat 相关 API        | `src/api/baseChat.ts`     |
+| `orderlyApi`| Orderly 交易所 API   | `src/api/base.ts`         |
+
+### 2. 定义 API 端点
+
+在 `src/api/` 目录下创建或修改对应的 API 文件：
+
+```typescript
+// src/api/example.ts
+import { baseApi } from './baseStarchild'
+
+// 1. 定义接口类型
+export interface ExampleResponse {
+  id: string
+  name: string
+}
+
+// 2. 注入端点
+const exampleApi = baseApi.injectEndpoints({
+  endpoints: (builder) => ({
+    getExample: builder.query<ExampleResponse, string>({
+      query: (id) => `/example/${id}`,
+    }),
+  }),
+})
+
+// 3. 导出生成的 hook
+export const { useGetExampleQuery } = exampleApi
+```
+
+### 3. 注册到 Store（仅新建 API 实例时需要）
+
+如果创建了新的 `createApi` 实例，需要在 `src/store/index.ts` 中注册：
+
+```typescript
+// 1. 导入 API
+import { newApi } from '../api/base'
+
+// 2. 添加到 rootReducer
+const rootReducer = combineReducers({
+  // ...其他 reducer
+  [newApi.reducerPath]: newApi.reducer,
+})
+
+// 3. 添加到 middleware
+middleware: (getDefaultMiddleware) =>
+  getDefaultMiddleware().concat(
+    // ...其他 middleware
+    newApi.middleware,
+  ),
+
+// 4. 添加到 RootState 类型
+export interface RootState {
+  // ...其他类型
+  [newApi.reducerPath]: ReturnType<typeof newApi.reducer>
+}
+```
+
+### 4. 创建业务 Hooks（在 store 目录中）
+
+API 的业务封装 hooks 必须放在 `src/store/` 目录下：
+
+**目录命名规则：**
+
+| 目录名称       | 是否持久化 | 说明                           |
+| -------------- | ---------- | ------------------------------ |
+| `vaults/`      | ❌ 否      | 普通状态，刷新后丢失           |
+| `vaultscache/` | ✅ 是      | 持久化到 localStorage，刷新保留 |
+
+**创建新 store 目录的步骤：**
+
+```
+src/store/example/           # 不需要缓存
+├── example.d.ts             # 类型定义
+├── reducer.ts               # Redux reducer
+└── hooks/
+    └── useExample.ts        # 业务 hooks
+
+src/store/examplecache/      # 需要本地缓存
+├── examplecache.d.ts
+├── reducer.ts
+└── hooks.ts
+```
+
+**注册到 `src/store/index.ts`：**
+
+```typescript
+// 1. 导入 reducer
+import exampleReducer from './example/reducer'
+import examplecacheReducer from './examplecache/reducer'
+
+// 2. 添加到 rootReducer
+const rootReducer = combineReducers({
+  // ...
+  example: exampleReducer,
+  examplecache: examplecacheReducer,
+})
+
+// 3. 如果需要持久化，添加到 persistConfig.whitelist
+const persistConfig = {
+  whitelist: [
+    // ...
+    'examplecache',  // 带 cache 的才加到这里
+  ],
+}
+
+// 4. 添加到 RootState 类型
+export interface RootState {
+  // ...
+  example: ReturnType<typeof exampleReducer>
+  examplecache: ReturnType<typeof examplecacheReducer>
+}
+```
 
 ---
 
@@ -147,13 +284,13 @@ yarn start
 
 ## 📛 Naming Conventions
 
-| 类型 | 命名规范 | 示例 |
-|------|----------|------|
-| 组件文件 | PascalCase | `VaultInfo`, `StrategyStatus` |
-| Hook 文件 | camelCase + `use` 前缀 | `useSignal.ts`, `usePaperTradingPublic.ts` |
-| Store 文件 | camelCase | `hooks.tsx`, `vaultsdetail.ts` |
-| Styled 组件 | PascalCase | `VaultInfoContainer`, `InnerContent` |
-| 常量 | SCREAMING_SNAKE_CASE | `DETAIL_TYPE`, `ANI_DURATION` |
+| 类型        | 命名规范               | 示例                                       |
+| ----------- | ---------------------- | ------------------------------------------ |
+| 组件文件    | PascalCase             | `VaultInfo`, `StrategyStatus`              |
+| Hook 文件   | camelCase + `use` 前缀 | `useSignal.ts`, `usePaperTradingPublic.ts` |
+| Store 文件  | camelCase              | `hooks.tsx`, `vaultsdetail.ts`             |
+| Styled 组件 | PascalCase             | `VaultInfoContainer`, `InnerContent`       |
+| 常量        | SCREAMING_SNAKE_CASE   | `DETAIL_TYPE`, `ANI_DURATION`              |
 
 ---
 
@@ -180,13 +317,16 @@ yarn start
 ## ⚠️ 常见问题
 
 ### 项目启动失败
+
 - 确保 Node.js 版本 >= 18
 - 删除 `node_modules` 和 `yarn.lock`，重新 `yarn install`
 
 ### Prettier 格式化不生效
+
 - 确保安装了 Prettier 扩展 (`esbenp.prettier-vscode`)
 - 检查 `.vscode/settings.json` 中的 `editor.formatOnSave` 是否为 `true`
 
 ### DevInspector 不工作
+
 - 确保在开发环境运行（`yarn start`）
 - 按 `Shift + Alt + C` 开启检查模式
