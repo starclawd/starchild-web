@@ -12,7 +12,7 @@ import {
   DELAY_BUTTON_SCALE_UP,
   DELAY_BACKGROUND_FADE,
   USE_CASES_TAB_KEY,
-} from 'constants/useCases'
+} from 'store/usecases/usecases.d'
 import { useActiveTab, useIsPlaying } from 'store/usecases/hooks/useUseCasesHooks'
 import { BaseButton, ButtonCommon, ButtonBorder } from 'components/Button'
 import { IconBase } from 'components/Icons'

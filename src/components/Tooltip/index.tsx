@@ -2,11 +2,14 @@
  * 内容样式组件
  */
 
-import { TooltipContentProps, TriggerMethod } from './components/TooltipContent'
 import MouseoverTooltipContent from './components/MouseoverTooltipContent'
 import { ContentWrapper } from './styles'
 import { useIsMobile } from 'store/application/hooks'
 import ClickTooltipContent from './components/ClickTooltipContent'
+import { TooltipContentProps, TriggerMethod } from './types'
+
+export { TriggerMethod }
+export type { TooltipContentProps }
 
 export default function Tooltip({
   content,

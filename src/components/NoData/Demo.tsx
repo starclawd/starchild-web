@@ -329,7 +329,7 @@ const NoDataDemo = () => {
 
       <DemoSection>
         <h3>基础用法</h3>
-        <p>最基本的空状态显示</p>
+        <p>最基本的空状态显示，使用默认文案</p>
 
         <DemoRow>
           <div className='nodata-container'>
@@ -338,7 +338,7 @@ const NoDataDemo = () => {
           <div className='demo-info'>
             <div>
               <div className='label'>基础空状态组件</div>
-              <div className='description'>显示默认的空数据图片和文本</div>
+              <div className='description'>显示默认的空数据图标和文本（No results found.）</div>
             </div>
             <div className='stats'>
               <span>国际化: 支持</span>
@@ -350,8 +350,74 @@ const NoDataDemo = () => {
         <CodeBlock>
           {`import NoData from 'components/NoData'
 
-// 基础使用
+// 基础使用（显示默认文本 "No results found."）
 <NoData />`}
+        </CodeBlock>
+      </DemoSection>
+
+      <DemoSection>
+        <h3>自定义文本</h3>
+        <p>通过 text 属性自定义空状态的提示文本</p>
+
+        <DemoRow>
+          <div className='nodata-container'>
+            <NoData text='暂无数据' />
+          </div>
+          <div className='demo-info'>
+            <div>
+              <div className='label'>自定义文本</div>
+              <div className='description'>使用 text 属性传入自定义提示文字</div>
+            </div>
+          </div>
+        </DemoRow>
+
+        <DemoRow>
+          <div className='nodata-container'>
+            <NoData text='搜索结果为空，请尝试其他关键词' />
+          </div>
+          <div className='demo-info'>
+            <div>
+              <div className='label'>场景化文案</div>
+              <div className='description'>根据具体场景提供更有指引性的文案</div>
+            </div>
+          </div>
+        </DemoRow>
+
+        <DemoRow>
+          <div className='nodata-container'>
+            <NoData
+              text={
+                <span>
+                  暂无记录，<a href='#' style={{ color: '#1890ff' }}>点击添加</a>
+                </span>
+              }
+            />
+          </div>
+          <div className='demo-info'>
+            <div>
+              <div className='label'>ReactNode 文本</div>
+              <div className='description'>text 支持传入 ReactNode，可以包含链接等元素</div>
+            </div>
+          </div>
+        </DemoRow>
+
+        <CodeBlock>
+          {`import NoData from 'components/NoData'
+
+// 简单文本
+<NoData text="暂无数据" />
+
+// 场景化文案
+<NoData text="搜索结果为空，请尝试其他关键词" />
+
+// ReactNode 文本（支持富文本）
+<NoData 
+  text={
+    <span>
+      暂无记录，<a href="#">点击添加</a>
+    </span>
+  } 
+/>`}
         </CodeBlock>
       </DemoSection>
 
@@ -580,16 +646,16 @@ function CustomEmptyState({
         >
           <ul style={{ margin: 0, paddingLeft: '20px', lineHeight: '1.8' }}>
             <li>
-              <strong>桌面端</strong>：固定高度 304px，圆角边框，图片宽度 180px
+              <strong>桌面端</strong>：最小高度 170px，圆角边框 36px，图标大小 32px，间距 8px
             </li>
             <li>
-              <strong>移动端</strong>：移除圆角，透明背景，图片宽度自适应，字体大小调整
+              <strong>移动端</strong>：移除圆角，透明背景，图标宽度 64px（vm 单位），间距 16px，字体大小自适应
             </li>
             <li>
-              <strong>布局适配</strong>：垂直居中布局，间距自动调整
+              <strong>布局适配</strong>：垂直居中布局，使用 flex 布局自动调整
             </li>
             <li>
-              <strong>主题适配</strong>：自动适配暗色和亮色主题
+              <strong>主题适配</strong>：图标和文字颜色使用 theme.black400，自动适配主题
             </li>
           </ul>
         </div>
@@ -675,9 +741,10 @@ function CustomEmptyState({
           </PropsTableHeader>
 
           <PropsTableRow>
-            <PropsTableCell type='desc' style={{ gridColumn: '1 / -1', textAlign: 'center', fontStyle: 'italic' }}>
-              该组件不接受任何 props，是一个纯展示组件
-            </PropsTableCell>
+            <PropsTableCell type='prop'>text</PropsTableCell>
+            <PropsTableCell type='type'>React.ReactNode</PropsTableCell>
+            <PropsTableCell type='default'>"No results found."</PropsTableCell>
+            <PropsTableCell type='desc'>自定义显示的提示文本，支持字符串或 ReactNode</PropsTableCell>
           </PropsTableRow>
         </PropsTable>
 
@@ -686,10 +753,10 @@ function CustomEmptyState({
           <div style={{ background: 'rgba(255, 255, 255, 0.05)', padding: '20px', borderRadius: '8px' }}>
             <ul style={{ margin: 0, paddingLeft: '20px', lineHeight: '1.6' }}>
               <li>
-                <strong>零配置</strong>：组件开箱即用，无需传入任何参数
+                <strong>简单易用</strong>：组件开箱即用，支持可选的自定义文本
               </li>
               <li>
-                <strong>国际化支持</strong>：使用 @lingui/react 提供多语言支持
+                <strong>国际化支持</strong>：默认文本使用 @lingui/react 提供多语言支持
               </li>
               <li>
                 <strong>响应式设计</strong>：自动适配移动端和桌面端样式
@@ -698,7 +765,7 @@ function CustomEmptyState({
                 <strong>主题适配</strong>：完美适配暗色和亮色主题
               </li>
               <li>
-                <strong>图片优化</strong>：使用专门设计的空状态图片
+                <strong>图标组件</strong>：使用 IconBase 图标组件（icon-no-data）
               </li>
               <li>
                 <strong>布局灵活</strong>：可以嵌入任何容器中使用
@@ -716,7 +783,7 @@ function CustomEmptyState({
         <div style={{ marginTop: '20px' }}>
           <h3>使用场景</h3>
           <CodeBlock>
-            {`// 1. 数据列表为空
+            {`// 1. 数据列表为空（使用默认文本）
 function DataList({ items }) {
   if (items.length === 0) {
     return <NoData />
@@ -729,10 +796,10 @@ function DataList({ items }) {
   )
 }
 
-// 2. 搜索结果为空
+// 2. 搜索结果为空（自定义文本）
 function SearchResults({ results, query }) {
   if (results.length === 0 && query) {
-    return <NoData />
+    return <NoData text="未找到匹配的搜索结果" />
   }
   
   return <ResultList results={results} />
@@ -743,8 +810,8 @@ function DataContainer() {
   const { data, loading, error } = useData()
   
   if (loading) return <Loading />
-  if (error) return <ErrorState />
-  if (!data || data.length === 0) return <NoData />
+  if (error) return <NoData text="加载失败，请稍后重试" />
+  if (!data || data.length === 0) return <NoData text="暂无数据" />
   
   return <DataDisplay data={data} />
 }
@@ -772,9 +839,22 @@ function Table({ data, columns }) {
           </tbody>
         </table>
       ) : (
-        <NoData />
+        <NoData text="暂无用户数据" />
       )}
     </div>
+  )
+}
+
+// 6. 使用 ReactNode 作为文本
+function EmptyCollection() {
+  return (
+    <NoData 
+      text={
+        <span>
+          收藏夹为空，<a href="/explore">去发现更多</a>
+        </span>
+      } 
+    />
   )
 }`}
           </CodeBlock>

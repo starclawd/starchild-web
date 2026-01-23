@@ -4,16 +4,13 @@
  * 可配置右侧内容、选择器、错误提示等功能
  */
 import { useIsMobile } from 'store/application/hooks'
-import styled, { css, CSSProperties } from 'styled-components'
+import styled, { css } from 'styled-components'
 import {
   useCallback,
   useEffect,
   useRef,
-  KeyboardEventHandler,
   memo,
   useMemo,
-  ChangeEventHandler,
-  FocusEventHandler,
   FocusEvent,
   MouseEvent,
   KeyboardEvent,
@@ -25,38 +22,10 @@ import { vm } from 'pages/helper'
 import { useTheme } from 'store/themecache/hooks'
 import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
+import { InputType, InputProps } from './types'
 
-/**
- * 输入框类型枚举
- */
-export enum InputType {
-  SEARCH = 'SEARCH', // 搜索输入
-  TEXT = 'TEXT', // 文本输入
-}
-
-/**
- * 输入框组件属性接口
- */
-interface PorpsType {
-  type?: string // 输入类型
-  inputType?: InputType // 输入类型
-  inputStyle?: CSSProperties // 输入框样式
-  placeholder?: string // 占位文本
-  rootStyle?: CSSProperties // 根元素样式
-  inputClass?: string // 输入框类名
-  disabled?: boolean // 是否禁用
-  showError?: boolean // 是否显示错误
-  scrollIntoView?: boolean // 是否滚动到视图
-  autoFocus?: boolean // 是否自动聚焦
-  inputValue?: string | number // 输入值
-  inputMode?: 'text' | 'search' | 'email' | 'tel' | 'url' | 'none' | 'numeric' | 'decimal' // 输入模式
-  clearError?: () => void
-  onKeyUp?: KeyboardEventHandler<HTMLInputElement> // 键盘抬起事件
-  onBlur?: FocusEventHandler<HTMLInputElement> // 失焦事件
-  onChange?: ChangeEventHandler<HTMLInputElement> // 值改变事件
-  onFocus?: FocusEventHandler<HTMLInputElement> // 聚焦事件
-  onResetValue?: () => void
-}
+export { InputType }
+export type { InputProps }
 
 const InputWrapper = styled(BorderAllSide1PxBox)<{ $isFocus: boolean }>`
   position: relative;
@@ -168,7 +137,7 @@ export default memo(function Input({
   clearError,
   inputMode = 'decimal',
   scrollIntoView = false,
-}: PorpsType) {
+}: InputProps) {
   const isMobile = useIsMobile()
   const theme = useTheme()
   const [isFocus, setIsFocus] = useState(false)

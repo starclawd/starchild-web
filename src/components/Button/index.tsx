@@ -1,7 +1,7 @@
 /**
  * 通用的button处理
  */
-import { memo, ComponentPropsWithoutRef } from 'react'
+import { memo } from 'react'
 import styled, { css } from 'styled-components'
 import { ANI_DURATION } from 'constants/index'
 import { vm } from 'pages/helper'
@@ -286,14 +286,9 @@ const StyledIconButton = styled(ButtonCommon)<{
     `}
 `
 
-// IconButton 组件属性类型
-export interface IconButtonProps extends Omit<ComponentPropsWithoutRef<'button'>, 'color'> {
-  icon: string // icon className，如 'icon-chat-share'（必需）
-  size?: 'small' | 'medium' | 'large' // 默认 medium 尺寸
-  color?: string // 图标颜色
-  pending?: boolean
-  disabled?: boolean
-}
+import type { IconButtonProps } from './types'
+
+export type { IconButtonProps }
 
 // IconButton React 组件
 export const IconButton = memo<IconButtonProps>(

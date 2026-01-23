@@ -4,14 +4,15 @@ import Input, { InputType } from 'components/Input'
 import { ChangeEvent, useCallback, useState, ReactNode, useMemo, memo } from 'react'
 import styled from 'styled-components'
 import Strategies from './components/Strategies'
-import { useSort, useSortableHeader, SortDirection } from 'components/TableSortableColumn'
+import { useSort, useSortableHeader } from 'components/Table'
+import { SortDirection } from 'components/Table/types'
 import { ANI_DURATION } from 'constants/index'
 import Tooltip from 'components/Tooltip'
 import tagBg from 'assets/vaults/tag-bg.png'
 import { useAllStrategiesOverview } from 'store/vaults/hooks'
 import { useUserInfo, useIsLogin } from 'store/login/hooks'
 import StrategyItem from './components/StrategyItem'
-import MoveTabList, { MoveType } from 'components/MoveTabList'
+import TabList, { TAB_TYPE } from 'components/TabList'
 import { useAllFollowedStrategiesOverview } from 'store/mystrategy/hooks/useAllFollowedStrategiesOverview'
 import { useMyStrategies } from 'store/mystrategy/hooks/useMyStrategies'
 import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy.d'
@@ -40,9 +41,9 @@ const Title = styled.div`
   `}
 `
 
-const StyledMoveTabList = styled(MoveTabList)`
+const StyledTabList = styled(TabList)`
   height: 48px;
-  .move-tab-item {
+  .tab-item {
     gap: 8px;
     font-size: 18px;
     font-style: normal;
@@ -378,7 +379,7 @@ export default memo(function StrategyTable() {
   return (
     <StrategyTableWrapper>
       <Title>
-        <StyledMoveTabList tabKey={activeTab} tabList={tabList} moveType={MoveType.LINE} gap={32} />
+        <StyledTabList tabKey={activeTab} tabList={tabList} tabType={TAB_TYPE.LINE} gap={32} />
         <InputWrapper>
           <Input
             inputValue={searchValue}

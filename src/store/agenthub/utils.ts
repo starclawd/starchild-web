@@ -1,5 +1,4 @@
-import { AGENT_HUB_TYPE } from 'constants/agentHub'
-import { AgentInfo, RecentChat } from 'store/agenthub/agenthub'
+import { AgentInfo, RecentChat, AGENT_HUB_TYPE } from 'store/agenthub/agenthub.d'
 
 /**
  * 将API响应的任务数据转换为AgentInfo格式

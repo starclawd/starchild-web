@@ -4,7 +4,7 @@ import { ButtonBorder, ButtonCommon } from 'components/Button'
 import { Trans } from '@lingui/react/macro'
 import { StrategiesOverviewDataType } from 'api/strategy'
 import { STRATEGY_STATUS } from 'store/createstrategy/createstrategy'
-import ShinyButton from 'components/ShinyButton'
+import ShinyButton from 'pages/CreateStrategy/components/StrategyInfo/components/ShinyButton'
 import {
   useDeleteStrategyModalToggle,
   useDelistStrategyModalToggle,

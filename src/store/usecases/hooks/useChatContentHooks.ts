@@ -25,7 +25,7 @@ import {
   resetTempAiContentData,
 } from '../reducer'
 import { useLazyGetAgentDetailQuery } from 'api/chat'
-import { QUERY_TYPE } from 'constants/useCases'
+import { QUERY_TYPE } from 'store/usecases/usecases.d'
 
 export function useCloseStream() {
   return useCallback(() => {

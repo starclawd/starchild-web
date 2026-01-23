@@ -1,9 +1,7 @@
 import styled, { keyframes } from 'styled-components'
+import type { TypewriterCursorProps } from './types'
 
-interface TypewriterCursorProps {
-  width?: number
-  height?: number
-}
+export type { TypewriterCursorProps }
 
 // 光标闪烁动画
 const cursorBlink = keyframes`

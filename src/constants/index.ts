@@ -12,6 +12,3 @@ export const LOCAL_AUTHTOKEN = import.meta.env.VITE_TG_AUTH_TOKEN || ''
 export const MOBILE_DESIGN_WIDTH = 375
 
 export const SHOW_APR_AGE_DAYS = isPro ? 30 : 7
-
-// Agent Hub constants
-export * from './agentHub'

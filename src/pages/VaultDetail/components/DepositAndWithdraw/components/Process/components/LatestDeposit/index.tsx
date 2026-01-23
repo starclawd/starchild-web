@@ -5,7 +5,7 @@ import usdc from 'assets/tokens/usdc.png'
 import { LatestDepositWrapper, Title, DepositContent, Status, Amount } from '../../styles'
 import { CHAIN_ID_TO_CHAIN } from 'constants/chainInfo'
 import { getExplorerLink } from 'utils'
-import { DEPOSIT_STATUS_MAP, getDepositTooltipContent } from 'constants/vaultTransaction'
+import { DEPOSIT_STATUS_MAP, getDepositTooltipContent } from 'pages/VaultDetail/components/DepositAndWithdraw/types'
 import { Trans } from '@lingui/react/macro'
 
 export default function LatestDeposit({ latestTransaction }: { latestTransaction: VaultTransactionHistory }) {

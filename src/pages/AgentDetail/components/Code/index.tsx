@@ -9,7 +9,7 @@ import NoData from 'components/NoData'
 import MemoizedHighlight from 'components/MemoizedHighlight'
 import { useSleep } from 'hooks/useSleep'
 import { ANI_DURATION, TYPING_ANIMATION_DURATION } from 'constants/index'
-import MoveTabList, { MoveType } from 'components/MoveTabList'
+import TabList, { TAB_TYPE } from 'components/TabList'
 import Workflow from '../Workflow'
 import { handleGenerationMsg } from 'store/agentdetail/utils'
 import {
@@ -42,7 +42,7 @@ const MobileMoveTabList = styled.div`
     height: 36px;
     border-radius: 8px;
     padding: 2px;
-    .move-tab-item {
+    .tab-item {
       height: 32px;
       border-radius: 6px;
       font-size: 14px;
@@ -452,7 +452,7 @@ export default memo(function Code({
   return (
     <CodeWrapper>
       <MobileMoveTabList>
-        <MoveTabList moveType={MoveType.BG} tabKey={tabIndex} tabList={tabList} />
+        <TabList tabType={TAB_TYPE.BG} tabKey={tabIndex} tabList={tabList} />
         {!isMobile && isFromChat && !isFromUseCases && (
           <IconWrapper onClick={closeDeepThink}>
             <IconBase className='icon-chat-delete' />

@@ -5,7 +5,7 @@ import { GENERATION_STATUS, AGENT_TYPE, AgentDetailDataType, AGENT_STATUS } from
 import { ButtonBorder } from 'components/Button'
 import { IconBase } from 'components/Icons'
 import Pending from 'components/Pending'
-import { AGENT_HUB_TYPE } from 'constants/agentHub'
+import { AGENT_HUB_TYPE } from 'store/agenthub/agenthub.d'
 
 const DemoContainer = styled.div`
   padding: 20px;

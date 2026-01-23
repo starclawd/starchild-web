@@ -9,15 +9,12 @@ import InputAreaDemo from 'components/InputArea/Demo'
 import MarkdownDemo from 'components/Markdown/Demo'
 import MemoizedHighlightDemo from 'components/MemoizedHighlight/Demo'
 import ModalDemo from 'components/Modal/Demo'
-import MoveTabListDemo from 'components/MoveTabList/Demo'
 import NoDataDemo from 'components/NoData/Demo'
 import PendingDemo from 'components/Pending/Demo'
 import PopoverDemo from 'components/Popover/Demo'
 import PortalDemo from 'components/Portal/Demo'
 import SelectDemo from 'components/Select/Demo'
-import TabListDemo from 'components/TabList/Demo'
 import TooltipDemo from 'components/Tooltip/Demo'
-import TransitionWrapperDemo from 'components/TransitionWrapper/Demo'
 import IconsDemo from 'components/Icons/Demo'
 import PullUpRefreshDemo from 'components/PullUpRefresh/Demo'
 import SkeletonDemo from 'components/Skeleton/Demo'
@@ -25,6 +22,8 @@ import TaskShareDemo from 'pages/AgentDetail/components/AgentShare/Demo'
 import ToastDemo from 'components/Toast/Demo'
 import DividerDemo from 'components/Divider/Demo'
 import LazyImageDemo from 'components/LazyImage/Demo'
+import TabListDemo from 'components/TabList/Demo'
+import TypewriterCursorDemo from 'components/TypewriterCursor/Demo'
 import AgentActionsDemo from 'pages/AgentDetail/components/AgentActions/Demo'
 
 const DemoPageWrapper = styled.div`
@@ -193,25 +192,11 @@ const components = [
     component: DividerDemo,
   },
   {
-    id: 'movetablist',
-    name: 'MoveTabList',
-    desc: '动态标签页组件',
-    category: '通用',
-    component: MoveTabListDemo,
-  },
-  {
     id: 'tablist',
     name: 'TabList',
     desc: '标签列表组件',
-    category: '通用',
+    category: '导航',
     component: TabListDemo,
-  },
-  {
-    id: 'transitionwrapper',
-    name: 'TransitionWrapper',
-    desc: '过渡动画组件',
-    category: '通用',
-    component: TransitionWrapperDemo,
   },
   {
     id: 'avatar',
@@ -317,6 +302,13 @@ const components = [
     desc: '上拉加载更多组件',
     category: '通用',
     component: PullUpRefreshDemo,
+  },
+  {
+    id: 'typewritercursor',
+    name: 'TypewriterCursor',
+    desc: '打字机光标组件',
+    category: '反馈',
+    component: TypewriterCursorDemo,
   },
   {
     id: 'taskshare',

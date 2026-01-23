@@ -3,12 +3,15 @@
  * 提供自定义下拉刷新功能和动画效果
  * 支持iOS和Android平台，包含阻尼效果
  */
-import { Dispatch, memo, ReactNode, SetStateAction, useCallback, useEffect, useRef, useState } from 'react'
+import { memo, useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 // import JojoLoading from 'components/JojoLoading'
 import { ANI_DURATION } from 'constants/index'
 import { IconBase } from 'components/Icons'
 import { vm } from 'pages/helper'
+import type { PullDownRefreshProps } from './types'
+
+export type { PullDownRefreshProps }
 
 /**
  * 下拉刷新外层容器样式组件
@@ -85,18 +88,6 @@ const PullDownArea = styled.div<{
     }
   }
 `
-
-/**
- * PullDownRefresh组件属性接口
- */
-interface PullDownRefreshProps {
-  children: ReactNode // 子内容
-  pullDownAreaHeight?: string // 下拉区域高度
-  onRefresh?: () => void // 刷新回调函数
-  isRefreshing: boolean // 是否正在刷新
-  setIsRefreshing: Dispatch<SetStateAction<boolean>> // 设置刷新状态
-  scrollContainerId?: string // 滚动容器id
-}
 
 /**
  * PullDownRefresh组件

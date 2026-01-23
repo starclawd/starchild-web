@@ -1,8 +1,12 @@
 import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
-import { ReactNode, useMemo } from 'react'
+import { useMemo } from 'react'
 import styled, { css } from 'styled-components'
-import Select, { DataType, TriggerMethod } from 'components/Select'
+import Select, { TriggerMethod } from 'components/Select'
+import type { DataType } from 'components/Select/types'
+import type { ColumnDef, TableProps } from './types'
+
+export type { ColumnDef, TableProps }
 
 // 最外层容器
 const TableContainer = styled.div`
@@ -266,35 +270,6 @@ const Ellipsis = styled.span`
   font-size: 12px;
 `
 
-// 列定义接口
-export interface ColumnDef<T> {
-  key: string
-  title: ReactNode
-  width?: string
-  render?: (record: T, index: number) => ReactNode
-  align?: 'left' | 'center' | 'right'
-}
-
-// 表格属性接口
-export interface TableProps<T> {
-  data: T[]
-  columns: ColumnDef<T>[]
-  className?: string
-  emptyText?: ReactNode
-  headerHeight?: number // 表头高度，默认18px
-  rowHeight?: number // 表体行高，默认44px
-  rowGap?: number // 行间距，默认20px
-  headerBodyGap?: number // 表头和表体之间的间距，默认20px
-  showPagination?: boolean // 是否显示翻页器，仅在总页数大于1时显示
-  showPageSizeSelector?: boolean // 是否显示每页条数选择器，默认true，仅在有多页时生效
-  pageIndex?: number // 当前页码
-  totalSize?: number // 总数据条数
-  pageSize?: number // 每页条数，默认10
-  onPageChange?: (page: number) => void // 翻页回调
-  onPageSizeChange?: (pageSize: number) => void // 每页条数变化回调
-  onRowClick?: (record: T, index: number) => void // 行点击回调
-}
-
 // 表格组件
 function Table<T extends Record<string, any>>({
   data,
@@ -541,5 +516,9 @@ function Table<T extends Record<string, any>>({
     </TableContainer>
   )
 }
+
+export * from './components/SortComponents'
+export * from './hooks/useSort'
+export * from './hooks/useSortableHeader'
 
 export default Table

@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useCallback } from 'react'
 import { RootState } from 'store/index'
 import { changeIsPlaying, setActiveTab, setCarouselPaused } from '../reducer'
-import { TabKey } from 'constants/useCases'
+import { TabKey } from 'store/usecases/usecases.d'
 
 export const useActiveTab = () => {
   const activeTab = useSelector((state: RootState) => state.usecases.activeTab)

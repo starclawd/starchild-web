@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { AGENT_HUB_TYPE, TOKEN_DEEP_DIVE } from 'constants/agentHub'
+import { AGENT_HUB_TYPE, TOKEN_DEEP_DIVE } from 'store/agenthub/agenthub.d'
 import { useCurrentTokenInfo } from 'store/agenthub/hooks'
 import AgentHubPage from '../components/AgentHubPage'
 import TokenAgentList from './TokenAgentList'

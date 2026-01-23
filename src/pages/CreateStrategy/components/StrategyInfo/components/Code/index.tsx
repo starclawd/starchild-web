@@ -18,9 +18,9 @@ import { extractExecutableCode } from 'utils/extractExecutableCode'
 import { ButtonBorder } from 'components/Button'
 import codeBg from 'assets/createstrategy/code-bg.png'
 import TypewriterCursor from 'components/TypewriterCursor'
-import StrategyCodeVisualizer from 'components/StrategyCodeVisualizer'
+import StrategyCodeVisualizer from 'pages/CreateStrategy/components/StrategyInfo/components/StrategyCodeVisualizer'
 import { ANI_DURATION } from 'constants/index'
-import MoveTabList, { MoveType } from 'components/MoveTabList'
+import TabList, { TAB_TYPE } from 'components/TabList'
 import { useWindowSize } from 'hooks/useWindowSize'
 import { MEDIA_WIDTHS } from 'theme/styled'
 import { msg, t } from '@lingui/core/macro'
@@ -68,7 +68,7 @@ const Left = styled.div`
   .tab-list-wrapper {
     margin-right: 20px;
   }
-  .move-tab-item {
+  .tab-item {
     padding: 0;
   }
   .icon-circle-success {
@@ -88,7 +88,7 @@ const OperatorWrapper = styled.div`
     .active-indicator {
       height: 32px;
     }
-    .move-tab-item {
+    .tab-item {
       height: 32px;
     }
   }
@@ -461,7 +461,7 @@ export default memo(function Code() {
       <Header>
         <Left>
           {/* 视图切换 */}
-          {showViewToggle && <MoveTabList tabKey={viewMode} gap={20} tabList={tabList} />}
+          {showViewToggle && <TabList tabKey={viewMode} gap={20} tabList={tabList} />}
           {!isGeneratingCodeStatus && !isGeneratingCodeFrontend && (
             <>
               <IconBase className='icon-circle-success' />
@@ -470,7 +470,10 @@ export default memo(function Code() {
           )}
         </Left>
         <OperatorWrapper>
-          <RegenerateButton $disabled={isGeneratingCodeFrontend} onClick={() => handleGenerateCode(t(msg`Regenerate Code`))}>
+          <RegenerateButton
+            $disabled={isGeneratingCodeFrontend}
+            onClick={() => handleGenerateCode(t(msg`Regenerate Code`))}
+          >
             <IconBase className='icon-arrow-loading' />
             {isShowText && <Trans>Regenerate</Trans>}
           </RegenerateButton>

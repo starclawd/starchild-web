@@ -18,7 +18,6 @@ import { useTheme } from 'store/themecache/hooks'
 import ThreadItem from './components/ThreadItem'
 import { ButtonCommon } from 'components/Button'
 import { useIsMobile } from 'store/application/hooks'
-import TransitionWrapper from 'components/TransitionWrapper'
 import { useWindowSize } from 'hooks/useWindowSize'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import Pending from 'components/Pending'
@@ -360,79 +359,77 @@ export default memo(function AiThreadsList({ closeHistory }: { closeHistory?: ()
   return (
     <AiThreadsListWrapper>
       <ContentWrapper $noData={threadsList.length === 0 && !isLoadingThreadsList}>
-        <TransitionWrapper key={width} transitionType='width' visible={showHistory || isMobile}>
-          <TransitionInnerWrapper className='threads-list-wrapper'>
-            {threadsList.length > 0 ? (
-              <ContentListWrapper
-                ref={scrollRef}
-                style={{ display: showHistoryThread ? 'flex' : 'none' }}
-                className='scroll-style'
-                onTouchStart={(e) => e.stopPropagation()}
-                onTouchMove={(e) => e.stopPropagation()}
-                onTouchEnd={(e) => e.stopPropagation()}
-              >
-                {currentThreadData && (
-                  <CurrentThread $borderColor={theme.jade10} $borderRadius={isMobile ? 36 : 24} $isLoading={isLoading}>
-                    <span className='current-thread-left'>
-                      <span>{isMobile ? <Trans>Continue your last chat</Trans> : <Trans>Current Session</Trans>}</span>
+        <TransitionInnerWrapper className='threads-list-wrapper'>
+          {threadsList.length > 0 ? (
+            <ContentListWrapper
+              ref={scrollRef}
+              style={{ display: showHistoryThread ? 'flex' : 'none' }}
+              className='scroll-style'
+              onTouchStart={(e) => e.stopPropagation()}
+              onTouchMove={(e) => e.stopPropagation()}
+              onTouchEnd={(e) => e.stopPropagation()}
+            >
+              {currentThreadData && (
+                <CurrentThread $borderColor={theme.jade10} $borderRadius={isMobile ? 36 : 24} $isLoading={isLoading}>
+                  <span className='current-thread-left'>
+                    <span>{isMobile ? <Trans>Continue your last chat</Trans> : <Trans>Current Session</Trans>}</span>
+                    <ThreadItem
+                      isCurrentThread={true}
+                      data={currentThreadData}
+                      key={currentThreadData.createdAt}
+                      closeHistory={closeHistory}
+                      currentDeleteThreadId={currentDeleteThreadId}
+                      setCurrentDeleteThreadId={setCurrentDeleteThreadId}
+                    />
+                  </span>
+                  {!isMobile && (
+                    <span
+                      onClick={(e) => deleteThreads([currentThreadData.threadId], e)}
+                      className='current-thread-right'
+                    >
+                      {isLoading ? <Pending /> : <IconBase className='icon-delete' />}
+                    </span>
+                  )}
+                </CurrentThread>
+              )}
+              {otherThreadList.length > 0 && (
+                <ContentList>
+                  {otherThreadList.map((data: any) => {
+                    const { createdAt } = data
+                    return (
                       <ThreadItem
-                        isCurrentThread={true}
-                        data={currentThreadData}
-                        key={currentThreadData.createdAt}
+                        data={data}
+                        key={createdAt}
+                        isCurrentThread={false}
                         closeHistory={closeHistory}
                         currentDeleteThreadId={currentDeleteThreadId}
                         setCurrentDeleteThreadId={setCurrentDeleteThreadId}
                       />
-                    </span>
-                    {!isMobile && (
-                      <span
-                        onClick={(e) => deleteThreads([currentThreadData.threadId], e)}
-                        className='current-thread-right'
-                      >
-                        {isLoading ? <Pending /> : <IconBase className='icon-delete' />}
-                      </span>
-                    )}
-                  </CurrentThread>
+                    )
+                  })}
+                </ContentList>
+              )}
+            </ContentListWrapper>
+          ) : isLoadingThreadsList ? (
+            <Pending isNotButtonLoading />
+          ) : (
+            <NoData />
+          )}
+          {isOpenDeleteThread && isMobile && (
+            <OperatorWrapper>
+              <ButtonCancel onClick={() => setIsOpenDeleteThread(false)}>
+                <Trans>Cancel</Trans>
+              </ButtonCancel>
+              <ButtonDelete onClick={(e) => deleteThreads(selectThreadIds, e)}>
+                {currentDeleteThreadId ? (
+                  <Pending iconStyle={{ color: theme.black, fontSize: isMobile ? '.24rem' : '24px' }} />
+                ) : (
+                  <Trans>Delete</Trans>
                 )}
-                {otherThreadList.length > 0 && (
-                  <ContentList>
-                    {otherThreadList.map((data: any) => {
-                      const { createdAt } = data
-                      return (
-                        <ThreadItem
-                          data={data}
-                          key={createdAt}
-                          isCurrentThread={false}
-                          closeHistory={closeHistory}
-                          currentDeleteThreadId={currentDeleteThreadId}
-                          setCurrentDeleteThreadId={setCurrentDeleteThreadId}
-                        />
-                      )
-                    })}
-                  </ContentList>
-                )}
-              </ContentListWrapper>
-            ) : isLoadingThreadsList ? (
-              <Pending isNotButtonLoading />
-            ) : (
-              <NoData />
-            )}
-            {isOpenDeleteThread && isMobile && (
-              <OperatorWrapper>
-                <ButtonCancel onClick={() => setIsOpenDeleteThread(false)}>
-                  <Trans>Cancel</Trans>
-                </ButtonCancel>
-                <ButtonDelete onClick={(e) => deleteThreads(selectThreadIds, e)}>
-                  {currentDeleteThreadId ? (
-                    <Pending iconStyle={{ color: theme.black, fontSize: isMobile ? '.24rem' : '24px' }} />
-                  ) : (
-                    <Trans>Delete</Trans>
-                  )}
-                </ButtonDelete>
-              </OperatorWrapper>
-            )}
-          </TransitionInnerWrapper>
-        </TransitionWrapper>
+              </ButtonDelete>
+            </OperatorWrapper>
+          )}
+        </TransitionInnerWrapper>
       </ContentWrapper>
     </AiThreadsListWrapper>
   )

@@ -17,7 +17,7 @@ import { Trans } from '@lingui/react/macro'
 import ThinkList from './components/ThinkList'
 import Sources from './components/Sources'
 import { TempAiContentDataType } from 'store/chat/chat'
-import MoveTabList, { MoveType } from 'components/MoveTabList'
+import TabList, { TAB_TYPE } from 'components/TabList'
 import ThinkingProgress from '../ThinkingProgress'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { ANI_DURATION } from 'constants/index'
@@ -129,7 +129,7 @@ const TabWrapper = styled.div`
     css`
       .tab-list-wrapper {
         width: ${vm(170)};
-        .move-tab-item {
+        .tab-item {
           font-size: 0.14rem;
           line-height: 0.2rem;
         }
@@ -286,7 +286,7 @@ export default memo(function DeepThink({
         />
       </DeepThinkContent>
       <TabWrapper>
-        <MoveTabList tabKey={tabIndex} tabList={tabList} />
+        <TabList tabKey={tabIndex} tabList={tabList} />
       </TabWrapper>
       <TabContent>
         <Left />

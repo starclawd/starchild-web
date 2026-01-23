@@ -1,5 +1,5 @@
 import { createSlice, nanoid, PayloadAction } from '@reduxjs/toolkit'
-import { TabKey } from 'constants/useCases'
+import { TabKey } from 'store/usecases/usecases.d'
 import { AiSteamDataType, ROLE_TYPE, STREAM_DATA_TYPE, TempAiContentDataType } from 'store/chat/chat'
 
 export interface UseCasesState {

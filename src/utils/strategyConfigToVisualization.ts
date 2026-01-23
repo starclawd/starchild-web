@@ -115,9 +115,7 @@ export interface StrategyConfig {
     stop_loss?: string | StopConfig
     take_profit?: string | StopConfig
     hard_stop?: string[]
-    emergency_exit?:
-      | string
-      | { action?: string; account_risk_threshold?: number; account_drawdown?: number } // 紧急退出条件
+    emergency_exit?: string | { action?: string; account_risk_threshold?: number; account_drawdown?: number } // 紧急退出条件
     position_limits?: string | { no_hedging?: boolean; no_pyramiding?: boolean } // 仓位限制
     drawdown_priority?: string // 回撤优先级
     additional_risk?: string | string[] // 额外风险规则
@@ -257,146 +255,171 @@ export interface StrategyConfig {
 }
 
 /**
+ * 创建默认的 ParsedStrategy 对象（用于错误情况）
+ */
+function createDefaultParsedStrategy(): ParsedStrategy {
+  return {
+    name: 'Trading Strategy',
+    strategyType: 'Trading Strategy',
+    config: {
+      name: 'Trading Strategy',
+      signal_symbol: 'BTC',
+      trading_symbol: 'BTC',
+      timeframe: '1h',
+      leverage: '1x',
+      take_profit: '',
+      stop_loss: '',
+      polling_mode: 'adaptive',
+    },
+    dataSources: [],
+    indicators: [],
+    entryConditions: [],
+    exitConditions: [],
+    riskParams: {
+      takeProfit: 'Dynamic',
+      stopLoss: 'Dynamic',
+      leverage: '1x',
+      positionSize: '10%',
+    },
+    analyzeSteps: [],
+    decisionLogic: {
+      hasPosition: [{ condition: 'Exit condition met', action: 'CLOSE', description: 'Close existing position' }],
+      noPosition: [{ condition: 'Entry signal triggered', action: 'OPEN', description: 'Open new position' }],
+    },
+    vibe: '',
+  }
+}
+
+/**
  * 从 strategy_config 转换为 ParsedStrategy
  *
  * @param config - 策略配置数据
  * @returns ParsedStrategy 格式的数据
  */
 export function strategyConfigToVisualization(config: StrategyConfig): ParsedStrategy {
-  // 提取基本信息
-  const name = config.basic_info?.title || config.basic_info?.name || 'Trading Strategy'
-  const vibe = config.basic_info?.vibe || config.basic_info?.description || ''
-
-  // 提取交易品种（支持多币种，data_layer.symbols 可能是字符串描述）
-  const getSymbols = (): string[] => {
-    if (config.basic_info?.symbols) return config.basic_info.symbols
-    if (config.execution_layer?.symbols) return config.execution_layer.symbols
-    if (config.data_layer?.symbols) {
-      // data_layer.symbols 可能是字符串描述（如 "Top 50 tokens by market cap"）
-      if (typeof config.data_layer.symbols === 'string') {
-        return [config.data_layer.symbols]
-      }
-      return config.data_layer.symbols
-    }
-    if (config.data_layer?.symbol) return [config.data_layer.symbol]
-    return ['BTC']
+  // 参数校验
+  if (!config || typeof config !== 'object') {
+    console.warn('[strategyConfigToVisualization] Invalid config, returning default')
+    return createDefaultParsedStrategy()
   }
-  const symbols = getSymbols()
-  const primarySymbol = symbols[0] || 'BTC'
 
-  // 提取时间周期（多处可能定义）
-  const timeframe =
-    config.basic_info?.timeframe ||
-    config.data_layer?.timeframe ||
-    config.execution_layer?.timeframe ||
-    (config.data_layer?.timeframes?.length ? config.data_layer.timeframes[0] : undefined) ||
-    '1h'
+  try {
+    // 提取基本信息
+    const name = config.basic_info?.title || config.basic_info?.name || 'Trading Strategy'
+    const vibe = config.basic_info?.vibe || config.basic_info?.description || ''
 
-  // 提取数据源
-  const dataSources: DataSourceNode[] = (config.data_layer?.data_sources || []).map((src, i) => {
-    // 解析数据源字符串，例如 "Market Data (CoinGecko): BTC 1H OHLCV"
-    const match = src.match(/^([^(]+)\s*\(([^)]+)\):\s*(.+)$/)
-    if (match) {
+    // 提取交易品种（支持多币种，data_layer.symbols 可能是字符串描述）
+    const getSymbols = (): string[] => {
+      if (config.basic_info?.symbols) return config.basic_info.symbols
+      if (config.execution_layer?.symbols) return config.execution_layer.symbols
+      if (config.data_layer?.symbols) {
+        // data_layer.symbols 可能是字符串描述（如 "Top 50 tokens by market cap"）
+        if (typeof config.data_layer.symbols === 'string') {
+          return [config.data_layer.symbols]
+        }
+        return config.data_layer.symbols
+      }
+      if (config.data_layer?.symbol) return [config.data_layer.symbol]
+      return ['BTC']
+    }
+    const symbols = getSymbols()
+    const primarySymbol = symbols[0] || 'BTC'
+
+    // 提取时间周期（多处可能定义）
+    const timeframe =
+      config.basic_info?.timeframe ||
+      config.data_layer?.timeframe ||
+      config.execution_layer?.timeframe ||
+      (config.data_layer?.timeframes?.length ? config.data_layer.timeframes[0] : undefined) ||
+      '1h'
+
+    // 提取数据源
+    const dataSources: DataSourceNode[] = (config.data_layer?.data_sources || []).map((src, i) => {
+      // 确保 src 是字符串类型
+      const srcStr = typeof src === 'string' ? src : String(src || '')
+      // 解析数据源字符串，例如 "Market Data (CoinGecko): BTC 1H OHLCV"
+      const match = srcStr.match(/^([^(]+)\s*\(([^)]+)\):\s*(.+)$/)
+      if (match) {
+        return {
+          id: `ds-${i}`,
+          type: 'datasource' as const,
+          api: match[2], // CoinGecko
+          fields: [match[3]], // BTC 1H OHLCV
+        }
+      }
       return {
         id: `ds-${i}`,
         type: 'datasource' as const,
-        api: match[2], // CoinGecko
-        fields: [match[3]], // BTC 1H OHLCV
+        api: srcStr.split(':')[0] || srcStr,
+        fields: [srcStr],
       }
+    })
+
+    // 添加外部输入作为数据源（如地缘政治新闻）
+    if (config.data_layer?.external_inputs) {
+      config.data_layer.external_inputs.forEach((input, i) => {
+        dataSources.push({
+          id: `ds-ext-${i}`,
+          type: 'datasource' as const,
+          api: 'External',
+          fields: [input],
+        })
+      })
     }
-    return {
-      id: `ds-${i}`,
-      type: 'datasource' as const,
-      api: src.split(':')[0] || src,
-      fields: [src],
+
+    // 添加宏观指标作为数据源
+    if (config.data_layer?.macro_indicators) {
+      config.data_layer.macro_indicators.forEach((indicator, i) => {
+        dataSources.push({
+          id: `ds-macro-${i}`,
+          type: 'datasource' as const,
+          api: 'Macro',
+          fields: [indicator],
+        })
+      })
     }
-  })
 
-  // 添加外部输入作为数据源（如地缘政治新闻）
-  if (config.data_layer?.external_inputs) {
-    config.data_layer.external_inputs.forEach((input, i) => {
-      dataSources.push({
-        id: `ds-ext-${i}`,
-        type: 'datasource' as const,
-        api: 'External',
-        fields: [input],
+    // 提取指标（从 calculations 和 indicators 对象推断）
+    const indicators: IndicatorNode[] = []
+
+    // 从 calculations 数组提取
+    if (config.data_layer?.calculations) {
+      config.data_layer.calculations.forEach((calc, i) => {
+        indicators.push({
+          id: `ind-calc-${i}`,
+          type: 'indicator' as const,
+          name: extractIndicatorName(calc),
+          params: calc,
+        })
       })
-    })
-  }
+    }
 
-  // 添加宏观指标作为数据源
-  if (config.data_layer?.macro_indicators) {
-    config.data_layer.macro_indicators.forEach((indicator, i) => {
-      dataSources.push({
-        id: `ds-macro-${i}`,
-        type: 'datasource' as const,
-        api: 'Macro',
-        fields: [indicator],
+    // 从 indicators 对象提取（结构化的指标配置）
+    if (config.data_layer?.indicators) {
+      const indicatorEntries = Object.entries(config.data_layer.indicators)
+      indicatorEntries.forEach(([key, value], i) => {
+        const indicatorName = extractIndicatorNameFromConfig(key, value)
+        const params = formatIndicatorParams(key, value)
+        indicators.push({
+          id: `ind-obj-${i}`,
+          type: 'indicator' as const,
+          name: indicatorName,
+          params,
+        })
       })
-    })
-  }
+    }
 
-  // 提取指标（从 calculations 和 indicators 对象推断）
-  const indicators: IndicatorNode[] = []
+    // 提取入场条件
+    const entryConditions: ConditionNode[] = []
 
-  // 从 calculations 数组提取
-  if (config.data_layer?.calculations) {
-    config.data_layer.calculations.forEach((calc, i) => {
-      indicators.push({
-        id: `ind-calc-${i}`,
-        type: 'indicator' as const,
-        name: extractIndicatorName(calc),
-        params: calc,
-      })
-    })
-  }
-
-  // 从 indicators 对象提取（结构化的指标配置）
-  if (config.data_layer?.indicators) {
-    const indicatorEntries = Object.entries(config.data_layer.indicators)
-    indicatorEntries.forEach(([key, value], i) => {
-      const indicatorName = extractIndicatorNameFromConfig(key, value)
-      const params = formatIndicatorParams(key, value)
-      indicators.push({
-        id: `ind-obj-${i}`,
-        type: 'indicator' as const,
-        name: indicatorName,
-        params,
-      })
-    })
-  }
-
-  // 提取入场条件
-  const entryConditions: ConditionNode[] = []
-
-  // 从 signal_layer.entry_trigger 提取（数组形式）
-  if (config.signal_layer?.entry_trigger && Array.isArray(config.signal_layer.entry_trigger)) {
-    config.signal_layer.entry_trigger.forEach((trigger, i) => {
-      const direction = inferDirection(trigger)
-      const triggerType = inferTriggerType(trigger)
-
-      entryConditions.push({
-        id: `entry-${i}`,
-        type: 'condition' as const,
-        direction,
-        category: 'entry' as const,
-        triggerType,
-        conditions: [cleanConditionText(trigger)],
-        description: cleanConditionText(trigger),
-      })
-    })
-  }
-
-  // 从 signal_layer.entry_conditions 提取（可能是数组或对象）
-  if (config.signal_layer?.entry_conditions) {
-    const entryConditionsConfig = config.signal_layer.entry_conditions
-    if (Array.isArray(entryConditionsConfig)) {
-      // 数组形式
-      entryConditionsConfig.forEach((trigger, i) => {
+    // 从 signal_layer.entry_trigger 提取（数组形式）
+    if (config.signal_layer?.entry_trigger && Array.isArray(config.signal_layer.entry_trigger)) {
+      config.signal_layer.entry_trigger.forEach((trigger, i) => {
         const direction = inferDirection(trigger)
         const triggerType = inferTriggerType(trigger)
+
         entryConditions.push({
-          id: `entry-cond-${i}`,
+          id: `entry-${i}`,
           type: 'condition' as const,
           direction,
           category: 'entry' as const,
@@ -405,250 +428,250 @@ export function strategyConfigToVisualization(config: StrategyConfig): ParsedStr
           description: cleanConditionText(trigger),
         })
       })
-    } else if (typeof entryConditionsConfig === 'object') {
-      // 对象形式：{ long: {...} | string, short: {...} | string }
-      const { long: longCond, short: shortCond } = entryConditionsConfig as ConditionConfig
-      if (longCond) {
-        // 支持字符串形式的条件（如 "crossover(BTC_MA5, BTC_MA10)"）
-        if (typeof longCond === 'string') {
+    }
+
+    // 从 signal_layer.entry_conditions 提取（可能是数组或对象）
+    if (config.signal_layer?.entry_conditions) {
+      const entryConditionsConfig = config.signal_layer.entry_conditions
+      if (Array.isArray(entryConditionsConfig)) {
+        // 数组形式
+        entryConditionsConfig.forEach((trigger, i) => {
+          const direction = inferDirection(trigger)
+          const triggerType = inferTriggerType(trigger)
           entryConditions.push({
-            id: 'entry-cond-long',
+            id: `entry-cond-${i}`,
             type: 'condition' as const,
-            direction: 'long',
+            direction,
             category: 'entry' as const,
-            triggerType: inferTriggerType(longCond),
-            conditions: [longCond],
-            description: longCond,
+            triggerType,
+            conditions: [cleanConditionText(trigger)],
+            description: cleanConditionText(trigger),
           })
-        } else {
-          const conditions = extractConditionsFromObject(longCond)
-          if (conditions.length > 0) {
+        })
+      } else if (typeof entryConditionsConfig === 'object') {
+        // 对象形式：{ long: {...} | string, short: {...} | string }
+        const { long: longCond, short: shortCond } = entryConditionsConfig as ConditionConfig
+        if (longCond) {
+          // 支持字符串形式的条件（如 "crossover(BTC_MA5, BTC_MA10)"）
+          if (typeof longCond === 'string') {
             entryConditions.push({
               id: 'entry-cond-long',
               type: 'condition' as const,
               direction: 'long',
               category: 'entry' as const,
-              triggerType: inferTriggerTypeFromConditions(conditions),
-              conditions,
-              description: conditions.join(' AND '),
+              triggerType: inferTriggerType(longCond),
+              conditions: [longCond],
+              description: longCond,
             })
+          } else {
+            const conditions = extractConditionsFromObject(longCond)
+            if (conditions.length > 0) {
+              entryConditions.push({
+                id: 'entry-cond-long',
+                type: 'condition' as const,
+                direction: 'long',
+                category: 'entry' as const,
+                triggerType: inferTriggerTypeFromConditions(conditions),
+                conditions,
+                description: conditions.join(' AND '),
+              })
+            }
           }
         }
-      }
-      if (shortCond) {
-        // 支持字符串形式的条件（如 "crossunder(BTC_MA5, BTC_MA10)"）
-        if (typeof shortCond === 'string') {
-          entryConditions.push({
-            id: 'entry-cond-short',
-            type: 'condition' as const,
-            direction: 'short',
-            category: 'entry' as const,
-            triggerType: inferTriggerType(shortCond),
-            conditions: [shortCond],
-            description: shortCond,
-          })
-        } else {
-          const conditions = extractConditionsFromObject(shortCond)
-          if (conditions.length > 0) {
+        if (shortCond) {
+          // 支持字符串形式的条件（如 "crossunder(BTC_MA5, BTC_MA10)"）
+          if (typeof shortCond === 'string') {
             entryConditions.push({
               id: 'entry-cond-short',
               type: 'condition' as const,
               direction: 'short',
               category: 'entry' as const,
-              triggerType: inferTriggerTypeFromConditions(conditions),
-              conditions,
-              description: conditions.join(' AND '),
+              triggerType: inferTriggerType(shortCond),
+              conditions: [shortCond],
+              description: shortCond,
             })
+          } else {
+            const conditions = extractConditionsFromObject(shortCond)
+            if (conditions.length > 0) {
+              entryConditions.push({
+                id: 'entry-cond-short',
+                type: 'condition' as const,
+                direction: 'short',
+                category: 'entry' as const,
+                triggerType: inferTriggerTypeFromConditions(conditions),
+                conditions,
+                description: conditions.join(' AND '),
+              })
+            }
           }
         }
       }
     }
-  }
 
-  // 从 signal_layer.entry_long 提取做多入场条件（可能是数组或对象）
-  if (config.signal_layer?.entry_long) {
-    const entryLong = config.signal_layer.entry_long
-    if (Array.isArray(entryLong)) {
-      // 数组形式
-      entryLong.forEach((trigger, i) => {
-        const triggerType = inferTriggerType(trigger)
+    // 从 signal_layer.entry_long 提取做多入场条件（可能是数组或对象）
+    if (config.signal_layer?.entry_long) {
+      const entryLong = config.signal_layer.entry_long
+      if (Array.isArray(entryLong)) {
+        // 数组形式
+        entryLong.forEach((trigger, i) => {
+          const triggerType = inferTriggerType(trigger)
+          entryConditions.push({
+            id: `entry-long-${i}`,
+            type: 'condition' as const,
+            direction: 'long',
+            category: 'entry' as const,
+            triggerType,
+            conditions: [cleanConditionText(trigger)],
+            description: cleanConditionText(trigger),
+          })
+        })
+      } else if (typeof entryLong === 'object') {
+        // 对象形式：{ condition: "...", side: "Buy", symbol: "..." }
+        const condConfig = entryLong as ConditionConfig
+        const desc = condConfig.condition || `${condConfig.side || 'Long'} ${condConfig.symbol || ''}`
         entryConditions.push({
-          id: `entry-long-${i}`,
+          id: 'entry-long-obj',
           type: 'condition' as const,
           direction: 'long',
           category: 'entry' as const,
-          triggerType,
-          conditions: [cleanConditionText(trigger)],
-          description: cleanConditionText(trigger),
+          triggerType: inferTriggerType(desc),
+          conditions: [desc],
+          description: desc,
         })
-      })
-    } else if (typeof entryLong === 'object') {
-      // 对象形式：{ condition: "...", side: "Buy", symbol: "..." }
-      const condConfig = entryLong as ConditionConfig
-      const desc = condConfig.condition || `${condConfig.side || 'Long'} ${condConfig.symbol || ''}`
-      entryConditions.push({
-        id: 'entry-long-obj',
-        type: 'condition' as const,
-        direction: 'long',
-        category: 'entry' as const,
-        triggerType: inferTriggerType(desc),
-        conditions: [desc],
-        description: desc,
-      })
+      }
     }
-  }
 
-  // 从 signal_layer.entry_short 提取做空入场条件（可能是数组或对象）
-  if (config.signal_layer?.entry_short) {
-    const entryShort = config.signal_layer.entry_short
-    if (Array.isArray(entryShort)) {
-      // 数组形式
-      entryShort.forEach((trigger, i) => {
-        const triggerType = inferTriggerType(trigger)
+    // 从 signal_layer.entry_short 提取做空入场条件（可能是数组或对象）
+    if (config.signal_layer?.entry_short) {
+      const entryShort = config.signal_layer.entry_short
+      if (Array.isArray(entryShort)) {
+        // 数组形式
+        entryShort.forEach((trigger, i) => {
+          const triggerType = inferTriggerType(trigger)
+          entryConditions.push({
+            id: `entry-short-${i}`,
+            type: 'condition' as const,
+            direction: 'short',
+            category: 'entry' as const,
+            triggerType,
+            conditions: [cleanConditionText(trigger)],
+            description: cleanConditionText(trigger),
+          })
+        })
+      } else if (typeof entryShort === 'object') {
+        // 对象形式：{ condition: "...", side: "Sell", symbol: "..." }
+        const condConfig = entryShort as ConditionConfig
+        const desc = condConfig.condition || `${condConfig.side || 'Short'} ${condConfig.symbol || ''}`
         entryConditions.push({
-          id: `entry-short-${i}`,
+          id: 'entry-short-obj',
           type: 'condition' as const,
           direction: 'short',
           category: 'entry' as const,
-          triggerType,
-          conditions: [cleanConditionText(trigger)],
-          description: cleanConditionText(trigger),
+          triggerType: inferTriggerType(desc),
+          conditions: [desc],
+          description: desc,
+        })
+      }
+    }
+
+    // 从 signal_layer.selection_logic 添加选币逻辑作为入场条件
+    if (config.signal_layer?.selection_logic) {
+      config.signal_layer.selection_logic.forEach((logic, i) => {
+        const direction = inferDirection(logic)
+        entryConditions.push({
+          id: `entry-selection-${i}`,
+          type: 'condition' as const,
+          direction,
+          category: 'entry' as const,
+          triggerType: 'signal',
+          conditions: [cleanConditionText(logic)],
+          description: cleanConditionText(logic),
         })
       })
-    } else if (typeof entryShort === 'object') {
-      // 对象形式：{ condition: "...", side: "Sell", symbol: "..." }
-      const condConfig = entryShort as ConditionConfig
-      const desc = condConfig.condition || `${condConfig.side || 'Short'} ${condConfig.symbol || ''}`
+    }
+
+    // 从 signal_layer.grid_logic 添加网格逻辑
+    if (config.signal_layer?.grid_logic) {
       entryConditions.push({
-        id: 'entry-short-obj',
+        id: 'entry-grid',
         type: 'condition' as const,
-        direction: 'short',
+        direction: 'both',
         category: 'entry' as const,
-        triggerType: inferTriggerType(desc),
-        conditions: [desc],
-        description: desc,
+        triggerType: 'signal',
+        conditions: [config.signal_layer.grid_logic],
+        description: config.signal_layer.grid_logic,
       })
     }
-  }
 
-  // 从 signal_layer.selection_logic 添加选币逻辑作为入场条件
-  if (config.signal_layer?.selection_logic) {
-    config.signal_layer.selection_logic.forEach((logic, i) => {
-      const direction = inferDirection(logic)
-      entryConditions.push({
-        id: `entry-selection-${i}`,
-        type: 'condition' as const,
-        direction,
-        category: 'entry' as const,
-        triggerType: 'signal',
-        conditions: [cleanConditionText(logic)],
-        description: cleanConditionText(logic),
-      })
-    })
-  }
-
-  // 从 signal_layer.grid_logic 添加网格逻辑
-  if (config.signal_layer?.grid_logic) {
-    entryConditions.push({
-      id: 'entry-grid',
-      type: 'condition' as const,
-      direction: 'both',
-      category: 'entry' as const,
-      triggerType: 'signal',
-      conditions: [config.signal_layer.grid_logic],
-      description: config.signal_layer.grid_logic,
-    })
-  }
-
-  // 从 signal_layer.add_position_trigger 添加加仓条件
-  if (config.signal_layer?.add_position_trigger) {
-    config.signal_layer.add_position_trigger.forEach((trigger, i) => {
-      const direction = inferDirection(trigger)
-      entryConditions.push({
-        id: `entry-add-${i}`,
-        type: 'condition' as const,
-        direction,
-        category: 'entry' as const,
-        triggerType: 'signal',
-        conditions: [cleanConditionText(trigger)],
-        description: `Add Position: ${cleanConditionText(trigger)}`,
-      })
-    })
-  }
-
-  // 从 signal_layer.signal_strength 添加信号强度描述
-  if (config.signal_layer?.signal_strength) {
-    config.signal_layer.signal_strength.forEach((strength, i) => {
-      const direction = inferDirection(strength)
-      entryConditions.push({
-        id: `entry-strength-${i}`,
-        type: 'condition' as const,
-        direction,
-        category: 'entry' as const,
-        triggerType: 'signal',
-        conditions: [cleanConditionText(strength)],
-        description: cleanConditionText(strength),
-      })
-    })
-  }
-
-  // 从 execution_layer 补充入场条件
-  if (entryConditions.length === 0) {
-    if (config.execution_layer?.long_entry?.condition) {
-      entryConditions.push({
-        id: 'entry-long',
-        type: 'condition' as const,
-        direction: 'long',
-        category: 'entry' as const,
-        triggerType: 'signal',
-        conditions: [config.execution_layer.long_entry.condition],
-        description: config.execution_layer.long_entry.condition,
+    // 从 signal_layer.add_position_trigger 添加加仓条件
+    if (config.signal_layer?.add_position_trigger) {
+      config.signal_layer.add_position_trigger.forEach((trigger, i) => {
+        const direction = inferDirection(trigger)
+        entryConditions.push({
+          id: `entry-add-${i}`,
+          type: 'condition' as const,
+          direction,
+          category: 'entry' as const,
+          triggerType: 'signal',
+          conditions: [cleanConditionText(trigger)],
+          description: `Add Position: ${cleanConditionText(trigger)}`,
+        })
       })
     }
-    if (config.execution_layer?.short_entry?.condition) {
-      entryConditions.push({
-        id: 'entry-short',
-        type: 'condition' as const,
-        direction: 'short',
-        category: 'entry' as const,
-        triggerType: 'signal',
-        conditions: [config.execution_layer.short_entry.condition],
-        description: config.execution_layer.short_entry.condition,
+
+    // 从 signal_layer.signal_strength 添加信号强度描述
+    if (config.signal_layer?.signal_strength) {
+      config.signal_layer.signal_strength.forEach((strength, i) => {
+        const direction = inferDirection(strength)
+        entryConditions.push({
+          id: `entry-strength-${i}`,
+          type: 'condition' as const,
+          direction,
+          category: 'entry' as const,
+          triggerType: 'signal',
+          conditions: [cleanConditionText(strength)],
+          description: cleanConditionText(strength),
+        })
       })
     }
-  }
 
-  // 提取退出条件
-  const exitConditions: ConditionNode[] = []
+    // 从 execution_layer 补充入场条件
+    if (entryConditions.length === 0) {
+      if (config.execution_layer?.long_entry?.condition) {
+        entryConditions.push({
+          id: 'entry-long',
+          type: 'condition' as const,
+          direction: 'long',
+          category: 'entry' as const,
+          triggerType: 'signal',
+          conditions: [config.execution_layer.long_entry.condition],
+          description: config.execution_layer.long_entry.condition,
+        })
+      }
+      if (config.execution_layer?.short_entry?.condition) {
+        entryConditions.push({
+          id: 'entry-short',
+          type: 'condition' as const,
+          direction: 'short',
+          category: 'entry' as const,
+          triggerType: 'signal',
+          conditions: [config.execution_layer.short_entry.condition],
+          description: config.execution_layer.short_entry.condition,
+        })
+      }
+    }
 
-  // 从 signal_layer.exit_trigger 提取（数组形式）
-  if (config.signal_layer?.exit_trigger && Array.isArray(config.signal_layer.exit_trigger)) {
-    config.signal_layer.exit_trigger.forEach((trigger, i) => {
-      const direction = inferDirection(trigger)
-      const triggerType = inferExitTriggerType(trigger)
+    // 提取退出条件
+    const exitConditions: ConditionNode[] = []
 
-      exitConditions.push({
-        id: `exit-${i}`,
-        type: 'condition' as const,
-        direction,
-        category: 'exit' as const,
-        triggerType,
-        conditions: [cleanConditionText(trigger)],
-        description: cleanConditionText(trigger),
-      })
-    })
-  }
-
-  // 从 signal_layer.exit_conditions 提取（可能是数组或对象）
-  if (config.signal_layer?.exit_conditions) {
-    const exitConditionsConfig = config.signal_layer.exit_conditions
-    if (Array.isArray(exitConditionsConfig)) {
-      // 数组形式
-      exitConditionsConfig.forEach((trigger, i) => {
+    // 从 signal_layer.exit_trigger 提取（数组形式）
+    if (config.signal_layer?.exit_trigger && Array.isArray(config.signal_layer.exit_trigger)) {
+      config.signal_layer.exit_trigger.forEach((trigger, i) => {
         const direction = inferDirection(trigger)
         const triggerType = inferExitTriggerType(trigger)
+
         exitConditions.push({
-          id: `exit-cond-${i}`,
+          id: `exit-${i}`,
           type: 'condition' as const,
           direction,
           category: 'exit' as const,
@@ -657,270 +680,295 @@ export function strategyConfigToVisualization(config: StrategyConfig): ParsedStr
           description: cleanConditionText(trigger),
         })
       })
-    } else if (typeof exitConditionsConfig === 'object') {
-      // 检查是否是 { long: string, short: string } 形式
-      const exitObj = exitConditionsConfig as Record<string, boolean | string>
-      if ('long' in exitObj || 'short' in exitObj) {
-        // { long: "crossunder(...)", short: "crossover(...)" } 形式
-        if (exitObj.long && typeof exitObj.long === 'string') {
+    }
+
+    // 从 signal_layer.exit_conditions 提取（可能是数组或对象）
+    if (config.signal_layer?.exit_conditions) {
+      const exitConditionsConfig = config.signal_layer.exit_conditions
+      if (Array.isArray(exitConditionsConfig)) {
+        // 数组形式
+        exitConditionsConfig.forEach((trigger, i) => {
+          const direction = inferDirection(trigger)
+          const triggerType = inferExitTriggerType(trigger)
           exitConditions.push({
-            id: 'exit-cond-long',
+            id: `exit-cond-${i}`,
             type: 'condition' as const,
-            direction: 'long',
+            direction,
             category: 'exit' as const,
-            triggerType: inferExitTriggerType(exitObj.long),
-            conditions: [exitObj.long],
-            description: `Exit Long: ${exitObj.long}`,
+            triggerType,
+            conditions: [cleanConditionText(trigger)],
+            description: cleanConditionText(trigger),
           })
-        }
-        if (exitObj.short && typeof exitObj.short === 'string') {
-          exitConditions.push({
-            id: 'exit-cond-short',
-            type: 'condition' as const,
-            direction: 'short',
-            category: 'exit' as const,
-            triggerType: inferExitTriggerType(exitObj.short),
-            conditions: [exitObj.short],
-            description: `Exit Short: ${exitObj.short}`,
-          })
-        }
-      } else {
-        // 对象形式：{ stop_loss_hit: true, take_profit_hit: true, opposite_signal: true }
-        const conditions = extractConditionsFromObject(exitObj)
-        if (conditions.length > 0) {
-          exitConditions.push({
-            id: 'exit-cond-obj',
-            type: 'condition' as const,
-            direction: 'both',
-            category: 'exit' as const,
-            triggerType: inferTriggerTypeFromConditions(conditions),
-            conditions,
-            description: conditions.join(' OR '),
-          })
+        })
+      } else if (typeof exitConditionsConfig === 'object') {
+        // 检查是否是 { long: string, short: string } 形式
+        const exitObj = exitConditionsConfig as Record<string, boolean | string>
+        if ('long' in exitObj || 'short' in exitObj) {
+          // { long: "crossunder(...)", short: "crossover(...)" } 形式
+          if (exitObj.long && typeof exitObj.long === 'string') {
+            exitConditions.push({
+              id: 'exit-cond-long',
+              type: 'condition' as const,
+              direction: 'long',
+              category: 'exit' as const,
+              triggerType: inferExitTriggerType(exitObj.long),
+              conditions: [exitObj.long],
+              description: `Exit Long: ${exitObj.long}`,
+            })
+          }
+          if (exitObj.short && typeof exitObj.short === 'string') {
+            exitConditions.push({
+              id: 'exit-cond-short',
+              type: 'condition' as const,
+              direction: 'short',
+              category: 'exit' as const,
+              triggerType: inferExitTriggerType(exitObj.short),
+              conditions: [exitObj.short],
+              description: `Exit Short: ${exitObj.short}`,
+            })
+          }
+        } else {
+          // 对象形式：{ stop_loss_hit: true, take_profit_hit: true, opposite_signal: true }
+          const conditions = extractConditionsFromObject(exitObj)
+          if (conditions.length > 0) {
+            exitConditions.push({
+              id: 'exit-cond-obj',
+              type: 'condition' as const,
+              direction: 'both',
+              category: 'exit' as const,
+              triggerType: inferTriggerTypeFromConditions(conditions),
+              conditions,
+              description: conditions.join(' OR '),
+            })
+          }
         }
       }
     }
-  }
 
-  // 从 signal_layer.rebalance_trigger 添加再平衡触发条件
-  if (config.signal_layer?.rebalance_trigger) {
-    config.signal_layer.rebalance_trigger.forEach((trigger, i) => {
-      exitConditions.push({
-        id: `exit-rebalance-${i}`,
-        type: 'condition' as const,
-        direction: 'both',
-        category: 'exit' as const,
-        triggerType: 'signal',
-        conditions: [cleanConditionText(trigger)],
-        description: cleanConditionText(trigger),
+    // 从 signal_layer.rebalance_trigger 添加再平衡触发条件
+    if (config.signal_layer?.rebalance_trigger) {
+      config.signal_layer.rebalance_trigger.forEach((trigger, i) => {
+        exitConditions.push({
+          id: `exit-rebalance-${i}`,
+          type: 'condition' as const,
+          direction: 'both',
+          category: 'exit' as const,
+          triggerType: 'signal',
+          conditions: [cleanConditionText(trigger)],
+          description: cleanConditionText(trigger),
+        })
       })
-    })
-  }
-
-  // 从 signal_layer.position_management 添加仓位管理规则
-  if (config.signal_layer?.position_management) {
-    config.signal_layer.position_management.forEach((rule, i) => {
-      exitConditions.push({
-        id: `exit-mgmt-${i}`,
-        type: 'condition' as const,
-        direction: 'both',
-        category: 'exit' as const,
-        triggerType: 'signal',
-        conditions: [cleanConditionText(rule)],
-        description: cleanConditionText(rule),
-      })
-    })
-  }
-
-  // 从 execution_layer 补充退出条件
-  if (config.execution_layer?.exit?.condition) {
-    exitConditions.push({
-      id: 'exit-signal',
-      type: 'condition' as const,
-      direction: 'both',
-      category: 'exit' as const,
-      triggerType: 'signal',
-      conditions: [config.execution_layer.exit.condition],
-      description: config.execution_layer.exit.condition,
-    })
-  }
-
-  // 添加 TP/SL 条件
-  const tpValue = extractStopValue(config.risk_layer?.tp || config.risk_layer?.take_profit)
-  if (tpValue && tpValue !== 'N/A' && tpValue !== '') {
-    exitConditions.push({
-      id: 'exit-tp',
-      type: 'condition' as const,
-      direction: 'both',
-      category: 'exit' as const,
-      triggerType: 'take_profit',
-      conditions: [`Take Profit: ${tpValue}`],
-      description: `Take Profit: ${tpValue}`,
-    })
-  }
-
-  const slValue = extractStopValue(config.risk_layer?.sl || config.risk_layer?.stop_loss)
-  if (slValue && slValue !== 'N/A' && slValue !== '') {
-    exitConditions.push({
-      id: 'exit-sl',
-      type: 'condition' as const,
-      direction: 'both',
-      category: 'exit' as const,
-      triggerType: 'stop_loss',
-      conditions: [`Stop Loss: ${slValue}`],
-      description: `Stop Loss: ${slValue}`,
-    })
-  }
-
-  // 添加时间退出条件
-  if (config.risk_layer?.time_exit) {
-    exitConditions.push({
-      id: 'exit-time',
-      type: 'condition' as const,
-      direction: 'both',
-      category: 'exit' as const,
-      triggerType: 'signal',
-      conditions: [`Time Exit: ${config.risk_layer.time_exit}`],
-      description: `Time Exit: ${config.risk_layer.time_exit}`,
-    })
-  }
-
-  // 添加紧急退出条件
-  if (config.risk_layer?.emergency_exit) {
-    const emergencyExitValue = formatEmergencyExit(config.risk_layer.emergency_exit)
-    exitConditions.push({
-      id: 'exit-emergency',
-      type: 'condition' as const,
-      direction: 'both',
-      category: 'exit' as const,
-      triggerType: 'stop_loss',
-      conditions: [`Emergency Exit: ${emergencyExitValue}`],
-      description: `Emergency Exit: ${emergencyExitValue}`,
-    })
-  }
-
-  // 提取风险参数
-  const leverage = extractLeverage(config)
-  const positionSize = extractPositionSize(config)
-  const takeProfit = extractStopValue(config.risk_layer?.tp || config.risk_layer?.take_profit) || 'Dynamic'
-  const stopLoss = extractStopValue(config.risk_layer?.sl || config.risk_layer?.stop_loss) || 'Dynamic'
-  const hardStops = config.risk_layer?.hard_stop || []
-
-  // 提取额外的资本层参数
-  const marginType = config.capital_layer?.margin_type
-  const maxExposure = config.capital_layer?.max_total_exposure
-  const rebalanceRule = config.capital_layer?.rebalance_rule
-  const maxPositions = config.capital_layer?.max_positions
-
-  // 构建分析步骤
-  const analyzeSteps: AnalyzeStep[] = [
-    {
-      id: 'step-1',
-      label: 'Fetch Data',
-      description: dataSources.map((ds) => ds.api).join(', ') || 'Market Data',
-    },
-    {
-      id: 'step-2',
-      label: 'Calculate',
-      description: (config.data_layer?.calculations || []).slice(0, 3).join(', ') || 'Price Analysis',
-    },
-    {
-      id: 'step-3',
-      label: 'Check Signals',
-      description: 'Evaluate entry/exit conditions',
-    },
-  ]
-
-  // 如果有网格参数，添加网格步骤
-  if (config.data_layer?.grid_parameters) {
-    analyzeSteps.push({
-      id: 'step-4',
-      label: 'Grid Management',
-      description: `${config.data_layer.grid_parameters.grid_levels || 10} levels, ${config.data_layer.grid_parameters.grid_spacing || '2%'} spacing`,
-    })
-  }
-
-  // 如果有再平衡逻辑，添加再平衡步骤
-  if (config.signal_layer?.rebalance_trigger || config.execution_layer?.rebalance_mechanism) {
-    analyzeSteps.push({
-      id: 'step-rebalance',
-      label: 'Rebalance',
-      description: config.data_layer?.update_frequency || 'Periodic rebalancing',
-    })
-  }
-
-  // 构建决策逻辑
-  const decisionLogic = {
-    noPosition: entryConditions.map((c) => ({
-      condition: c.description,
-      action: c.direction === 'long' ? 'BUY' : c.direction === 'short' ? 'SELL' : 'TRADE',
-      description: c.description,
-    })),
-    hasPosition: exitConditions.map((c) => ({
-      condition: c.description,
-      action: c.triggerType === 'take_profit' ? 'TAKE PROFIT' : c.triggerType === 'stop_loss' ? 'STOP LOSS' : 'EXIT',
-      description: c.description,
-    })),
-  }
-
-  // 推断策略类型
-  const strategyType = inferStrategyType(name, vibe, config)
-
-  // 构建额外风险参数
-  const additionalRiskParams: Record<string, string> = {}
-  if (marginType) additionalRiskParams.marginType = marginType
-  if (maxExposure) additionalRiskParams.maxExposure = maxExposure
-  if (rebalanceRule) additionalRiskParams.rebalanceRule = rebalanceRule
-  if (maxPositions) additionalRiskParams.maxPositions = String(maxPositions)
-  if (config.risk_layer?.position_limits) {
-    const posLimits = config.risk_layer.position_limits
-    if (typeof posLimits === 'string') {
-      additionalRiskParams.positionLimits = posLimits
-    } else {
-      // 对象形式转换为字符串
-      const parts = []
-      if (posLimits.no_hedging) parts.push('No Hedging')
-      if (posLimits.no_pyramiding) parts.push('No Pyramiding')
-      if (parts.length > 0) additionalRiskParams.positionLimits = parts.join(', ')
     }
-  }
-  if (config.risk_layer?.drawdown_priority) additionalRiskParams.drawdownPriority = config.risk_layer.drawdown_priority
-  if (config.risk_layer?.market_neutral) additionalRiskParams.marketNeutral = config.risk_layer.market_neutral
-  if (config.risk_layer?.funding_rate_check)
-    additionalRiskParams.fundingRateCheck = config.risk_layer.funding_rate_check
 
-  return {
-    name,
-    strategyType,
-    config: {
+    // 从 signal_layer.position_management 添加仓位管理规则
+    if (config.signal_layer?.position_management) {
+      config.signal_layer.position_management.forEach((rule, i) => {
+        exitConditions.push({
+          id: `exit-mgmt-${i}`,
+          type: 'condition' as const,
+          direction: 'both',
+          category: 'exit' as const,
+          triggerType: 'signal',
+          conditions: [cleanConditionText(rule)],
+          description: cleanConditionText(rule),
+        })
+      })
+    }
+
+    // 从 execution_layer 补充退出条件
+    if (config.execution_layer?.exit?.condition) {
+      exitConditions.push({
+        id: 'exit-signal',
+        type: 'condition' as const,
+        direction: 'both',
+        category: 'exit' as const,
+        triggerType: 'signal',
+        conditions: [config.execution_layer.exit.condition],
+        description: config.execution_layer.exit.condition,
+      })
+    }
+
+    // 添加 TP/SL 条件
+    const tpValue = extractStopValue(config.risk_layer?.tp || config.risk_layer?.take_profit)
+    if (tpValue && tpValue !== 'N/A' && tpValue !== '') {
+      exitConditions.push({
+        id: 'exit-tp',
+        type: 'condition' as const,
+        direction: 'both',
+        category: 'exit' as const,
+        triggerType: 'take_profit',
+        conditions: [`Take Profit: ${tpValue}`],
+        description: `Take Profit: ${tpValue}`,
+      })
+    }
+
+    const slValue = extractStopValue(config.risk_layer?.sl || config.risk_layer?.stop_loss)
+    if (slValue && slValue !== 'N/A' && slValue !== '') {
+      exitConditions.push({
+        id: 'exit-sl',
+        type: 'condition' as const,
+        direction: 'both',
+        category: 'exit' as const,
+        triggerType: 'stop_loss',
+        conditions: [`Stop Loss: ${slValue}`],
+        description: `Stop Loss: ${slValue}`,
+      })
+    }
+
+    // 添加时间退出条件
+    if (config.risk_layer?.time_exit) {
+      exitConditions.push({
+        id: 'exit-time',
+        type: 'condition' as const,
+        direction: 'both',
+        category: 'exit' as const,
+        triggerType: 'signal',
+        conditions: [`Time Exit: ${config.risk_layer.time_exit}`],
+        description: `Time Exit: ${config.risk_layer.time_exit}`,
+      })
+    }
+
+    // 添加紧急退出条件
+    if (config.risk_layer?.emergency_exit) {
+      const emergencyExitValue = formatEmergencyExit(config.risk_layer.emergency_exit)
+      exitConditions.push({
+        id: 'exit-emergency',
+        type: 'condition' as const,
+        direction: 'both',
+        category: 'exit' as const,
+        triggerType: 'stop_loss',
+        conditions: [`Emergency Exit: ${emergencyExitValue}`],
+        description: `Emergency Exit: ${emergencyExitValue}`,
+      })
+    }
+
+    // 提取风险参数
+    const leverage = extractLeverage(config)
+    const positionSize = extractPositionSize(config)
+    const takeProfit = extractStopValue(config.risk_layer?.tp || config.risk_layer?.take_profit) || 'Dynamic'
+    const stopLoss = extractStopValue(config.risk_layer?.sl || config.risk_layer?.stop_loss) || 'Dynamic'
+    const hardStops = config.risk_layer?.hard_stop || []
+
+    // 提取额外的资本层参数
+    const marginType = config.capital_layer?.margin_type
+    const maxExposure = config.capital_layer?.max_total_exposure
+    const rebalanceRule = config.capital_layer?.rebalance_rule
+    const maxPositions = config.capital_layer?.max_positions
+
+    // 构建分析步骤
+    const analyzeSteps: AnalyzeStep[] = [
+      {
+        id: 'step-1',
+        label: 'Fetch Data',
+        description: dataSources.map((ds) => ds.api).join(', ') || 'Market Data',
+      },
+      {
+        id: 'step-2',
+        label: 'Calculate',
+        description: (config.data_layer?.calculations || []).slice(0, 3).join(', ') || 'Price Analysis',
+      },
+      {
+        id: 'step-3',
+        label: 'Check Signals',
+        description: 'Evaluate entry/exit conditions',
+      },
+    ]
+
+    // 如果有网格参数，添加网格步骤
+    if (config.data_layer?.grid_parameters) {
+      analyzeSteps.push({
+        id: 'step-4',
+        label: 'Grid Management',
+        description: `${config.data_layer.grid_parameters.grid_levels || 10} levels, ${config.data_layer.grid_parameters.grid_spacing || '2%'} spacing`,
+      })
+    }
+
+    // 如果有再平衡逻辑，添加再平衡步骤
+    if (config.signal_layer?.rebalance_trigger || config.execution_layer?.rebalance_mechanism) {
+      analyzeSteps.push({
+        id: 'step-rebalance',
+        label: 'Rebalance',
+        description: config.data_layer?.update_frequency || 'Periodic rebalancing',
+      })
+    }
+
+    // 构建决策逻辑
+    const decisionLogic = {
+      noPosition: entryConditions.map((c) => ({
+        condition: c.description,
+        action: c.direction === 'long' ? 'BUY' : c.direction === 'short' ? 'SELL' : 'TRADE',
+        description: c.description,
+      })),
+      hasPosition: exitConditions.map((c) => ({
+        condition: c.description,
+        action: c.triggerType === 'take_profit' ? 'TAKE PROFIT' : c.triggerType === 'stop_loss' ? 'STOP LOSS' : 'EXIT',
+        description: c.description,
+      })),
+    }
+
+    // 推断策略类型
+    const strategyType = inferStrategyType(name, vibe, config)
+
+    // 构建额外风险参数
+    const additionalRiskParams: Record<string, string> = {}
+    if (marginType) additionalRiskParams.marginType = marginType
+    if (maxExposure) additionalRiskParams.maxExposure = maxExposure
+    if (rebalanceRule) additionalRiskParams.rebalanceRule = rebalanceRule
+    if (maxPositions) additionalRiskParams.maxPositions = String(maxPositions)
+    if (config.risk_layer?.position_limits) {
+      const posLimits = config.risk_layer.position_limits
+      if (typeof posLimits === 'string') {
+        additionalRiskParams.positionLimits = posLimits
+      } else {
+        // 对象形式转换为字符串
+        const parts = []
+        if (posLimits.no_hedging) parts.push('No Hedging')
+        if (posLimits.no_pyramiding) parts.push('No Pyramiding')
+        if (parts.length > 0) additionalRiskParams.positionLimits = parts.join(', ')
+      }
+    }
+    if (config.risk_layer?.drawdown_priority)
+      additionalRiskParams.drawdownPriority = config.risk_layer.drawdown_priority
+    if (config.risk_layer?.market_neutral) additionalRiskParams.marketNeutral = config.risk_layer.market_neutral
+    if (config.risk_layer?.funding_rate_check)
+      additionalRiskParams.fundingRateCheck = config.risk_layer.funding_rate_check
+
+    return {
       name,
-      signal_symbol: primarySymbol,
-      trading_symbol: primarySymbol,
-      symbols: symbols.length > 1 ? symbols : undefined,
-      timeframe,
-      leverage,
-      take_profit: takeProfit,
-      stop_loss: stopLoss,
-      polling_mode: 'adaptive',
-      position_size: positionSize,
-      margin_type: marginType,
-    },
-    dataSources,
-    indicators,
-    entryConditions,
-    exitConditions,
-    riskParams: {
-      takeProfit,
-      stopLoss,
-      leverage,
-      positionSize,
-      hardStops: hardStops.length > 0 ? hardStops : undefined,
-      ...additionalRiskParams,
-    },
-    analyzeSteps,
-    decisionLogic,
-    vibe,
-    calculations: config.data_layer?.calculations,
+      strategyType,
+      config: {
+        name,
+        signal_symbol: primarySymbol,
+        trading_symbol: primarySymbol,
+        symbols: symbols.length > 1 ? symbols : undefined,
+        timeframe,
+        leverage,
+        take_profit: takeProfit,
+        stop_loss: stopLoss,
+        polling_mode: 'adaptive',
+        position_size: positionSize,
+        margin_type: marginType,
+      },
+      dataSources,
+      indicators,
+      entryConditions,
+      exitConditions,
+      riskParams: {
+        takeProfit,
+        stopLoss,
+        leverage,
+        positionSize,
+        hardStops: hardStops.length > 0 ? hardStops : undefined,
+        ...additionalRiskParams,
+      },
+      analyzeSteps,
+      decisionLogic,
+      vibe,
+      calculations: config.data_layer?.calculations,
+    }
+  } catch (error) {
+    console.error('[strategyConfigToVisualization] Failed to convert config:', error)
+    return createDefaultParsedStrategy()
   }
 }
 
@@ -1069,6 +1117,7 @@ function extractIndicatorName(calc: string): string {
  * 从条件文本推断方向
  */
 function inferDirection(text: string): 'long' | 'short' | 'both' {
+  if (!text || typeof text !== 'string') return 'both'
   const lower = text.toLowerCase()
 
   // Long 方向关键词
@@ -1137,6 +1186,7 @@ function inferDirection(text: string): 'long' | 'short' | 'both' {
  * 从条件文本推断触发类型
  */
 function inferTriggerType(text: string): ConditionNode['triggerType'] {
+  if (!text || typeof text !== 'string') return 'signal'
   const lower = text.toLowerCase()
 
   if (lower.includes('cross')) return 'crossover'

@@ -9,12 +9,13 @@ import { formatNumber } from 'utils/format'
 import { toFix } from 'utils/calc'
 import { useStrategyPositions } from 'store/vaultsdetail/hooks/useStrategyPositions'
 import NoData from 'components/NoData'
-import { useSort, useSortableHeader, SortDirection } from 'components/TableSortableColumn'
+import { useSort, useSortableHeader } from 'components/Table'
 import { VaultPositionsOrdersProps } from '../..'
 import { DETAIL_TYPE } from 'store/vaultsdetail/vaultsdetail'
 import { StyledTable, LoadingWrapper } from '../../styles'
 import { useSymbolPrecision } from 'store/vaults/hooks'
 import LazyImage from 'components/LazyImage'
+import { SortDirection } from 'components/Table/types'
 
 // Symbol 显示组件
 const SymbolCell = styled.div`

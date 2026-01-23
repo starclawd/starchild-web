@@ -115,6 +115,12 @@ function parseStyledComponentName(className: string): string | null {
   return null
 }
 
+// 判断是否为公共组件路径
+function isCommonComponentPath(path: string | null): boolean {
+  if (!path) return false
+  return path.includes('/src/components/') || path.includes('src/components/')
+}
+
 // 从 DOM 元素获取组件信息
 function getElementInfo(element: HTMLElement): ElementInfo | null {
   let current: HTMLElement | null = element
@@ -124,6 +130,12 @@ function getElementInfo(element: HTMLElement): ElementInfo | null {
   let line: number | null = null
   let column: number | null = null
 
+  // 存储公共组件信息，作为备选
+  let commonComponentFilePath: string | null = null
+  let commonComponentRelativePath: string | null = null
+  let commonComponentLine: number | null = null
+  let commonComponentColumn: number | null = null
+
   // 向上遍历找到有 data-inspector-file 属性或 styled-component 类名的元素
   while (current) {
     // 检查是否有 inspector 数据属性
@@ -132,11 +144,24 @@ function getElementInfo(element: HTMLElement): ElementInfo | null {
     const inspectorLine = current.getAttribute('data-inspector-line')
     const inspectorColumn = current.getAttribute('data-inspector-column')
 
-    if (inspectorFile && !filePath) {
-      filePath = inspectorFile
-      relativePath = inspectorPath
-      line = inspectorLine ? parseInt(inspectorLine, 10) : null
-      column = inspectorColumn ? parseInt(inspectorColumn, 10) : null
+    if (inspectorFile) {
+      // 检查是否为公共组件
+      if (isCommonComponentPath(inspectorFile)) {
+        // 如果还没有保存公共组件信息，保存下来作为备选
+        if (!commonComponentFilePath) {
+          commonComponentFilePath = inspectorFile
+          commonComponentRelativePath = inspectorPath
+          commonComponentLine = inspectorLine ? parseInt(inspectorLine, 10) : null
+          commonComponentColumn = inspectorColumn ? parseInt(inspectorColumn, 10) : null
+        }
+        // 继续向上查找引用该公共组件的组件
+      } else if (!filePath) {
+        // 找到非公共组件的文件路径
+        filePath = inspectorFile
+        relativePath = inspectorPath
+        line = inspectorLine ? parseInt(inspectorLine, 10) : null
+        column = inspectorColumn ? parseInt(inspectorColumn, 10) : null
+      }
     }
 
     // 检查 styled-component 类名获取组件名
@@ -148,12 +173,20 @@ function getElementInfo(element: HTMLElement): ElementInfo | null {
       }
     }
 
-    // 如果已经找到了文件路径和组件名，可以停止
+    // 如果已经找到了非公共组件的文件路径和组件名，可以停止
     if (filePath && componentName) {
       break
     }
 
     current = current.parentElement
+  }
+
+  // 如果没有找到非公共组件的文件路径，使用公共组件的路径作为备选
+  if (!filePath && commonComponentFilePath) {
+    filePath = commonComponentFilePath
+    relativePath = commonComponentRelativePath
+    line = commonComponentLine
+    column = commonComponentColumn
   }
 
   // 如果没有找到组件名，使用标签名

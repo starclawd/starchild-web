@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react'
 import styled from 'styled-components'
 import Table from './index'
-import { useSort, useSortableHeader, SortDirection } from 'components/TableSortableColumn'
+import { useSort, useSortableHeader } from 'components/Table'
+import { SortDirection } from './types'
 
 // 示例样式
 const DemoContainer = styled.div`
@@ -233,7 +234,7 @@ const SortableTableExample: React.FC = () => {
 
       <CodeBlock>
         {`// 1. 导入排序相关的hooks和组件
-import { useSort, useSortableHeader, SortDirection } from 'components/TableSortColumn';
+import { useSort, useSortableHeader, SortDirection } from 'components/Table';
 
 // 2. 在组件中使用排序功能
 const SortableTableExample: React.FC = () => {
@@ -241,6 +242,7 @@ const SortableTableExample: React.FC = () => {
   const createSortableHeader = useSortableHeader(sortState, handleSort);
 
   // 3. 实现数据排序逻辑
+  // 排序顺序：无排序 → 降序 → 升序 → 无排序
   const sortedUsers = useMemo(() => {
     if (sortState.field === null || sortState.direction === SortDirection.NONE) {
       return originalUsers;
@@ -261,6 +263,7 @@ const SortableTableExample: React.FC = () => {
       return 0;
     });
 
+    // 降序时反转数组
     return sortState.direction === SortDirection.DESC ? sorted.reverse() : sorted;
   }, [originalUsers, sortState]);
 
@@ -812,20 +815,27 @@ const sortedData = useMemo(() => {
       bValue = bValue.toLowerCase();
     }
 
+    // 升序排序
     if (aValue < bValue) return -1;
     if (aValue > bValue) return 1;
     return 0;
   });
 
-  // 降序需要反转数组
+  // 降序时反转数组
   return sortState.direction === SortDirection.DESC ? sorted.reverse() : sorted;
-}, [originalData, sortState]);`}
+}, [originalData, sortState]);
+
+// 排序顺序说明：
+// 1. 首次点击：无排序 → 降序 (DESC)
+// 2. 再次点击：降序 → 升序 (ASC)
+// 3. 第三次点击：升序 → 无排序 (NONE)
+// 4. 切换到其他列：自动重置为降序 (DESC)`}
           </CodeBlock>
 
           <h3>排序功能特点</h3>
           <ul style={{ color: '#B0B0B0', lineHeight: '1.6', marginLeft: '20px' }}>
-            <li>点击列标题切换排序：无排序 → 升序 → 降序 → 无排序</li>
-            <li>切换到不同列时，自动重置为升序</li>
+            <li>点击列标题切换排序：无排序 → 降序 → 升序 → 无排序</li>
+            <li>切换到不同列时，自动重置为降序</li>
             <li>提供视觉化的排序箭头指示器</li>
             <li>支持自定义初始排序字段和方向</li>
             <li>完全的TypeScript类型支持</li>

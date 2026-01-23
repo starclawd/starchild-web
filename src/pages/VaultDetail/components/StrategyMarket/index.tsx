@@ -10,7 +10,8 @@ import { formatPercent, getStatValueColor } from 'utils/format'
 import { useTheme } from 'store/themecache/hooks'
 import { useToggleStrategyId } from 'hooks/useAddUrlParam'
 import { useResetAllState } from 'store/vaultsdetail/hooks/useResetAllState'
-import { useSort, SortArrows, SortableHeader, SortDirection } from 'components/TableSortableColumn'
+import { useSort, SortArrows, SortableHeader } from 'components/Table'
+import { SortDirection } from 'components/Table/types'
 import { isInvalidValue } from 'utils/calc'
 
 const StrategyMarketWrapper = styled.div<{ $isShowStrategyMarket: boolean }>`

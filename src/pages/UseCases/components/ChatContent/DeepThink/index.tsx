@@ -12,12 +12,12 @@ import { Trans } from '@lingui/react/macro'
 import ThinkList from './components/ThinkList'
 import Sources from './components/Sources'
 import { TempAiContentDataType } from 'store/chat/chat'
-import MoveTabList from 'components/MoveTabList'
+import TabList from 'components/TabList'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { ANI_DURATION } from 'constants/index'
 import ThinkingProgress from 'pages/Chat/components/ThinkingProgress'
 import { useActiveTab } from 'store/usecases/hooks/useUseCasesHooks'
-import { USE_CASES_TAB_KEY } from 'constants/useCases'
+import { USE_CASES_TAB_KEY } from 'store/usecases/usecases.d'
 const DeepThinkWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -126,7 +126,7 @@ const TabWrapper = styled.div`
     css`
       .tab-list-wrapper {
         width: ${vm(170)};
-        .move-tab-item {
+        .tab-item {
           font-size: 0.14rem;
           line-height: 0.2rem;
         }
@@ -296,7 +296,7 @@ export default memo(function DeepThink({
         />
       </DeepThinkContent>
       <TabWrapper>
-        <MoveTabList tabKey={tabIndex} tabList={tabList} />
+        <TabList tabKey={tabIndex} tabList={tabList} />
       </TabWrapper>
       <TabContent>
         <Left />

@@ -1,5 +1,5 @@
 import { Trans } from '@lingui/react/macro'
-import MoveTabList, { MoveType } from 'components/MoveTabList'
+import TabListComponent, { TAB_TYPE } from 'components/TabList'
 import { vm } from 'pages/helper'
 import { useCallback, useMemo, useState } from 'react'
 import { useChatTabIndex } from 'store/chat/hooks'
@@ -44,8 +44,8 @@ export default function TabList() {
   }, [changeTabIndex])
   return (
     <TabListWrapper>
-      <MoveTabList
-        moveType={MoveType.BG}
+      <TabListComponent
+        tabType={TAB_TYPE.BG}
         activeIndicatorBackground={theme.black500}
         tabKey={chatTabIndex}
         tabList={tabList}
