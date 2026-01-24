@@ -62,10 +62,23 @@ interface DataSourceNodeData {
 
 function DataSourceNode({ data }: NodeProps) {
   const rawData = data as unknown as DataSourceNodeData
+  // 辅助函数：安全转换为字符串
+  const safeString = (val: unknown, fallback = ''): string => {
+    if (typeof val === 'string') return val
+    if (val && typeof val === 'object') {
+      const obj = val as Record<string, unknown>
+      if ('name' in obj) return String(obj.name || fallback)
+      if ('api' in obj) return String(obj.api || fallback)
+      if ('value' in obj) return String(obj.value || fallback)
+    }
+    return val ? String(val) : fallback
+  }
   // 防御性编程：确保字段有默认值
   const nodeData = {
-    api: rawData.api || 'API',
-    fields: Array.isArray(rawData.fields) ? rawData.fields : [],
+    api: safeString(rawData.api, 'API'),
+    fields: Array.isArray(rawData.fields) 
+      ? rawData.fields.map((f) => safeString(f)).filter(Boolean)
+      : [],
   }
 
   return (

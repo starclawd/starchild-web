@@ -137,13 +137,32 @@ interface ConditionNodeData {
 
 function ConditionNode({ data }: NodeProps) {
   const rawData = data as unknown as ConditionNodeData
+  // 辅助函数：安全转换为字符串
+  const safeString = (val: unknown, fallback = ''): string => {
+    if (typeof val === 'string') return val
+    if (val && typeof val === 'object') {
+      const obj = val as Record<string, unknown>
+      if ('condition' in obj) return String(obj.condition || fallback)
+      if ('description' in obj) return String(obj.description || fallback)
+      if ('value' in obj) return String(obj.value || fallback)
+      try {
+        const json = JSON.stringify(val)
+        return json.length > 100 ? json.substring(0, 97) + '...' : json
+      } catch {
+        return fallback
+      }
+    }
+    return val ? String(val) : fallback
+  }
   // 防御性编程：确保所有字段都有默认值
   const nodeData = {
     direction: rawData.direction || 'both',
     category: rawData.category || 'entry',
     triggerType: rawData.triggerType || 'signal',
-    conditions: Array.isArray(rawData.conditions) ? rawData.conditions : [],
-    description: rawData.description || '',
+    conditions: Array.isArray(rawData.conditions) 
+      ? rawData.conditions.map((c) => safeString(c)).filter(Boolean)
+      : [],
+    description: safeString(rawData.description),
   }
 
   const getTriggerLabel = (type: string) => {

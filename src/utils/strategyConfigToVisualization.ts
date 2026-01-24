@@ -6,6 +6,78 @@
 
 import type { ParsedStrategy, ConditionNode, DataSourceNode, IndicatorNode, AnalyzeStep } from './parseStrategyCode'
 
+// ============================================
+// 类型安全辅助函数
+// ============================================
+
+/**
+ * 安全地将任意值转换为字符串
+ * - 字符串直接返回
+ * - 对象尝试提取常用字段（symbol, name, value, condition 等）或 JSON 序列化
+ * - 其他类型转为字符串
+ */
+function safeString(value: unknown, fallback = ''): string {
+  if (value === null || value === undefined) return fallback
+  if (typeof value === 'string') return value
+  if (typeof value === 'number' || typeof value === 'boolean') return String(value)
+  if (typeof value === 'object') {
+    // 尝试提取常用字段
+    const obj = value as Record<string, unknown>
+    if ('symbol' in obj && obj.symbol) return safeString(obj.symbol)
+    if ('name' in obj && obj.name) return safeString(obj.name)
+    if ('value' in obj && obj.value !== undefined) return safeString(obj.value)
+    if ('condition' in obj && obj.condition) return safeString(obj.condition)
+    if ('description' in obj && obj.description) return safeString(obj.description)
+    // 最后尝试 JSON 序列化（限制长度）
+    try {
+      const json = JSON.stringify(value)
+      return json.length > 100 ? json.substring(0, 97) + '...' : json
+    } catch {
+      return fallback
+    }
+  }
+  return String(value)
+}
+
+/**
+ * 安全地将值转换为字符串数组
+ */
+function safeStringArray(value: unknown): string[] {
+  if (!value) return []
+  if (typeof value === 'string') return [value]
+  if (Array.isArray(value)) {
+    return value.map((item) => safeString(item)).filter(Boolean)
+  }
+  return []
+}
+
+/**
+ * 检查值是否为非空数组
+ */
+function isNonEmptyArray(value: unknown): value is unknown[] {
+  return Array.isArray(value) && value.length > 0
+}
+
+/**
+ * 检查值是否为非空对象（非数组）
+ */
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value)
+}
+
+/**
+ * 将 key 转换为可读标签（如 "max_loss" -> "Max Loss"）
+ */
+function formatKeyToLabel(key: string): string {
+  if (!key || typeof key !== 'string') return ''
+  return key
+    .replace(/_/g, ' ')
+    .replace(/([a-z])([A-Z])/g, '$1 $2')
+    .split(' ')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ')
+}
+
 /**
  * 指标配置的对象形式
  */
@@ -308,18 +380,42 @@ export function strategyConfigToVisualization(config: StrategyConfig): ParsedStr
     const name = config.basic_info?.title || config.basic_info?.name || 'Trading Strategy'
     const vibe = config.basic_info?.vibe || config.basic_info?.description || ''
 
-    // 提取交易品种（支持多币种，data_layer.symbols 可能是字符串描述）
+    // 提取交易品种（支持多币种，data_layer.symbols 可能是字符串描述或对象数组）
     const getSymbols = (): string[] => {
-      if (config.basic_info?.symbols) return config.basic_info.symbols
-      if (config.execution_layer?.symbols) return config.execution_layer.symbols
+      // 辅助函数：将 symbol 数组转换为字符串数组
+      const normalizeSymbols = (symbols: unknown[]): string[] => {
+        return symbols.map((s) => {
+          if (typeof s === 'string') return s
+          // 如果是对象，尝试提取 symbol 字段
+          if (s && typeof s === 'object' && 'symbol' in s) {
+            return String((s as { symbol: unknown }).symbol)
+          }
+          return String(s)
+        })
+      }
+
+      if (config.basic_info?.symbols) {
+        return normalizeSymbols(config.basic_info.symbols)
+      }
+      if (config.execution_layer?.symbols) {
+        return normalizeSymbols(config.execution_layer.symbols)
+      }
       if (config.data_layer?.symbols) {
         // data_layer.symbols 可能是字符串描述（如 "Top 50 tokens by market cap"）
         if (typeof config.data_layer.symbols === 'string') {
           return [config.data_layer.symbols]
         }
-        return config.data_layer.symbols
+        return normalizeSymbols(config.data_layer.symbols as unknown[])
       }
-      if (config.data_layer?.symbol) return [config.data_layer.symbol]
+      if (config.data_layer?.symbol) {
+        const sym = config.data_layer.symbol
+        // symbol 也可能是对象
+        if (typeof sym === 'string') return [sym]
+        if (sym && typeof sym === 'object' && 'symbol' in sym) {
+          return [String((sym as { symbol: unknown }).symbol)]
+        }
+        return [String(sym)]
+      }
       return ['BTC']
     }
     const symbols = getSymbols()
@@ -334,47 +430,59 @@ export function strategyConfigToVisualization(config: StrategyConfig): ParsedStr
       '1h'
 
     // 提取数据源
-    const dataSources: DataSourceNode[] = (config.data_layer?.data_sources || []).map((src, i) => {
-      // 确保 src 是字符串类型
-      const srcStr = typeof src === 'string' ? src : String(src || '')
-      // 解析数据源字符串，例如 "Market Data (CoinGecko): BTC 1H OHLCV"
-      const match = srcStr.match(/^([^(]+)\s*\(([^)]+)\):\s*(.+)$/)
-      if (match) {
-        return {
-          id: `ds-${i}`,
-          type: 'datasource' as const,
-          api: match[2], // CoinGecko
-          fields: [match[3]], // BTC 1H OHLCV
+    const dataSources: DataSourceNode[] = []
+    const rawDataSources = config.data_layer?.data_sources
+    if (isNonEmptyArray(rawDataSources)) {
+      rawDataSources.forEach((src, i) => {
+        // 确保 src 是字符串类型
+        const srcStr = safeString(src)
+        if (!srcStr) return
+        // 解析数据源字符串，例如 "Market Data (CoinGecko): BTC 1H OHLCV"
+        const match = srcStr.match(/^([^(]+)\s*\(([^)]+)\):\s*(.+)$/)
+        if (match) {
+          dataSources.push({
+            id: `ds-${i}`,
+            type: 'datasource' as const,
+            api: match[2], // CoinGecko
+            fields: [match[3]], // BTC 1H OHLCV
+          })
+        } else {
+          dataSources.push({
+            id: `ds-${i}`,
+            type: 'datasource' as const,
+            api: srcStr.split(':')[0] || srcStr,
+            fields: [srcStr],
+          })
         }
-      }
-      return {
-        id: `ds-${i}`,
-        type: 'datasource' as const,
-        api: srcStr.split(':')[0] || srcStr,
-        fields: [srcStr],
-      }
-    })
+      })
+    }
 
     // 添加外部输入作为数据源（如地缘政治新闻）
-    if (config.data_layer?.external_inputs) {
-      config.data_layer.external_inputs.forEach((input, i) => {
+    const externalInputs = config.data_layer?.external_inputs
+    if (isNonEmptyArray(externalInputs)) {
+      externalInputs.forEach((input, i) => {
+        const inputStr = safeString(input)
+        if (!inputStr) return
         dataSources.push({
           id: `ds-ext-${i}`,
           type: 'datasource' as const,
           api: 'External',
-          fields: [input],
+          fields: [inputStr],
         })
       })
     }
 
     // 添加宏观指标作为数据源
-    if (config.data_layer?.macro_indicators) {
-      config.data_layer.macro_indicators.forEach((indicator, i) => {
+    const macroIndicators = config.data_layer?.macro_indicators
+    if (isNonEmptyArray(macroIndicators)) {
+      macroIndicators.forEach((indicator, i) => {
+        const indicatorStr = safeString(indicator)
+        if (!indicatorStr) return
         dataSources.push({
           id: `ds-macro-${i}`,
           type: 'datasource' as const,
           api: 'Macro',
-          fields: [indicator],
+          fields: [indicatorStr],
         })
       })
     }
@@ -383,23 +491,28 @@ export function strategyConfigToVisualization(config: StrategyConfig): ParsedStr
     const indicators: IndicatorNode[] = []
 
     // 从 calculations 数组提取
-    if (config.data_layer?.calculations) {
-      config.data_layer.calculations.forEach((calc, i) => {
+    const calculations = config.data_layer?.calculations
+    if (isNonEmptyArray(calculations)) {
+      calculations.forEach((calc, i) => {
+        const calcStr = safeString(calc)
+        if (!calcStr) return
         indicators.push({
           id: `ind-calc-${i}`,
           type: 'indicator' as const,
-          name: extractIndicatorName(calc),
-          params: calc,
+          name: extractIndicatorName(calcStr),
+          params: calcStr,
         })
       })
     }
 
     // 从 indicators 对象提取（结构化的指标配置）
-    if (config.data_layer?.indicators) {
-      const indicatorEntries = Object.entries(config.data_layer.indicators)
+    const indicatorsConfig = config.data_layer?.indicators
+    if (isPlainObject(indicatorsConfig)) {
+      const indicatorEntries = Object.entries(indicatorsConfig)
       indicatorEntries.forEach(([key, value], i) => {
-        const indicatorName = extractIndicatorNameFromConfig(key, value)
-        const params = formatIndicatorParams(key, value)
+        if (!key || !isPlainObject(value)) return
+        const indicatorName = extractIndicatorNameFromConfig(key, value as IndicatorConfig)
+        const params = formatIndicatorParams(key, value as IndicatorConfig)
         indicators.push({
           id: `ind-obj-${i}`,
           type: 'indicator' as const,
@@ -413,10 +526,13 @@ export function strategyConfigToVisualization(config: StrategyConfig): ParsedStr
     const entryConditions: ConditionNode[] = []
 
     // 从 signal_layer.entry_trigger 提取（数组形式）
-    if (config.signal_layer?.entry_trigger && Array.isArray(config.signal_layer.entry_trigger)) {
-      config.signal_layer.entry_trigger.forEach((trigger, i) => {
-        const direction = inferDirection(trigger)
-        const triggerType = inferTriggerType(trigger)
+    const entryTrigger = config.signal_layer?.entry_trigger
+    if (isNonEmptyArray(entryTrigger)) {
+      entryTrigger.forEach((trigger, i) => {
+        const triggerStr = safeString(trigger)
+        if (!triggerStr) return
+        const direction = inferDirection(triggerStr)
+        const triggerType = inferTriggerType(triggerStr)
 
         entryConditions.push({
           id: `entry-${i}`,
@@ -424,83 +540,175 @@ export function strategyConfigToVisualization(config: StrategyConfig): ParsedStr
           direction,
           category: 'entry' as const,
           triggerType,
-          conditions: [cleanConditionText(trigger)],
-          description: cleanConditionText(trigger),
+          conditions: [cleanConditionText(triggerStr)],
+          description: cleanConditionText(triggerStr),
         })
       })
     }
 
     // 从 signal_layer.entry_conditions 提取（可能是数组或对象）
-    if (config.signal_layer?.entry_conditions) {
-      const entryConditionsConfig = config.signal_layer.entry_conditions
+    const entryConditionsConfig = config.signal_layer?.entry_conditions
+    if (entryConditionsConfig) {
       if (Array.isArray(entryConditionsConfig)) {
         // 数组形式
         entryConditionsConfig.forEach((trigger, i) => {
-          const direction = inferDirection(trigger)
-          const triggerType = inferTriggerType(trigger)
+          const triggerStr = safeString(trigger)
+          if (!triggerStr) return
+          const direction = inferDirection(triggerStr)
+          const triggerType = inferTriggerType(triggerStr)
           entryConditions.push({
             id: `entry-cond-${i}`,
             type: 'condition' as const,
             direction,
             category: 'entry' as const,
             triggerType,
-            conditions: [cleanConditionText(trigger)],
-            description: cleanConditionText(trigger),
+            conditions: [cleanConditionText(triggerStr)],
+            description: cleanConditionText(triggerStr),
           })
         })
-      } else if (typeof entryConditionsConfig === 'object') {
-        // 对象形式：{ long: {...} | string, short: {...} | string }
-        const { long: longCond, short: shortCond } = entryConditionsConfig as ConditionConfig
-        if (longCond) {
-          // 支持字符串形式的条件（如 "crossover(BTC_MA5, BTC_MA10)"）
-          if (typeof longCond === 'string') {
-            entryConditions.push({
-              id: 'entry-cond-long',
-              type: 'condition' as const,
-              direction: 'long',
-              category: 'entry' as const,
-              triggerType: inferTriggerType(longCond),
-              conditions: [longCond],
-              description: longCond,
-            })
-          } else {
-            const conditions = extractConditionsFromObject(longCond)
-            if (conditions.length > 0) {
+      } else if (isPlainObject(entryConditionsConfig)) {
+        const condConfigObj = entryConditionsConfig as Record<string, unknown>
+
+        // 检查是否有 stage1_detection / stage2_confirmation 结构（Persistence Trader 格式）
+        if ('stage1_detection' in condConfigObj || 'stage2_confirmation' in condConfigObj) {
+          // 处理 stage1_detection
+          const stage1 = condConfigObj.stage1_detection
+          if (isPlainObject(stage1)) {
+            const stage1Obj = stage1 as Record<string, unknown>
+            // 提取 golden_cross (做多信号)
+            if (stage1Obj.golden_cross && typeof stage1Obj.golden_cross === 'string') {
+              entryConditions.push({
+                id: 'entry-stage1-long',
+                type: 'condition' as const,
+                direction: 'long',
+                category: 'entry' as const,
+                triggerType: 'crossover',
+                conditions: [`Stage 1: ${stage1Obj.golden_cross}`],
+                description: `Stage 1 Detection: ${stage1Obj.golden_cross}`,
+              })
+            }
+            // 提取 death_cross (做空信号)
+            if (stage1Obj.death_cross && typeof stage1Obj.death_cross === 'string') {
+              entryConditions.push({
+                id: 'entry-stage1-short',
+                type: 'condition' as const,
+                direction: 'short',
+                category: 'entry' as const,
+                triggerType: 'crossover',
+                conditions: [`Stage 1: ${stage1Obj.death_cross}`],
+                description: `Stage 1 Detection: ${stage1Obj.death_cross}`,
+              })
+            }
+          }
+          // 处理 stage2_confirmation
+          const stage2 = condConfigObj.stage2_confirmation
+          if (isPlainObject(stage2)) {
+            const stage2Obj = stage2 as Record<string, unknown>
+            // 提取 long_conditions
+            if (Array.isArray(stage2Obj.long_conditions)) {
+              const longConds = safeStringArray(stage2Obj.long_conditions)
+              if (longConds.length > 0) {
+                entryConditions.push({
+                  id: 'entry-stage2-long',
+                  type: 'condition' as const,
+                  direction: 'long',
+                  category: 'entry' as const,
+                  triggerType: 'indicator',
+                  conditions: longConds,
+                  description: `Stage 2 Confirmation (Long): ${longConds.slice(0, 2).join(', ')}${longConds.length > 2 ? '...' : ''}`,
+                })
+              }
+            }
+            // 提取 short_conditions
+            if (Array.isArray(stage2Obj.short_conditions)) {
+              const shortConds = safeStringArray(stage2Obj.short_conditions)
+              if (shortConds.length > 0) {
+                entryConditions.push({
+                  id: 'entry-stage2-short',
+                  type: 'condition' as const,
+                  direction: 'short',
+                  category: 'entry' as const,
+                  triggerType: 'indicator',
+                  conditions: shortConds,
+                  description: `Stage 2 Confirmation (Short): ${shortConds.slice(0, 2).join(', ')}${shortConds.length > 2 ? '...' : ''}`,
+                })
+              }
+            }
+          }
+        } else {
+          // 标准对象形式：{ long: {...} | string, short: {...} | string }
+          const condConfig = entryConditionsConfig as ConditionConfig
+          const longCond = condConfig.long
+          const shortCond = condConfig.short
+          if (longCond) {
+            // 支持字符串形式的条件（如 "crossover(BTC_MA5, BTC_MA10)"）
+            if (typeof longCond === 'string') {
               entryConditions.push({
                 id: 'entry-cond-long',
                 type: 'condition' as const,
                 direction: 'long',
                 category: 'entry' as const,
-                triggerType: inferTriggerTypeFromConditions(conditions),
-                conditions,
-                description: conditions.join(' AND '),
+                triggerType: inferTriggerType(longCond),
+                conditions: [longCond],
+                description: longCond,
               })
+            } else if (isPlainObject(longCond)) {
+              const conditions = extractConditionsFromObject(longCond as Record<string, boolean | string>)
+              if (conditions.length > 0) {
+                entryConditions.push({
+                  id: 'entry-cond-long',
+                  type: 'condition' as const,
+                  direction: 'long',
+                  category: 'entry' as const,
+                  triggerType: inferTriggerTypeFromConditions(conditions),
+                  conditions,
+                  description: conditions.join(' AND '),
+                })
+              }
             }
           }
-        }
-        if (shortCond) {
-          // 支持字符串形式的条件（如 "crossunder(BTC_MA5, BTC_MA10)"）
-          if (typeof shortCond === 'string') {
-            entryConditions.push({
-              id: 'entry-cond-short',
-              type: 'condition' as const,
-              direction: 'short',
-              category: 'entry' as const,
-              triggerType: inferTriggerType(shortCond),
-              conditions: [shortCond],
-              description: shortCond,
-            })
-          } else {
-            const conditions = extractConditionsFromObject(shortCond)
-            if (conditions.length > 0) {
+          if (shortCond) {
+            // 支持字符串形式的条件（如 "crossunder(BTC_MA5, BTC_MA10)"）
+            if (typeof shortCond === 'string') {
               entryConditions.push({
                 id: 'entry-cond-short',
                 type: 'condition' as const,
                 direction: 'short',
                 category: 'entry' as const,
-                triggerType: inferTriggerTypeFromConditions(conditions),
-                conditions,
-                description: conditions.join(' AND '),
+                triggerType: inferTriggerType(shortCond),
+                conditions: [shortCond],
+                description: shortCond,
+              })
+            } else if (isPlainObject(shortCond)) {
+              const conditions = extractConditionsFromObject(shortCond as Record<string, boolean | string>)
+              if (conditions.length > 0) {
+                entryConditions.push({
+                  id: 'entry-cond-short',
+                  type: 'condition' as const,
+                  direction: 'short',
+                  category: 'entry' as const,
+                  triggerType: inferTriggerTypeFromConditions(conditions),
+                  conditions,
+                  description: conditions.join(' AND '),
+                })
+              }
+            }
+          }
+
+          // 处理其他嵌套的条件对象（如 { max_loss: string, trailing_stop: string } 结构）
+          // 遍历所有键，如果值是字符串，则作为条件添加
+          for (const [key, value] of Object.entries(condConfigObj)) {
+            if (key === 'long' || key === 'short') continue // 已经处理过
+            if (typeof value === 'string') {
+              const direction = inferDirection(value)
+              entryConditions.push({
+                id: `entry-cond-${key}`,
+                type: 'condition' as const,
+                direction,
+                category: 'entry' as const,
+                triggerType: inferTriggerType(value),
+                conditions: [value],
+                description: `${formatKeyToLabel(key)}: ${value}`,
               })
             }
           }
@@ -509,26 +717,29 @@ export function strategyConfigToVisualization(config: StrategyConfig): ParsedStr
     }
 
     // 从 signal_layer.entry_long 提取做多入场条件（可能是数组或对象）
-    if (config.signal_layer?.entry_long) {
-      const entryLong = config.signal_layer.entry_long
+    const entryLong = config.signal_layer?.entry_long
+    if (entryLong) {
       if (Array.isArray(entryLong)) {
         // 数组形式
         entryLong.forEach((trigger, i) => {
-          const triggerType = inferTriggerType(trigger)
+          const triggerStr = safeString(trigger)
+          if (!triggerStr) return
+          const triggerType = inferTriggerType(triggerStr)
           entryConditions.push({
             id: `entry-long-${i}`,
             type: 'condition' as const,
             direction: 'long',
             category: 'entry' as const,
             triggerType,
-            conditions: [cleanConditionText(trigger)],
-            description: cleanConditionText(trigger),
+            conditions: [cleanConditionText(triggerStr)],
+            description: cleanConditionText(triggerStr),
           })
         })
-      } else if (typeof entryLong === 'object') {
+      } else if (isPlainObject(entryLong)) {
         // 对象形式：{ condition: "...", side: "Buy", symbol: "..." }
         const condConfig = entryLong as ConditionConfig
-        const desc = condConfig.condition || `${condConfig.side || 'Long'} ${condConfig.symbol || ''}`
+        const desc =
+          safeString(condConfig.condition) || `${safeString(condConfig.side, 'Long')} ${safeString(condConfig.symbol)}`
         entryConditions.push({
           id: 'entry-long-obj',
           type: 'condition' as const,
@@ -542,26 +753,29 @@ export function strategyConfigToVisualization(config: StrategyConfig): ParsedStr
     }
 
     // 从 signal_layer.entry_short 提取做空入场条件（可能是数组或对象）
-    if (config.signal_layer?.entry_short) {
-      const entryShort = config.signal_layer.entry_short
+    const entryShort = config.signal_layer?.entry_short
+    if (entryShort) {
       if (Array.isArray(entryShort)) {
         // 数组形式
         entryShort.forEach((trigger, i) => {
-          const triggerType = inferTriggerType(trigger)
+          const triggerStr = safeString(trigger)
+          if (!triggerStr) return
+          const triggerType = inferTriggerType(triggerStr)
           entryConditions.push({
             id: `entry-short-${i}`,
             type: 'condition' as const,
             direction: 'short',
             category: 'entry' as const,
             triggerType,
-            conditions: [cleanConditionText(trigger)],
-            description: cleanConditionText(trigger),
+            conditions: [cleanConditionText(triggerStr)],
+            description: cleanConditionText(triggerStr),
           })
         })
-      } else if (typeof entryShort === 'object') {
+      } else if (isPlainObject(entryShort)) {
         // 对象形式：{ condition: "...", side: "Sell", symbol: "..." }
         const condConfig = entryShort as ConditionConfig
-        const desc = condConfig.condition || `${condConfig.side || 'Short'} ${condConfig.symbol || ''}`
+        const desc =
+          safeString(condConfig.condition) || `${safeString(condConfig.side, 'Short')} ${safeString(condConfig.symbol)}`
         entryConditions.push({
           id: 'entry-short-obj',
           type: 'condition' as const,
@@ -575,89 +789,110 @@ export function strategyConfigToVisualization(config: StrategyConfig): ParsedStr
     }
 
     // 从 signal_layer.selection_logic 添加选币逻辑作为入场条件
-    if (config.signal_layer?.selection_logic) {
-      config.signal_layer.selection_logic.forEach((logic, i) => {
-        const direction = inferDirection(logic)
+    const selectionLogic = config.signal_layer?.selection_logic
+    if (isNonEmptyArray(selectionLogic)) {
+      selectionLogic.forEach((logic, i) => {
+        const logicStr = safeString(logic)
+        if (!logicStr) return
+        const direction = inferDirection(logicStr)
         entryConditions.push({
           id: `entry-selection-${i}`,
           type: 'condition' as const,
           direction,
           category: 'entry' as const,
           triggerType: 'signal',
-          conditions: [cleanConditionText(logic)],
-          description: cleanConditionText(logic),
+          conditions: [cleanConditionText(logicStr)],
+          description: cleanConditionText(logicStr),
         })
       })
     }
 
     // 从 signal_layer.grid_logic 添加网格逻辑
-    if (config.signal_layer?.grid_logic) {
-      entryConditions.push({
-        id: 'entry-grid',
-        type: 'condition' as const,
-        direction: 'both',
-        category: 'entry' as const,
-        triggerType: 'signal',
-        conditions: [config.signal_layer.grid_logic],
-        description: config.signal_layer.grid_logic,
-      })
+    const gridLogic = config.signal_layer?.grid_logic
+    if (gridLogic) {
+      const gridLogicStr = safeString(gridLogic)
+      if (gridLogicStr) {
+        entryConditions.push({
+          id: 'entry-grid',
+          type: 'condition' as const,
+          direction: 'both',
+          category: 'entry' as const,
+          triggerType: 'signal',
+          conditions: [gridLogicStr],
+          description: gridLogicStr,
+        })
+      }
     }
 
     // 从 signal_layer.add_position_trigger 添加加仓条件
-    if (config.signal_layer?.add_position_trigger) {
-      config.signal_layer.add_position_trigger.forEach((trigger, i) => {
-        const direction = inferDirection(trigger)
+    const addPositionTrigger = config.signal_layer?.add_position_trigger
+    if (isNonEmptyArray(addPositionTrigger)) {
+      addPositionTrigger.forEach((trigger, i) => {
+        const triggerStr = safeString(trigger)
+        if (!triggerStr) return
+        const direction = inferDirection(triggerStr)
         entryConditions.push({
           id: `entry-add-${i}`,
           type: 'condition' as const,
           direction,
           category: 'entry' as const,
           triggerType: 'signal',
-          conditions: [cleanConditionText(trigger)],
-          description: `Add Position: ${cleanConditionText(trigger)}`,
+          conditions: [cleanConditionText(triggerStr)],
+          description: `Add Position: ${cleanConditionText(triggerStr)}`,
         })
       })
     }
 
     // 从 signal_layer.signal_strength 添加信号强度描述
-    if (config.signal_layer?.signal_strength) {
-      config.signal_layer.signal_strength.forEach((strength, i) => {
-        const direction = inferDirection(strength)
+    const signalStrength = config.signal_layer?.signal_strength
+    if (isNonEmptyArray(signalStrength)) {
+      signalStrength.forEach((strength, i) => {
+        const strengthStr = safeString(strength)
+        if (!strengthStr) return
+        const direction = inferDirection(strengthStr)
         entryConditions.push({
           id: `entry-strength-${i}`,
           type: 'condition' as const,
           direction,
           category: 'entry' as const,
           triggerType: 'signal',
-          conditions: [cleanConditionText(strength)],
-          description: cleanConditionText(strength),
+          conditions: [cleanConditionText(strengthStr)],
+          description: cleanConditionText(strengthStr),
         })
       })
     }
 
     // 从 execution_layer 补充入场条件
     if (entryConditions.length === 0) {
-      if (config.execution_layer?.long_entry?.condition) {
-        entryConditions.push({
-          id: 'entry-long',
-          type: 'condition' as const,
-          direction: 'long',
-          category: 'entry' as const,
-          triggerType: 'signal',
-          conditions: [config.execution_layer.long_entry.condition],
-          description: config.execution_layer.long_entry.condition,
-        })
+      const longEntryCondition = config.execution_layer?.long_entry?.condition
+      if (longEntryCondition) {
+        const condStr = safeString(longEntryCondition)
+        if (condStr) {
+          entryConditions.push({
+            id: 'entry-long',
+            type: 'condition' as const,
+            direction: 'long',
+            category: 'entry' as const,
+            triggerType: 'signal',
+            conditions: [condStr],
+            description: condStr,
+          })
+        }
       }
-      if (config.execution_layer?.short_entry?.condition) {
-        entryConditions.push({
-          id: 'entry-short',
-          type: 'condition' as const,
-          direction: 'short',
-          category: 'entry' as const,
-          triggerType: 'signal',
-          conditions: [config.execution_layer.short_entry.condition],
-          description: config.execution_layer.short_entry.condition,
-        })
+      const shortEntryCondition = config.execution_layer?.short_entry?.condition
+      if (shortEntryCondition) {
+        const condStr = safeString(shortEntryCondition)
+        if (condStr) {
+          entryConditions.push({
+            id: 'entry-short',
+            type: 'condition' as const,
+            direction: 'short',
+            category: 'entry' as const,
+            triggerType: 'signal',
+            conditions: [condStr],
+            description: condStr,
+          })
+        }
       }
     }
 
@@ -665,10 +900,13 @@ export function strategyConfigToVisualization(config: StrategyConfig): ParsedStr
     const exitConditions: ConditionNode[] = []
 
     // 从 signal_layer.exit_trigger 提取（数组形式）
-    if (config.signal_layer?.exit_trigger && Array.isArray(config.signal_layer.exit_trigger)) {
-      config.signal_layer.exit_trigger.forEach((trigger, i) => {
-        const direction = inferDirection(trigger)
-        const triggerType = inferExitTriggerType(trigger)
+    const exitTrigger = config.signal_layer?.exit_trigger
+    if (isNonEmptyArray(exitTrigger)) {
+      exitTrigger.forEach((trigger, i) => {
+        const triggerStr = safeString(trigger)
+        if (!triggerStr) return
+        const direction = inferDirection(triggerStr)
+        const triggerType = inferExitTriggerType(triggerStr)
 
         exitConditions.push({
           id: `exit-${i}`,
@@ -676,116 +914,152 @@ export function strategyConfigToVisualization(config: StrategyConfig): ParsedStr
           direction,
           category: 'exit' as const,
           triggerType,
-          conditions: [cleanConditionText(trigger)],
-          description: cleanConditionText(trigger),
+          conditions: [cleanConditionText(triggerStr)],
+          description: cleanConditionText(triggerStr),
         })
       })
     }
 
     // 从 signal_layer.exit_conditions 提取（可能是数组或对象）
-    if (config.signal_layer?.exit_conditions) {
-      const exitConditionsConfig = config.signal_layer.exit_conditions
+    const exitConditionsConfig = config.signal_layer?.exit_conditions
+    if (exitConditionsConfig) {
       if (Array.isArray(exitConditionsConfig)) {
         // 数组形式
         exitConditionsConfig.forEach((trigger, i) => {
-          const direction = inferDirection(trigger)
-          const triggerType = inferExitTriggerType(trigger)
+          const triggerStr = safeString(trigger)
+          if (!triggerStr) return
+          const direction = inferDirection(triggerStr)
+          const triggerType = inferExitTriggerType(triggerStr)
           exitConditions.push({
             id: `exit-cond-${i}`,
             type: 'condition' as const,
             direction,
             category: 'exit' as const,
             triggerType,
-            conditions: [cleanConditionText(trigger)],
-            description: cleanConditionText(trigger),
+            conditions: [cleanConditionText(triggerStr)],
+            description: cleanConditionText(triggerStr),
           })
         })
-      } else if (typeof exitConditionsConfig === 'object') {
+      } else if (isPlainObject(exitConditionsConfig)) {
         // 检查是否是 { long: string, short: string } 形式
-        const exitObj = exitConditionsConfig as Record<string, boolean | string>
+        const exitObj = exitConditionsConfig as Record<string, unknown>
         if ('long' in exitObj || 'short' in exitObj) {
           // { long: "crossunder(...)", short: "crossover(...)" } 形式
-          if (exitObj.long && typeof exitObj.long === 'string') {
+          const longVal = exitObj.long
+          if (longVal && typeof longVal === 'string') {
             exitConditions.push({
               id: 'exit-cond-long',
               type: 'condition' as const,
               direction: 'long',
               category: 'exit' as const,
-              triggerType: inferExitTriggerType(exitObj.long),
-              conditions: [exitObj.long],
-              description: `Exit Long: ${exitObj.long}`,
+              triggerType: inferExitTriggerType(longVal),
+              conditions: [longVal],
+              description: `Exit Long: ${longVal}`,
             })
           }
-          if (exitObj.short && typeof exitObj.short === 'string') {
+          const shortVal = exitObj.short
+          if (shortVal && typeof shortVal === 'string') {
             exitConditions.push({
               id: 'exit-cond-short',
               type: 'condition' as const,
               direction: 'short',
               category: 'exit' as const,
-              triggerType: inferExitTriggerType(exitObj.short),
-              conditions: [exitObj.short],
-              description: `Exit Short: ${exitObj.short}`,
+              triggerType: inferExitTriggerType(shortVal),
+              conditions: [shortVal],
+              description: `Exit Short: ${shortVal}`,
             })
           }
         } else {
-          // 对象形式：{ stop_loss_hit: true, take_profit_hit: true, opposite_signal: true }
-          const conditions = extractConditionsFromObject(exitObj)
-          if (conditions.length > 0) {
-            exitConditions.push({
-              id: 'exit-cond-obj',
-              type: 'condition' as const,
-              direction: 'both',
-              category: 'exit' as const,
-              triggerType: inferTriggerTypeFromConditions(conditions),
-              conditions,
-              description: conditions.join(' OR '),
-            })
+          // 处理其他对象形式，如：
+          // { max_loss: "Stop loss at -5%", trailing_stop: "...", opposite_cross: "..." }
+          // 或 { stop_loss_hit: true, take_profit_hit: true }
+          let hasStringValues = false
+          for (const [key, value] of Object.entries(exitObj)) {
+            if (typeof value === 'string') {
+              hasStringValues = true
+              const triggerType = inferExitTriggerType(value)
+              exitConditions.push({
+                id: `exit-cond-${key}`,
+                type: 'condition' as const,
+                direction: 'both',
+                category: 'exit' as const,
+                triggerType,
+                conditions: [value],
+                description: `${formatKeyToLabel(key)}: ${value}`,
+              })
+            }
+          }
+
+          // 如果没有字符串值，尝试提取布尔条件
+          if (!hasStringValues) {
+            const conditions = extractConditionsFromObject(exitObj as Record<string, boolean | string>)
+            if (conditions.length > 0) {
+              exitConditions.push({
+                id: 'exit-cond-obj',
+                type: 'condition' as const,
+                direction: 'both',
+                category: 'exit' as const,
+                triggerType: inferTriggerTypeFromConditions(conditions),
+                conditions,
+                description: conditions.join(' OR '),
+              })
+            }
           }
         }
       }
     }
 
     // 从 signal_layer.rebalance_trigger 添加再平衡触发条件
-    if (config.signal_layer?.rebalance_trigger) {
-      config.signal_layer.rebalance_trigger.forEach((trigger, i) => {
+    const rebalanceTrigger = config.signal_layer?.rebalance_trigger
+    if (isNonEmptyArray(rebalanceTrigger)) {
+      rebalanceTrigger.forEach((trigger, i) => {
+        const triggerStr = safeString(trigger)
+        if (!triggerStr) return
         exitConditions.push({
           id: `exit-rebalance-${i}`,
           type: 'condition' as const,
           direction: 'both',
           category: 'exit' as const,
           triggerType: 'signal',
-          conditions: [cleanConditionText(trigger)],
-          description: cleanConditionText(trigger),
+          conditions: [cleanConditionText(triggerStr)],
+          description: cleanConditionText(triggerStr),
         })
       })
     }
 
     // 从 signal_layer.position_management 添加仓位管理规则
-    if (config.signal_layer?.position_management) {
-      config.signal_layer.position_management.forEach((rule, i) => {
+    const positionManagement = config.signal_layer?.position_management
+    if (isNonEmptyArray(positionManagement)) {
+      positionManagement.forEach((rule, i) => {
+        const ruleStr = safeString(rule)
+        if (!ruleStr) return
         exitConditions.push({
           id: `exit-mgmt-${i}`,
           type: 'condition' as const,
           direction: 'both',
           category: 'exit' as const,
           triggerType: 'signal',
-          conditions: [cleanConditionText(rule)],
-          description: cleanConditionText(rule),
+          conditions: [cleanConditionText(ruleStr)],
+          description: cleanConditionText(ruleStr),
         })
       })
     }
 
     // 从 execution_layer 补充退出条件
-    if (config.execution_layer?.exit?.condition) {
-      exitConditions.push({
-        id: 'exit-signal',
-        type: 'condition' as const,
-        direction: 'both',
-        category: 'exit' as const,
-        triggerType: 'signal',
-        conditions: [config.execution_layer.exit.condition],
-        description: config.execution_layer.exit.condition,
-      })
+    const exitCondition = config.execution_layer?.exit?.condition
+    if (exitCondition) {
+      const exitConditionStr = safeString(exitCondition)
+      if (exitConditionStr) {
+        exitConditions.push({
+          id: 'exit-signal',
+          type: 'condition' as const,
+          direction: 'both',
+          category: 'exit' as const,
+          triggerType: 'signal',
+          conditions: [exitConditionStr],
+          description: exitConditionStr,
+        })
+      }
     }
 
     // 添加 TP/SL 条件
@@ -816,30 +1090,37 @@ export function strategyConfigToVisualization(config: StrategyConfig): ParsedStr
     }
 
     // 添加时间退出条件
-    if (config.risk_layer?.time_exit) {
-      exitConditions.push({
-        id: 'exit-time',
-        type: 'condition' as const,
-        direction: 'both',
-        category: 'exit' as const,
-        triggerType: 'signal',
-        conditions: [`Time Exit: ${config.risk_layer.time_exit}`],
-        description: `Time Exit: ${config.risk_layer.time_exit}`,
-      })
+    const timeExit = config.risk_layer?.time_exit
+    if (timeExit) {
+      const timeExitStr = safeString(timeExit)
+      if (timeExitStr) {
+        exitConditions.push({
+          id: 'exit-time',
+          type: 'condition' as const,
+          direction: 'both',
+          category: 'exit' as const,
+          triggerType: 'signal',
+          conditions: [`Time Exit: ${timeExitStr}`],
+          description: `Time Exit: ${timeExitStr}`,
+        })
+      }
     }
 
     // 添加紧急退出条件
-    if (config.risk_layer?.emergency_exit) {
-      const emergencyExitValue = formatEmergencyExit(config.risk_layer.emergency_exit)
-      exitConditions.push({
-        id: 'exit-emergency',
-        type: 'condition' as const,
-        direction: 'both',
-        category: 'exit' as const,
-        triggerType: 'stop_loss',
-        conditions: [`Emergency Exit: ${emergencyExitValue}`],
-        description: `Emergency Exit: ${emergencyExitValue}`,
-      })
+    const emergencyExit = config.risk_layer?.emergency_exit
+    if (emergencyExit) {
+      const emergencyExitValue = formatEmergencyExit(emergencyExit)
+      if (emergencyExitValue) {
+        exitConditions.push({
+          id: 'exit-emergency',
+          type: 'condition' as const,
+          direction: 'both',
+          category: 'exit' as const,
+          triggerType: 'stop_loss',
+          conditions: [`Emergency Exit: ${emergencyExitValue}`],
+          description: `Emergency Exit: ${emergencyExitValue}`,
+        })
+      }
     }
 
     // 提取风险参数
@@ -847,7 +1128,7 @@ export function strategyConfigToVisualization(config: StrategyConfig): ParsedStr
     const positionSize = extractPositionSize(config)
     const takeProfit = extractStopValue(config.risk_layer?.tp || config.risk_layer?.take_profit) || 'Dynamic'
     const stopLoss = extractStopValue(config.risk_layer?.sl || config.risk_layer?.stop_loss) || 'Dynamic'
-    const hardStops = config.risk_layer?.hard_stop || []
+    const hardStops = safeStringArray(config.risk_layer?.hard_stop)
 
     // 提取额外的资本层参数
     const marginType = config.capital_layer?.margin_type
@@ -856,6 +1137,7 @@ export function strategyConfigToVisualization(config: StrategyConfig): ParsedStr
     const maxPositions = config.capital_layer?.max_positions
 
     // 构建分析步骤
+    const calcDescriptions = safeStringArray(config.data_layer?.calculations).slice(0, 3)
     const analyzeSteps: AnalyzeStep[] = [
       {
         id: 'step-1',
@@ -865,7 +1147,7 @@ export function strategyConfigToVisualization(config: StrategyConfig): ParsedStr
       {
         id: 'step-2',
         label: 'Calculate',
-        description: (config.data_layer?.calculations || []).slice(0, 3).join(', ') || 'Price Analysis',
+        description: calcDescriptions.length > 0 ? calcDescriptions.join(', ') : 'Price Analysis',
       },
       {
         id: 'step-3',
@@ -875,20 +1157,24 @@ export function strategyConfigToVisualization(config: StrategyConfig): ParsedStr
     ]
 
     // 如果有网格参数，添加网格步骤
-    if (config.data_layer?.grid_parameters) {
+    const gridParams = config.data_layer?.grid_parameters
+    if (isPlainObject(gridParams)) {
+      const gridLevels = typeof gridParams.grid_levels === 'number' ? gridParams.grid_levels : 10
+      const gridSpacing = safeString(gridParams.grid_spacing, '2%')
       analyzeSteps.push({
         id: 'step-4',
         label: 'Grid Management',
-        description: `${config.data_layer.grid_parameters.grid_levels || 10} levels, ${config.data_layer.grid_parameters.grid_spacing || '2%'} spacing`,
+        description: `${gridLevels} levels, ${gridSpacing} spacing`,
       })
     }
 
     // 如果有再平衡逻辑，添加再平衡步骤
     if (config.signal_layer?.rebalance_trigger || config.execution_layer?.rebalance_mechanism) {
+      const updateFreq = safeString(config.data_layer?.update_frequency, 'Periodic rebalancing')
       analyzeSteps.push({
         id: 'step-rebalance',
         label: 'Rebalance',
-        description: config.data_layer?.update_frequency || 'Periodic rebalancing',
+        description: updateFreq,
       })
     }
 
@@ -919,11 +1205,12 @@ export function strategyConfigToVisualization(config: StrategyConfig): ParsedStr
       const posLimits = config.risk_layer.position_limits
       if (typeof posLimits === 'string') {
         additionalRiskParams.positionLimits = posLimits
-      } else {
+      } else if (isPlainObject(posLimits)) {
         // 对象形式转换为字符串
-        const parts = []
-        if (posLimits.no_hedging) parts.push('No Hedging')
-        if (posLimits.no_pyramiding) parts.push('No Pyramiding')
+        const parts: string[] = []
+        const limitsObj = posLimits as Record<string, unknown>
+        if (limitsObj.no_hedging) parts.push('No Hedging')
+        if (limitsObj.no_pyramiding) parts.push('No Pyramiding')
         if (parts.length > 0) additionalRiskParams.positionLimits = parts.join(', ')
       }
     }
@@ -976,6 +1263,9 @@ export function strategyConfigToVisualization(config: StrategyConfig): ParsedStr
  * 从结构化指标配置中提取指标名称
  */
 function extractIndicatorNameFromConfig(key: string, config: IndicatorConfig): string {
+  if (!key || typeof key !== 'string') return 'Indicator'
+  if (!config || typeof config !== 'object') return key
+
   const lowerKey = key.toLowerCase()
 
   // 根据 key 名称确定指标类型
@@ -991,7 +1281,7 @@ function extractIndicatorNameFromConfig(key: string, config: IndicatorConfig): s
   if (lowerKey.includes('cci')) return 'CCI'
 
   // 根据 config.type 确定指标类型
-  if (config.type) {
+  if (config.type && typeof config.type === 'string') {
     const typeUpper = config.type.toUpperCase()
     if (['EMA', 'SMA', 'MA', 'RSI', 'MACD', 'ATR', 'ADX', 'CCI'].includes(typeUpper)) {
       return typeUpper
@@ -999,17 +1289,21 @@ function extractIndicatorNameFromConfig(key: string, config: IndicatorConfig): s
   }
 
   // 如果 config 中有 MACD 特有的字段
-  if (config.fast_period && config.slow_period && config.signal_period) {
+  if (
+    typeof config.fast_period === 'number' &&
+    typeof config.slow_period === 'number' &&
+    typeof config.signal_period === 'number'
+  ) {
     return 'MACD'
   }
 
   // 如果是 EMA 配置
-  if (config.fast !== undefined || config.slow !== undefined) {
+  if (typeof config.fast === 'number' || typeof config.slow === 'number') {
     return 'EMA'
   }
 
   // 如果有 oversold/overbought，可能是 RSI
-  if (config.oversold !== undefined || config.overbought !== undefined) {
+  if (typeof config.oversold === 'number' || typeof config.overbought === 'number') {
     return 'RSI'
   }
 
@@ -1026,38 +1320,47 @@ function extractIndicatorNameFromConfig(key: string, config: IndicatorConfig): s
  * 格式化指标参数为可读字符串
  */
 function formatIndicatorParams(key: string, config: IndicatorConfig): string {
+  if (!config || typeof config !== 'object') {
+    return typeof key === 'string' ? key.replace(/_/g, ' ') : ''
+  }
+
   const parts: string[] = []
 
   // 币种信息
-  if (config.symbol) parts.push(config.symbol)
-  if (config.symbols?.length) {
-    if (Array.isArray(config.symbols)) {
-      parts.push(config.symbols.join(', '))
+  if (config.symbol && typeof config.symbol === 'string') {
+    parts.push(config.symbol)
+  }
+  if (Array.isArray(config.symbols) && config.symbols.length > 0) {
+    const symbolStrs = config.symbols.filter((s): s is string => typeof s === 'string')
+    if (symbolStrs.length > 0) {
+      parts.push(symbolStrs.join(', '))
     }
   }
 
   // 时间周期
-  if (config.timeframe) parts.push(config.timeframe)
+  if (config.timeframe && typeof config.timeframe === 'string') {
+    parts.push(config.timeframe)
+  }
 
   // 周期参数
-  if (config.period !== undefined) parts.push(`Period: ${config.period}`)
-  if (config.fast_period !== undefined) parts.push(`Fast: ${config.fast_period}`)
-  if (config.slow_period !== undefined) parts.push(`Slow: ${config.slow_period}`)
-  if (config.signal_period !== undefined) parts.push(`Signal: ${config.signal_period}`)
-  if (config.fast !== undefined) parts.push(`Fast: ${config.fast}`)
-  if (config.slow !== undefined) parts.push(`Slow: ${config.slow}`)
+  if (typeof config.period === 'number') parts.push(`Period: ${config.period}`)
+  if (typeof config.fast_period === 'number') parts.push(`Fast: ${config.fast_period}`)
+  if (typeof config.slow_period === 'number') parts.push(`Slow: ${config.slow_period}`)
+  if (typeof config.signal_period === 'number') parts.push(`Signal: ${config.signal_period}`)
+  if (typeof config.fast === 'number') parts.push(`Fast: ${config.fast}`)
+  if (typeof config.slow === 'number') parts.push(`Slow: ${config.slow}`)
 
   // RSI 阈值
-  if (config.oversold !== undefined) parts.push(`Oversold: ${config.oversold}`)
-  if (config.overbought !== undefined) parts.push(`Overbought: ${config.overbought}`)
+  if (typeof config.oversold === 'number') parts.push(`Oversold: ${config.oversold}`)
+  if (typeof config.overbought === 'number') parts.push(`Overbought: ${config.overbought}`)
 
   // Volume 相关
-  if (config.sma_period !== undefined) parts.push(`SMA Period: ${config.sma_period}`)
-  if (config.lookback !== undefined) parts.push(`Lookback: ${config.lookback}`)
+  if (typeof config.sma_period === 'number') parts.push(`SMA Period: ${config.sma_period}`)
+  if (typeof config.lookback === 'number') parts.push(`Lookback: ${config.lookback}`)
 
   if (parts.length === 0) {
     // 如果没有识别的参数，返回 key 的格式化版本
-    return key.replace(/_/g, ' ')
+    return typeof key === 'string' ? key.replace(/_/g, ' ') : ''
   }
 
   return parts.join(', ')
@@ -1066,7 +1369,8 @@ function formatIndicatorParams(key: string, config: IndicatorConfig): string {
 /**
  * 从计算描述中提取指标名称
  */
-function extractIndicatorName(calc: string): string {
+function extractIndicatorName(calc: unknown): string {
+  if (!calc || typeof calc !== 'string') return 'Indicator'
   const lower = calc.toLowerCase()
 
   // 特定指标检测（顺序很重要）
@@ -1116,7 +1420,7 @@ function extractIndicatorName(calc: string): string {
 /**
  * 从条件文本推断方向
  */
-function inferDirection(text: string): 'long' | 'short' | 'both' {
+function inferDirection(text: unknown): 'long' | 'short' | 'both' {
   if (!text || typeof text !== 'string') return 'both'
   const lower = text.toLowerCase()
 
@@ -1172,11 +1476,13 @@ function inferDirection(text: string): 'long' | 'short' | 'both' {
 
   // 检查 RSI 范围（RSI 0-70 通常是做多，RSI 80-100 通常是做空）
   const rsiMatch = lower.match(/rsi\s*(?:between\s*)?(\d+)\s*[-–]\s*(\d+)/)
-  if (rsiMatch) {
-    const low = parseInt(rsiMatch[1])
-    const high = parseInt(rsiMatch[2])
-    if (low <= 30) return 'long' // 超卖区间
-    if (high >= 70) return 'short' // 超买区间
+  if (rsiMatch && rsiMatch[1] && rsiMatch[2]) {
+    const low = parseInt(rsiMatch[1], 10)
+    const high = parseInt(rsiMatch[2], 10)
+    if (!isNaN(low) && !isNaN(high)) {
+      if (low <= 30) return 'long' // 超卖区间
+      if (high >= 70) return 'short' // 超买区间
+    }
   }
 
   return 'both'
@@ -1185,7 +1491,7 @@ function inferDirection(text: string): 'long' | 'short' | 'both' {
 /**
  * 从条件文本推断触发类型
  */
-function inferTriggerType(text: string): ConditionNode['triggerType'] {
+function inferTriggerType(text: unknown): ConditionNode['triggerType'] {
   if (!text || typeof text !== 'string') return 'signal'
   const lower = text.toLowerCase()
 
@@ -1198,10 +1504,16 @@ function inferTriggerType(text: string): ConditionNode['triggerType'] {
 /**
  * 从对象形式的条件配置中提取条件列表
  */
-function extractConditionsFromObject(obj: Record<string, boolean | string>): string[] {
+function extractConditionsFromObject(obj: unknown): string[] {
   const conditions: string[] = []
 
-  for (const [key, value] of Object.entries(obj)) {
+  if (!obj || typeof obj !== 'object' || Array.isArray(obj)) {
+    return conditions
+  }
+
+  for (const [key, value] of Object.entries(obj as Record<string, unknown>)) {
+    if (!key || typeof key !== 'string') continue
+
     if (value === true) {
       // 将 key 转换为可读格式，如 "macd_cross_above_signal" -> "MACD Cross Above Signal"
       const readable = key
@@ -1211,7 +1523,7 @@ function extractConditionsFromObject(obj: Record<string, boolean | string>): str
         .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
         .join(' ')
       conditions.push(readable)
-    } else if (typeof value === 'string') {
+    } else if (typeof value === 'string' && value) {
       conditions.push(value)
     }
   }
@@ -1222,8 +1534,13 @@ function extractConditionsFromObject(obj: Record<string, boolean | string>): str
 /**
  * 从条件列表推断触发类型
  */
-function inferTriggerTypeFromConditions(conditions: string[]): ConditionNode['triggerType'] {
-  const combined = conditions.join(' ').toLowerCase()
+function inferTriggerTypeFromConditions(conditions: unknown): ConditionNode['triggerType'] {
+  if (!Array.isArray(conditions)) return 'signal'
+
+  const combined = conditions
+    .filter((c): c is string => typeof c === 'string')
+    .join(' ')
+    .toLowerCase()
 
   if (combined.includes('cross')) return 'crossover'
   if (combined.includes('macd') || combined.includes('rsi') || combined.includes('bollinger')) return 'indicator'
@@ -1236,25 +1553,29 @@ function inferTriggerTypeFromConditions(conditions: string[]): ConditionNode['tr
 /**
  * 格式化紧急退出条件（支持字符串和对象形式）
  */
-function formatEmergencyExit(
-  value: string | { action?: string; account_risk_threshold?: number; account_drawdown?: number } | undefined,
-): string | undefined {
+function formatEmergencyExit(value: unknown): string | undefined {
   if (!value) return undefined
 
   if (typeof value === 'string') {
     return value
   }
 
+  if (typeof value !== 'object' || Array.isArray(value)) {
+    return String(value)
+  }
+
   // 对象形式: { action?: string; account_risk_threshold?: number; account_drawdown?: number }
+  const obj = value as Record<string, unknown>
   const parts: string[] = []
-  if (value.action) {
-    parts.push(value.action)
+
+  if (obj.action && typeof obj.action === 'string') {
+    parts.push(obj.action)
   }
-  if (value.account_risk_threshold !== undefined) {
-    parts.push(`Account Risk Threshold: ${value.account_risk_threshold}%`)
+  if (typeof obj.account_risk_threshold === 'number') {
+    parts.push(`Account Risk Threshold: ${obj.account_risk_threshold}%`)
   }
-  if (value.account_drawdown !== undefined) {
-    parts.push(`Account Drawdown: ${value.account_drawdown}%`)
+  if (typeof obj.account_drawdown === 'number') {
+    parts.push(`Account Drawdown: ${obj.account_drawdown}%`)
   }
 
   return parts.length > 0 ? parts.join(', ') : 'Enabled'
@@ -1263,36 +1584,46 @@ function formatEmergencyExit(
 /**
  * 提取止损/止盈值（支持字符串和对象形式）
  */
-function extractStopValue(value: string | StopConfig | undefined): string | undefined {
+function extractStopValue(value: unknown): string | undefined {
   if (!value) return undefined
 
   if (typeof value === 'string') {
     return value
   }
 
+  if (typeof value === 'number') {
+    return String(value)
+  }
+
+  if (typeof value !== 'object' || Array.isArray(value)) {
+    return String(value)
+  }
+
+  const obj = value as Record<string, unknown>
+
   // 对象形式
-  if (value.type && value.value !== undefined) {
+  if (typeof obj.type === 'string' && typeof obj.value === 'number') {
     // { type: "percentage", value: 0.02 } -> "2%"
-    if (value.type === 'percentage') {
-      return `${(value.value * 100).toFixed(1)}%`
+    if (obj.type === 'percentage') {
+      return `${(obj.value * 100).toFixed(1)}%`
     }
-    return `${value.value}`
+    return `${obj.value}`
   }
 
   // { long: "8% ROI", short: "6% ROI" } 形式
-  if (value.long || value.short) {
-    const parts = []
-    if (value.long) parts.push(`Long: ${value.long}`)
-    if (value.short) parts.push(`Short: ${value.short}`)
-    return parts.join(', ')
+  if (obj.long || obj.short) {
+    const parts: string[] = []
+    if (obj.long && typeof obj.long === 'string') parts.push(`Long: ${obj.long}`)
+    if (obj.short && typeof obj.short === 'string') parts.push(`Short: ${obj.short}`)
+    if (parts.length > 0) return parts.join(', ')
   }
 
   // { xrp_long: "12% ROI", btc_short: "8% ROI" } 形式
-  if (value.xrp_long || value.btc_short) {
-    const parts = []
-    if (value.xrp_long) parts.push(`XRP Long: ${value.xrp_long}`)
-    if (value.btc_short) parts.push(`BTC Short: ${value.btc_short}`)
-    return parts.join(', ')
+  if (obj.xrp_long || obj.btc_short) {
+    const parts: string[] = []
+    if (obj.xrp_long && typeof obj.xrp_long === 'string') parts.push(`XRP Long: ${obj.xrp_long}`)
+    if (obj.btc_short && typeof obj.btc_short === 'string') parts.push(`BTC Short: ${obj.btc_short}`)
+    if (parts.length > 0) return parts.join(', ')
   }
 
   return undefined
@@ -1302,16 +1633,56 @@ function extractStopValue(value: string | StopConfig | undefined): string | unde
  * 提取杠杆倍数（支持字符串和数字形式）
  */
 function extractLeverage(config: StrategyConfig): string {
-  // 先检查 execution_layer.leverage（可能是 Record<string, number>）
+  // 先检查 execution_layer.leverage（可能是 Record<string, number | string>）
   const execLeverage = config.execution_layer?.leverage
   if (execLeverage !== undefined) {
-    if (typeof execLeverage === 'object' && execLeverage !== null) {
-      // Record<string, number> 形式，如 { "ETH-PERP": 10 }
-      const entries = Object.entries(execLeverage)
-      if (entries.length === 1) {
-        return `${entries[0][1]}x`
+    if (typeof execLeverage === 'object' && execLeverage !== null && !Array.isArray(execLeverage)) {
+      // Record<string, number | string> 形式，如 { "ETH-PERP": 10 } 或 { "BTC-PERP": "3x" }
+      // 强制转换为通用类型以支持字符串值
+      const leverageObj = execLeverage as Record<string, unknown>
+      const entries = Object.entries(leverageObj)
+      if (entries.length === 0) {
+        // 空对象，继续检查其他来源
+      } else if (entries.length === 1) {
+        const [, lev] = entries[0]
+        // 值可能是数字或字符串
+        const levStr = safeString(lev)
+        if (levStr.includes('x') || levStr.includes('倍')) {
+          return levStr
+        }
+        const num = parseFloat(levStr)
+        if (!isNaN(num)) {
+          return `${num}x`
+        }
+        return levStr || '1x'
+      } else {
+        // 多个币种的杠杆，合并显示
+        const formatted = entries.map(([symbol, lev]) => {
+          const levStr = safeString(lev)
+          if (levStr.includes('x') || levStr.includes('倍')) {
+            return `${symbol}: ${levStr}`
+          }
+          const num = parseFloat(levStr)
+          if (!isNaN(num)) {
+            return `${symbol}: ${num}x`
+          }
+          return `${symbol}: ${levStr}`
+        })
+        // 如果所有杠杆都相同，只显示一个
+        const uniqueLeverages = [...new Set(entries.map(([, lev]) => safeString(lev)))]
+        if (uniqueLeverages.length === 1) {
+          const levStr = uniqueLeverages[0]
+          if (levStr.includes('x') || levStr.includes('倍')) {
+            return levStr
+          }
+          const num = parseFloat(levStr)
+          if (!isNaN(num)) {
+            return `${num}x`
+          }
+          return levStr || '1x'
+        }
+        return formatted.join(', ')
       }
-      return entries.map(([symbol, lev]) => `${symbol}: ${lev}x`).join(', ')
     }
     if (typeof execLeverage === 'number') {
       return `${execLeverage}x`
@@ -1406,11 +1777,18 @@ function extractPositionSize(config: StrategyConfig): string {
 
     // sizing_method
     if (ps.sizing_method) {
-      if (ps.risk_per_trade) {
-        const risk =
-          typeof ps.risk_per_trade === 'object'
-            ? `${ps.risk_per_trade.min}-${ps.risk_per_trade.max}%`
-            : `${ps.risk_per_trade}%`
+      if (ps.risk_per_trade !== undefined) {
+        let risk = ''
+        if (typeof ps.risk_per_trade === 'number') {
+          risk = `${ps.risk_per_trade}%`
+        } else if (isPlainObject(ps.risk_per_trade)) {
+          const riskObj = ps.risk_per_trade as Record<string, unknown>
+          const minVal = typeof riskObj.min === 'number' ? riskObj.min : 0
+          const maxVal = typeof riskObj.max === 'number' ? riskObj.max : 0
+          risk = `${minVal}-${maxVal}%`
+        } else {
+          risk = safeString(ps.risk_per_trade)
+        }
         return `${ps.sizing_method} (${risk} risk per trade)`
       }
       return ps.sizing_method
@@ -1432,7 +1810,9 @@ function extractPositionSize(config: StrategyConfig): string {
 /**
  * 从退出条件文本推断触发类型
  */
-function inferExitTriggerType(text: string): ConditionNode['triggerType'] {
+function inferExitTriggerType(text: unknown): ConditionNode['triggerType'] {
+  if (!text || typeof text !== 'string') return 'signal'
+
   const lower = text.toLowerCase()
 
   if (lower.includes('profit') || lower.includes('tp')) return 'take_profit'
@@ -1446,7 +1826,8 @@ function inferExitTriggerType(text: string): ConditionNode['triggerType'] {
 /**
  * 清理条件文本（移除前缀标签）
  */
-function cleanConditionText(text: string): string {
+function cleanConditionText(text: unknown): string {
+  if (!text || typeof text !== 'string') return ''
   // 移除 "Long:" 或 "Short:" 等前缀
   return text.replace(/^(Long|Short|Entry|Exit):\s*/i, '').trim()
 }
@@ -1454,14 +1835,24 @@ function cleanConditionText(text: string): string {
 /**
  * 推断策略类型
  */
-function inferStrategyType(name: string, vibe: string, config: StrategyConfig): string {
-  const combined = `${name} ${vibe} ${JSON.stringify(config)}`.toLowerCase()
+function inferStrategyType(name: unknown, vibe: unknown, config: StrategyConfig): string {
+  const nameStr = typeof name === 'string' ? name : ''
+  const vibeStr = typeof vibe === 'string' ? vibe : ''
+
+  let configStr = ''
+  try {
+    configStr = JSON.stringify(config)
+  } catch {
+    configStr = ''
+  }
+
+  const combined = `${nameStr} ${vibeStr} ${configStr}`.toLowerCase()
 
   // 使用 basic_info.strategy_type 如果存在
-  if (config.basic_info?.strategy_type) {
-    const strategyType = config.basic_info.strategy_type
+  const strategyTypeRaw = config?.basic_info?.strategy_type
+  if (strategyTypeRaw && typeof strategyTypeRaw === 'string') {
     // 将下划线转换为空格并首字母大写
-    return strategyType
+    return strategyTypeRaw
       .replace(/_/g, ' ')
       .split(' ')
       .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
@@ -1590,7 +1981,7 @@ function inferStrategyType(name: string, vibe: string, config: StrategyConfig): 
   // 只做空
   if (combined.includes('short only') || combined.includes('only short')) return 'Short Only Strategy'
 
-  return name || 'Trading Strategy'
+  return nameStr || 'Trading Strategy'
 }
 
 export default strategyConfigToVisualization

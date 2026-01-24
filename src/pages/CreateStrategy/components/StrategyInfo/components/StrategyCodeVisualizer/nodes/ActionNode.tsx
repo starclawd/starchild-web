@@ -129,10 +129,22 @@ interface ActionNodeData {
 
 function ActionNode({ data }: NodeProps) {
   const rawData = data as unknown as ActionNodeData
-  // 防御性编程：确保字段有默认值
+  // 辅助函数：安全转换为字符串
+  const safeString = (val: unknown, fallback = ''): string => {
+    if (typeof val === 'string') return val
+    if (val && typeof val === 'object') {
+      const obj = val as Record<string, unknown>
+      if ('description' in obj) return String(obj.description || fallback)
+      if ('value' in obj) return String(obj.value || fallback)
+    }
+    return val ? String(val) : fallback
+  }
+  // 防御性编程：确保字段有默认值，且类型正确
+  const validActions = ['buy', 'sell', 'hold', 'process', 'decision']
+  const rawAction = safeString(rawData.action, 'hold')
   const nodeData = {
-    action: rawData.action || 'hold',
-    description: rawData.description || '',
+    action: validActions.includes(rawAction) ? rawAction as 'buy' | 'sell' | 'hold' | 'process' | 'decision' : 'hold',
+    description: safeString(rawData.description),
   }
 
   const getIcon = (action: string) => {
