@@ -111,18 +111,28 @@ interface DecisionDetailNodeData {
 
 function DecisionDetailNode({ data }: NodeProps) {
   const rawData = data as unknown as DecisionDetailNodeData
+  // 辅助函数：安全转换为字符串
+  const safeString = (val: unknown, fallback = ''): string => {
+    if (typeof val === 'string') return val
+    if (val && typeof val === 'object') {
+      const obj = val as Record<string, unknown>
+      if ('action' in obj) return String(obj.action || fallback)
+      if ('value' in obj) return String(obj.value || fallback)
+    }
+    return val ? String(val) : fallback
+  }
   // 防御性编程：确保字段有默认值
   const nodeData = {
     hasPosition: Array.isArray(rawData.hasPosition) ? rawData.hasPosition : [],
     noPosition: Array.isArray(rawData.noPosition) ? rawData.noPosition : [],
-    entryConditionsCount: rawData.entryConditionsCount,
-    exitConditionsCount: rawData.exitConditionsCount,
+    entryConditionsCount: typeof rawData.entryConditionsCount === 'number' ? rawData.entryConditionsCount : undefined,
+    exitConditionsCount: typeof rawData.exitConditionsCount === 'number' ? rawData.exitConditionsCount : undefined,
   }
 
   // 提取简化的分支动作
   const getSimplifiedActions = (branches: DecisionBranch[]) => {
     if (!Array.isArray(branches)) return []
-    const actions = branches.map((b) => b?.action || 'UNKNOWN').filter(Boolean)
+    const actions = branches.map((b) => safeString(b?.action, 'UNKNOWN')).filter(Boolean)
     // 去重并限制显示数量
     return [...new Set(actions)].slice(0, 3)
   }

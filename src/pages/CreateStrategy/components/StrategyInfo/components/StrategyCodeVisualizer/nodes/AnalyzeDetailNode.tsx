@@ -92,8 +92,24 @@ interface AnalyzeDetailNodeData {
 
 function AnalyzeDetailNode({ data }: NodeProps) {
   const rawData = data as unknown as AnalyzeDetailNodeData
-  // 防御性编程：确保 steps 是数组
-  const steps = Array.isArray(rawData.steps) ? rawData.steps : []
+  // 辅助函数：安全转换为字符串
+  const safeString = (val: unknown, fallback = ''): string => {
+    if (typeof val === 'string') return val
+    if (val && typeof val === 'object') {
+      const obj = val as Record<string, unknown>
+      if ('label' in obj) return String(obj.label || fallback)
+      if ('value' in obj) return String(obj.value || fallback)
+    }
+    return val ? String(val) : fallback
+  }
+  // 防御性编程：确保 steps 是数组，且元素都有正确的类型
+  const steps = Array.isArray(rawData.steps) 
+    ? rawData.steps.map((step, index) => ({
+        id: step?.id ? String(step.id) : `step-${index}`,
+        label: safeString(step?.label, 'Step'),
+        description: safeString(step?.description, ''),
+      }))
+    : []
 
   return (
     <NodeWrapper>
@@ -106,11 +122,11 @@ function AnalyzeDetailNode({ data }: NodeProps) {
       </Header>
       <StepList>
         {steps.map((step, index) => (
-          <StepItem key={step?.id || index}>
+          <StepItem key={step.id}>
             <StepNumber>{index + 1}</StepNumber>
             <StepContent>
-              <StepLabel>{step?.label || 'Step'}</StepLabel>
-              <StepDescription>{step?.description || ''}</StepDescription>
+              <StepLabel>{step.label}</StepLabel>
+              <StepDescription>{step.description}</StepDescription>
             </StepContent>
           </StepItem>
         ))}

@@ -160,20 +160,38 @@ interface CandlePatternNodeData extends CandlePatternInfo {
 
 function CandlePatternNode({ data }: NodeProps) {
   const rawData = data as unknown as CandlePatternNodeData
+  // 辅助函数：安全转换为字符串
+  const safeString = (val: unknown, fallback = ''): string => {
+    if (typeof val === 'string') return val
+    if (val && typeof val === 'object') {
+      const obj = val as Record<string, unknown>
+      if ('name' in obj) return String(obj.name || fallback)
+      if ('value' in obj) return String(obj.value || fallback)
+      if ('condition' in obj) return String(obj.condition || fallback)
+    }
+    return val ? String(val) : fallback
+  }
   // 防御性编程：确保字段有默认值
   const defaultPattern: ('green' | 'red')[] = ['green', 'green', 'green']
+  const rawPattern = Array.isArray(rawData.colorPattern) ? rawData.colorPattern : defaultPattern
+  // 确保每个颜色值都是有效的 'green' 或 'red'
+  const validColorPattern = rawPattern.map((c) => {
+    const color = typeof c === 'string' ? c : 'green'
+    return color === 'red' ? 'red' : 'green'
+  }) as ('green' | 'red')[]
+  
   const nodeData = {
-    colorPattern: Array.isArray(rawData.colorPattern) ? rawData.colorPattern : defaultPattern,
-    name: rawData.name || 'Pattern',
-    entryCondition: rawData.entryCondition,
-    exitCondition: rawData.exitCondition,
-    description: rawData.description,
-    type: rawData.type,
-    requiredCandles: rawData.requiredCandles,
+    colorPattern: validColorPattern,
+    name: safeString(rawData.name, 'Pattern'),
+    entryCondition: rawData.entryCondition ? safeString(rawData.entryCondition) : undefined,
+    exitCondition: rawData.exitCondition ? safeString(rawData.exitCondition) : undefined,
+    description: rawData.description ? safeString(rawData.description) : undefined,
+    type: rawData.type ? safeString(rawData.type) : undefined,
+    requiredCandles: typeof rawData.requiredCandles === 'number' ? rawData.requiredCandles : undefined,
   }
 
-  // 生成 K 线展示数据 - 确保颜色值是有效的
-  const candles = nodeData.colorPattern.map((c) => (c === 'red' ? 'red' : 'green') as 'green' | 'red')
+  // 生成 K 线展示数据 - 颜色值已在上面确保有效
+  const candles = nodeData.colorPattern
   const candleHeights = candles.map((_, i) => 20 + i * 8) // 递增高度
 
   return (

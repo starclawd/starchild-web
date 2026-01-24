@@ -137,18 +137,35 @@ interface RiskNodeData {
 
 function RiskNode({ data }: NodeProps) {
   const rawData = data as unknown as RiskNodeData
+  // 辅助函数：安全转换为字符串
+  const safeString = (val: unknown, fallback = ''): string => {
+    if (typeof val === 'string') return val
+    if (val && typeof val === 'object') {
+      const obj = val as Record<string, unknown>
+      if ('value' in obj) return String(obj.value || fallback)
+      try {
+        const json = JSON.stringify(val)
+        return json.length > 100 ? json.substring(0, 97) + '...' : json
+      } catch {
+        return fallback
+      }
+    }
+    return val ? String(val) : fallback
+  }
   // 防御性编程：确保字段有默认值
   const nodeData = {
-    takeProfit: rawData.takeProfit || 'Dynamic',
-    stopLoss: rawData.stopLoss || 'Dynamic',
-    leverage: rawData.leverage || '1x',
-    positionSize: rawData.positionSize || '100%',
-    longPositionSize: rawData.longPositionSize,
-    shortPositionSize: rawData.shortPositionSize,
-    maxRoeLoss: rawData.maxRoeLoss,
-    maxDrawdown: rawData.maxDrawdown,
-    maxAccountRisk: rawData.maxAccountRisk,
-    hardStops: Array.isArray(rawData.hardStops) ? rawData.hardStops : [],
+    takeProfit: safeString(rawData.takeProfit, 'Dynamic'),
+    stopLoss: safeString(rawData.stopLoss, 'Dynamic'),
+    leverage: safeString(rawData.leverage, '1x'),
+    positionSize: safeString(rawData.positionSize, '100%'),
+    longPositionSize: rawData.longPositionSize ? safeString(rawData.longPositionSize) : undefined,
+    shortPositionSize: rawData.shortPositionSize ? safeString(rawData.shortPositionSize) : undefined,
+    maxRoeLoss: rawData.maxRoeLoss ? safeString(rawData.maxRoeLoss) : undefined,
+    maxDrawdown: rawData.maxDrawdown ? safeString(rawData.maxDrawdown) : undefined,
+    maxAccountRisk: rawData.maxAccountRisk ? safeString(rawData.maxAccountRisk) : undefined,
+    hardStops: Array.isArray(rawData.hardStops) 
+      ? rawData.hardStops.map((s) => safeString(s)).filter(Boolean)
+      : [],
   }
 
   const hasAsymmetricSize = nodeData.longPositionSize || nodeData.shortPositionSize

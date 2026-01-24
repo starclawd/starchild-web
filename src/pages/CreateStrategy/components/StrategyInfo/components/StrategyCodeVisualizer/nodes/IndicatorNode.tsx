@@ -55,9 +55,27 @@ interface IndicatorNodeData {
 }
 
 function IndicatorNode({ data }: NodeProps) {
-  const nodeData = data as unknown as IndicatorNodeData
-  const name = nodeData.name || 'IND'
+  const rawData = data as unknown as IndicatorNodeData
+  // 辅助函数：安全转换为字符串
+  const safeString = (val: unknown, fallback = ''): string => {
+    if (typeof val === 'string') return val
+    if (val && typeof val === 'object') {
+      const obj = val as Record<string, unknown>
+      if ('name' in obj) return String(obj.name || fallback)
+      if ('value' in obj) return String(obj.value || fallback)
+      try {
+        const json = JSON.stringify(val)
+        return json.length > 100 ? json.substring(0, 97) + '...' : json
+      } catch {
+        return fallback
+      }
+    }
+    return val ? String(val) : fallback
+  }
+  // 防御性编程：确保字段有默认值
+  const name = safeString(rawData.name, 'IND')
   const shortName = name.substring(0, 3).toUpperCase()
+  const params = safeString(rawData.params)
 
   return (
     <NodeWrapper>
@@ -66,7 +84,7 @@ function IndicatorNode({ data }: NodeProps) {
         <IconWrapper>{shortName}</IconWrapper>
         <Content>
           <Title>{name}</Title>
-          <Params>{nodeData.params || ''}</Params>
+          <Params>{params}</Params>
         </Content>
       </Header>
       <Handle type="source" position={Position.Bottom} style={{ background: '#A87FFF' }} />

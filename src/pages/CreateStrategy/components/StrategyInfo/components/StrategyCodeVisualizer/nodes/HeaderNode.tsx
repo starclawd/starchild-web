@@ -105,13 +105,31 @@ interface HeaderNodeData {
 
 function HeaderNode({ data }: NodeProps) {
   const rawData = data as unknown as HeaderNodeData
-  // 防御性编程：确保字段有默认值
+  // 防御性编程：确保字段有默认值，且所有值总是字符串
+  const safeString = (val: unknown, fallback = ''): string => {
+    if (typeof val === 'string') return val
+    if (val && typeof val === 'object') {
+      // 尝试从对象中提取常用字段
+      const obj = val as Record<string, unknown>
+      if ('symbol' in obj) return String(obj.symbol || fallback)
+      if ('name' in obj) return String(obj.name || fallback)
+      if ('value' in obj) return String(obj.value || fallback)
+    }
+    return val ? String(val) : fallback
+  }
   const nodeData = {
-    name: rawData.name || 'Trading Strategy',
-    strategyType: rawData.strategyType || 'Strategy',
-    timeframe: rawData.timeframe || '1H',
-    symbol: rawData.symbol || 'BTC-PERP',
-    crossAssetInfo: rawData.crossAssetInfo,
+    name: safeString(rawData.name, 'Trading Strategy'),
+    strategyType: safeString(rawData.strategyType, 'Strategy'),
+    timeframe: safeString(rawData.timeframe, '1H'),
+    symbol: safeString(rawData.symbol, 'BTC-PERP'),
+    crossAssetInfo: rawData.crossAssetInfo
+      ? {
+          signalSymbol: safeString(rawData.crossAssetInfo.signalSymbol),
+          tradingSymbol: safeString(rawData.crossAssetInfo.tradingSymbol),
+          signalAsset: safeString(rawData.crossAssetInfo.signalAsset),
+          tradingAsset: safeString(rawData.crossAssetInfo.tradingAsset),
+        }
+      : undefined,
   }
   const { crossAssetInfo } = nodeData
 
