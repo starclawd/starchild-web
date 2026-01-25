@@ -49,31 +49,16 @@ src/components/Avatar/
 
 ## 组件开发规范
 
-### 必须使用 memo 包裹
+> 💡 `memo` 包裹、`$` 前缀等通用规则见 [GLOBAL_RULES.md](../../GLOBAL_RULES.md)
 
-```typescript
-export default memo(function ComponentName() {
-  // ...
-})
-```
-
-### styled-components 规范
-
-- 定义放在文件顶部，组件之前
-- transient props 使用 `$` 前缀（如 `$isActive`）
-
-```typescript
-const Container = styled.div<{ $isActive: boolean }>`
-  color: ${({ $isActive, theme }) => ($isActive ? theme.black0 : theme.black400)};
-`
-```
+- styled-components 定义放在文件顶部，组件之前
 
 ## 图片使用规范
 
-| 图片类型 | 使用方式                |
-| -------- | ----------------------- |
-| 远程图片 | 使用 `LazyImage` 组件   |
-| 本地图片 | 使用原生 `<img>` 标签   |
+| 图片类型 | 使用方式              |
+| -------- | --------------------- |
+| 远程图片 | 使用 `LazyImage` 组件 |
+| 本地图片 | 使用原生 `<img>` 标签 |
 
 ```typescript
 // ✅ 远程图片

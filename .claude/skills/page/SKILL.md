@@ -118,8 +118,9 @@ src/pages/Mobile/
 
 ## ⚠️ 注意事项
 
-1. 页面组件必须使用 `memo` 包裹
-2. 页面私有组件放在 `components/` 子目录
-3. 复用性高的组件提取到 `src/components/`
-4. 页面样式使用 styled-components
-5. 移动端页面以 `Mobile` 前缀命名
+1. 页面私有组件放在 `components/` 子目录
+2. 复用性高的组件提取到 `src/components/`
+3. 页面样式使用 styled-components
+4. 移动端页面以 `Mobile` 前缀命名
+
+> 💡 `memo` 包裹等通用规则见 [GLOBAL_RULES.md](../../GLOBAL_RULES.md)
