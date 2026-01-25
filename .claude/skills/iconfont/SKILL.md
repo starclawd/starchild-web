@@ -1,3 +1,8 @@
+---
+name: iconfont
+description: Iconfont 图标规则。当设计稿转代码涉及图标、需要处理 SVG 图标、生成 iconfont 时使用此技能。
+---
+
 # Iconfont 图标规则
 
 ## 图标处理流程

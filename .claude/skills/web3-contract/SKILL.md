@@ -1,6 +1,11 @@
+---
+name: web3-contract
+description: Web3 合约调用规则。当需要调用区块链合约、使用 wagmi、生成合约 hooks 时使用此技能。
+---
+
 # Web3 合约调用规则
 
-> 详细文档：[README_WAGMI_CLI.md](../README_WAGMI_CLI.md)
+> 详细文档：[README_WAGMI_CLI.md](../../../README_WAGMI_CLI.md)
 
 ## 使用 Wagmi CLI 生成合约 Hooks
 

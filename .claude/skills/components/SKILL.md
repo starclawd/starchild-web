@@ -1,3 +1,8 @@
+---
+name: components
+description: 组件开发规范。当需要创建组件、修改组件、使用公共组件时使用此技能。
+---
+
 # 组件开发规范
 
 ## 公共组件列表 (`src/components/`)
