@@ -25,7 +25,7 @@ dist-old
 *.sln
 *.sw?
 .env
-
+.cursor
 # Local SSL certificates
 certs/
 
