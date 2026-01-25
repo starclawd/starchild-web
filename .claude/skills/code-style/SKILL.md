@@ -76,6 +76,41 @@ import { Trans } from '@lingui/react/macro'
 - **优先使用 `src/components` 中的公共组件**
 - **常量统一放在 `src/constants/`**
 - **工具方法放在 `src/utils/`**
+- **DOM 必须使用数据驱动**
+
+---
+
+## 数据驱动 DOM
+
+**禁止硬编码重复 DOM，必须用数组 + map 渲染：**
+
+```typescript
+// ❌ 错误：硬编码重复结构
+<div>
+  <Item title="收益率" value={rate} />
+  <Item title="总资产" value={total} />
+  <Item title="风险等级" value={risk} />
+</div>
+
+// ✅ 正确：数据驱动
+const items = [
+  { title: '收益率', value: rate },
+  { title: '总资产', value: total },
+  { title: '风险等级', value: risk },
+]
+
+<div>
+  {items.map((item) => (
+    <Item key={item.title} title={item.title} value={item.value} />
+  ))}
+</div>
+```
+
+**优势：**
+
+- 易于维护和扩展
+- 数据与视图分离
+- 便于动态控制显示/隐藏
 
 ---
 

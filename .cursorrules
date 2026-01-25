@@ -20,6 +20,11 @@
 | HTTPS 本地开发       | `.claude/skills/https/SKILL.md`         |
 | WebSocket 连接       | `.claude/skills/websocket/SKILL.md`     |
 | 图标处理、iconfont   | `.claude/skills/iconfont/SKILL.md`      |
+| 国际化、多语言       | `.claude/skills/i18n/SKILL.md`          |
+| 路由配置、页面导航   | `.claude/skills/router/SKILL.md`        |
+| 移动端适配           | `.claude/skills/mobile/SKILL.md`        |
+| 创建页面             | `.claude/skills/page/SKILL.md`          |
+| 部署、发布、打 tag   | `.claude/skills/deploy/SKILL.md`        |
 
 ## 通用规则
 
