@@ -1,6 +1,6 @@
 ---
 name: store
-description: Store 配置规范。当需要创建 store、状态管理、业务 hooks 时使用此技能。
+description: Store 配置规范。当需要创建 store、状态管理、业务 hooks、redux、reducer、持久化缓存、useSelector、useDispatch 时使用此技能。
 ---
 
 # Store 配置规范

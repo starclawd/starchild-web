@@ -1,34 +1,5 @@
 # Cursor Rules
 
-> 项目规则统一存放在 `.claude/skills/` 目录，Cursor 和 Claude Code 共用。
-
-## Skills 索引
-
-根据用户需求，读取对应的 Skill 文件：
-
-| 用户意图             | Skill 文件                              |
-| -------------------- | --------------------------------------- |
-| 启动项目、运行项目   | `.claude/skills/startup/SKILL.md`       |
-| 执行命令、安装依赖   | `.claude/skills/permissions/SKILL.md`   |
-| 新增 API、调用接口   | `.claude/skills/api/SKILL.md`           |
-| 创建 store、状态管理 | `.claude/skills/store/SKILL.md`         |
-| 创建组件、修改组件   | `.claude/skills/components/SKILL.md`    |
-| 样式修改、主题颜色   | `.claude/skills/styles/SKILL.md`        |
-| 文件放哪里、目录结构 | `.claude/skills/directories/SKILL.md`   |
-| 代码风格、命名规范   | `.claude/skills/code-style/SKILL.md`    |
-| Web3 合约调用        | `.claude/skills/web3-contract/SKILL.md` |
-| HTTPS 本地开发       | `.claude/skills/https/SKILL.md`         |
-| WebSocket 连接       | `.claude/skills/websocket/SKILL.md`     |
-| 图标处理、iconfont   | `.claude/skills/iconfont/SKILL.md`      |
-| 国际化、多语言       | `.claude/skills/i18n/SKILL.md`          |
-| 路由配置、页面导航   | `.claude/skills/router/SKILL.md`        |
-| 移动端适配           | `.claude/skills/mobile/SKILL.md`        |
-| 创建页面             | `.claude/skills/page/SKILL.md`          |
-| 部署、发布、打 tag   | `.claude/skills/deploy/SKILL.md`        |
-
-## 通用规则
-
-- 📦 包管理器：`yarn`（禁止使用 npm）
-- ⚡ 执行命令：使用 `required_permissions: ["all"]`
-- 🔍 DevInspector：`Shift + Alt + C` 开启检查模式
-- 📝 Prettier：必须安装 v11.0.0 版本
+> 📖 **全局规则请查阅：[.claude/GLOBAL_RULES.md](.claude/GLOBAL_RULES.md)**
+>
+> 该文件包含 Skills 索引、组件修改规则、通用规则和技术栈信息。

@@ -1,6 +1,6 @@
 ---
 name: api
-description: API 配置规范。当需要新增 API、调用接口、配置请求时使用此技能。
+description: API 配置规范。当需要新增 API、调用接口、配置请求、fetch 数据、RTK Query、injectEndpoints 时使用此技能。
 ---
 
 # API 配置规范

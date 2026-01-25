@@ -1,6 +1,6 @@
 ---
 name: styles
-description: 样式规范。当需要修改样式、使用主题颜色、编写公共样式时使用此技能。
+description: 全局样式规范。当需要使用主题颜色（theme）、编写公共样式（src/styles/）、了解 styled-components 规范时使用此技能。注意：修改某个组件内的样式请使用 components 技能。
 ---
 
 # 样式规范
@@ -22,17 +22,15 @@ const Title = styled.div`
 `
 ```
 
-## 主题颜色 (`src/theme/`) ⛔ 只读
+## 主题颜色 (`src/theme/`)
 
-**主题颜色从此目录获取，但不要修改此目录的文件。**
+> ⛔ 只读目录，详见 [GLOBAL_RULES.md](../../GLOBAL_RULES.md)
 
 ```typescript
-// ✅ 正确：使用 theme 变量
+// 使用 theme 变量获取颜色
 const Title = styled.div`
   color: ${({ theme }) => theme.black0};
 `
-
-// ❌ 错误：不要修改 src/theme 目录下的文件
 ```
 
 ## 公共样式 (`src/styles/`)
@@ -56,16 +54,4 @@ const Container = styled.div`
 
 ## styled-components transient props
 
-使用 `$` 前缀避免 props 传递到 DOM：
-
-```typescript
-// ✅ 正确
-const Button = styled.button<{ $isActive: boolean }>`
-  color: ${({ $isActive }) => ($isActive ? 'red' : 'blue')};
-`
-
-// ❌ 错误（会传递到 DOM）
-const Button = styled.button<{ isActive: boolean }>`
-  color: ${({ isActive }) => (isActive ? 'red' : 'blue')};
-`
-```
+> 💡 `$` 前缀规则详见 [GLOBAL_RULES.md](../../GLOBAL_RULES.md)

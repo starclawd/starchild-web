@@ -16,7 +16,7 @@ description: 项目目录结构。当需要了解文件放哪里、目录结构�
 | `src/styles/`     | 公共样式                   | ✅      |
 | `src/types/`      | 公共类型定义               | ✅      |
 | `src/utils/`      | 工具方法                   | ✅      |
-| `src/theme/`      | 主题颜色配置               | ⛔ 只读 |
+| `src/theme/`      | 主题颜色配置               | ⛔ 只读 (见 GLOBAL_RULES) |
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: i18n
-description: 国际化规则。当需要添加翻译文本、处理多语言、使用 lingui 时使用此技能。
+description: 国际化规则。当需要添加翻译文本、处理多语言、使用 lingui、Trans 组件、useLingui、提取翻译、编译翻译时使用此技能。
 ---
 
 # 国际化规则 (i18n)

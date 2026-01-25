@@ -47,14 +47,7 @@ import { SubComponent } from './components/SubComponent'
 
 ## 国际化
 
-- 使用 `@lingui/react/macro` 进行翻译
-- 用 `<Trans>` 组件包裹可翻译文本
-
-```typescript
-import { Trans } from '@lingui/react/macro'
-
-<Trans>Strategy</Trans>
-```
+> 💡 基本用法见 [GLOBAL_RULES.md](../../GLOBAL_RULES.md)，详细用法见 [i18n/SKILL.md](../i18n/SKILL.md)
 
 ---
 
@@ -82,35 +75,7 @@ import { Trans } from '@lingui/react/macro'
 
 ## 数据驱动 DOM
 
-**禁止硬编码重复 DOM，必须用数组 + map 渲染：**
-
-```typescript
-// ❌ 错误：硬编码重复结构
-<div>
-  <Item title="收益率" value={rate} />
-  <Item title="总资产" value={total} />
-  <Item title="风险等级" value={risk} />
-</div>
-
-// ✅ 正确：数据驱动
-const items = [
-  { title: '收益率', value: rate },
-  { title: '总资产', value: total },
-  { title: '风险等级', value: risk },
-]
-
-<div>
-  {items.map((item) => (
-    <Item key={item.title} title={item.title} value={item.value} />
-  ))}
-</div>
-```
-
-**优势：**
-
-- 易于维护和扩展
-- 数据与视图分离
-- 便于动态控制显示/隐藏
+> 💡 详见 [GLOBAL_RULES.md](../../GLOBAL_RULES.md)
 
 ---
 

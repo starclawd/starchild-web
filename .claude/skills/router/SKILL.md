@@ -1,6 +1,6 @@
 ---
 name: router
-description: 路由配置规则。当需要添加新页面路由、配置导航、使用 react-router 时使用此技能。
+description: 路由配置规则。当需要添加新页面路由、配置导航、页面跳转、useNavigate、react-router、路由参数时使用此技能。
 ---
 
 # 路由配置规则
