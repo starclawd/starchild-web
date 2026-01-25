@@ -17,6 +17,7 @@
 | Web3 合约调用、区块链交互        | `.rules/web3-contract.md` |
 | HTTPS 配置、本地域名、SSL 证书   | `.rules/https.md`         |
 | WebSocket 连接、实时数据订阅     | `.rules/websocket.md`     |
+| 图标处理、iconfont、SVG 图标     | `.rules/iconfont.md`      |
 
 ---
 

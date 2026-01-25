@@ -17,6 +17,7 @@
 | Web3 合约调用                    | `.rules/web3-contract.md` |
 | HTTPS 本地开发                   | `.rules/https.md`         |
 | WebSocket 连接                   | `.rules/websocket.md`     |
+| 图标处理、iconfont               | `.rules/iconfont.md`      |
 
 ## 通用规则
 
