@@ -1,23 +1,25 @@
 # Cursor Rules
 
-> 请先阅读 [.rules/index.md](./.rules/index.md) 获取规则索引，根据用户需求动态读取对应的规则文件。
+> 项目规则统一存放在 `.claude/skills/` 目录，Cursor 和 Claude Code 共用。
 
-## 规则文件
+## Skills 索引
 
-| 用户意图                         | 读取规则文件              |
-| -------------------------------- | ------------------------- |
-| 启动项目、运行项目               | `.rules/startup.md`       |
-| 执行命令、安装依赖               | `.rules/permissions.md`   |
-| 新增 API、调用接口               | `.rules/api.md`           |
-| 创建 store、状态管理             | `.rules/store.md`         |
-| 创建组件、修改组件               | `.rules/components.md`    |
-| 样式修改、主题颜色               | `.rules/styles.md`        |
-| 文件放哪里、目录结构             | `.rules/directories.md`   |
-| 代码风格、命名规范               | `.rules/code-style.md`    |
-| Web3 合约调用                    | `.rules/web3-contract.md` |
-| HTTPS 本地开发                   | `.rules/https.md`         |
-| WebSocket 连接                   | `.rules/websocket.md`     |
-| 图标处理、iconfont               | `.rules/iconfont.md`      |
+根据用户需求，读取对应的 Skill 文件：
+
+| 用户意图             | Skill 文件                              |
+| -------------------- | --------------------------------------- |
+| 启动项目、运行项目   | `.claude/skills/startup/SKILL.md`       |
+| 执行命令、安装依赖   | `.claude/skills/permissions/SKILL.md`   |
+| 新增 API、调用接口   | `.claude/skills/api/SKILL.md`           |
+| 创建 store、状态管理 | `.claude/skills/store/SKILL.md`         |
+| 创建组件、修改组件   | `.claude/skills/components/SKILL.md`    |
+| 样式修改、主题颜色   | `.claude/skills/styles/SKILL.md`        |
+| 文件放哪里、目录结构 | `.claude/skills/directories/SKILL.md`   |
+| 代码风格、命名规范   | `.claude/skills/code-style/SKILL.md`    |
+| Web3 合约调用        | `.claude/skills/web3-contract/SKILL.md` |
+| HTTPS 本地开发       | `.claude/skills/https/SKILL.md`         |
+| WebSocket 连接       | `.claude/skills/websocket/SKILL.md`     |
+| 图标处理、iconfont   | `.claude/skills/iconfont/SKILL.md`      |
 
 ## 通用规则
 

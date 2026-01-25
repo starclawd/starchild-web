@@ -1,3 +1,8 @@
+---
+name: directories
+description: 项目目录结构。当需要了解文件放哪里、目录结构、类型定义位置时使用此技能。
+---
+
 # 项目目录结构
 
 ## 目录概览
@@ -25,8 +30,6 @@
 | `chainInfo.ts`         | 区块链网络配置           |
 | `locales.ts`           | 国际化语言配置           |
 | `timezone.ts`          | 时区配置                 |
-| `agentHub.ts`          | Agent Hub 相关常量       |
-| `useCases.ts`          | 用例相关常量             |
 | `vaultContractInfo.ts` | Vault 合约配置           |
 | `brokerHash.ts`        | Broker 哈希配置          |
 

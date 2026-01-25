@@ -1,6 +1,11 @@
+---
+name: https
+description: HTTPS 本地开发配置。当需要配置 HTTPS、本地域名、SSL 证书、谷歌登录时使用此技能。
+---
+
 # HTTPS 本地开发配置
 
-> 详细文档：[README-https-setup.md](../README-https-setup.md)
+> 详细文档：[README-https-setup.md](../../../README-https-setup.md)
 
 ## 快速配置
 

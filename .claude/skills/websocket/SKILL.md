@@ -1,6 +1,11 @@
+---
+name: websocket
+description: WebSocket 使用规则。当需要处理 WebSocket 连接、实时数据订阅、K线数据时使用此技能。
+---
+
 # WebSocket 使用规则
 
-> 详细文档：[README-websocket.md](../README-websocket.md)
+> 详细文档：[README-websocket.md](../../../README-websocket.md)
 
 ## Hooks 位置
 

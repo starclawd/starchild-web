@@ -1,27 +1,16 @@
 # Claude Code Guidelines
 
-> 请先阅读 [.rules/index.md](./.rules/index.md) 获取规则索引，根据用户需求动态读取对应的规则文件。
-
-## 规则文件
-
-| 用户意图             | 读取规则文件              |
-| -------------------- | ------------------------- |
-| 启动项目、运行项目   | `.rules/startup.md`       |
-| 执行命令、安装依赖   | `.rules/permissions.md`   |
-| 新增 API、调用接口   | `.rules/api.md`           |
-| 创建 store、状态管理 | `.rules/store.md`         |
-| 创建组件、修改组件   | `.rules/components.md`    |
-| 样式修改、主题颜色   | `.rules/styles.md`        |
-| 文件放哪里、目录结构 | `.rules/directories.md`   |
-| 代码风格、命名规范   | `.rules/code-style.md`    |
-| Web3 合约调用        | `.rules/web3-contract.md` |
-| HTTPS 本地开发       | `.rules/https.md`         |
-| WebSocket 连接       | `.rules/websocket.md`     |
-| 图标处理、iconfont   | `.rules/iconfont.md`      |
-
 ## 通用规则
 
 - 📦 包管理器：`yarn`（禁止使用 npm）
 - ⚡ 执行命令：确保禁用沙盒限制
 - 🔍 DevInspector：`Shift + Alt + C` 开启检查模式
 - 📝 Prettier：必须安装 v11.0.0 版本
+
+## 技术栈
+
+- React 19 + TypeScript
+- Vite 构建工具
+- styled-components 样式方案
+- Redux Toolkit + React Redux 状态管理
+- @lingui 国际化 (i18n)

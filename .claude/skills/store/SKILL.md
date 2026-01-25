@@ -1,3 +1,8 @@
+---
+name: store
+description: Store 配置规范。当需要创建 store、状态管理、业务 hooks 时使用此技能。
+---
+
 # Store 配置规范
 
 API 的业务封装 hooks 必须放在 `src/store/` 目录下。
