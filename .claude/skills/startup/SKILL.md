@@ -75,19 +75,46 @@ yarn start
 | AI 辅助生成  | 结合 AI 自动生成高保真代码                 |
 | 组件识别     | 自动识别设计稿中的组件结构                 |
 
-### 安装步骤
+### 安装与配置步骤
 
-1. **安装 Pencil 扩展**
-   - 在 Cursor 扩展商店搜索 `Pencil`
-   - 点击安装
+#### 1. 安装 Pencil 扩展
 
-2. **配置 MCP 服务**
-   - 打开 Cursor 设置 → Features → MCP Servers
-   - 添加 Pencil MCP 服务器配置
+- 在 Cursor 扩展商店搜索 `Pencil`
+- 点击安装
 
-3. **验证安装**
-   - 重启 Cursor
-   - 创建或打开 `.pen` 文件测试
+#### 2. 配置 MCP 服务（AI 自动配置）
+
+当用户安装了 Pencil 扩展后，需要在项目的 `.cursor/mcp.json` 中配置 MCP 服务。
+
+**AI 操作步骤**：
+
+1. 查找用户的 Pencil 扩展路径：
+   ```bash
+   ls ~/.cursor/extensions/ | grep pencil
+   ```
+
+2. 确认 MCP 服务器可执行文件路径（根据系统架构选择）：
+   - Mac ARM: `~/.cursor/extensions/highagency.pencildev-{版本}-universal/out/mcp-server-darwin-arm64`
+   - Mac Intel: `~/.cursor/extensions/highagency.pencildev-{版本}-universal/out/mcp-server-darwin-x64`
+   - Windows: `~/.cursor/extensions/highagency.pencildev-{版本}-universal/out/mcp-server-win32-x64.exe`
+
+3. 更新 `.cursor/mcp.json` 文件（如不存在则创建）：
+   ```json
+   {
+     "mcpServers": {
+       "extension-pencil": {
+         "command": "/Users/{用户名}/.cursor/extensions/highagency.pencildev-{版本}-universal/out/mcp-server-darwin-arm64"
+       }
+     }
+   }
+   ```
+
+4. 重启 Cursor 使配置生效
+
+#### 3. 验证安装
+
+- 重启 Cursor
+- 创建或打开 `.pen` 文件测试
 
 ### 使用流程
 
