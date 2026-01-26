@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { VaultsState, VaultLibraryStats, MyVaultStats, LeaderboardBalanceData } from './vaults'
-import { VaultInfo, OrderlyAvailableSymbolsDataType } from 'api/vaults'
+import { VaultInfo } from 'api/vaults'
+import { OrderlyAvailableSymbolsDataType } from 'api/orderly'
 import { StrategiesOverviewDataType } from 'api/strategy'
 
 const initialState: VaultsState = {

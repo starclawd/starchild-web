@@ -10,7 +10,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { baseApi } from './baseStarchild'
 import { chatApi } from './baseChat'
-import { hyperliquidDomain, orderlyDomain } from 'utils/url'
+import { hyperliquidDomain, orderlyDomain, orderlySvDomain } from 'utils/url'
 export { baseApi, chatApi }
 
 /**
@@ -60,6 +60,14 @@ export const coingeckoApi = createApi({
  * Orderly API
  * 用于访问Orderly相关的Vault数据和服务
  */
+export const orderlySvApi = createApi({
+  baseQuery: fetchBaseQuery({ baseUrl: orderlySvDomain.restfulDomain }),
+  reducerPath: 'orderlySvApi',
+  keepUnusedDataFor: 5 * 60,
+  refetchOnMountOrArgChange: 30 * 60,
+  endpoints: () => ({}),
+})
+
 export const orderlyApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: orderlyDomain.restfulDomain }),
   reducerPath: 'orderlyApi',

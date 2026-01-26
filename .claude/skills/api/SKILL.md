@@ -9,11 +9,11 @@ description: API 配置规范。当需要新增 API、调用接口、配置请�
 
 ## 1. 选择正确的 API 基础实例
 
-| API 实例     | 用途                   | 文件位置                   |
-| ------------ | ---------------------- | -------------------------- |
-| `baseApi`    | 主业务 API（带拦截器） | `src/api/baseStarchild.ts` |
-| `chatApi`    | Chat 相关 API          | `src/api/baseChat.ts`      |
-| `orderlyApi` | Orderly 交易所 API     | `src/api/base.ts`          |
+| API 实例       | 用途                   | 文件位置                   |
+| -------------- | ---------------------- | -------------------------- |
+| `baseApi`      | 主业务 API（带拦截器） | `src/api/baseStarchild.ts` |
+| `chatApi`      | Chat 相关 API          | `src/api/baseChat.ts`      |
+| `orderlySvApi` | Orderly 交易所 API     | `src/api/base.ts`          |
 
 ## 2. 定义 API 端点
 
@@ -72,9 +72,9 @@ export interface RootState {
 
 ## API Hooks 命名规范
 
-| Hook 类型          | 命名格式                  | 示例                              |
-| ------------------ | ------------------------- | --------------------------------- |
-| RTK Query 生成     | `useGet[Resource]Query`   | `useGetAllStrategiesOverviewQuery` |
-| 封装业务逻辑       | `use[Resource]`           | `useAllStrategiesOverview`        |
+| Hook 类型      | 命名格式                | 示例                               |
+| -------------- | ----------------------- | ---------------------------------- |
+| RTK Query 生成 | `useGet[Resource]Query` | `useGetAllStrategiesOverviewQuery` |
+| 封装业务逻辑   | `use[Resource]`         | `useAllStrategiesOverview`         |
 
 业务 hook 应封装 API 调用、状态管理和数据处理逻辑。

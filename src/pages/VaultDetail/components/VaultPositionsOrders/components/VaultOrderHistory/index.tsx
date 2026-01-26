@@ -13,56 +13,8 @@ import NoData from 'components/NoData'
 import { VaultPositionsOrdersProps } from '../..'
 import { DETAIL_TYPE } from 'store/vaultsdetail/vaultsdetail'
 import { StyledTable, LoadingWrapper } from '../../styles'
-import { useSymbolPrecision } from 'store/vaults/hooks'
-import LazyImage from 'components/LazyImage'
-
-// Symbol 显示组件
-const SymbolCell = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`
-
-const SymbolContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  .symbol-logo {
-    margin-right: 4px;
-  }
-`
-
-// 侧边栏指示器
-const SideIndicator = styled.div<{ $side: 'BUY' | 'SELL' }>`
-  width: 4px;
-  height: 24px;
-  background: ${({ theme, $side }) => ($side === 'BUY' ? theme.green100 : theme.red100)};
-`
-
-const SymbolText = styled.div<{ $isLong?: boolean }>`
-  font-weight: 400;
-  color: ${({ theme, $isLong }) => ($isLong === undefined ? theme.black100 : $isLong ? theme.green100 : theme.red100)};
-`
-
-// Symbol组件
-interface SymbolDisplayProps {
-  displaySymbol: string
-  token: string
-  logoUrl: string
-  orderSide?: 'BUY' | 'SELL'
-}
-
-const SymbolDisplay = memo<SymbolDisplayProps>(({ displaySymbol, token, logoUrl, orderSide }) => {
-  const isLong = orderSide === 'BUY'
-
-  return (
-    <SymbolContainer>
-      <LazyImage className='symbol-logo' src={logoUrl} alt={token} width={24} height={24} />
-      {orderSide && <SideIndicator $side={orderSide} />}
-      <SymbolText $isLong={isLong}>{displaySymbol}</SymbolText>
-    </SymbolContainer>
-  )
-})
+import { useSymbolPrecision, isOldSymbolFormat } from 'store/vaults/hooks'
+import SymbolDisplay from '../../../SymbolDisplay'
 
 // 数量显示组件
 const CommonValue = styled.div`
@@ -89,20 +41,27 @@ const VaultOrderHistory = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId,
       {
         key: 'symbol',
         title: <Trans>Symbol</Trans>,
-        width: '180px',
-        render: (order) => (
-          <SymbolCell>
+        width: '200px',
+        render: (order) => {
+          // 兼容新旧格式：新格式 symbol 就是 token（如 BTC），旧格式需要解析（如 PERP_BTC_USDC）
+          const token = isOldSymbolFormat(order.symbol)
+            ? order.symbol.replace('PERP_', '').split('_')[0]
+            : order.displaySymbol || order.symbol
+          const logoUrl =
+            order.logoUrl || `https://oss.orderly.network/static/symbol_logo/${token.toUpperCase()}.png`
+
+          return (
             <SymbolDisplay
-              displaySymbol={order.displaySymbol || order.symbol.replace('PERP_', '').replace('_', '-')}
-              token={order.token || order.symbol.replace('PERP_', '').split('_')[0]}
-              logoUrl={
-                order.logoUrl ||
-                `https://oss.orderly.network/static/symbol_logo/${order.symbol.replace('PERP_', '').split('_')[0].toUpperCase()}.png`
-              }
+              symbol={order.symbol}
+              displaySymbol={order.displaySymbol || token}
+              token={order.token || token}
+              logoUrl={logoUrl}
               orderSide={order.side}
+              type={order.type}
+              leverage={order.leverage}
             />
-          </SymbolCell>
-        ),
+          )
+        },
       },
       {
         key: 'quantity',

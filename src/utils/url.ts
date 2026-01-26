@@ -150,7 +150,7 @@ export const webSocketDomain = new Proxy({} as Record<string, string>, {
   },
 })
 
-export const orderlyDomainOrigin = {
+export const orderlySvDomainOrigin = {
   // 本地测试
   development: {
     restfulDomain: '/orderlyTestnet',
@@ -166,6 +166,43 @@ export const orderlyDomainOrigin = {
   // 主网
   pro: {
     restfulDomain: 'https://api-sv.orderly.org',
+  },
+}
+
+export const orderlySvDomain = new Proxy({} as Record<string, string>, {
+  get: (_, prop: string) => {
+    const search = window.location.search
+    let environmentType: keyof typeof orderlySvDomainOrigin = 'development'
+    const { openAllPermissions } = parsedQueryString(search)
+
+    if (isLocalEnv) {
+      environmentType = openAllPermissions === OPEN_ALL_PERMISSIONS.MAIN_NET ? 'localPro' : 'development'
+    } else if (isTestEnv) {
+      environmentType = 'test'
+    } else if (isPro) {
+      environmentType = 'pro'
+    }
+
+    return orderlySvDomainOrigin[environmentType][prop as keyof (typeof orderlySvDomainOrigin)[typeof environmentType]]
+  },
+})
+
+export const orderlyDomainOrigin = {
+  // 本地测试
+  development: {
+    restfulDomain: 'https://testnet-api.orderly.org',
+  },
+  // 本地主网
+  localPro: {
+    restfulDomain: 'https://api.orderly.org',
+  },
+  // 测试环境
+  test: {
+    restfulDomain: 'https://testnet-api.orderly.org',
+  },
+  // 主网
+  pro: {
+    restfulDomain: 'https://api.orderly.org',
   },
 }
 

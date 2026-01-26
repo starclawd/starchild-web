@@ -15,7 +15,7 @@ export function formatSymbolDisplay(symbol: string): string {
   if (symbol.startsWith('PERP_')) {
     const parts = symbol.split('_')
     if (parts.length >= 3) {
-      return `${parts[1]}-${parts[2]}`
+      return parts[1]
     }
   }
   return symbol
@@ -34,6 +34,7 @@ export function calculateVaultPosition(rawPosition: {
   mark_price: number
   est_liq_price: number | undefined
   imr: number | undefined
+  leverage: number
 }): VaultPosition {
   // 计算 position_side
   const position_side: 'long' | 'short' = rawPosition.position_qty > 0 ? 'long' : 'short'
@@ -65,18 +66,14 @@ export function calculateVaultPosition(rawPosition: {
   const initial_margin = rawPosition.imr !== undefined ? value * (rawPosition.imr || 0) : undefined
 
   return {
-    symbol: rawPosition.symbol,
+    ...rawPosition,
     displaySymbol,
     token,
     logoUrl,
-    position_qty: rawPosition.position_qty,
     value,
-    average_open_price: rawPosition.average_open_price,
-    mark_price: rawPosition.mark_price,
     pnl,
     roe,
     position_side,
-    est_liq_price: rawPosition.est_liq_price,
     initial_margin,
   }
 }
