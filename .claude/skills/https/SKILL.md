@@ -51,6 +51,32 @@ echo "127.0.0.1 starchild.dev" | sudo tee -a /etc/hosts
 | 证书不安全 | `mkcert -install` |
 | 无法访问 | 检查 `cat /etc/hosts \| grep starchild` |
 | 重新生成 | `rm -rf certs && yarn setup:https` |
+| 代理导致无法访问 | 见下方「代理绕过配置」 |
+
+## 代理绕过配置
+
+如果使用代理软件（ClashX、Surge 等），访问 `https://starchild.dev:6066` 可能失败。
+
+### 方案：macOS 系统代理排除（推荐）
+
+1. 打开 **系统设置** → **网络** → 选择当前网络（Wi-Fi）
+2. 点击 **详细信息** → **代理**
+3. 在「**忽略这些主机与域的代理设置**」中添加：
+   ```
+   starchild.dev, starchild.local, localhost, 127.0.0.1
+   ```
+4. 点击「好」保存
+
+### 备选方案：终端环境变量
+
+在 `~/.zshrc` 中添加：
+
+```bash
+export no_proxy="localhost,127.0.0.1,starchild.dev,starchild.local"
+export NO_PROXY="localhost,127.0.0.1,starchild.dev,starchild.local"
+```
+
+> 注意：终端环境变量只对命令行生效，浏览器需要使用系统代理排除。
 
 ## 谷歌登录配置
 
