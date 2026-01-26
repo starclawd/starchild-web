@@ -424,7 +424,7 @@ export default memo(function DislikeModal({
           <InputWrapper $borderRadius={12} $borderColor={theme.black600}>
             <InputArea value={value} placeholder={t(msg`Please enter your feedback`)} setValue={setValue} />
           </InputWrapper>
-        </Content>  
+        </Content>
       ) : (
         <Content>
           <TextContent>

@@ -25,9 +25,7 @@ module.exports = function babelPluginDevInspector() {
 
         // 检查是否已经有 data-inspector 属性（避免重复注入）
         const hasInspectorAttr = path.node.attributes.some(
-          (attr) =>
-            attr.type === 'JSXAttribute' &&
-            attr.name?.name?.toString().startsWith('data-inspector'),
+          (attr) => attr.type === 'JSXAttribute' && attr.name?.name?.toString().startsWith('data-inspector'),
         )
         if (hasInspectorAttr) return
 
@@ -36,14 +34,10 @@ module.exports = function babelPluginDevInspector() {
         const relativePath = srcIndex !== -1 ? filename.slice(srcIndex + 1) : filename
 
         // 添加 data-inspector-file 属性
-        path.node.attributes.push(
-          t.jsxAttribute(t.jsxIdentifier('data-inspector-file'), t.stringLiteral(filename)),
-        )
+        path.node.attributes.push(t.jsxAttribute(t.jsxIdentifier('data-inspector-file'), t.stringLiteral(filename)))
 
         // 添加 data-inspector-line 属性
-        path.node.attributes.push(
-          t.jsxAttribute(t.jsxIdentifier('data-inspector-line'), t.stringLiteral(String(line))),
-        )
+        path.node.attributes.push(t.jsxAttribute(t.jsxIdentifier('data-inspector-line'), t.stringLiteral(String(line))))
 
         // 添加 data-inspector-column 属性
         path.node.attributes.push(
@@ -51,9 +45,7 @@ module.exports = function babelPluginDevInspector() {
         )
 
         // 添加 data-inspector-path 属性（用于显示）
-        path.node.attributes.push(
-          t.jsxAttribute(t.jsxIdentifier('data-inspector-path'), t.stringLiteral(relativePath)),
-        )
+        path.node.attributes.push(t.jsxAttribute(t.jsxIdentifier('data-inspector-path'), t.stringLiteral(relativePath)))
       },
     },
   }

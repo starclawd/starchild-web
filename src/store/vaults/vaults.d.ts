@@ -1,5 +1,11 @@
 // Vault相关的类型定义
-import { VaultInfo, VaultOverallStats, UserOverallStats, VaultTransactionHistory, OrderlyAvailableSymbolsDataType } from 'api/vaults'
+import {
+  VaultInfo,
+  VaultOverallStats,
+  UserOverallStats,
+  VaultTransactionHistory,
+  OrderlyAvailableSymbolsDataType,
+} from 'api/vaults'
 import { StrategiesOverviewDataType } from 'api/strategy'
 
 // 用于UI显示的格式化数据类型

@@ -179,7 +179,7 @@ function CandlePatternNode({ data }: NodeProps) {
     const color = typeof c === 'string' ? c : 'green'
     return color === 'red' ? 'red' : 'green'
   }) as ('green' | 'red')[]
-  
+
   const nodeData = {
     colorPattern: validColorPattern,
     name: safeString(rawData.name, 'Pattern'),

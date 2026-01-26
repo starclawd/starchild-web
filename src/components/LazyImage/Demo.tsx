@@ -102,17 +102,17 @@ const FeatureCard = styled.div`
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  
+
   .feature-content {
     padding: 16px;
-    
+
     h4 {
       font-size: 16px;
       font-weight: 600;
       margin-bottom: 8px;
       color: ${({ theme }) => theme.black0};
     }
-    
+
     p {
       font-size: 13px;
       color: ${({ theme }) => theme.black300};
@@ -197,7 +197,15 @@ const LazyImageDemo = memo(function LazyImageDemo() {
               />
               <div className='feature-content'>
                 <h4>objectFit: "{fit}"</h4>
-                <p>{fit === 'cover' ? '默认值，保持比例填充' : fit === 'contain' ? '保持比例，完整显示' : fit === 'fill' ? '拉伸填充，可能变形' : '缩小以适应容器'}</p>
+                <p>
+                  {fit === 'cover'
+                    ? '默认值，保持比例填充'
+                    : fit === 'contain'
+                      ? '保持比例，完整显示'
+                      : fit === 'fill'
+                        ? '拉伸填充，可能变形'
+                        : '缩小以适应容器'}
+                </p>
               </div>
             </FeatureCard>
           ))}
@@ -230,7 +238,7 @@ const LazyImageDemo = memo(function LazyImageDemo() {
               <p>宽高比 16:9，常用于视频封面</p>
             </div>
           </FeatureCard>
-          
+
           <FeatureCard>
             <LazyImage
               src={sampleImages[1]}
@@ -244,15 +252,9 @@ const LazyImageDemo = memo(function LazyImageDemo() {
               <p>正方形宽高比配合圆形裁剪</p>
             </div>
           </FeatureCard>
-          
+
           <FeatureCard>
-            <LazyImage
-              src={sampleImages[2]}
-              width='100%'
-              aspectRatio='4/3'
-              borderRadius={24}
-              alt='4:3 aspect ratio'
-            />
+            <LazyImage src={sampleImages[2]} width='100%' aspectRatio='4/3' borderRadius={24} alt='4:3 aspect ratio' />
             <div className='feature-content'>
               <h4>aspectRatio: "4/3"</h4>
               <p>宽高比 4:3，大圆角</p>
@@ -357,7 +359,7 @@ const LazyImageDemo = memo(function LazyImageDemo() {
               <p>duration: 0.3s, ease-out</p>
             </div>
           </FeatureCard>
-          
+
           <FeatureCard>
             <LazyImage
               src={sampleImages[7]}
@@ -539,7 +541,7 @@ const LazyImageDemo = memo(function LazyImageDemo() {
 
       <DemoSection>
         <h3>💡 最佳实践</h3>
-        
+
         <CodeBlock>
           {`// 1. 基础懒加载图片
 <LazyImage

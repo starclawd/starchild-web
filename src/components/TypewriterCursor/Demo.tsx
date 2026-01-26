@@ -184,7 +184,9 @@ const TypewriterCursorDemo = () => {
     <DemoContainer>
       <DemoSection>
         <h2>TypewriterCursor 打字机光标组件</h2>
-        <p>用于模拟打字机效果的闪烁光标组件，常用于 AI 对话、实时打字等场景。支持自定义光标尺寸，具有平滑的闪烁动画效果。</p>
+        <p>
+          用于模拟打字机效果的闪烁光标组件，常用于 AI 对话、实时打字等场景。支持自定义光标尺寸，具有平滑的闪烁动画效果。
+        </p>
       </DemoSection>
 
       <DemoSection>

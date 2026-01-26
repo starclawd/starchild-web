@@ -48,12 +48,12 @@ export default defineConfig({
 
 ### 生成的 Hooks 命名规则
 
-| Hook 类型 | 用途 | 示例 |
-| --------- | ---- | ---- |
-| `useRead{Contract}{Function}` | 读取合约 | `useReadErc20Name()` |
-| `useWrite{Contract}{Function}` | 写入合约 | `useWriteErc20Transfer()` |
-| `useSimulate{Contract}{Function}` | 模拟交易 | `useSimulateErc20Transfer()` |
-| `useWatch{Contract}{Event}Event` | 监听事件 | `useWatchErc20TransferEvent()` |
+| Hook 类型                         | 用途     | 示例                           |
+| --------------------------------- | -------- | ------------------------------ |
+| `useRead{Contract}{Function}`     | 读取合约 | `useReadErc20Name()`           |
+| `useWrite{Contract}{Function}`    | 写入合约 | `useWriteErc20Transfer()`      |
+| `useSimulate{Contract}{Function}` | 模拟交易 | `useSimulateErc20Transfer()`   |
+| `useWatch{Contract}{Event}Event`  | 监听事件 | `useWatchErc20TransferEvent()` |
 
 ### 使用示例
 

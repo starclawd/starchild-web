@@ -11,7 +11,9 @@ const NodeWrapper = styled.div`
   border-radius: 14px;
   background: linear-gradient(135deg, #bd4d00 0%, #5e2600 100%);
   border: 2px solid #ffa940;
-  box-shadow: 0 4px 24px rgba(255, 169, 64, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  box-shadow:
+    0 4px 24px rgba(255, 169, 64, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 `
 
 const Header = styled.div`
@@ -146,20 +148,22 @@ function DecisionDetailNode({ data }: NodeProps) {
 
   return (
     <NodeWrapper>
-      <Handle type="target" position={Position.Top} style={{ background: '#FFA940' }} />
+      <Handle type='target' position={Position.Top} style={{ background: '#FFA940' }} />
       <Header>
         <IconWrapper>
-          <IconBase className="icon-question" />
+          <IconBase className='icon-question' />
         </IconWrapper>
         <Title>DECIDE</Title>
       </Header>
 
       <BranchesContainer>
         {(nodeData.noPosition?.length > 0 || entryCount > 0) && (
-          <BranchSection $type="entry">
+          <BranchSection $type='entry'>
             <BranchHeader>
-              <BranchTitle $type="entry">IF NO POSITION</BranchTitle>
-              <BranchCount>{entryCount} condition{entryCount !== 1 ? 's' : ''}</BranchCount>
+              <BranchTitle $type='entry'>IF NO POSITION</BranchTitle>
+              <BranchCount>
+                {entryCount} condition{entryCount !== 1 ? 's' : ''}
+              </BranchCount>
             </BranchHeader>
             <BranchItems>
               {noPositionActions.map((action, i) => (
@@ -172,10 +176,12 @@ function DecisionDetailNode({ data }: NodeProps) {
         )}
 
         {(nodeData.hasPosition?.length > 0 || exitCount > 0) && (
-          <BranchSection $type="exit">
+          <BranchSection $type='exit'>
             <BranchHeader>
-              <BranchTitle $type="exit">IF HAS POSITION</BranchTitle>
-              <BranchCount>{exitCount} condition{exitCount !== 1 ? 's' : ''}</BranchCount>
+              <BranchTitle $type='exit'>IF HAS POSITION</BranchTitle>
+              <BranchCount>
+                {exitCount} condition{exitCount !== 1 ? 's' : ''}
+              </BranchCount>
             </BranchHeader>
             <BranchItems>
               {hasPositionActions.map((action, i) => (
@@ -188,7 +194,7 @@ function DecisionDetailNode({ data }: NodeProps) {
         )}
       </BranchesContainer>
 
-      <Handle type="source" position={Position.Bottom} style={{ background: '#FFA940' }} />
+      <Handle type='source' position={Position.Bottom} style={{ background: '#FFA940' }} />
     </NodeWrapper>
   )
 }

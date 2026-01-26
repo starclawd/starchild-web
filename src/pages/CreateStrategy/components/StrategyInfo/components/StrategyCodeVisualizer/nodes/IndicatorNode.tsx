@@ -8,8 +8,8 @@ const NodeWrapper = styled.div`
   min-width: 140px;
   padding: 10px 14px;
   border-radius: 10px;
-  background: linear-gradient(135deg, #4F20A0 0%, #2A1060 100%);
-  border: 2px solid #A87FFF;
+  background: linear-gradient(135deg, #4f20a0 0%, #2a1060 100%);
+  border: 2px solid #a87fff;
   box-shadow: 0 4px 20px rgba(168, 127, 255, 0.3);
 `
 
@@ -26,7 +26,7 @@ const IconWrapper = styled.div`
   width: 26px;
   height: 26px;
   border-radius: 6px;
-  background-color: #A87FFF;
+  background-color: #a87fff;
   color: #000;
   font-size: 11px;
   font-weight: 700;
@@ -79,7 +79,7 @@ function IndicatorNode({ data }: NodeProps) {
 
   return (
     <NodeWrapper>
-      <Handle type="target" position={Position.Left} style={{ background: '#A87FFF' }} />
+      <Handle type='target' position={Position.Left} style={{ background: '#A87FFF' }} />
       <Header>
         <IconWrapper>{shortName}</IconWrapper>
         <Content>
@@ -87,7 +87,7 @@ function IndicatorNode({ data }: NodeProps) {
           <Params>{params}</Params>
         </Content>
       </Header>
-      <Handle type="source" position={Position.Bottom} style={{ background: '#A87FFF' }} />
+      <Handle type='source' position={Position.Bottom} style={{ background: '#A87FFF' }} />
     </NodeWrapper>
   )
 }

@@ -13,10 +13,10 @@ description: 移动端适配规则。当需要开发移动端页面、处理响�
 import { vm } from 'pages/helper'
 
 const Container = styled.div`
-  padding: ${vm(16)};           // 16px → vw
-  font-size: ${vm(14)};         // 14px → vw
-  border-radius: ${vm(8)};      // 8px → vw
-  margin-bottom: ${vm(20)};     // 20px → vw
+  padding: ${vm(16)}; // 16px → vw
+  font-size: ${vm(14)}; // 14px → vw
+  border-radius: ${vm(8)}; // 8px → vw
+  margin-bottom: ${vm(20)}; // 20px → vw
 `
 ```
 
@@ -26,7 +26,7 @@ const Container = styled.div`
 
 ```typescript
 const Border = styled.div`
-  border: ${vm(1, true)} solid #ccc;  // keepPx = true
+  border: ${vm(1, true)} solid #ccc; // keepPx = true
 `
 ```
 
@@ -74,23 +74,23 @@ src/pages/Mobile/
 
 ## 移动端组件
 
-| 组件 | 用途 |
-| ---- | ---- |
-| `MobileHeader` | 移动端顶部导航栏 |
-| `MobileMenu` | 移动端底部 Tab 栏 |
-| `BottomSheet` | 底部弹出面板 |
-| `PullDownRefresh` | 下拉刷新 |
-| `PullUpRefresh` | 上拉加载更多 |
+| 组件              | 用途              |
+| ----------------- | ----------------- |
+| `MobileHeader`    | 移动端顶部导航栏  |
+| `MobileMenu`      | 移动端底部 Tab 栏 |
+| `BottomSheet`     | 底部弹出面板      |
+| `PullDownRefresh` | 下拉刷新          |
+| `PullUpRefresh`   | 上拉加载更多      |
 
 ## 移动端滚动优化
 
 ```typescript
 const ScrollContainer = styled.div`
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch;  // iOS 滚动优化
-  
+  -webkit-overflow-scrolling: touch; // iOS 滚动优化
+
   &::-webkit-scrollbar {
-    display: none;  // 隐藏滚动条
+    display: none; // 隐藏滚动条
   }
 `
 ```

@@ -46,12 +46,12 @@ echo "127.0.0.1 starchild.dev" | sudo tee -a /etc/hosts
 
 ## 常见问题
 
-| 问题 | 解决方案 |
-| ---- | -------- |
-| 证书不安全 | `mkcert -install` |
-| 无法访问 | 检查 `cat /etc/hosts \| grep starchild` |
-| 重新生成 | `rm -rf certs && yarn setup:https` |
-| 代理导致无法访问 | 见下方「代理绕过配置」 |
+| 问题             | 解决方案                                |
+| ---------------- | --------------------------------------- |
+| 证书不安全       | `mkcert -install`                       |
+| 无法访问         | 检查 `cat /etc/hosts \| grep starchild` |
+| 重新生成         | `rm -rf certs && yarn setup:https`      |
+| 代理导致无法访问 | 见下方「代理绕过配置」                  |
 
 ## 代理绕过配置
 
@@ -81,5 +81,6 @@ export NO_PROXY="localhost,127.0.0.1,starchild.dev,starchild.local"
 ## 谷歌登录配置
 
 在 Google Cloud Console 添加授权来源：
+
 - Authorized JavaScript origins: `https://starchild.dev:6066`
 - Authorized redirect URIs: `https://starchild.dev:6066/callback`

@@ -2,12 +2,7 @@ import styled, { keyframes, css } from 'styled-components'
 import { memo } from 'react'
 import { vm } from 'pages/helper'
 import { useIsMobile } from 'store/application/hooks'
-import type {
-  SkeletonProps,
-  SkeletonCircleProps,
-  SkeletonTextProps,
-  SkeletonMultilineTextProps,
-} from './types'
+import type { SkeletonProps, SkeletonCircleProps, SkeletonTextProps, SkeletonMultilineTextProps } from './types'
 
 export type { SkeletonProps, SkeletonCircleProps, SkeletonTextProps, SkeletonMultilineTextProps }
 

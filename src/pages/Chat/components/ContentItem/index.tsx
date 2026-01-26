@@ -196,7 +196,9 @@ export default memo(function ContentItemCom({ data }: { data: TempAiContentDataT
           {imgList.length > 0 && (
             <ImgWrapper>
               {imgList.map((item, index) => {
-                return <LazyImage width='100%' key={index} src={item} alt='kline' onClick={() => handleImageClick(item)} />
+                return (
+                  <LazyImage width='100%' key={index} src={item} alt='kline' onClick={() => handleImageClick(item)} />
+                )
               })}
             </ImgWrapper>
           )}

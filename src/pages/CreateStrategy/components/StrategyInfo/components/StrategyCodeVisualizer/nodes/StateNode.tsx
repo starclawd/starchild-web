@@ -116,11 +116,11 @@ function StateNode({ data }: NodeProps) {
 
   return (
     <NodeWrapper>
-      <Handle type="target" position={Position.Top} style={{ background: '#8B5CF6' }} />
+      <Handle type='target' position={Position.Top} style={{ background: '#8B5CF6' }} />
 
       <Header>
         <IconWrapper>
-          <IconBase className="icon-database" />
+          <IconBase className='icon-database' />
         </IconWrapper>
         <Title>State</Title>
       </Header>
@@ -141,7 +141,7 @@ function StateNode({ data }: NodeProps) {
         </ResetTrigger>
       )}
 
-      <Handle type="source" position={Position.Bottom} style={{ background: '#8B5CF6' }} />
+      <Handle type='source' position={Position.Bottom} style={{ background: '#8B5CF6' }} />
     </NodeWrapper>
   )
 }

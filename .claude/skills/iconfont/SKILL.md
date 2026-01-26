@@ -62,11 +62,11 @@ const Icon = styled.i`
 
 ## SVG 命名规范
 
-| 规则 | 示例 |
-| ---- | ---- |
-| 小写字母 | `arrow.svg` ✅ `Arrow.svg` ❌ |
+| 规则       | 示例                                      |
+| ---------- | ----------------------------------------- |
+| 小写字母   | `arrow.svg` ✅ `Arrow.svg` ❌             |
 | 使用连字符 | `arrow-right.svg` ✅ `arrow_right.svg` ❌ |
-| 语义化命名 | `search.svg` ✅ `icon1.svg` ❌ |
+| 语义化命名 | `search.svg` ✅ `icon1.svg` ❌            |
 
 ## 现有图标列表
 
@@ -77,6 +77,7 @@ ls src/assets/icons/
 ```
 
 常用图标：
+
 - `arrow.svg` - 箭头
 - `close.svg` - 关闭
 - `copy.svg` - 复制

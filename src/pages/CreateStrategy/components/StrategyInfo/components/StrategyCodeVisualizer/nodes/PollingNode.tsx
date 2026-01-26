@@ -71,8 +71,7 @@ const ModeBadge = styled.div<{ $mode: string }>`
   gap: 4px;
   padding: 4px 8px;
   border-radius: 4px;
-  background-color: ${({ $mode }) =>
-    $mode === 'adaptive' ? 'rgba(0, 222, 115, 0.15)' : 'rgba(255, 169, 64, 0.15)'};
+  background-color: ${({ $mode }) => ($mode === 'adaptive' ? 'rgba(0, 222, 115, 0.15)' : 'rgba(255, 169, 64, 0.15)')};
   color: ${({ $mode }) => ($mode === 'adaptive' ? '#00de73' : '#ffa940')};
   font-size: 10px;
   font-weight: 600;
@@ -115,17 +114,16 @@ function PollingNode({ data }: NodeProps) {
   }
 
   // 计算最小间隔相对于基础间隔的比例（防止除以零）
-  const intervalRatio = nodeData.baseInterval > 0
-    ? ((nodeData.baseInterval - nodeData.minInterval) / nodeData.baseInterval) * 100
-    : 0
+  const intervalRatio =
+    nodeData.baseInterval > 0 ? ((nodeData.baseInterval - nodeData.minInterval) / nodeData.baseInterval) * 100 : 0
 
   return (
     <NodeWrapper>
-      <Handle type="target" position={Position.Top} style={{ background: '#00A9DE' }} />
+      <Handle type='target' position={Position.Top} style={{ background: '#00A9DE' }} />
 
       <Header>
         <IconWrapper>
-          <IconBase className="icon-clock" />
+          <IconBase className='icon-clock' />
         </IconWrapper>
         <Title>Polling</Title>
       </Header>
@@ -146,7 +144,7 @@ function PollingNode({ data }: NodeProps) {
         <IntervalFill $width={intervalRatio} />
       </IntervalBar>
 
-      <Handle type="source" position={Position.Bottom} style={{ background: '#00A9DE' }} />
+      <Handle type='source' position={Position.Bottom} style={{ background: '#00A9DE' }} />
     </NodeWrapper>
   )
 }

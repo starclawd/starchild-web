@@ -388,7 +388,10 @@ const NoDataDemo = () => {
             <NoData
               text={
                 <span>
-                  暂无记录，<a href='#' style={{ color: '#1890ff' }}>点击添加</a>
+                  暂无记录，
+                  <a href='#' style={{ color: '#1890ff' }}>
+                    点击添加
+                  </a>
                 </span>
               }
             />

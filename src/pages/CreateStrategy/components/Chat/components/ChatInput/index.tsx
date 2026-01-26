@@ -23,10 +23,9 @@ import { useTheme } from 'store/themecache/hooks'
 
 // 打字机效果的 placeholder 数组
 
-
 // 打字机效果 hook
 function useTypewriterPlaceholder(enabled: boolean, userHasInput: boolean) {
-   const { t } = useLingui()
+  const { t } = useLingui()
   const [displayText, setDisplayText] = useState('')
   const [currentIndex, setCurrentIndex] = useState(0)
   const [phase, setPhase] = useState<'typing' | 'waiting' | 'deleting'>('typing')
@@ -35,9 +34,15 @@ function useTypewriterPlaceholder(enabled: boolean, userHasInput: boolean) {
 
   const TYPEWRITER_PLACEHOLDERS = useMemo(() => {
     return [
-      t(msg`Turn your idea into live strategy. e.g., "I have 1,000 USDC. Grow it safely while I sleep. No degen stuff."`),
-      t(msg`Turn your idea into live strategy. e.g., "I need to pay for my vacation next month. Give me a strategy with 20% upside."`),
-      t(msg`Turn your idea into live strategy. e.g., "Everything is dumped too hard. It\'s time for a mean reversion bounce."`),
+      t(
+        msg`Turn your idea into live strategy. e.g., "I have 1,000 USDC. Grow it safely while I sleep. No degen stuff."`,
+      ),
+      t(
+        msg`Turn your idea into live strategy. e.g., "I need to pay for my vacation next month. Give me a strategy with 20% upside."`,
+      ),
+      t(
+        msg`Turn your idea into live strategy. e.g., "Everything is dumped too hard. It\'s time for a mean reversion bounce."`,
+      ),
     ]
   }, [t])
 
@@ -346,7 +351,9 @@ export default memo(function ChatInput({ isChatPage = false }: { isChatPage?: bo
     if (!can_create_more && !strategyId) {
       toast({
         title: t(msg`Create strategy failed`),
-        description: t(msg`Slot limit reached (${strategy_count}/${strategy_limit})! Boost your current strategy's APR to unlock more slots.`),
+        description: t(
+          msg`Slot limit reached (${strategy_count}/${strategy_limit})! Boost your current strategy's APR to unlock more slots.`,
+        ),
         status: TOAST_STATUS.ERROR,
         typeIcon: 'icon-create-strategy',
         iconTheme: theme.black0,
