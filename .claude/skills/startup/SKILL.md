@@ -45,7 +45,7 @@ yarn install
 ### 4. 编译国际化文件
 
 ```bash
-yarn i18n:compile
+yarn i18n:compile:local
 ```
 
 > ⚠️ 必须执行此命令，否则缺失 lingui 编译文件会导致项目报错。
