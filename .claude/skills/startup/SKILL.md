@@ -114,7 +114,7 @@ yarn start
 
 | 操作              | 说明                                       |
 | ----------------- | ------------------------------------------ |
-| `Shift + Alt + C` | 开启/关闭检查模式                          |
+| `Shift + Option + C`（Mac）/ `Shift + Alt + C`（Windows） | 开启/关闭检查模式 |
 | 鼠标悬停          | 查看组件名和文件路径                       |
 | 点击元素          | 复制组件名，并自动在 Cursor 中打开对应文件 |
 | `ESC`             | 退出检查模式                               |
@@ -122,7 +122,7 @@ yarn start
 ### 工作流程
 
 1. 在浏览器中打开项目页面
-2. 按 `Shift + Alt + C` 开启检查模式（右上角会显示 "Inspector ON"）
+2. 按 `Shift + Option + C`（Mac）/ `Shift + Alt + C`（Windows）开启检查模式（右上角会显示 "Inspector ON"）
 3. 将鼠标移到需要修改的元素上
 4. 点击该元素，Cursor 会自动打开对应的源码文件并定位到具体行
 
@@ -143,4 +143,4 @@ yarn start
 ### DevInspector 不工作
 
 - 确保在开发环境运行（`yarn start`）
-- 按 `Shift + Alt + C` 开启检查模式
+- 按 `Shift + Option + C`（Mac）/ `Shift + Alt + C`（Windows）开启检查模式

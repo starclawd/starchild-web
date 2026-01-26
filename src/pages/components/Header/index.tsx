@@ -375,7 +375,8 @@ export const Header = () => {
               const isActive =
                 isMatchFatherRouter(currentRouter, value) ||
                 isMatchCurrentRouter(currentRouter, value) ||
-                key == ROUTER.CHAT
+                key == ROUTER.CHAT ||
+                (key === ROUTER.MY_PORTFOLIO && isMatchCurrentRouter(currentRouter, ROUTER.CREATE_STRATEGY) && isPro)
               return (
                 <Tooltip key={key} placement='right' content={tooltip}>
                   <NavTab
