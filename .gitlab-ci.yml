@@ -35,14 +35,14 @@ check_tag:
   stage: check_tag
   image:
     name: asia-northeast1-docker.pkg.dev/woo-orderly/orderly-devops/gcloud
-    entrypoint: [""]
+    entrypoint: ['']
   retry: 2
-  needs: [lint_tag]   # 先通过 lint 才继续
+  needs: [lint_tag] # 先通过 lint 才继续
   script:
     - echo ${IMAGE_NAME}
     - TAG_EXISTS=$(gcloud container images list-tags asia-northeast1-docker.pkg.dev/woo-orderly/orderly-network/${IMAGE_NAME} --filter="tags=${CI_COMMIT_TAG}" --format="value(tags)")
     - echo ${TAG_EXISTS}
-    - | 
+    - |
       if [ -z "${TAG_EXISTS}" ]; then
         echo "TAG_EXISTS=false" > build.env 
       else
@@ -61,10 +61,10 @@ build_docker:
   stage: build_docker
   image:
     name: asia-northeast1-docker.pkg.dev/woo-orderly/orderly-devops/executor:v1.9.0-debug
-    entrypoint: [""]
+    entrypoint: ['']
   retry: 2
   variables:
-    GIT_DEPTH: "0"
+    GIT_DEPTH: '0'
   rules:
     # 只在以 v 开头的 tag 跑（视为 main 正式发布）
     - if: '$CI_COMMIT_TAG && $CI_COMMIT_TAG =~ /^v.*$/'
@@ -89,10 +89,10 @@ build_docker_testnet:
   stage: build_docker
   image:
     name: asia-northeast1-docker.pkg.dev/woo-orderly/orderly-devops/executor:v1.9.0-debug
-    entrypoint: [""]
+    entrypoint: ['']
   retry: 2
   variables:
-    GIT_DEPTH: "0"
+    GIT_DEPTH: '0'
   rules:
     # 只在以 test 开头的 tag 跑（视为 test 分支发布）
     - if: '$CI_COMMIT_TAG && $CI_COMMIT_TAG =~ /^test.*$/'
@@ -117,10 +117,10 @@ deploy_staging_evm:
   stage: deploy
   image:
     name: asia-northeast1-docker.pkg.dev/woo-orderly/orderly-devops/curl
-    entrypoint: [""]
+    entrypoint: ['']
   retry: 2
   variables:
-    GIT_DEPTH: "0"
+    GIT_DEPTH: '0'
   rules:
     # 仅 test* 的 tag 可触发（并且是手动）
     - if: '$CI_COMMIT_TAG && $CI_COMMIT_TAG =~ /^test.*$/'
@@ -137,10 +137,10 @@ deploy_prod_evm:
   stage: deploy
   image:
     name: asia-northeast1-docker.pkg.dev/woo-orderly/orderly-devops/curl
-    entrypoint: [""]
+    entrypoint: ['']
   retry: 2
   variables:
-    GIT_DEPTH: "0"
+    GIT_DEPTH: '0'
   rules:
     # 仅 v* 的 tag 可触发（并且是手动）
     - if: '$CI_COMMIT_TAG && $CI_COMMIT_TAG =~ /^v.*$/'
