@@ -160,7 +160,7 @@ const useFeedbackFailedToast = () => {
   const showFeedbackFailedToast = useCallback(
     (customError?: string) => {
       toast({
-        title: t(msg`Action Failed`) ,
+        title: t(msg`Action Failed`),
         description: customError || t(msg`Unable to process your Like/Dislike request. Please try again in a moment.`),
         status: TOAST_STATUS.ERROR,
         typeIcon: 'icon-warn',

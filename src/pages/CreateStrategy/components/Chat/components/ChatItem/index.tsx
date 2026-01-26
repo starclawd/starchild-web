@@ -215,7 +215,7 @@ export default memo(function ChatItem({
     if (!isLastChatResponseContent || !nextActions || nextActions.length === 0) {
       return null
     }
-    return nextActions.filter(action => action.action_type !== ACTION_TYPE.DEPLOY_LIVE)[0]
+    return nextActions.filter((action) => action.action_type !== ACTION_TYPE.DEPLOY_LIVE)[0]
   }, [nextActions, isLastChatResponseContent])
 
   const isEditStrategyContent = useMemo(() => {

@@ -17,7 +17,7 @@ import { useTheme } from 'styled-components'
 import useToast, { TOAST_STATUS } from 'components/Toast'
 import { useLingui } from '@lingui/react/macro'
 import { msg } from '@lingui/core/macro'
-  
+
 export function useGetBacktestData() {
   const [, setBacktestData] = useBacktestData()
   const [triggerGetBacktestData] = useLazyGetBacktestDataQuery()

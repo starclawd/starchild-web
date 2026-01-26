@@ -103,6 +103,7 @@ yarn start
 **AI 操作步骤**：
 
 1. 查找用户的 Pencil 扩展路径：
+
    ```bash
    ls ~/.cursor/extensions/ | grep pencil
    ```
@@ -113,6 +114,7 @@ yarn start
    - Windows: `~/.cursor/extensions/highagency.pencildev-{版本}-universal/out/mcp-server-win32-x64.exe`
 
 3. 更新 `.cursor/mcp.json` 文件（如不存在则创建）：
+
    ```json
    {
      "mcpServers": {
@@ -153,12 +155,12 @@ yarn start
 
 项目启动后，告知用户 DevInspector 的使用方法：
 
-| 操作              | 说明                                       |
-| ----------------- | ------------------------------------------ |
-| `Shift + Option + C`（Mac）/ `Shift + Alt + C`（Windows） | 开启/关闭检查模式 |
-| 鼠标悬停          | 查看组件名和文件路径                       |
-| 点击元素          | 复制组件名，并自动在 Cursor 中打开对应文件 |
-| `ESC`             | 退出检查模式                               |
+| 操作                                                      | 说明                                       |
+| --------------------------------------------------------- | ------------------------------------------ |
+| `Shift + Option + C`（Mac）/ `Shift + Alt + C`（Windows） | 开启/关闭检查模式                          |
+| 鼠标悬停                                                  | 查看组件名和文件路径                       |
+| 点击元素                                                  | 复制组件名，并自动在 Cursor 中打开对应文件 |
+| `ESC`                                                     | 退出检查模式                               |
 
 ### 工作流程
 

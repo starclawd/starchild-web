@@ -47,8 +47,7 @@ const VaultOpenOrders = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, s
           const token = isOldSymbolFormat(order.symbol)
             ? order.symbol.replace('PERP_', '').split('_')[0]
             : order.displaySymbol || order.symbol
-          const logoUrl =
-            order.logoUrl || `https://oss.orderly.network/static/symbol_logo/${token.toUpperCase()}.png`
+          const logoUrl = order.logoUrl || `https://oss.orderly.network/static/symbol_logo/${token.toUpperCase()}.png`
 
           return (
             <SymbolDisplay

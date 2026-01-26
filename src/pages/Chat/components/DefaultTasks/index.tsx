@@ -1,4 +1,3 @@
-
 import { Trans } from '@lingui/react/macro'
 import { IconBase } from 'components/Icons'
 import { ANI_DURATION } from 'constants/index'
@@ -8,7 +7,7 @@ import { useSendAiContent } from 'store/chat/hooks'
 import styled, { css, useTheme } from 'styled-components'
 import { BorderAllSide1PxBox } from 'styles/borderStyled'
 import { msg } from '@lingui/core/macro'
-import { useLingui } from '@lingui/react/macro' 
+import { useLingui } from '@lingui/react/macro'
 const DefaultTasksWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -132,23 +131,33 @@ export default memo(function DefaultTasks() {
   const taskItemList = [
     {
       key: '1',
-      content: t(msg`Receive a daily report including market overview, top news highlights, and BTC technical analysis — delivered every day at 00:00 UTC.`),
+      content: t(
+        msg`Receive a daily report including market overview, top news highlights, and BTC technical analysis — delivered every day at 00:00 UTC.`,
+      ),
     },
     {
       key: '2',
-      content: t(msg`Get a summary of your portfolio performance every Monday, including gains/losses, asset allocation changes, and top performers.`),
+      content: t(
+        msg`Get a summary of your portfolio performance every Monday, including gains/losses, asset allocation changes, and top performers.`,
+      ),
     },
     {
       key: '3',
-      content: t(msg`Be instantly notified when the price of Bitcoin crosses key thresholds — for example, above $100,000 or below $60,000.`),
+      content: t(
+        msg`Be instantly notified when the price of Bitcoin crosses key thresholds — for example, above $100,000 or below $60,000.`,
+      ),
     },
     {
       key: '4',
-      content: t(msg`Every Sunday, receive a crypto market sentiment summary based on social trends, funding rates, and the fear & greed index.`),
+      content: t(
+        msg`Every Sunday, receive a crypto market sentiment summary based on social trends, funding rates, and the fear & greed index.`,
+      ),
     },
     {
       key: '5',
-      content: t(msg`Stay informed about newly listed tokens across major exchanges with real-time alerts, including token names and launch prices.`),
+      content: t(
+        msg`Stay informed about newly listed tokens across major exchanges with real-time alerts, including token names and launch prices.`,
+      ),
     },
   ]
   return (

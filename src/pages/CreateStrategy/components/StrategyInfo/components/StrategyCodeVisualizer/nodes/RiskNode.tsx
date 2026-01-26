@@ -8,15 +8,15 @@ const NodeWrapper = styled.div`
   min-width: 300px;
   padding: 16px 20px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #1A1C1E 0%, #0B0C0E 100%);
-  border: 2px solid #FFA940;
+  background: linear-gradient(135deg, #1a1c1e 0%, #0b0c0e 100%);
+  border: 2px solid #ffa940;
   box-shadow: 0 4px 20px rgba(255, 169, 64, 0.2);
 `
 
 const Title = styled.div`
   font-size: 12px;
   font-weight: 600;
-  color: #FFA940;
+  color: #ffa940;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 12px;
@@ -93,9 +93,12 @@ const RiskItem = styled.div<{ $type?: 'profit' | 'loss' | 'neutral' }>`
   border-radius: 8px;
   background-color: ${({ $type }) => {
     switch ($type) {
-      case 'profit': return 'rgba(0, 222, 115, 0.1)'
-      case 'loss': return 'rgba(255, 55, 91, 0.1)'
-      default: return 'rgba(255, 255, 255, 0.05)'
+      case 'profit':
+        return 'rgba(0, 222, 115, 0.1)'
+      case 'loss':
+        return 'rgba(255, 55, 91, 0.1)'
+      default:
+        return 'rgba(255, 255, 255, 0.05)'
     }
   }};
 `
@@ -112,9 +115,12 @@ const RiskValue = styled.span<{ $type?: 'profit' | 'loss' | 'neutral' }>`
   font-weight: 600;
   color: ${({ $type }) => {
     switch ($type) {
-      case 'profit': return '#00DE73'
-      case 'loss': return '#FF375B'
-      default: return '#fff'
+      case 'profit':
+        return '#00DE73'
+      case 'loss':
+        return '#FF375B'
+      default:
+        return '#fff'
     }
   }};
 `
@@ -163,9 +169,7 @@ function RiskNode({ data }: NodeProps) {
     maxRoeLoss: rawData.maxRoeLoss ? safeString(rawData.maxRoeLoss) : undefined,
     maxDrawdown: rawData.maxDrawdown ? safeString(rawData.maxDrawdown) : undefined,
     maxAccountRisk: rawData.maxAccountRisk ? safeString(rawData.maxAccountRisk) : undefined,
-    hardStops: Array.isArray(rawData.hardStops) 
-      ? rawData.hardStops.map((s) => safeString(s)).filter(Boolean)
-      : [],
+    hardStops: Array.isArray(rawData.hardStops) ? rawData.hardStops.map((s) => safeString(s)).filter(Boolean) : [],
   }
 
   const hasAsymmetricSize = nodeData.longPositionSize || nodeData.shortPositionSize
@@ -174,16 +178,16 @@ function RiskNode({ data }: NodeProps) {
 
   return (
     <NodeWrapper>
-      <Handle type="target" position={Position.Top} style={{ background: '#FFA940' }} />
+      <Handle type='target' position={Position.Top} style={{ background: '#FFA940' }} />
       <Title>Risk Management</Title>
       <RiskGrid>
-        <RiskItem $type="profit">
+        <RiskItem $type='profit'>
           <RiskLabel>Take Profit</RiskLabel>
-          <RiskValue $type="profit">{nodeData.takeProfit}</RiskValue>
+          <RiskValue $type='profit'>{nodeData.takeProfit}</RiskValue>
         </RiskItem>
-        <RiskItem $type="loss">
+        <RiskItem $type='loss'>
           <RiskLabel>Stop Loss</RiskLabel>
-          <RiskValue $type="loss">{nodeData.stopLoss}</RiskValue>
+          <RiskValue $type='loss'>{nodeData.stopLoss}</RiskValue>
         </RiskItem>
         <RiskItem>
           <RiskLabel>Leverage</RiskLabel>
@@ -198,15 +202,15 @@ function RiskNode({ data }: NodeProps) {
       {hasAsymmetricSize && (
         <AsymmetricRow>
           {nodeData.longPositionSize && (
-            <RiskItem $type="profit">
+            <RiskItem $type='profit'>
               <RiskLabel>Long Size</RiskLabel>
-              <RiskValue $type="profit">{nodeData.longPositionSize}</RiskValue>
+              <RiskValue $type='profit'>{nodeData.longPositionSize}</RiskValue>
             </RiskItem>
           )}
           {nodeData.shortPositionSize && (
-            <RiskItem $type="loss">
+            <RiskItem $type='loss'>
               <RiskLabel>Short Size</RiskLabel>
-              <RiskValue $type="loss">{nodeData.shortPositionSize}</RiskValue>
+              <RiskValue $type='loss'>{nodeData.shortPositionSize}</RiskValue>
             </RiskItem>
           )}
         </AsymmetricRow>
@@ -215,21 +219,21 @@ function RiskNode({ data }: NodeProps) {
       {hasAdvancedRisk && (
         <AdvancedGrid>
           {nodeData.maxRoeLoss && (
-            <RiskItem $type="loss">
+            <RiskItem $type='loss'>
               <RiskLabel>Max ROE Loss</RiskLabel>
-              <RiskValue $type="loss">-{nodeData.maxRoeLoss}</RiskValue>
+              <RiskValue $type='loss'>-{nodeData.maxRoeLoss}</RiskValue>
             </RiskItem>
           )}
           {nodeData.maxDrawdown && (
-            <RiskItem $type="loss">
+            <RiskItem $type='loss'>
               <RiskLabel>Max Drawdown</RiskLabel>
-              <RiskValue $type="loss">{nodeData.maxDrawdown}</RiskValue>
+              <RiskValue $type='loss'>{nodeData.maxDrawdown}</RiskValue>
             </RiskItem>
           )}
           {nodeData.maxAccountRisk && (
-            <RiskItem $type="loss">
+            <RiskItem $type='loss'>
               <RiskLabel>Max Risk</RiskLabel>
-              <RiskValue $type="loss">{nodeData.maxAccountRisk}</RiskValue>
+              <RiskValue $type='loss'>{nodeData.maxAccountRisk}</RiskValue>
             </RiskItem>
           )}
         </AdvancedGrid>

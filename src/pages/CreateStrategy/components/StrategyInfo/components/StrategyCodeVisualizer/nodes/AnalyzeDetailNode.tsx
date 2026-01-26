@@ -103,7 +103,7 @@ function AnalyzeDetailNode({ data }: NodeProps) {
     return val ? String(val) : fallback
   }
   // 防御性编程：确保 steps 是数组，且元素都有正确的类型
-  const steps = Array.isArray(rawData.steps) 
+  const steps = Array.isArray(rawData.steps)
     ? rawData.steps.map((step, index) => ({
         id: step?.id ? String(step.id) : `step-${index}`,
         label: safeString(step?.label, 'Step'),
@@ -113,10 +113,10 @@ function AnalyzeDetailNode({ data }: NodeProps) {
 
   return (
     <NodeWrapper>
-      <Handle type="target" position={Position.Top} style={{ background: '#A87FFF' }} />
+      <Handle type='target' position={Position.Top} style={{ background: '#A87FFF' }} />
       <Header>
         <IconWrapper>
-          <IconBase className="icon-chart-5" />
+          <IconBase className='icon-chart-5' />
         </IconWrapper>
         <Title>ANALYZE</Title>
       </Header>
@@ -131,7 +131,7 @@ function AnalyzeDetailNode({ data }: NodeProps) {
           </StepItem>
         ))}
       </StepList>
-      <Handle type="source" position={Position.Bottom} style={{ background: '#A87FFF' }} />
+      <Handle type='source' position={Position.Bottom} style={{ background: '#A87FFF' }} />
     </NodeWrapper>
   )
 }

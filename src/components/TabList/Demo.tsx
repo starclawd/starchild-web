@@ -190,8 +190,8 @@ const TabListDemo = () => {
       <DemoSection>
         <h2>TabList 标签列表组件示例</h2>
         <p>
-          TabList 是一个支持多种样式的标签切换组件，包含 LINE（线条指示器）、BG（背景指示器）和 SIMPLE（简单样式）三种模式。
-          支持动画过渡效果、自定义样式、图标等功能。
+          TabList 是一个支持多种样式的标签切换组件，包含 LINE（线条指示器）、BG（背景指示器）和
+          SIMPLE（简单样式）三种模式。 支持动画过渡效果、自定义样式、图标等功能。
         </p>
       </DemoSection>
 
@@ -372,7 +372,9 @@ const tabs = [
             />
           </div>
           <div>
-            <h4 style={{ marginBottom: '10px', fontSize: '14px' }}>自定义圆角 (borderRadius: 20px, itemBorderRadius: 16px)</h4>
+            <h4 style={{ marginBottom: '10px', fontSize: '14px' }}>
+              自定义圆角 (borderRadius: 20px, itemBorderRadius: 16px)
+            </h4>
             <TabList
               tabKey={customTabKey}
               tabType={TAB_TYPE.BG}
@@ -385,7 +387,9 @@ const tabs = [
             />
           </div>
           <div>
-            <h4 style={{ marginBottom: '10px', fontSize: '14px' }}>自定义指示器颜色 (activeIndicatorBackground: #52c41a)</h4>
+            <h4 style={{ marginBottom: '10px', fontSize: '14px' }}>
+              自定义指示器颜色 (activeIndicatorBackground: #52c41a)
+            </h4>
             <TabList
               tabKey={customTabKey}
               tabType={TAB_TYPE.BG}

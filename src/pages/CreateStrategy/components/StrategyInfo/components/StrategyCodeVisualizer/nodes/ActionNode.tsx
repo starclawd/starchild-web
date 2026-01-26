@@ -143,7 +143,7 @@ function ActionNode({ data }: NodeProps) {
   const validActions = ['buy', 'sell', 'hold', 'process', 'decision']
   const rawAction = safeString(rawData.action, 'hold')
   const nodeData = {
-    action: validActions.includes(rawAction) ? rawAction as 'buy' | 'sell' | 'hold' | 'process' | 'decision' : 'hold',
+    action: validActions.includes(rawAction) ? (rawAction as 'buy' | 'sell' | 'hold' | 'process' | 'decision') : 'hold',
     description: safeString(rawData.description),
   }
 
@@ -180,7 +180,7 @@ function ActionNode({ data }: NodeProps) {
   return (
     <NodeWrapper $action={nodeData.action}>
       <Handle
-        type="target"
+        type='target'
         position={Position.Top}
         style={{ background: nodeData.action === 'buy' ? '#00DE73' : '#FF375B' }}
       />
@@ -192,7 +192,7 @@ function ActionNode({ data }: NodeProps) {
         <Description>{nodeData.description}</Description>
       </Content>
       <Handle
-        type="source"
+        type='source'
         position={Position.Bottom}
         style={{ background: nodeData.action === 'buy' ? '#00DE73' : '#FF375B' }}
       />

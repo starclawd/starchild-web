@@ -159,9 +159,7 @@ function ConditionNode({ data }: NodeProps) {
     direction: rawData.direction || 'both',
     category: rawData.category || 'entry',
     triggerType: rawData.triggerType || 'signal',
-    conditions: Array.isArray(rawData.conditions) 
-      ? rawData.conditions.map((c) => safeString(c)).filter(Boolean)
-      : [],
+    conditions: Array.isArray(rawData.conditions) ? rawData.conditions.map((c) => safeString(c)).filter(Boolean) : [],
     description: safeString(rawData.description),
   }
 
@@ -185,14 +183,12 @@ function ConditionNode({ data }: NodeProps) {
   return (
     <NodeWrapper $direction={nodeData.direction} $category={nodeData.category}>
       <Handle
-        type="target"
+        type='target'
         position={Position.Top}
         style={{ background: nodeData.direction === 'long' ? '#00DE73' : '#FF375B' }}
       />
       <Header>
-        <DirectionBadge $direction={nodeData.direction}>
-          {nodeData.category.toUpperCase()}
-        </DirectionBadge>
+        <DirectionBadge $direction={nodeData.direction}>{nodeData.category.toUpperCase()}</DirectionBadge>
         <TriggerBadge $type={nodeData.triggerType}>{getTriggerLabel(nodeData.triggerType)}</TriggerBadge>
       </Header>
       <ConditionsList>
@@ -201,7 +197,7 @@ function ConditionNode({ data }: NodeProps) {
         ))}
       </ConditionsList>
       <Handle
-        type="source"
+        type='source'
         position={Position.Bottom}
         style={{ background: nodeData.direction === 'long' ? '#00DE73' : '#FF375B' }}
       />

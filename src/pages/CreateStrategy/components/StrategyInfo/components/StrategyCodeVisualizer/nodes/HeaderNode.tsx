@@ -9,8 +9,8 @@ const NodeWrapper = styled.div`
   min-width: 280px;
   padding: 16px 24px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #1A1C1E 0%, #0B0C0E 100%);
-  border: 2px solid #F84600;
+  background: linear-gradient(135deg, #1a1c1e 0%, #0b0c0e 100%);
+  border: 2px solid #f84600;
   box-shadow: 0 4px 30px rgba(248, 70, 0, 0.3);
 `
 
@@ -27,7 +27,7 @@ const TypeBadge = styled.span`
   padding: 4px 12px;
   border-radius: 6px;
   background-color: rgba(248, 70, 0, 0.2);
-  color: #F84600;
+  color: #f84600;
   font-size: 11px;
   font-weight: 600;
   margin-bottom: 12px;
@@ -150,17 +150,17 @@ function HeaderNode({ data }: NodeProps) {
       {crossAssetInfo && crossAssetInfo.signalAsset && crossAssetInfo.tradingAsset && (
         <CrossAssetBadge>
           <div>
-            <AssetLabel $type="signal">Signal</AssetLabel>
+            <AssetLabel $type='signal'>Signal</AssetLabel>
             <AssetValue>{crossAssetInfo.signalAsset}</AssetValue>
           </div>
           <ArrowIcon>→</ArrowIcon>
           <div>
-            <AssetLabel $type="trade">Trade</AssetLabel>
+            <AssetLabel $type='trade'>Trade</AssetLabel>
             <AssetValue>{crossAssetInfo.tradingAsset}</AssetValue>
           </div>
         </CrossAssetBadge>
       )}
-      <Handle type="source" position={Position.Bottom} style={{ background: '#F84600' }} />
+      <Handle type='source' position={Position.Bottom} style={{ background: '#F84600' }} />
     </NodeWrapper>
   )
 }

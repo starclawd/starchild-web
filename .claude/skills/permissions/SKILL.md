@@ -9,11 +9,11 @@ description: 执行权限规则。当需要执行终端命令、安装依赖、�
 
 ## 权限配置
 
-| 命令类型     | 权限配置                                    |
-| ------------ | ------------------------------------------- |
-| 所有终端命令 | `required_permissions: ["all"]`             |
+| 命令类型     | 权限配置                                         |
+| ------------ | ------------------------------------------------ |
+| 所有终端命令 | `required_permissions: ["all"]`                  |
 | Git 操作     | `required_permissions: ["git_write", "network"]` |
-| 网络请求     | `required_permissions: ["network"]`         |
+| 网络请求     | `required_permissions: ["network"]`              |
 
 > ⚠️ 不要使用默认的沙盒权限执行命令，否则可能会遇到权限错误。
 

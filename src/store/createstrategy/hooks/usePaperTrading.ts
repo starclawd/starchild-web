@@ -75,12 +75,15 @@ export function useHandleStartPaperTrading() {
   const [isStartingPaperTrading] = useIsStartingPaperTrading()
   const sendChatUserContent = useSendChatUserContent()
   const { t } = useLingui()
-  const handleStartPaperTrading = useCallback(async (startMsg?: string) => {
-    if (isStartingPaperTrading) return
-    sendChatUserContent({
-      value: startMsg ? startMsg : t(msg`Start paper trading`),
-    })
-  }, [sendChatUserContent, isStartingPaperTrading, t])
+  const handleStartPaperTrading = useCallback(
+    async (startMsg?: string) => {
+      if (isStartingPaperTrading) return
+      sendChatUserContent({
+        value: startMsg ? startMsg : t(msg`Start paper trading`),
+      })
+    },
+    [sendChatUserContent, isStartingPaperTrading, t],
+  )
 
   return handleStartPaperTrading
 }
@@ -90,12 +93,15 @@ export function useHandlePausePaperTrading() {
   const sendChatUserContent = useSendChatUserContent()
   const { t } = useLingui()
 
-  const handlePausePaperTrading = useCallback(async (pauseMsg?: string) => {
-    if (isPausingPaperTrading) return
-    sendChatUserContent({
-      value: pauseMsg ? pauseMsg : t(msg`Pause paper trading`),
-    })
-  }, [sendChatUserContent, isPausingPaperTrading, t])
+  const handlePausePaperTrading = useCallback(
+    async (pauseMsg?: string) => {
+      if (isPausingPaperTrading) return
+      sendChatUserContent({
+        value: pauseMsg ? pauseMsg : t(msg`Pause paper trading`),
+      })
+    },
+    [sendChatUserContent, isPausingPaperTrading, t],
+  )
 
   return handlePausePaperTrading
 }

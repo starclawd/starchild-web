@@ -23,7 +23,7 @@ src/pages/App.tsx      # 路由配置
 export const ROUTER = {
   HOME: '/',
   // ... 其他路由
-  NEW_PAGE: '/newpage',  // 添加新路由常量
+  NEW_PAGE: '/newpage', // 添加新路由常量
 }
 ```
 
@@ -45,11 +45,11 @@ import { NewPage, ROUTER } from './router'
 
 ## 路由命名规范
 
-| 类型 | 规范 | 示例 |
-| ---- | ---- | ---- |
+| 类型     | 规范                 | 示例                       |
+| -------- | -------------------- | -------------------------- |
 | 路由常量 | SCREAMING_SNAKE_CASE | `MY_VAULT`, `AGENT_DETAIL` |
-| 路径 | 小写，无下划线 | `/myvault`, `/agentdetail` |
-| 组件 | PascalCase | `MyVault`, `AgentDetail` |
+| 路径     | 小写，无下划线       | `/myvault`, `/agentdetail` |
+| 组件     | PascalCase           | `MyVault`, `AgentDetail`   |
 
 ## 移动端路由
 
@@ -71,13 +71,13 @@ import { ROUTER } from 'pages/router'
 
 function MyComponent() {
   const navigate = useNavigate()
-  
+
   // 跳转到指定页面
   navigate(ROUTER.AGENT_DETAIL)
-  
+
   // 带参数跳转
   navigate(`${ROUTER.AGENT_DETAIL}?id=${agentId}`)
-  
+
   // 返回上一页
   navigate(-1)
 }
@@ -92,7 +92,7 @@ function MyComponent() {
   // URL 查询参数: /page?id=123
   const [searchParams] = useSearchParams()
   const id = searchParams.get('id')
-  
+
   // 路径参数: /page/:id
   const { id } = useParams()
 }

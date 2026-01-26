@@ -73,10 +73,7 @@ const { data } = useWebSocketSubscription('btcusdt@bookTicker')
 ```typescript
 import { useMultiChannelSubscription } from 'src/store/websocket/hooks'
 
-const { dataMap } = useMultiChannelSubscription([
-  'btcusdt@trade',
-  'ethusdt@trade',
-])
+const { dataMap } = useMultiChannelSubscription(['btcusdt@trade', 'ethusdt@trade'])
 // dataMap: { 'btcusdt@trade': {...}, 'ethusdt@trade': {...} }
 ```
 

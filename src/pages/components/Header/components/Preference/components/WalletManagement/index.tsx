@@ -60,7 +60,9 @@ export default function WalletManagement({
     <InputWrapper $borderRadius={12} $borderColor={theme.black600}>
       <InputArea
         disabledUpdateHeight
-        placeholder={t(msg`Enter your wallet addresses (comma-separated): \nExample: 0x123478293892302839827hgsdbh, 0x7e3gqhdbyukeahbuildheli`)}
+        placeholder={t(
+          msg`Enter your wallet addresses (comma-separated): \nExample: 0x123478293892302839827hgsdbh, 0x7e3gqhdbyukeahbuildheli`,
+        )}
         value={walletManagementText}
         setValue={setWalletManagementText}
       />

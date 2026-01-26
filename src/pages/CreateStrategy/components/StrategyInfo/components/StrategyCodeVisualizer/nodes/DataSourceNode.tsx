@@ -9,8 +9,8 @@ const NodeWrapper = styled.div`
   min-width: 160px;
   padding: 12px 16px;
   border-radius: 10px;
-  background: linear-gradient(135deg, #004F6E 0%, #002838 100%);
-  border: 2px solid #00A9DE;
+  background: linear-gradient(135deg, #004f6e 0%, #002838 100%);
+  border: 2px solid #00a9de;
   box-shadow: 0 4px 20px rgba(0, 169, 222, 0.3);
 `
 
@@ -28,7 +28,7 @@ const IconWrapper = styled.div`
   width: 28px;
   height: 28px;
   border-radius: 6px;
-  background-color: #00A9DE;
+  background-color: #00a9de;
   color: #000;
   font-size: 14px;
 `
@@ -50,7 +50,7 @@ const FieldTag = styled.span`
   padding: 2px 8px;
   border-radius: 4px;
   background-color: rgba(0, 169, 222, 0.2);
-  color: #00A9DE;
+  color: #00a9de;
   font-size: 10px;
   font-weight: 500;
 `
@@ -76,17 +76,15 @@ function DataSourceNode({ data }: NodeProps) {
   // 防御性编程：确保字段有默认值
   const nodeData = {
     api: safeString(rawData.api, 'API'),
-    fields: Array.isArray(rawData.fields) 
-      ? rawData.fields.map((f) => safeString(f)).filter(Boolean)
-      : [],
+    fields: Array.isArray(rawData.fields) ? rawData.fields.map((f) => safeString(f)).filter(Boolean) : [],
   }
 
   return (
     <NodeWrapper>
-      <Handle type="target" position={Position.Top} style={{ background: '#00A9DE' }} />
+      <Handle type='target' position={Position.Top} style={{ background: '#00A9DE' }} />
       <Header>
         <IconWrapper>
-          <IconBase className="icon-database" />
+          <IconBase className='icon-database' />
         </IconWrapper>
         <Title>{nodeData.api}</Title>
       </Header>
@@ -95,7 +93,7 @@ function DataSourceNode({ data }: NodeProps) {
           <FieldTag key={i}>{field}</FieldTag>
         ))}
       </FieldsWrapper>
-      <Handle type="source" position={Position.Right} style={{ background: '#00A9DE' }} />
+      <Handle type='source' position={Position.Right} style={{ background: '#00A9DE' }} />
     </NodeWrapper>
   )
 }
