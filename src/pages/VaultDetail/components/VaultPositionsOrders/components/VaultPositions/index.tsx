@@ -14,52 +14,8 @@ import { VaultPositionsOrdersProps } from '../..'
 import { DETAIL_TYPE } from 'store/vaultsdetail/vaultsdetail'
 import { StyledTable, LoadingWrapper } from '../../styles'
 import { useSymbolPrecision } from 'store/vaults/hooks'
-import LazyImage from 'components/LazyImage'
 import { SortDirection } from 'components/Table/types'
-
-// Symbol 显示组件
-const SymbolCell = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`
-
-const SymbolContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`
-
-const PositionSideBar = styled.div<{ $isLong: boolean }>`
-  width: 4px;
-  height: 24px;
-  background: ${({ theme, $isLong }) => ($isLong ? theme.green100 : theme.red100)};
-`
-
-const SymbolText = styled.div<{ $isLong?: boolean }>`
-  font-weight: 400;
-  color: ${({ theme, $isLong }) => ($isLong === undefined ? theme.black100 : $isLong ? theme.green100 : theme.red100)};
-`
-
-// Symbol组件
-interface SymbolDisplayProps {
-  displaySymbol: string
-  token: string
-  logoUrl: string
-  positionSide?: 'long' | 'short'
-}
-
-const SymbolDisplay = memo<SymbolDisplayProps>(({ displaySymbol, token, logoUrl, positionSide }) => {
-  const isLong = positionSide === 'long'
-
-  return (
-    <SymbolContainer>
-      <LazyImage rootMargin='0 4px 0 0' src={logoUrl} alt={token} width='24px' height='24px' borderRadius='50%' />
-      {positionSide && <PositionSideBar $isLong={isLong} />}
-      <SymbolText $isLong={isLong}>{displaySymbol}</SymbolText>
-    </SymbolContainer>
-  )
-})
+import SymbolDisplay from '../../../SymbolDisplay'
 
 // 数量显示组件
 const QuantityValue = styled.div`
@@ -177,16 +133,17 @@ const VaultPositions = memo<VaultPositionsOrdersProps>(({ activeTab, vaultId, st
       {
         key: 'symbol',
         title: createSortableHeader(<Trans>Symbol</Trans>, 'symbol'),
-        width: '180px',
+        width: '200px',
         render: (position) => (
-          <SymbolCell>
-            <SymbolDisplay
-              displaySymbol={position.displaySymbol}
-              token={position.token}
-              logoUrl={position.logoUrl}
-              positionSide={position.position_side}
-            />
-          </SymbolCell>
+          <SymbolDisplay
+            symbol={position.symbol}
+            displaySymbol={position.displaySymbol}
+            token={position.token}
+            logoUrl={position.logoUrl}
+            positionSide={position.position_side}
+            type={position.type}
+            leverage={position.leverage}
+          />
         ),
       },
       {

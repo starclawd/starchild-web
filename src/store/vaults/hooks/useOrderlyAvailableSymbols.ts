@@ -2,7 +2,7 @@ import { useEffect, useMemo, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from 'store'
 import { updateOrderlyAvailableSymbols, setLoadingOrderlySymbols } from '../reducer'
-import { useGetOrderlyAvailableSymbolsQuery, OrderlyAvailableSymbolsDataType } from 'api/vaults'
+import { useGetOrderlyAvailableSymbolsQuery, OrderlyAvailableSymbolsDataType } from 'api/orderly'
 
 /**
  * 根据 tick 值计算小数位数
@@ -36,8 +36,8 @@ export function useOrderlyAvailableSymbols() {
   })
 
   useEffect(() => {
-    if (data?.rows) {
-      dispatch(updateOrderlyAvailableSymbols(data.rows))
+    if ((data as any)?.data?.rows) {
+      dispatch(updateOrderlyAvailableSymbols((data as any).data.rows))
     }
   }, [data, dispatch])
 
@@ -57,7 +57,7 @@ export function useOrderlyAvailableSymbols() {
  * 根据 symbol 名称获取单个交易对信息
  */
 export function useOrderlySymbolByName(symbolName: string): OrderlyAvailableSymbolsDataType | null {
-  const orderlyAvailableSymbols = useSelector((state: RootState) => state.vaults.orderlyAvailableSymbols)
+  const { orderlyAvailableSymbols } = useOrderlyAvailableSymbols()
 
   return useMemo(() => {
     if (!orderlyAvailableSymbols || !symbolName) return null
@@ -66,11 +66,60 @@ export function useOrderlySymbolByName(symbolName: string): OrderlyAvailableSymb
 }
 
 /**
+ * 将新格式 symbol（如 BTC）转换为 orderly 格式（如 PERP_BTC_USDC）
+ * 用于在 precisionMap 中查找精度信息
+ */
+function normalizeSymbolForPrecision(symbol: string): string {
+  // 如果已经是 orderly 格式（包含 PERP_ 或 SPOT_），直接返回
+  if (symbol.includes('_')) {
+    return symbol
+  }
+  // 新格式（如 BTC），转换为 PERP_BTC_USDC 格式尝试匹配
+  return `PERP_${symbol}_USDC`
+}
+
+/**
+ * 检查 symbol 是否为旧格式（如 PERP_BTC_USDC）
+ */
+export function isOldSymbolFormat(symbol: string): boolean {
+  return symbol.includes('_')
+}
+
+/**
+ * 根据数据格式生成 Symbol 显示文本
+ * 新格式：BTC SPOT 或 BTC PERP · 10x
+ * 旧格式：保持原有格式（如 BTC-USDC PERP · 10x）
+ */
+export function getSymbolDisplayText(
+  symbol: string,
+  displaySymbol: string,
+  type?: 'spot' | 'perp',
+  leverage?: number,
+): string {
+  // 检查是否为旧格式（包含下划线）
+  if (isOldSymbolFormat(symbol)) {
+    // 旧格式：从 displaySymbol 提取基础文本，类型固定为 PERP
+    const baseText = displaySymbol.replace(' PERP', '').replace(/ · \d+x$/, '')
+    const leverageText = leverage ? ` · ${leverage}x` : ''
+    return `${baseText} PERP${leverageText}`
+  }
+
+  // 新格式：直接使用 token/displaySymbol 和 type
+  const baseText = displaySymbol || symbol
+  const typeText = type === 'spot' ? 'SPOT' : 'PERP'
+  // spot 类型不显示杠杆，perp 和 undefined（默认 perp）都显示杠杆
+  const leverageText = type !== 'spot' && leverage ? ` · ${leverage}x` : ''
+
+  return `${baseText} ${typeText}${leverageText}`
+}
+
+/**
  * 获取 symbol 精度信息的 hook
  * 返回一个函数，根据 symbol 名称获取价格精度和数量精度
+ * 支持新格式（BTC）和旧格式（PERP_BTC_USDC）
  */
 export function useSymbolPrecision() {
-  const orderlyAvailableSymbols = useSelector((state: RootState) => state.vaults.orderlyAvailableSymbols)
+  const { orderlyAvailableSymbols } = useOrderlyAvailableSymbols()
 
   // 创建 symbol -> precision 映射
   const precisionMap = useMemo(() => {
@@ -86,39 +135,53 @@ export function useSymbolPrecision() {
     return map
   }, [orderlyAvailableSymbols])
 
-  // 获取价格精度
+  // 获取价格精度，返回 null 表示没有匹配到
   const getPricePrecision = useCallback(
-    (symbol: string): number => {
-      return precisionMap[symbol]?.pricePrecision ?? 2
+    (symbol: string): number | null => {
+      const normalizedSymbol = normalizeSymbolForPrecision(symbol)
+      return precisionMap[normalizedSymbol]?.pricePrecision ?? precisionMap[symbol]?.pricePrecision ?? null
     },
     [precisionMap],
   )
 
-  // 获取数量精度
+  // 获取数量精度，返回 null 表示没有匹配到
   const getQtyPrecision = useCallback(
-    (symbol: string): number => {
-      return precisionMap[symbol]?.qtyPrecision ?? 4
+    (symbol: string): number | null => {
+      const normalizedSymbol = normalizeSymbolForPrecision(symbol)
+      return precisionMap[normalizedSymbol]?.qtyPrecision ?? precisionMap[symbol]?.qtyPrecision ?? null
     },
     [precisionMap],
   )
 
   // 格式化价格
+  // 如果匹配不到 orderly 精度数据，直接返回原值（后端已处理精度）
   const formatPrice = useCallback(
     (price: number | string, symbol: string): string => {
-      const precision = getPricePrecision(symbol)
       const num = Number(price)
       if (isNaN(num)) return '--'
+
+      const precision = getPricePrecision(symbol)
+      // 如果匹配不到精度数据，说明是新数据，后端已处理精度，直接返回
+      if (precision === null) {
+        return String(price)
+      }
       return num.toFixed(precision)
     },
     [getPricePrecision],
   )
 
   // 格式化数量
+  // 如果匹配不到 orderly 精度数据，直接返回原值（后端已处理精度）
   const formatQty = useCallback(
     (qty: number | string, symbol: string): string => {
-      const precision = getQtyPrecision(symbol)
       const num = Number(qty)
       if (isNaN(num)) return '--'
+
+      const precision = getQtyPrecision(symbol)
+      // 如果匹配不到精度数据，说明是新数据，后端已处理精度，直接返回
+      if (precision === null) {
+        return String(qty)
+      }
       return num.toFixed(precision)
     },
     [getQtyPrecision],

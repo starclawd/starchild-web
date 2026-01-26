@@ -1,4 +1,4 @@
-import { orderlyApi } from './base'
+import { orderlySvApi } from './base'
 import {
   calculateVaultPosition,
   processVaultOpenOrder,
@@ -85,7 +85,7 @@ export interface VaultApiResponse<T> {
 // Vault Position 相关接口
 export interface VaultPosition {
   symbol: string
-  displaySymbol: string // 格式化后的显示文本，如 "SOL-USDC"
+  displaySymbol: string // 格式化后的显示文本，如 "SOL-USDC" 或 "BTC"
   token: string // base token，如 "SOL"
   logoUrl: string // logo URL
   position_qty: number
@@ -97,6 +97,8 @@ export interface VaultPosition {
   position_side: 'long' | 'short'
   est_liq_price: number | undefined
   initial_margin: number | undefined
+  type?: 'spot' | 'perp' // 新增：交易类型
+  leverage?: number // 杠杆倍数
 }
 
 export interface VaultPositionPaginatedResponse {
@@ -115,7 +117,8 @@ export interface VaultOpenOrder {
   order_id: number
   created_time: number
   updated_time: number
-  type: string
+  order_type: string // 订单类型（如 LIMIT, MARKET 等）
+  type?: 'spot' | 'perp' // 新增：交易类型
   symbol: string
   side: 'BUY' | 'SELL'
   quantity: number
@@ -127,6 +130,11 @@ export interface VaultOpenOrder {
   status: string
   is_triggered: string // "true" | "false"
   child_orders: any[]
+  leverage?: number // 新增：杠杆倍数
+  // 新增：用于前端显示的字段
+  displaySymbol?: string
+  token?: string
+  logoUrl?: string
 }
 
 export interface VaultOpenOrdersPaginatedResponse {
@@ -154,6 +162,8 @@ export interface UnifiedOrderHistoryItem {
   price?: number
   updated_at?: number
   executed_timestamp?: number
+  type?: 'spot' | 'perp' // 新增：交易类型
+  leverage?: number // 新增：杠杆倍数
   // 允许其他字段
   [key: string]: any
 }
@@ -224,37 +234,8 @@ export interface ClaimInfo {
   claimable_amount: number
 }
 
-export interface OrderlyAvailableSymbolsDataType {
-  symbol: string
-  quote_min: number
-  quote_max: number
-  quote_tick: number
-  base_min: number
-  base_max: number
-  base_tick: number
-  min_notional: number
-  price_range: number
-  price_scope: number
-  std_liquidation_fee: number
-  liquidator_fee: number
-  claim_insurance_fund_discount: number
-  funding_period: number
-  cap_funding: number
-  floor_funding: number
-  interest_rate: number
-  created_time: number
-  updated_time: number
-  base_mmr: number
-  base_imr: number
-  cap_ir: number
-  floor_ir: number
-  imr_factor: number
-  liquidation_tier: number
-  global_max_oi_cap: number
-}
-
 // Vaults API endpoints
-export const vaultsApi = orderlyApi.injectEndpoints({
+export const vaultsApi = orderlySvApi.injectEndpoints({
   endpoints: (builder) => ({
     // 获取所有金库的整体统计数据
     getVaultLibraryStats: builder.query<VaultOverallStats, { broker_ids?: string }>({
@@ -567,14 +548,6 @@ export const vaultsApi = orderlyApi.injectEndpoints({
         return response.data.rows
       },
     }),
-    getOrderlyAvailableSymbols: builder.query<{ rows: OrderlyAvailableSymbolsDataType[] }, void>({
-      query: () => {
-        return {
-          url: `/v1/public/info`,
-          method: 'GET',
-        }
-      },
-    }),
   }),
 })
 
@@ -608,6 +581,4 @@ export const {
   useLazyGetVaultLpInfoQuery,
   useLazyGetClaimInfoQuery,
   useLazyGetTransactionHistoryListQuery,
-  useLazyGetOrderlyAvailableSymbolsQuery,
-  useGetOrderlyAvailableSymbolsQuery,
 } = vaultsApi

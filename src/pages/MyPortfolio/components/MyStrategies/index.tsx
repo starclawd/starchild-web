@@ -198,7 +198,10 @@ function ActionButtons({ strategy }: { strategy: StrategiesOverviewDataType }) {
   }, [status])
   const isUnreleased = useMemo(() => {
     return (
-      status === STRATEGY_STATUS.DRAFT || status === STRATEGY_STATUS.DRAFT_READY || status === STRATEGY_STATUS.DEPLOYING
+      status === STRATEGY_STATUS.DRAFT ||
+      status === STRATEGY_STATUS.DRAFT_READY ||
+      status === STRATEGY_STATUS.DEPLOYING ||
+      status === STRATEGY_STATUS.PAPER_TRADING
     )
   }, [status])
   const isDraftReady = useMemo(() => {
