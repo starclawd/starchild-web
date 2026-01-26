@@ -29,10 +29,10 @@ import { useLingui } from '@lingui/react/macro'
 
 function MyComponent() {
   const { t } = useLingui()
-  
+
   // 在 JS 逻辑中使用 t 函数
   const message = t`Strategy created successfully`
-  
+
   return <div>{message}</div>
 }
 ```
@@ -84,12 +84,12 @@ msgstr "登录"
 ```bash
 yarn compile
 # 或
-yarn i18n:compile
+yarn i18n:compile:local
 ```
 
 ## ⚠️ 注意事项
 
 1. **所有用户可见文本**都必须使用 `<Trans>` 包裹
-2. **启动项目前**必须运行 `yarn i18n:compile`
+2. **启动项目前**必须运行 `yarn i18n:compile:local`
 3. 占位符文本（如 `placeholder`）也需要翻译
 4. 不要翻译代码中的变量名、CSS 类名等

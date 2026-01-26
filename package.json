@@ -23,6 +23,7 @@
     "type-check": "tsc -b --force",
     "i18n:start": "yarn extract && yarn compile",
     "i18n:compile": "yarn extract --locale en-US && yarn compile",
+    "i18n:compile:local": "yarn compile",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "format:src": "prettier --write src/",
