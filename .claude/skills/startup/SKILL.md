@@ -23,11 +23,18 @@ if [ "$CURRENT_BRANCH" != "$TARGET_BRANCH" ]; then
   echo "⚠️ 当前分支: $CURRENT_BRANCH，需要切换到: $TARGET_BRANCH"
   git fetch origin
   git checkout $TARGET_BRANCH
-  git pull origin $TARGET_BRANCH
 fi
 ```
 
-### 2. 安装项目依赖
+### 2. 拉取最新代码
+
+> ⚠️ **必须执行**：每次启动前、切换分支后，都需要拉取最新代码，避免代码冲突。
+
+```bash
+git pull
+```
+
+### 3. 安装项目依赖
 
 ```bash
 yarn install
@@ -35,7 +42,7 @@ yarn install
 
 > ⚠️ 必须使用 `required_permissions: ["all"]`
 
-### 3. 编译国际化文件
+### 4. 编译国际化文件
 
 ```bash
 yarn i18n:compile
@@ -43,11 +50,11 @@ yarn i18n:compile
 
 > ⚠️ 必须执行此命令，否则缺失 lingui 编译文件会导致项目报错。
 
-### 4. 检查 Prettier 扩展
+### 5. 检查 Prettier 扩展
 
 确保用户已安装 Prettier 扩展 (`esbenp.prettier-vscode`)，**必须安装 v11.0.0 版本**（新版本在 Cursor 存在兼容性问题）。
 
-### 5. 启动开发服务器
+### 6. 启动开发服务器
 
 ```bash
 yarn start
