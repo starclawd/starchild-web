@@ -50,11 +50,23 @@ yarn i18n:compile:local
 
 > ⚠️ 必须执行此命令，否则缺失 lingui 编译文件会导致项目报错。
 
-### 5. 检查 Prettier 扩展
+### 5. 检查并安装 Git Hooks
+
+Git Hooks 用于代码提交前的预检查，确保代码质量。
+
+```bash
+# 检查是否已安装 pre-push hook
+if [ ! -f .git/hooks/pre-push ]; then
+  echo "⚠️ Git Hooks 未安装，正在安装..."
+  yarn install:hooks
+fi
+```
+
+### 6. 检查 Prettier 扩展
 
 确保用户已安装 Prettier 扩展 (`esbenp.prettier-vscode`)，**必须安装 v11.0.0 版本**（新版本在 Cursor 存在兼容性问题）。
 
-### 6. 启动开发服务器
+### 7. 启动开发服务器
 
 ```bash
 yarn start
@@ -65,6 +77,8 @@ yarn start
 ## 推荐安装 Pencil 扩展
 
 项目启动后，推荐用户安装 **Pencil** 扩展，可以将 UI 设计稿转换为代码。
+
+> 💡 **提示用户**：安装完成后告诉 AI "我已安装 Pencil"，AI 会自动帮你配置 MCP 服务。
 
 ### Pencil 功能介绍
 
