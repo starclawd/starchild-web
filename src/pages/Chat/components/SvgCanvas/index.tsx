@@ -93,8 +93,8 @@ export default memo(function SvgCanvas() {
     const radiusSquared = adjustedRadius * adjustedRadius
 
     pathCacheRef.current.forEach(({ element, centerX, centerY }) => {
-      const dx = centerX - svgMouseX
-      const dy = centerY - svgMouseY
+      const dx = svgMouseX - centerX
+      const dy = svgMouseY - centerY
       const distanceSquared = dx * dx + dy * dy
 
       if (distanceSquared <= radiusSquared) {
@@ -103,8 +103,14 @@ export default memo(function SvgCanvas() {
         const intensity = 1 - distance / adjustedRadius
         const opacity = 0.12 + 0.88 * intensity
         element.style.fillOpacity = String(opacity)
+
+        // 计算从 path 中心指向鼠标的角度（假设线条初始朝向向上）
+        const angle = Math.atan2(dy, dx) * (180 / Math.PI) + 90
+        element.style.transformOrigin = `${centerX}px ${centerY}px`
+        element.style.transform = `rotate(${angle}deg)`
       } else {
         element.style.fillOpacity = '0.12'
+        element.style.transform = 'rotate(0deg)'
       }
     })
   }, [])
