@@ -242,7 +242,9 @@ export interface StrategyConfig {
     hard_stop?: string[]
     emergency_exit?: string | { action?: string; account_risk_threshold?: number; account_drawdown?: number } // 紧急退出条件
     emergency_rules?: string // 紧急规则描述
-    position_limits?: string | { no_hedging?: boolean; no_pyramiding?: boolean; max_positions?: number; max_correlation?: number } // 仓位限制
+    position_limits?:
+      | string
+      | { no_hedging?: boolean; no_pyramiding?: boolean; max_positions?: number; max_correlation?: number } // 仓位限制
     drawdown_priority?: string // 回撤优先级
     additional_risk?: string | string[] // 额外风险规则
     grid_risk_management?: string // 网格风险管理
@@ -599,11 +601,19 @@ export function strategyConfigToVisualization(config: StrategyConfig, strategyNa
       }
 
       // 检查 basic_info.symbols（必须是数组）
-      if (config.basic_info?.symbols && Array.isArray(config.basic_info.symbols) && config.basic_info.symbols.length > 0) {
+      if (
+        config.basic_info?.symbols &&
+        Array.isArray(config.basic_info.symbols) &&
+        config.basic_info.symbols.length > 0
+      ) {
         return normalizeSymbols(config.basic_info.symbols)
       }
       // 检查 execution_layer.symbols（必须是数组）
-      if (config.execution_layer?.symbols && Array.isArray(config.execution_layer.symbols) && config.execution_layer.symbols.length > 0) {
+      if (
+        config.execution_layer?.symbols &&
+        Array.isArray(config.execution_layer.symbols) &&
+        config.execution_layer.symbols.length > 0
+      ) {
         return normalizeSymbols(config.execution_layer.symbols)
       }
       if (config.data_layer?.symbols) {
@@ -1749,7 +1759,8 @@ export function strategyConfigToVisualization(config: StrategyConfig, strategyNa
             .filter((c) => c && typeof c === 'object')
             .map((c) => ({
               condition: safeString(c.description),
-              action: c.triggerType === 'take_profit' ? 'TAKE PROFIT' : c.triggerType === 'stop_loss' ? 'STOP LOSS' : 'EXIT',
+              action:
+                c.triggerType === 'take_profit' ? 'TAKE PROFIT' : c.triggerType === 'stop_loss' ? 'STOP LOSS' : 'EXIT',
               description: safeString(c.description),
             }))
         : [],
@@ -2637,8 +2648,12 @@ function extractPositionSize(config: StrategyConfig): string {
     const fallbackValue =
       (typeof config.capital_layer?.position_size === 'string' ? config.capital_layer.position_size : null) ||
       (typeof config.execution_layer?.position_size === 'string' ? config.execution_layer.position_size : null) ||
-      (typeof config.capital_layer?.initial_position_size === 'string' ? config.capital_layer.initial_position_size : null) ||
-      (typeof config.capital_layer?.per_symbol_allocation === 'string' ? config.capital_layer.per_symbol_allocation : null) ||
+      (typeof config.capital_layer?.initial_position_size === 'string'
+        ? config.capital_layer.initial_position_size
+        : null) ||
+      (typeof config.capital_layer?.per_symbol_allocation === 'string'
+        ? config.capital_layer.per_symbol_allocation
+        : null) ||
       (typeof config.capital_layer?.max_position === 'string' ? config.capital_layer.max_position : null) ||
       (typeof config.capital_layer?.risk_per_trade === 'string' ? config.capital_layer.risk_per_trade : null)
 
