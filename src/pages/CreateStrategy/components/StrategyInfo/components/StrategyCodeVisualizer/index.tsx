@@ -137,6 +137,7 @@ function generateFlowElements(
       strategyType: strategy.strategyType,
       timeframe: strategy.config.timeframe,
       symbol: strategy.config.trading_symbol,
+      symbols: strategy.config.symbols, // 传递所有 symbols
       crossAssetInfo: strategy.crossAssetInfo,
       // 新版字段
       vibe: strategy.vibe,
@@ -649,6 +650,10 @@ interface Props {
    * 通过 useCreateStrategyDetail 获取: strategyDetail.strategy_config
    */
   strategyConfig?: StrategyConfig
+  /**
+   * 策略名称（优先使用，来自 strategyDetail.name）
+   */
+  strategyName?: string
 }
 
 // 内部组件
@@ -696,14 +701,14 @@ function StrategyFlowInner({ strategy }: { strategy: ParsedStrategy }) {
   )
 }
 
-function StrategyCodeVisualizer({ className, strategyConfig }: Props) {
+function StrategyCodeVisualizer({ className, strategyConfig, strategyName }: Props) {
   // 直接使用 strategyConfig（有 external_code 就一定有 strategy_config）
   const strategy = useMemo(() => {
     if (strategyConfig) {
-      return strategyConfigToVisualization(strategyConfig)
+      return strategyConfigToVisualization(strategyConfig, strategyName)
     }
     return null
-  }, [strategyConfig])
+  }, [strategyConfig, strategyName])
 
   if (!strategy) return null
 

@@ -94,6 +94,7 @@ interface HeaderNodeData {
   strategyType: string
   timeframe: string
   symbol: string
+  symbols?: string[] // 多币种支持
   // Cross-Asset 信息
   crossAssetInfo?: {
     signalSymbol: string
@@ -117,11 +118,34 @@ function HeaderNode({ data }: NodeProps) {
     }
     return val ? String(val) : fallback
   }
+
+  // 获取 symbols 数组，返回 null 表示无法提取
+  const getSymbols = (): string[] | null => {
+    if (Array.isArray(rawData.symbols) && rawData.symbols.length > 0) {
+      const filtered = rawData.symbols.filter((s): s is string => typeof s === 'string' && s.length > 0)
+      return filtered.length > 0 ? filtered : null
+    }
+    const singleSymbol = safeString(rawData.symbol, '')
+    return singleSymbol ? [singleSymbol] : null
+  }
+
+  const symbols = getSymbols()
+
+  // 格式化 symbol 显示：多个时用逗号连接，超过 3 个时显示前 3 个 + 数量
+  const formatSymbolDisplay = (): string | null => {
+    if (!symbols || symbols.length === 0) return null
+    if (symbols.length <= 3) return symbols.join(', ')
+    return `${symbols.slice(0, 3).join(', ')} +${symbols.length - 3}`
+  }
+
+  // 获取 timeframe，返回空字符串表示无法提取
+  const timeframeValue = safeString(rawData.timeframe, '')
+
   const nodeData = {
     name: safeString(rawData.name, 'Trading Strategy'),
     strategyType: safeString(rawData.strategyType, 'Strategy'),
-    timeframe: safeString(rawData.timeframe, '1H'),
-    symbol: safeString(rawData.symbol, 'BTC-PERP'),
+    timeframe: timeframeValue || null, // 空字符串转为 null
+    symbol: formatSymbolDisplay(),
     crossAssetInfo: rawData.crossAssetInfo
       ? {
           signalSymbol: safeString(rawData.crossAssetInfo.signalSymbol),
@@ -133,20 +157,34 @@ function HeaderNode({ data }: NodeProps) {
   }
   const { crossAssetInfo } = nodeData
 
+  // 标签文字：多币种时显示 "Symbols"，单币种显示 "Symbol"
+  const symbolLabel = symbols && symbols.length > 1 ? 'Symbols' : 'Symbol'
+
+  // 检查是否有任何信息需要显示
+  const hasSymbol = nodeData.symbol !== null
+  const hasTimeframe = nodeData.timeframe !== null
+  const showInfoRow = hasSymbol || hasTimeframe
+
   return (
     <NodeWrapper>
       <StrategyName>{nodeData.name}</StrategyName>
       <TypeBadge>{nodeData.strategyType}</TypeBadge>
-      <InfoRow>
-        <InfoItem>
-          <InfoLabel>Symbol</InfoLabel>
-          <InfoValue>{nodeData.symbol || 'BTC-PERP'}</InfoValue>
-        </InfoItem>
-        <InfoItem>
-          <InfoLabel>Timeframe</InfoLabel>
-          <InfoValue>{nodeData.timeframe?.toUpperCase() || '1H'}</InfoValue>
-        </InfoItem>
-      </InfoRow>
+      {showInfoRow && (
+        <InfoRow>
+          {hasSymbol && (
+            <InfoItem>
+              <InfoLabel>{symbolLabel}</InfoLabel>
+              <InfoValue>{nodeData.symbol}</InfoValue>
+            </InfoItem>
+          )}
+          {hasTimeframe && (
+            <InfoItem>
+              <InfoLabel>Timeframe</InfoLabel>
+              <InfoValue>{nodeData.timeframe?.toUpperCase()}</InfoValue>
+            </InfoItem>
+          )}
+        </InfoRow>
+      )}
       {crossAssetInfo && crossAssetInfo.signalAsset && crossAssetInfo.tradingAsset && (
         <CrossAssetBadge>
           <div>
