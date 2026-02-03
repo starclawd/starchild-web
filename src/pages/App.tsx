@@ -76,14 +76,14 @@ const BodyWrapper = styled.div<{ $isFixMenu: boolean }>`
   flex-direction: column;
   align-items: center;
   flex-grow: 1;
-  width: calc(100% - 60px);
+  width: 100%;
   height: 100%;
   overflow: hidden;
   transition: padding-left ${ANI_DURATION}s;
   ${({ $isFixMenu }) =>
     $isFixMenu &&
     css`
-      padding-left: 240px;
+      padding-left: 0;
     `}
 `
 

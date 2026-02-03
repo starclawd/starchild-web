@@ -357,50 +357,6 @@ export const Header = () => {
       setCurrentHoverMenuKey(currentRouter)
     }
   }, [isFixMenu, currentRouter])
-  return (
-    <HeaderWrapper
-      $isShowMenu={isShowMenu}
-      $isFixMenu={isFixMenu}
-      $isHoverNavTabs={isHoverNavTabs}
-      $isPopoverOpen={isPopoverOpen}
-    >
-      <Menu className='scroll-style'>
-        <LogoWrapper onClick={goHomePage}>
-          <img src={logoImg} alt='logo' width={28} height={28} />
-        </LogoWrapper>
-        <CenterSection>
-          <NavTabs onMouseEnter={() => setIsHoverNavTabs(true)} onMouseLeave={handleNavTabsLeave}>
-            {menuList.map((tab) => {
-              const { key, value, clickCallback, icon, tooltip } = tab
-              const isActive =
-                isMatchFatherRouter(currentRouter, value) ||
-                isMatchCurrentRouter(currentRouter, value) ||
-                key == ROUTER.CHAT ||
-                (key === ROUTER.MY_PORTFOLIO && isMatchCurrentRouter(currentRouter, ROUTER.CREATE_STRATEGY) && isPro)
-              return (
-                <Tooltip key={key} placement='right' content={tooltip}>
-                  <NavTab
-                    $key={key}
-                    $active={isActive}
-                    $disabled={!clickCallback}
-                    onClick={() => clickCallback?.(value)}
-                    onMouseEnter={() => handleNavTabHover(key)}
-                    onMouseLeave={() => (isInNavTabRef.current = false)}
-                  >
-                    <IconWrapper $active={isActive} className='icon-wrapper'>
-                      {icon}
-                    </IconWrapper>
-                  </NavTab>
-                </Tooltip>
-              )
-            })}
-          </NavTabs>
-        </CenterSection>
-        <BottomSection>
-          <Language />
-          <LoginButton />
-        </BottomSection>
-      </Menu>
-    </HeaderWrapper>
-  )
+  // Left menu bar removed
+  return null
 }
